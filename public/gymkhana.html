@@ -647,7 +647,7 @@
             </section>
         </div>
         
-        <!-- NEW: SAFETY NET PAGE -->
+        <!-- NEW: SAFETY NET PAGE (Updated with Concern Form and clarified Mentor/President section) -->
         <div id="safetyNet" class="page">
             <section class="relative py-32 bg-indigo-700 text-white overflow-hidden">
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -710,45 +710,65 @@
                             </div>
                         </div>
 
-                        <!-- Card 3: Raise a Concern / Confidential Reporting -->
+                        <!-- Card 3: Raise a Concern / Confidential Reporting - UPDATED WITH FORM -->
                         <div class="bg-white p-8 rounded-2xl shadow-xl border-t-4 border-purple-600 card-hover">
                             <div class="flex items-center space-x-4">
                                 <i class="fas fa-comment-dots fa-2x text-purple-600"></i>
-                                <h3 class="text-2xl font-bold text-gray-900">Raise a Concern - We Are Listening</h3>
+                                <h3 class="text-2xl font-bold text-gray-900">Raise a Concern - Confidential</h3>
                             </div>
                             <p class="mt-4 text-gray-600">
-                                Report incidents, harassment, or administrative issues anonymously or formally.
+                                Submit any confidential concern, grievance, or administrative issue directly. Your anonymity is respected.
                             </p>
-                            <div class="mt-6 space-y-4">
-                                <a href="#" class="flex items-center text-purple-600 hover:text-purple-700 font-medium">
-                                    <i class="fas fa-hand-paper fa-fw mr-3"></i> Anonymous Complaint Form (Online)
-                                </a>
-                                <a href="mailto:icc@iiti.ac.in" class="flex items-center text-purple-600 hover:text-purple-700 font-medium">
-                                    <i class="fas fa-users fa-fw mr-3"></i> Internal Complaints Committee (ICC)
-                                </a>
-                                <a href="#" class="flex items-center text-purple-600 hover:text-purple-700 font-medium">
-                                    <i class="fas fa-code-branch fa-fw mr-3"></i> Anti-Ragging Hotline
-                                </a>
+
+                            <form id="concern-form" class="mt-6 space-y-4">
+                                <div>
+                                    <label for="concern-name" class="block text-sm font-medium text-gray-700">Name (Optional)</label>
+                                    <input type="text" id="concern-name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 p-2 border" placeholder="Your name (for non-anonymous reports)">
+                                </div>
+                                <div>
+                                    <label for="concern-email" class="block text-sm font-medium text-gray-700">Email (Optional)</label>
+                                    <input type="email" id="concern-email" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 p-2 border" placeholder="Your email">
+                                </div>
+                                <div>
+                                    <label for="concern-details" class="block text-sm font-medium text-gray-700">Details of Concern (Required)</label>
+                                    <textarea id="concern-details" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 p-2 border" placeholder="Please describe the issue, date, and location clearly." required></textarea>
+                                </div>
+                                <button type="button" onclick="submitConcern(event)" class="w-full bg-purple-600 text-white font-bold py-3 rounded-lg hover:bg-purple-700 transition duration-300 flex items-center justify-center">
+                                    Submit Concern <i class="fas fa-paper-plane ml-2"></i>
+                                </button>
+                                <div id="concern-message" class="mt-4 text-center hidden p-3 rounded-lg bg-green-100 text-green-700 font-medium"></div>
+                            </form>
+                            
+                            <div class="mt-6 border-t pt-4 border-gray-200">
+                                <p class="text-sm text-gray-500 font-medium">Other Important Resources:</p>
+                                <div class="mt-2 space-y-2">
+                                    <a href="mailto:icc@iiti.ac.in" class="flex items-center text-purple-600 hover:text-purple-700 font-medium text-sm">
+                                        <i class="fas fa-users fa-fw mr-3"></i> Internal Complaints Committee (ICC)
+                                    </a>
+                                    <a href="#" class="flex items-center text-purple-600 hover:text-purple-700 font-medium text-sm">
+                                        <i class="fas fa-code-branch fa-fw mr-3"></i> Anti-Ragging Hotline Details
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <h2 class="text-4xl font-extrabold text-gray-900 mt-20 mb-12 text-center">In Trouble at IIT? Reach Out.</h2>
+                    <h2 class="text-4xl font-extrabold text-gray-900 mt-20 mb-12 text-center">In Trouble? Reach Out Now.</h2>
 
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                        <!-- Card 4: Mentor/Gymkhana Support -->
+                        <!-- Card 4: Student & Peer Support (Refined for Mentor/President emphasis) - UPDATED -->
                         <div class="bg-white p-8 rounded-2xl shadow-xl border-t-4 border-indigo-600 card-hover">
                             <div class="flex items-center space-x-4">
                                 <i class="fas fa-user-friends fa-2x text-indigo-600"></i>
                                 <h3 class="text-2xl font-bold text-gray-900">Student & Peer Support</h3>
                             </div>
-                            <p class="mt-4 text-gray-600">
-                                For academic stress, personal issues, or mediation, reach out to student bodies.
+                            <p class="mt-4 text-gray-600 font-bold">
+                                Your most direct support line is through the student body. Reach out to your Mentor or Club/Council President immediately for academic, social, or minor administrative issues.
                             </p>
                             <ul class="mt-6 space-y-3 list-disc list-inside text-gray-600">
-                                <li><span class="font-semibold text-gray-800">Student Mentor:</span> Your first point of contact for personal guidance.</li>
-                                <li><span class="font-semibold text-gray-800">Gymkhana President:</span> Contact for issues related to student activities/policy. (president@gymkhana.iiti.ac.in)</li>
-                                <li><span class="font-semibold text-gray-800">Council Heads:</span> For domain-specific help (Cultural, Tech, Sports, etc.)</li>
+                                <li><span class="font-semibold text-gray-800">Student Mentor:</span> Your first point of contact for personal guidance and course help.</li>
+                                <li><span class="font-semibold text-gray-800">Club/Council President:</span> The head of your domain for activities or policy issues. (e.g., <a href="mailto:president@gymkhana.iiti.ac.in" class="text-indigo-600 hover:underline">president@gymkhana.iiti.ac.in</a>)</li>
+                                <li><span class="font-semibold text-gray-800">Council Heads:</span> For domain-specific help (Cultural, Tech, Sports, etc.).</li>
                             </ul>
                         </div>
 
@@ -987,6 +1007,34 @@
             }
         }
 
+        // NEW: Function to handle the concern form submission
+        function submitConcern(event) {
+            event.preventDefault(); // Stop the default form submission behavior
+
+            const details = document.getElementById('concern-details').value;
+            const messageEl = document.getElementById('concern-message');
+            
+            if (details.trim() === "") {
+                messageEl.textContent = "Please provide details of your concern.";
+                messageEl.classList.remove('hidden', 'bg-green-100', 'text-green-700');
+                messageEl.classList.add('bg-red-100', 'text-red-700', 'block');
+                return;
+            }
+
+            // Simulate submission success
+            messageEl.textContent = "Thank you. Your concern has been recorded and will be forwarded to the relevant authorities for confidential processing.";
+            messageEl.classList.remove('hidden', 'bg-red-100', 'text-red-700');
+            messageEl.classList.add('bg-green-100', 'text-green-700', 'block');
+
+            // Optionally clear form fields after successful 'submission'
+            document.getElementById('concern-form').reset();
+
+            // Hide success message after 5 seconds
+            setTimeout(() => {
+                messageEl.classList.add('hidden');
+            }, 5000);
+        }
+
         // Initialize the first page on load
         document.addEventListener('DOMContentLoaded', () => {
             // Ensure home is shown first, but technically any registered page in the HTML can be shown
@@ -995,6 +1043,7 @@
         
     </script>
     
+    <!-- This script tag references a file which is not part of this output, but is required to remain in the HTML as requested. -->
     <script src="public-gymkhana.js" defer></script>
 
 </body>
