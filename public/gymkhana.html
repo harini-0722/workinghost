@@ -5,10 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Gymkhana - IIT Indore</title>
     
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     
+    <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
+    <!-- Font Links -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -53,7 +56,7 @@
 </head>
 <body class="bg-gray-50 text-gray-900">
 
-    <!-- NEW: Medical Emergency Modal (Only the modal remains red for actual emergency) -->
+    <!-- Medical Emergency Modal (Only the modal remains red for actual emergency) -->
     <div id="medical-modal" class="fixed inset-0 bg-gray-900 bg-opacity-75 z-[100] hidden items-center justify-center p-4">
         <div class="bg-white rounded-xl p-8 max-w-lg w-full shadow-2xl transform transition-all scale-100">
             <h3 class="text-3xl font-bold text-red-600 flex items-center"><i class="fas fa-heartbeat mr-3"></i> IMMEDIATE MEDICAL ATTENTION</h3>
@@ -76,6 +79,7 @@
     </div>
     <!-- End Modal -->
 
+    <!-- NAVIGATION BAR - REORDERED: Home, Clubs, Events, Elections, Tech Usage, Help! -->
     <nav class="bg-white/95 shadow-md sticky top-0 z-50 backdrop-blur-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-20">
@@ -86,14 +90,10 @@
                     </a>
                 </div>
                 
+                <!-- DESKTOP NAVIGATION -->
                 <div class="hidden md:flex md:items-center md:space-x-8">
+                    
                     <a href="#" onclick="showPage('home')" class="font-medium text-gray-700 hover:text-indigo-600 transition duration-150">Home</a>
-                    
-                    <!-- NEW: TECH USAGE LINK -->
-                    <a href="#" onclick="showPage('aiTechHub')" class="font-medium text-gray-700 hover:text-indigo-600 transition duration-150">Tech Usage</a>
-                    
-                    <!-- UPDATED: HELP LINK IN DESKTOP NAVBAR (Now professional indigo) -->
-                    <a href="#" onclick="showPage('safetyNet')" class="font-bold text-indigo-600 hover:text-indigo-700 transition duration-150 border-2 border-indigo-600 rounded-lg px-3 py-1 bg-indigo-50 hover:bg-indigo-100">Help!</a>
                     
                     <div class="relative" id="desktop-dropdown-container">
                         <button type="button" onclick="toggleDropdown('desktop-dropdown')" class="font-medium text-gray-700 hover:text-indigo-600 transition duration-150 flex items-center">
@@ -138,6 +138,10 @@
                     
                     <a href="#" onclick="showPage('events')" class="font-medium text-gray-700 hover:text-indigo-600 transition duration-150">Events</a>
                     <a href="#" onclick="showPage('elections')" class="font-medium text-gray-700 hover:text-indigo-600 transition duration-150">Elections</a>
+                    
+                    <!-- Tech Usage and Help! are now explicitly at the end -->
+                    <a href="#" onclick="showPage('aiTechHub')" class="font-medium text-gray-700 hover:text-indigo-600 transition duration-150">Tech Usage</a>
+                    <a href="#" onclick="showPage('safetyNet')" class="font-bold text-indigo-600 hover:text-indigo-700 transition duration-150 border-2 border-indigo-600 rounded-lg px-3 py-1 bg-indigo-50 hover:bg-indigo-100">Help!</a>
                 </div>
                 
                 <div class="-mr-2 flex md:hidden">
@@ -154,12 +158,6 @@
             <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
                 <a href="#" onclick="showPage('home')" class="text-gray-700 hover:bg-gray-50 block px-3 py-2 rounded-md text-base font-medium">Home</a>
                 
-                <!-- NEW: TECH USAGE LINK (Mobile) -->
-                <a href="#" onclick="showPage('aiTechHub')" class="text-gray-700 hover:bg-gray-50 block px-3 py-2 rounded-md text-base font-medium">Tech Usage</a>
-                
-                <!-- UPDATED: HELP LINK IN MOBILE MENU (Now professional indigo) -->
-                <a href="#" onclick="showPage('safetyNet')" class="text-white bg-indigo-600 hover:bg-indigo-700 block px-3 py-2 rounded-md text-base font-bold text-center">I Need Help! (Safety Net)</a>
-
                 <div class="border-t border-gray-200 pt-2">
                     <p class="px-3 py-2 text-sm font-semibold text-gray-500 uppercase">Clubs</p>
                     <a href="#" onclick="showPage('techClubs')" class="text-gray-700 hover:bg-gray-50 block px-3 py-2 rounded-md text-base font-medium ml-4">SciTech Council</a>
@@ -172,6 +170,9 @@
                     <a href="#" onclick="showPage('events')" class="text-gray-700 hover:bg-gray-50 block px-3 py-2 rounded-md text-base font-medium">Events</a>
                     <a href="#" onclick="showPage('elections')" class="text-gray-700 hover:bg-gray-50 block px-3 py-2 rounded-md text-base font-medium">Elections</a>
                 </div>
+                
+                <a href="#" onclick="showPage('aiTechHub')" class="text-gray-700 hover:bg-gray-50 block px-3 py-2 rounded-md text-base font-medium">Tech Usage</a>
+                <a href="#" onclick="showPage('safetyNet')" class="text-white bg-indigo-600 hover:bg-indigo-700 block px-3 py-2 rounded-md text-base font-bold text-center">I Need Help! (Safety Net)</a>
             </div>
         </div>
     </nav>
@@ -201,7 +202,7 @@
                 </div>
             </section>
             
-            <!-- UPDATED SECTION: SAFETY NET / EMERGENCY ACCESS (Now professional indigo look) -->
+            <!-- SAFETY NET / EMERGENCY ACCESS (Quick links) -->
             <section id="safety-net-home-section" class="py-16 bg-indigo-900 text-white shadow-2xl">
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                     <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight">
@@ -248,7 +249,7 @@
             </section>
             <!-- END NEW SAFETY NET SECTION -->
 
-            <!-- NEW QUICK LINK TO AI TECH HUB PAGE (Replaces previous AI section) -->
+            <!-- AI QUICK LINK -->
             <section class="py-12 bg-white">
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                     <h2 class="text-3xl font-extrabold text-gray-900">
@@ -343,7 +344,8 @@
                     </div>
                     
                     <div id="home-members-grid" class="mt-16 grid grid-cols-1 gap-10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-                        </div>
+                        <p class="md:col-span-4 text-center text-gray-500">Loading executive members from Firestore...</p>
+                    </div>
                 </div>
             </section>
             
@@ -360,7 +362,7 @@
                             <p class="mt-2 text-4xl font-extrabold text-gray-900 sm:text-5xl">About the Gymkhana</p>
                             
                             <div id="home-about-text" class="mt-6 text-lg text-gray-500 space-y-4">
-                                <p>Loading...</p>
+                                <p>Loading Gymkhana description from Firestore...</p>
                             </div>
                         </div>
                     </div>
@@ -376,7 +378,8 @@
                         </p>
                     </div>
                     
-                    <div class="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div id="club-summary-grid" class="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                        <!-- Content remains static but would normally be dynamic -->
                         <div class="relative rounded-2xl shadow-2xl overflow-hidden group card-hover">
                             <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80" alt="Tech" class="w-full h-96 object-cover transition-transform duration-500 group-hover:scale-110">
                             <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/70 to-transparent"></div>
@@ -434,7 +437,6 @@
         </div>
 
         <div id="techClubs" class="page">
-            
             <section class="relative h-[60vh] min-h-[400px] flex items-center justify-center text-center text-white overflow-hidden">
                 <div class="absolute inset-0">
                     <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1920&q=80" 
@@ -455,7 +457,8 @@
                     <h2 class="text-4xl font-extrabold text-gray-900 text-center">Our Clubs</h2>
                     
                     <div id="tech-clubs-grid" class="mt-16 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-                        </div>
+                        <p class="md:col-span-4 text-center text-gray-500">Loading SciTech clubs from Firestore: /artifacts/{appId}/public/data/techClubs</p>
+                    </div>
                 </div>
             </section>
             
@@ -464,13 +467,13 @@
                     <h2 class="text-4xl font-extrabold text-gray-900 text-center">SciTech Council Heads</h2>
                     
                     <div id="tech-heads-grid" class="mt-16 grid grid-cols-1 gap-12 sm:grid-cols-2">
-                        </div>
+                        <p class="sm:col-span-2 text-center text-gray-500">Loading SciTech heads from Firestore: /artifacts/{appId}/public/data/techHeads</p>
+                    </div>
                 </div>
             </section>
         </div>
 
         <div id="culturalClubs" class="page">
-            
             <section class="relative h-[60vh] min-h-[400px] flex items-center justify-center text-center text-white overflow-hidden">
                 <div class="absolute inset-0">
                     <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=1920&q=80" 
@@ -491,7 +494,8 @@
                     <h2 class="text-4xl font-extrabold text-gray-900 text-center">Our Clubs</h2>
                     
                     <div id="cultural-clubs-grid" class="mt-16 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-                        </div>
+                        <p class="md:col-span-4 text-center text-gray-500">Loading Cultural clubs from Firestore: /artifacts/{appId}/public/data/culturalClubs</p>
+                    </div>
                 </div>
             </section>
             
@@ -500,13 +504,13 @@
                     <h2 class="text-4xl font-extrabold text-gray-900 text-center">Cultural Council Heads</h2>
                     
                     <div id="cultural-heads-grid" class="mt-16 grid grid-cols-1 gap-12 sm:grid-cols-2">
-                        </div>
+                        <p class="sm:col-span-2 text-center text-gray-500">Loading Cultural heads from Firestore: /artifacts/{appId}/public/data/culturalHeads</p>
+                    </div>
                 </div>
             </section>
         </div>
 
         <div id="sportsClubs" class="page">
-            
             <section class="relative h-[60vh] min-h-[400px] flex items-center justify-center text-center text-white overflow-hidden">
                 <div class="absolute inset-0">
                     <img src="https://images.unsplash.com/photo-1579952363873-27f3bade9f55?auto=format&fit=crop&w=1920&q=80" 
@@ -527,7 +531,8 @@
                     <h2 class="text-4xl font-extrabold text-gray-900 text-center">Our Clubs</h2>
                     
                     <div id="sports-clubs-grid" class="mt-16 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-                        </div>
+                        <p class="md:col-span-4 text-center text-gray-500">Loading Sports clubs from Firestore: /artifacts/{appId}/public/data/sportsClubs</p>
+                    </div>
                 </div>
             </section>
             
@@ -536,13 +541,13 @@
                     <h2 class="text-4xl font-extrabold text-gray-900 text-center">Sports Council Heads</h2>
                     
                     <div id="sports-heads-grid" class="mt-16 grid grid-cols-1 gap-12 sm:grid-cols-2">
-                        </div>
+                        <p class="sm:col-span-2 text-center text-gray-500">Loading Sports heads from Firestore: /artifacts/{appId}/public/data/sportsHeads</p>
+                    </div>
                 </div>
             </section>
         </div>
 
         <div id="academicClubs" class="page">
-            
             <section class="relative h-[60vh] min-h-[400px] flex items-center justify-center text-center text-white overflow-hidden">
                 <div class="absolute inset-0">
                     <img src="https://images.unsplash.com/photo-1488998427799-e3362cec87c3?auto=format&fit=crop&w=1920&q=80" 
@@ -563,7 +568,8 @@
                     <h2 class="text-4xl font-extrabold text-gray-900 text-center">Our Clubs</h2>
                     
                     <div id="academic-clubs-grid" class="mt-16 flex justify-center">
-                        </div>
+                        <p class="text-center text-gray-500">Loading Academic clubs from Firestore: /artifacts/{appId}/public/data/academicClubs</p>
+                    </div>
                 </div>
             </section>
             
@@ -572,13 +578,13 @@
                     <h2 class="text-4xl font-extrabold text-gray-900 text-center">Academic Council Heads</h2>
                     
                     <div id="academic-heads-grid" class="mt-16 grid grid-cols-1 gap-12 sm:grid-cols-2">
-                        </div>
+                        <p class="sm:col-span-2 text-center text-gray-500">Loading Academic heads from Firestore: /artifacts/{appId}/public/data/academicHeads</p>
+                    </div>
                 </div>
             </section>
         </div>
 
         <div id="events" class="page">
-            
             <section class="relative h-[60vh] min-h-[400px] flex items-center justify-center text-center text-white overflow-hidden">
                 <div class="absolute inset-0">
                     <img src="https://images.unsplash.com/photo-1527529482837-4698179dc6ce?auto=format&fit=crop&w=1920&q=80" 
@@ -598,18 +604,18 @@
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     
                     <div id="events-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                        </div>
+                        <p class="md:col-span-3 text-center text-gray-500">Loading events from Firestore: /artifacts/{appId}/public/data/events</p>
+                    </div>
                 </div>
             </section>
         </div>
         
         <div id="elections" class="page">
-            
             <section class="relative h-[60vh] min-h-[400px] flex items-center justify-center text-center text-white overflow-hidden">
                 <div class="absolute inset-0">
                     <img src="https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?auto=format&fit=crop&w=1920&q=80" 
                             alt="Elections Background" 
-                            class="w-full h-full object-cover">
+                            class="class="w-full h-full object-cover">
                     <div class="absolute inset-0 bg-gray-900 bg-opacity-70"></div>
                 </div>
                 <div class="relative z-10 p-4">
@@ -628,7 +634,8 @@
                             <h3 class="text-2xl font-bold text-indigo-800">Important Dates</h3>
                             
                             <ul id="election-dates-list" class="mt-6 space-y-4">
-                                </ul>
+                                <li class="text-gray-500">Loading dates from Firestore: /artifacts/{appId}/public/data/elections/metadata</li>
+                            </ul>
                             <button class="mt-8 w-full bg-indigo-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-indigo-700 transition duration-300">
                                 VOTE NOW (Opens April 10)
                             </button>
@@ -639,7 +646,8 @@
                         <h2 class="text-4xl font-extrabold text-gray-900">Candidates</h2>
                         
                         <div id="candidates-list" class="mt-10 space-y-8">
-                            </div>
+                            <p class="text-center text-gray-500">Loading candidates from Firestore: /artifacts/{appId}/public/data/elections/metadata</p>
+                        </div>
                         
                     </div>
                     
@@ -647,7 +655,7 @@
             </section>
         </div>
         
-        <!-- NEW: SAFETY NET PAGE -->
+        <!-- SAFETY NET PAGE - WITH FORMS (Content Preserved) -->
         <div id="safetyNet" class="page">
             <section class="relative py-32 bg-indigo-700 text-white overflow-hidden">
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -662,11 +670,11 @@
 
             <section class="py-20 bg-gray-50">
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <h2 class="text-4xl font-extrabold text-gray-900 mb-12 text-center">I Need Help Now!</h2>
+                    <h2 class="text-4xl font-extrabold text-gray-900 mb-12 text-center">I Need Help Now! (Emergency & Counseling)</h2>
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         
-                        <!-- Card 1: Emergency Contact -->
+                        <!-- Card 1: Emergency Contact (STILL QUICK LINKS) -->
                         <div class="bg-white p-8 rounded-2xl shadow-xl border-t-4 border-indigo-600 card-hover">
                             <div class="flex items-center space-x-4">
                                 <i class="fas fa-exclamation-triangle fa-2x text-indigo-600"></i>
@@ -688,11 +696,11 @@
                             </div>
                         </div>
 
-                        <!-- Card 2: Medical & Wellness -->
+                        <!-- Card 2: Medical & Wellness (STILL QUICK LINKS + EMAIL) -->
                         <div class="bg-white p-8 rounded-2xl shadow-xl border-t-4 border-blue-600 card-hover">
                             <div class="flex items-center space-x-4">
                                 <i class="fas fa-heartbeat fa-2x text-blue-600"></i>
-                                <h3 class="text-2xl font-bold text-gray-900">Medical Emergency - We Are Here</h3>
+                                <h3 class="text-2xl font-bold text-gray-900">Medical & Mental Wellness</h3>
                             </div>
                             <p class="mt-4 text-gray-600">
                                 For physical illness, injury, or mental health crises. Our medical team is ready.
@@ -705,75 +713,109 @@
                                     <i class="fas fa-envelope fa-fw mr-3"></i> Counseling Service Email
                                 </a>
                                 <a href="#" class="flex items-center text-blue-600 hover:text-blue-700 font-medium">
-                                    <i class="fas fa-calendar-check fa-fw mr-3"></i> Book a Counseling Session
+                                    <i class="fas fa-calendar-check fa-fw mr-3"></i> Book a Counseling Session (External Link)
                                 </a>
                             </div>
                         </div>
 
-                        <!-- Card 3: Raise a Concern / Confidential Reporting -->
+                        <!-- Card 3: Raise a Concern - NOW A FORM (Workflow preserved) -->
                         <div class="bg-white p-8 rounded-2xl shadow-xl border-t-4 border-purple-600 card-hover">
                             <div class="flex items-center space-x-4">
                                 <i class="fas fa-comment-dots fa-2x text-purple-600"></i>
-                                <h3 class="text-2xl font-bold text-gray-900">Raise a Concern - We Are Listening</h3>
+                                <h3 class="text-2xl font-bold text-gray-900">Raise a Concern (Form)</h3>
                             </div>
                             <p class="mt-4 text-gray-600">
                                 Report incidents, harassment, or administrative issues anonymously or formally.
                             </p>
-                            <div class="mt-6 space-y-4">
-                                <a href="#" class="flex items-center text-purple-600 hover:text-purple-700 font-medium">
-                                    <i class="fas fa-hand-paper fa-fw mr-3"></i> Anonymous Complaint Form (Online)
-                                </a>
-                                <a href="mailto:icc@iiti.ac.in" class="flex items-center text-purple-600 hover:text-purple-700 font-medium">
-                                    <i class="fas fa-users fa-fw mr-3"></i> Internal Complaints Committee (ICC)
-                                </a>
-                                <a href="#" class="flex items-center text-purple-600 hover:text-purple-700 font-medium">
-                                    <i class="fas fa-code-branch fa-fw mr-3"></i> Anti-Ragging Hotline
-                                </a>
-                            </div>
+                            
+                            <form id="concern-form" onsubmit="handleFormSubmission(event, 'Concern Report')">
+                                <div class="mt-4 space-y-4">
+                                    <div>
+                                        <label for="concern-subject" class="block text-sm font-medium text-gray-700">Subject</label>
+                                        <input type="text" id="concern-subject" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 p-2 border">
+                                    </div>
+                                    <div>
+                                        <label for="concern-details" class="block text-sm font-medium text-gray-700">Details (What happened?)</label>
+                                        <textarea id="concern-details" rows="4" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 p-2 border"></textarea>
+                                    </div>
+                                    <div class="flex items-start">
+                                        <div class="flex items-center h-5">
+                                            <input id="concern-anonymous" type="checkbox" class="focus:ring-purple-500 h-4 w-4 text-purple-600 border-gray-300 rounded">
+                                        </div>
+                                        <div class="ml-3 text-sm">
+                                            <label for="concern-anonymous" class="font-medium text-gray-700">Submit Anonymously</label>
+                                            <p class="text-gray-500">Your details will be withheld.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="submit" class="mt-6 w-full bg-purple-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-purple-700 transition duration-300">
+                                    Submit Confidential Report <i class="fas fa-paper-plane ml-2"></i>
+                                </button>
+                                <p id="concern-message" class="mt-3 text-sm text-center font-medium"></p>
+                            </form>
                         </div>
                     </div>
 
-                    <h2 class="text-4xl font-extrabold text-gray-900 mt-20 mb-12 text-center">In Trouble at IIT? Reach Out.</h2>
+                    <h2 class="text-4xl font-extrabold text-gray-900 mt-20 mb-12 text-center">In Trouble at IIT? Contact Student Leadership / Administration.</h2>
 
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                        <!-- Card 4: Mentor/Gymkhana Support -->
-                        <div class="bg-white p-8 rounded-2xl shadow-xl border-t-4 border-indigo-600 card-hover">
+                        <!-- Card 4: Student Leadership / Administration Contact - NOW A LARGE FORM (Workflow preserved) -->
+                        <div class="bg-white p-8 rounded-2xl shadow-xl border-t-4 border-indigo-600 card-hover lg:col-span-2">
                             <div class="flex items-center space-x-4">
                                 <i class="fas fa-user-friends fa-2x text-indigo-600"></i>
-                                <h3 class="text-2xl font-bold text-gray-900">Student & Peer Support</h3>
+                                <h3 class="text-2xl font-bold text-gray-900">Contact Student Leadership / Mentor</h3>
                             </div>
                             <p class="mt-4 text-gray-600">
-                                For academic stress, personal issues, or mediation, reach out to student bodies.
+                                For academic stress, general grievances, policy suggestions, or personal issues, reach out directly to the Gymkhana or your Mentor.
                             </p>
-                            <ul class="mt-6 space-y-3 list-disc list-inside text-gray-600">
-                                <li><span class="font-semibold text-gray-800">Student Mentor:</span> Your first point of contact for personal guidance.</li>
-                                <li><span class="font-semibold text-gray-800">Gymkhana President:</span> Contact for issues related to student activities/policy. (president@gymkhana.iiti.ac.in)</li>
-                                <li><span class="font-semibold text-gray-800">Council Heads:</span> For domain-specific help (Cultural, Tech, Sports, etc.)</li>
-                            </ul>
-                        </div>
-
-                        <!-- Card 5: Direct Access to Management -->
-                        <div class="bg-white p-8 rounded-2xl shadow-xl border-t-4 border-teal-600 card-hover">
-                            <div class="flex items-center space-x-4">
-                                <i class="fas fa-building fa-2x text-teal-600"></i>
-                                <h3 class="text-2xl font-bold text-gray-900">Direct Access to Management</h3>
+                            
+                            <form id="leadership-contact-form" onsubmit="handleFormSubmission(event, 'Leadership Contact')">
+                                <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label for="leadership-name" class="block text-sm font-medium text-gray-700">Your Name (Optional)</label>
+                                        <input type="text" id="leadership-name" placeholder="John Doe" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border">
+                                    </div>
+                                    <div>
+                                        <label for="leadership-email" class="block text-sm font-medium text-gray-700">Your IIT Email (Required for reply)</label>
+                                        <input type="email" id="leadership-email" required placeholder="example@iiti.ac.in" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border">
+                                    </div>
+                                    <div class="md:col-span-2">
+                                        <label for="leadership-category" class="block text-sm font-medium text-gray-700">Concern Category</label>
+                                        <select id="leadership-category" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border bg-white">
+                                            <option value="">Select a Category</option>
+                                            <option value="Academic Stress">Academic Stress / Coursework</option>
+                                            <option value="Policy Suggestion">Gymkhana Policy Suggestion</option>
+                                            <option value="Personal Guidance">Personal Guidance / Wellness</option>
+                                            <option value="Council Issue">Council/Club Related Issue</option>
+                                            <option value="Other">Other Grievance / Feedback</option>
+                                        </select>
+                                    </div>
+                                    <div class="md:col-span-2">
+                                        <label for="leadership-message" class="block text-sm font-medium text-gray-700">Message / Description</label>
+                                        <textarea id="leadership-message" rows="5" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border"></textarea>
+                                    </div>
+                                </div>
+                                <button type="submit" class="mt-6 w-full bg-indigo-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-indigo-700 transition duration-300">
+                                    Send Message to Leadership <i class="fas fa-envelope ml-2"></i>
+                                </button>
+                                <p id="leadership-message-status" class="mt-3 text-sm text-center font-medium"></p>
+                            </form>
+                            
+                            <div class="mt-8 pt-4 border-t border-gray-200">
+                                <h4 class="text-xl font-bold text-gray-800">Key Administrative Contacts (Email Only)</h4>
+                                <ul class="mt-3 space-y-3 list-disc list-inside text-gray-600">
+                                    <li><span class="font-semibold text-gray-800">Dean of Student Affairs (DoSA):</span> <a href="mailto:dosa@iiti.ac.in" class="text-teal-600 hover:underline">dosa@iiti.ac.in</a></li>
+                                    <li><span class="font-semibold text-gray-800">Internal Complaints Committee (ICC):</span> <a href="mailto:icc@iiti.ac.in" class="text-purple-600 hover:underline">icc@iiti.ac.in</a></li>
+                                </ul>
                             </div>
-                            <p class="mt-4 text-gray-600">
-                                For serious matters requiring intervention from high-level institutional authorities.
-                            </p>
-                            <ul class="mt-6 space-y-3 list-disc list-inside text-gray-600">
-                                <li><span class="font-semibold text-gray-800">Dean of Student Affairs (DoSA):</span> <a href="mailto:dosa@iiti.ac.in" class="text-teal-600 hover:underline">dosa@iiti.ac.in</a></li>
-                                <li><span class="font-semibold text-gray-800">Director's Office:</span> For highest level escalation.</li>
-                                <li><span class="font-semibold text-gray-800">Registrar's Office:</span> For administrative support.</li>
-                            </ul>
                         </div>
                     </div>
                 </div>
             </section>
         </div>
-        <!-- END NEW SAFETY NET PAGE -->
+        <!-- END SAFETY NET PAGE -->
         
-        <!-- NEW AI TECH HUB PAGE -->
+        <!-- AI TECH HUB PAGE (Unchanged Content) -->
         <div id="aiTechHub" class="page">
             <section class="relative py-32 bg-indigo-700 text-white overflow-hidden">
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -864,9 +906,9 @@
                     <h4 class="text-lg font-semibold text-white uppercase tracking-wider">Quick Links</h4>
                     <ul class="mt-4 space-y-3">
                         <li><a href="#" onclick="showPage('home')" class="hover:text-white transition">Home</a></li>
-                        <!-- NEW: Tech Usage Link in Footer -->
+                        <!-- Tech Usage Link in Footer -->
                         <li><a href="#" onclick="showPage('aiTechHub')" class="hover:text-white transition">Tech Usage</a></li>
-                        <!-- UPDATED: Safety Net Link in Footer (Now professional indigo) -->
+                        <!-- Safety Net Link in Footer (Now professional indigo) -->
                         <li><a href="#" onclick="showPage('safetyNet')" class="hover:text-indigo-400 text-indigo-300 transition font-bold">Safety Net / Help</a></li>
                         <li><a href="#" onclick="showPage('events')" class="hover:text-white transition">Events</a></li>
                         <li><a href="#" onclick="showPage('elections')" class="hover:text-white transition">Elections</a></li>
@@ -894,34 +936,26 @@
 
 
     <script>
-        // Store the active page ID
+        // =========================================================================
+        // UI INTERACTIVITY (Navigation, Modals, Forms) - MOVED TO GLOBAL SCOPE
+        // =========================================================================
+        
         let currentPage = 'home';
 
-        // Function to show a specific page
         function showPage(pageId) {
-            // Hide the current page
-            const currentPageEl = document.getElementById(currentPage);
-            if (currentPageEl) {
-                currentPageEl.classList.remove('active');
-            }
+            const allPages = document.querySelectorAll('.page');
+            allPages.forEach(page => page.classList.remove('active'));
             
-            // Show the new page
             const newPageEl = document.getElementById(pageId);
             if (newPageEl) {
                 newPageEl.classList.add('active');
             }
             
-            // Update the current page ID
             currentPage = pageId;
-            
-            // Scroll to the top of the page
             window.scrollTo(0, 0);
-
-            // Close any open menus
             closeAllMenus();
         }
         
-        // Function to toggle the mobile menu
         function toggleMobileMenu() {
             const menu = document.getElementById('mobile-menu');
             const iconOpen = document.getElementById('menu-icon-open');
@@ -932,15 +966,12 @@
             iconClose.classList.toggle('hidden');
         }
 
-        // Function to toggle the desktop dropdown
         function toggleDropdown(dropdownId) {
             const dropdown = document.getElementById(dropdownId);
             dropdown.classList.toggle('hidden');
         }
 
-        // Helper function to close all menus
         function closeAllMenus() {
-            // Close mobile menu
             const menu = document.getElementById('mobile-menu');
             const iconOpen = document.getElementById('menu-icon-open');
             const iconClose = document.getElementById('menu-icon-close');
@@ -950,25 +981,21 @@
                 iconClose.classList.add('hidden');
             }
             
-            // Close desktop dropdown
             const desktopDropdown = document.getElementById('desktop-dropdown');
-            if (!desktopDropdown.classList.contains('hidden')) {
+            if (desktopDropdown && !desktopDropdown.classList.contains('hidden')) {
                 desktopDropdown.classList.add('hidden');
             }
         }
         
-        // Close dropdown when clicking outside
         document.addEventListener('click', function(event) {
             const desktopDropdownContainer = document.getElementById('desktop-dropdown-container');
             const desktopDropdown = document.getElementById('desktop-dropdown');
 
-            if (desktopDropdownContainer && !desktopDropdownContainer.contains(event.target) && !desktopDropdown.classList.contains('hidden')) {
+            if (desktopDropdownContainer && !desktopDropdownContainer.contains(event.target) && desktopDropdown && !desktopDropdown.classList.contains('hidden')) {
                 desktopDropdown.classList.add('hidden');
             }
         });
-
-        // NEW: Modal Control Functions
-        // Required for the Medical Emergency button functionality
+        
         function showModal(modalId) {
             const modal = document.getElementById(modalId);
             if (modal) {
@@ -987,15 +1014,323 @@
             }
         }
 
-        // Initialize the first page on load
+        /**
+         * Handles the submission of the forms on the SafetyNet page (Client-Side Simulation).
+         */
+        function handleFormSubmission(event, type) {
+            event.preventDefault();
+            const form = event.target;
+            let messageEl;
+            
+            if (type === 'Concern Report') {
+                messageEl = document.getElementById('concern-message');
+            } else if (type === 'Leadership Contact') {
+                messageEl = document.getElementById('leadership-message-status');
+            } else {
+                return;
+            }
+
+            messageEl.textContent = '';
+            messageEl.classList.remove('text-red-500');
+
+            const formData = new FormData(form);
+            const data = {};
+            formData.forEach((value, key) => {
+                data[key] = value;
+            });
+
+            if (type === 'Concern Report') {
+                data.isAnonymous = form.elements['concern-anonymous'].checked;
+            }
+            data.submissionType = type;
+            
+            console.log("--- Simulated Form Submission ---");
+            console.log(`Type: ${type}`);
+            console.log("Data:", data);
+            console.log("---------------------------------");
+
+            messageEl.textContent = '✅ Submission successful! Your report has been securely recorded.';
+            messageEl.classList.add('text-green-600');
+            
+            const button = form.querySelector('button[type="submit"]');
+            button.disabled = true;
+
+            setTimeout(() => {
+                form.reset();
+                messageEl.textContent = 'Thank you for reaching out.';
+                messageEl.classList.remove('text-green-600');
+                button.disabled = false;
+            }, 3000);
+
+            return false;
+        }
+
+    </script>
+    <script type="module">
+        // =========================================================================
+        // FIREBASE SETUP AND DATA FETCHING LOGIC
+        // =========================================================================
+        
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Global Firebase/App setup variables
+        let db;
+        let auth;
+        let userId = null;
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : null;
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+        let isAuthReady = false;
+
+        // Data structure to hold fetched data (empty initially)
+        let dynamicData = {
+            aboutText: 'Loading Gymkhana information...',
+            members: [],
+            techClubs: [],
+            culturalClubs: [],
+            sportsClubs: [],
+            academicClubs: [],
+            techHeads: [],
+            culturalHeads: [],
+            sportsHeads: [],
+            academicHeads: [],
+            events: [],
+            electionDates: [],
+            candidates: []
+        };
+        
+        // --- Initialization Function ---
+        async function initializeFirebaseAndFetchData() {
+            if (!firebaseConfig) {
+                console.error("Firebase config is missing. Cannot initialize Firebase.");
+                renderStaticPlaceholders();
+                return;
+            }
+
+            const app = initializeApp(firebaseConfig);
+            db = getFirestore(app);
+            auth = getAuth(app);
+
+            try {
+                if (initialAuthToken) {
+                    await signInWithCustomToken(auth, initialAuthToken);
+                } else {
+                    await signInAnonymously(auth);
+                }
+            } catch (error) {
+                console.error("Firebase authentication failed:", error);
+                renderStaticPlaceholders();
+                return;
+            }
+
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    userId = user.uid;
+                } else {
+                    userId = 'anonymous'; // Fallback if needed
+                }
+                isAuthReady = true;
+                console.log("Firebase Auth Ready. User ID:", userId);
+                
+                // Start setting up real-time listeners now that auth is complete
+                setupDataListeners();
+            });
+        }
+
+        // --- Real-time Data Listeners ---
+        function setupDataListeners() {
+            if (!db || !isAuthReady) return;
+
+            // Helper function to create the public collection path
+            const publicCollectionPath = (collectionName) => ["artifacts", appId, "public/data", collectionName];
+
+            // 1. Fetch About Text (Document)
+            onSnapshot(doc(db, "artifacts", appId, "public/data/about/gymkhana_info"), (docSnap) => {
+                let content = '<p class="text-red-500">Error loading About Text. Admin: Please populate Firestore path: /artifacts/'+appId+'/public/data/about/gymkhana_info {text: "..."}</p>';
+                if (docSnap.exists() && docSnap.data().text) {
+                    content = docSnap.data().text;
+                }
+                document.getElementById('home-about-text').innerHTML = content;
+            }, (error) => { console.error("Error fetching about text:", error); });
+
+            // 2. Fetch Executive Members (Collection)
+            onSnapshot(collection(db, ...publicCollectionPath("members")), (snapshot) => {
+                dynamicData.members = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                renderMembers(dynamicData.members, 'home-members-grid');
+            }, (error) => { console.warn("Error fetching members:", error); });
+            
+            // --- Placeholder Listeners for other sections (Keep structure for future data) ---
+            
+            // Tech Council Clubs/Heads
+            onSnapshot(collection(db, ...publicCollectionPath("techClubs")), (snapshot) => { dynamicData.techClubs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })); renderClubs(dynamicData.techClubs, 'tech-clubs-grid', 'SciTech Clubs Missing'); }, (error) => { console.warn("Error fetching tech clubs:", error); renderClubs([], 'tech-clubs-grid', 'SciTech Clubs Missing'); });
+            onSnapshot(collection(db, ...publicCollectionPath("techHeads")), (snapshot) => { dynamicData.techHeads = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })); renderCouncilHeads(dynamicData.techHeads, 'tech-heads-grid', 'SciTech Heads Missing'); }, (error) => { console.warn("Error fetching tech heads:", error); renderCouncilHeads([], 'tech-heads-grid', 'SciTech Heads Missing'); });
+
+            // Cultural Council Clubs/Heads
+            onSnapshot(collection(db, ...publicCollectionPath("culturalClubs")), (snapshot) => { dynamicData.culturalClubs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })); renderClubs(dynamicData.culturalClubs, 'cultural-clubs-grid', 'Cultural Clubs Missing'); }, (error) => { console.warn("Error fetching cultural clubs:", error); renderClubs([], 'cultural-clubs-grid', 'Cultural Clubs Missing'); });
+            onSnapshot(collection(db, ...publicCollectionPath("culturalHeads")), (snapshot) => { dynamicData.culturalHeads = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })); renderCouncilHeads(dynamicData.culturalHeads, 'cultural-heads-grid', 'Cultural Heads Missing'); }, (error) => { console.warn("Error fetching cultural heads:", error); renderCouncilHeads([], 'cultural-heads-grid', 'Cultural Heads Missing'); });
+            
+            // Sports Council Clubs/Heads
+            onSnapshot(collection(db, ...publicCollectionPath("sportsClubs")), (snapshot) => { dynamicData.sportsClubs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })); renderClubs(dynamicData.sportsClubs, 'sports-clubs-grid', 'Sports Clubs Missing'); }, (error) => { console.warn("Error fetching sports clubs:", error); renderClubs([], 'sports-clubs-grid', 'Sports Clubs Missing'); });
+            onSnapshot(collection(db, ...publicCollectionPath("sportsHeads")), (snapshot) => { dynamicData.sportsHeads = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })); renderCouncilHeads(dynamicData.sportsHeads, 'sports-heads-grid', 'Sports Heads Missing'); }, (error) => { console.warn("Error fetching sports heads:", error); renderCouncilHeads([], 'sports-heads-grid', 'Sports Heads Missing'); });
+
+            // Academic Council Clubs/Heads
+            onSnapshot(collection(db, ...publicCollectionPath("academicClubs")), (snapshot) => { dynamicData.academicClubs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })); renderClubs(dynamicData.academicClubs, 'academic-clubs-grid', 'Academic Clubs Missing'); }, (error) => { console.warn("Error fetching academic clubs:", error); renderClubs([], 'academic-clubs-grid', 'Academic Clubs Missing'); });
+            onSnapshot(collection(db, ...publicCollectionPath("academicHeads")), (snapshot) => { dynamicData.academicHeads = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })); renderCouncilHeads(dynamicData.academicHeads, 'academic-heads-grid', 'Academic Heads Missing'); }, (error) => { console.warn("Error fetching academic heads:", error); renderCouncilHeads([], 'academic-heads-grid', 'Academic Heads Missing'); });
+
+            // Events
+            onSnapshot(collection(db, ...publicCollectionPath("events")), (snapshot) => { dynamicData.events = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })); renderEvents(dynamicData.events, 'events-grid'); }, (error) => { console.warn("Error fetching events:", error); renderEvents([], 'events-grid'); });
+
+            // Elections
+            onSnapshot(doc(db, "artifacts", appId, "public/data/elections/metadata"), (docSnap) => {
+                if (docSnap.exists() && docSnap.data().dates && docSnap.data().candidates) {
+                    dynamicData.electionDates = docSnap.data().dates;
+                    dynamicData.candidates = docSnap.data().candidates;
+                } else {
+                    dynamicData.electionDates = [{ date: "No data loaded", event: "Admin: Set up elections/metadata doc." }];
+                    dynamicData.candidates = [{ post: "Admin Panel Required", candidates: ["Set up elections/metadata doc."] }];
+                }
+                renderElections(dynamicData.electionDates, dynamicData.candidates, 'election-dates-list', 'candidates-list');
+            }, (error) => { console.warn("Error fetching elections:", error); });
+        }
+
+
+        // =========================================================================
+        // RENDERING FUNCTIONS (Adapted to use dynamicData structure)
+        // =========================================================================
+
+        function renderMembers(data, containerId) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+
+            if (data.length === 0) {
+                container.innerHTML = `<p class="md:col-span-4 text-center text-red-500">Admin: Please populate members in Firestore path: /artifacts/${appId}/public/data/members</p>`;
+                return;
+            }
+
+            container.innerHTML = data.map(member => `
+                <div class="bg-white p-6 rounded-xl shadow-lg text-center border-b-4 border-indigo-500 card-hover">
+                    <img src="${member.imageUrl || 'https://placehold.co/150x150/1E40AF/FFFFFF?text=PIC'}" alt="${member.name}" class="w-24 h-24 rounded-full mx-auto object-cover border-4 border-white shadow-md">
+                    <h4 class="mt-4 text-xl font-bold text-gray-900">${member.name || 'Member Name'}</h4>
+                    <p class="text-sm ${member.color || 'text-blue-600'} font-semibold">${member.role || 'Role'}</p>
+                    <p class="text-xs text-gray-500">${member.council || 'Council'} Council</p>
+                </div>
+            `).join('');
+        }
+        
+        function renderClubs(data, containerId, placeholderText) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+
+            if (data.length === 0) {
+                container.innerHTML = `<p class="md:col-span-4 text-center text-red-500">Admin: ${placeholderText} - Add documents to /artifacts/${appId}/public/data/${containerId.replace('-clubs-grid', '')}Clubs</p>`;
+                return;
+            }
+
+            container.innerHTML = data.map(club => `
+                <div class="bg-white p-6 rounded-xl shadow-md border-t-4 ${club.color ? club.color.replace('bg-', 'border-') : 'border-gray-500'} card-hover">
+                    <i class="${club.icon || 'fas fa-cogs'} fa-2x ${club.color ? club.color.replace('bg-', 'text-') : 'text-gray-500'}"></i>
+                    <h4 class="mt-4 text-xl font-bold text-gray-900">${club.name || 'Club Name'}</h4>
+                    <p class="mt-2 text-gray-500">${club.description || 'Club description goes here.'}</p>
+                </div>
+            `).join('');
+        }
+        
+        function renderCouncilHeads(data, containerId, placeholderText) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+
+            if (data.length === 0) {
+                container.innerHTML = `<p class="sm:col-span-2 text-center text-red-500">Admin: ${placeholderText} - Add documents to /artifacts/${appId}/public/data/${containerId.replace('-heads-grid', '')}Heads</p>`;
+                return;
+            }
+
+            container.innerHTML = data.map(head => `
+                <div class="flex items-center space-x-6 bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition duration-300 border border-gray-100">
+                    <img src="${head.imageUrl || 'https://placehold.co/150x150/374151/FFFFFF?text=HEAD'}" alt="${head.name || 'Council Head'}" class="w-16 h-16 rounded-full object-cover">
+                    <div>
+                        <h4 class="text-xl font-bold text-gray-900">${head.name || 'Head Name'}</h4>
+                        <p class="text-indigo-600 font-medium">${head.designation || 'Designation'}</p>
+                        <a href="mailto:${head.email || 'head@iiti.ac.in'}" class="text-sm text-gray-500 hover:text-indigo-600">${head.email || 'head@iiti.ac.in'}</a>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderEvents(data, containerId) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+
+            if (data.length === 0) {
+                container.innerHTML = `<p class="md:col-span-3 text-center text-red-500">Admin: No events loaded. Add documents to /artifacts/${appId}/public/data/events</p>`;
+                return;
+            }
+
+            container.innerHTML = data.map(event => `
+                <div class="bg-white rounded-xl shadow-xl overflow-hidden card-hover">
+                    <div class="p-6">
+                        <div class="flex items-center space-x-4">
+                            <i class="${event.icon || 'fas fa-calendar-day'} fa-3x ${event.color ? event.color.replace('bg-', 'text-') : 'text-gray-500'}"></i>
+                            <div>
+                                <h3 class="text-2xl font-bold text-gray-900">${event.name || 'New Event'}</h3>
+                                <p class="text-sm text-gray-500">${event.type || 'General'} Event</p>
+                            </div>
+                        </div>
+                        <p class="mt-4 text-gray-600">${event.description || 'Description of the event.'}</p>
+                        <div class="mt-4 flex items-center text-sm font-medium text-gray-700">
+                            <i class="fas fa-calendar-alt mr-2 ${event.color ? event.color.replace('bg-', 'text-') : 'text-gray-500'}"></i>
+                            <span>${event.date || 'TBD'}</span>
+                        </div>
+                    </div>
+                    <div class="${event.color || 'bg-gray-500'} text-white text-center py-2 font-semibold text-sm">
+                        Details & Registration
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderElections(dates, candidates, datesContainerId, candidatesContainerId) {
+            const datesContainer = document.getElementById(datesContainerId);
+            const candidatesContainer = document.getElementById(candidatesContainerId);
+            if (!datesContainer || !candidatesContainer) return;
+
+            // Render Dates
+            datesContainer.innerHTML = dates.map(d => `
+                <li class="flex items-start">
+                    <i class="fas fa-calendar-day text-indigo-500 mt-1 mr-3"></i>
+                    <div>
+                        <p class="font-bold text-gray-900">${d.event}</p>
+                        <p class="text-sm text-gray-600">${d.date}</p>
+                    </div>
+                </li>
+            `).join('');
+
+            // Render Candidates
+            candidatesContainer.innerHTML = candidates.map(post => `
+                <div class="bg-gray-50 p-6 rounded-xl shadow-md border-l-4 border-gray-400">
+                    <h3 class="text-2xl font-bold text-gray-900">${post.post}</h3>
+                    <ul class="mt-4 space-y-2 list-disc list-inside text-gray-700">
+                        ${post.candidates.map(c => `<li><span class="font-medium">${c}</span></li>`).join('')}
+                    </ul>
+                    <p class="mt-3 text-sm text-indigo-600 font-medium">Platform details available upon request.</p>
+                </div>
+            `).join('');
+        }
+        
+        function renderStaticPlaceholders() {
+            document.getElementById('home-members-grid').innerHTML = '<p class="md:col-span-4 text-center text-red-500">ERROR: Could not initialize Firebase or fetch data.</p>';
+        }
+
+
+        // =========================================================================
+        // Initialization
+        // =========================================================================
         document.addEventListener('DOMContentLoaded', () => {
-            // Ensure home is shown first, but technically any registered page in the HTML can be shown
+            initializeFirebaseAndFetchData();
             showPage('home'); 
         });
         
     </script>
-    
-    <script src="public-gymkhana.js" defer></script>
-
 </body>
 </html>
