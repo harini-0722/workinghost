@@ -65,25 +65,6 @@
         .pulse-emergency {
             animation: pulse-emergency 2s infinite;
         }
-        
-        /* Modal animations */
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        @keyframes slideIn {
-            from { transform: translateY(-50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        
-        .modal-fade-in {
-            animation: fadeIn 0.3s ease-out;
-        }
-        
-        .modal-slide-in {
-            animation: slideIn 0.3s ease-out;
-        }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-900">
@@ -357,9 +338,9 @@
                                 </div>
                                 <p class="text-gray-600 mb-4">Immediate assistance for any kind of problem you're facing</p>
                                 <div class="space-y-3">
-                                    <button onclick="openSafetyNetModal()" class="w-full flex items-center justify-center px-4 py-3 border border-transparent text-base font-medium rounded-md text-white bg-rose-600 hover:bg-rose-700">
+                                    <a href="#" class="w-full flex items-center justify-center px-4 py-3 border border-transparent text-base font-medium rounded-md text-white bg-rose-600 hover:bg-rose-700">
                                         <i class="fas fa-exclamation-triangle mr-2"></i> Get Immediate Help
-                                    </button>
+                                    </a>
                                     <a href="#" class="w-full flex items-center justify-center px-4 py-3 border border-rose-600 text-base font-medium rounded-md text-rose-700 bg-white hover:bg-rose-50">
                                         <i class="fas fa-info-circle mr-2"></i> Resources & Guides
                                     </a>
@@ -567,156 +548,6 @@
         
     </main>
     
-    <!-- Floating Safety Net Button -->
-    <div class="fixed bottom-6 right-6 z-50">
-        <button onclick="openSafetyNetModal()" class="p-4 bg-red-600 text-white rounded-full shadow-2xl hover:bg-red-700 pulse-emergency flex items-center justify-center w-16 h-16 transition-all duration-300 hover:scale-110">
-            <i class="fas fa-life-ring text-xl"></i>
-        </button>
-    </div>
-
-    <!-- Safety Net Modal -->
-    <div id="safetyNetModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center p-4 modal-fade-in">
-        <div class="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto modal-slide-in">
-            <div class="bg-red-600 text-white p-6 rounded-t-2xl sticky top-0">
-                <div class="flex justify-between items-center">
-                    <div>
-                        <h3 class="text-2xl font-bold">Safety Net - I Need Help!</h3>
-                        <p class="mt-2 opacity-90">We're here for you 24/7. Choose how you'd like to get help.</p>
-                    </div>
-                    <button onclick="closeSafetyNetModal()" class="text-white hover:text-gray-200 text-2xl">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-            </div>
-            
-            <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Emergency Contact -->
-                <div class="bg-red-50 border border-red-200 rounded-xl p-4">
-                    <div class="flex items-center mb-3">
-                        <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center mr-3">
-                            <i class="fas fa-phone-alt text-red-600"></i>
-                        </div>
-                        <h4 class="font-bold text-lg text-red-800">🚨 Emergency Contact</h4>
-                    </div>
-                    <p class="text-red-700 mb-3 text-sm">Immediate assistance when you need it most</p>
-                    <div class="space-y-2">
-                        <a href="tel:+911234567890" class="block w-full text-center py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
-                            <i class="fas fa-phone mr-2"></i> Call Now
-                        </a>
-                        <a href="sms:+911234567890" class="block w-full text-center py-2 border border-red-600 text-red-600 rounded-lg hover:bg-red-50 transition">
-                            <i class="fas fa-comment mr-2"></i> Send SMS
-                        </a>
-                        <a href="https://wa.me/911234567890" target="_blank" class="block w-full text-center py-2 border border-green-600 text-green-600 rounded-lg hover:bg-green-50 transition">
-                            <i class="fab fa-whatsapp mr-2"></i> WhatsApp
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Medical Emergency -->
-                <div class="bg-green-50 border border-green-200 rounded-xl p-4">
-                    <div class="flex items-center mb-3">
-                        <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center mr-3">
-                            <i class="fas fa-first-aid text-green-600"></i>
-                        </div>
-                        <h4 class="font-bold text-lg text-green-800">🏥 Medical Emergency</h4>
-                    </div>
-                    <p class="text-green-700 mb-3 text-sm">We are here to support your health and well-being</p>
-                    <div class="space-y-2">
-                        <a href="tel:+911234567891" class="block w-full text-center py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
-                            <i class="fas fa-ambulance mr-2"></i> Medical Helpline
-                        </a>
-                        <a href="#" class="block w-full text-center py-2 border border-green-600 text-green-600 rounded-lg hover:bg-green-50 transition">
-                            <i class="fas fa-map-marker-alt mr-2"></i> Health Center
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Raise a Concern -->
-                <div class="bg-blue-50 border border-blue-200 rounded-xl p-4">
-                    <div class="flex items-center mb-3">
-                        <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center mr-3">
-                            <i class="fas fa-comments text-blue-600"></i>
-                        </div>
-                        <h4 class="font-bold text-lg text-blue-800">🗣️ Raise a Concern</h4>
-                    </div>
-                    <p class="text-blue-700 mb-3 text-sm">We are listening. Share your concerns anonymously.</p>
-                    <div class="space-y-2">
-                        <a href="#" class="block w-full text-center py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
-                            <i class="fas fa-headset mr-2"></i> Share Concern
-                        </a>
-                        <a href="#" class="block w-full text-center py-2 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition">
-                            <i class="fas fa-user-shield mr-2"></i> Anonymous Report
-                        </a>
-                    </div>
-                </div>
-
-                <!-- In Trouble at IIT -->
-                <div class="bg-purple-50 border border-purple-200 rounded-xl p-4">
-                    <div class="flex items-center mb-3">
-                        <div class="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center mr-3">
-                            <i class="fas fa-hands-helping text-purple-600"></i>
-                        </div>
-                        <h4 class="font-bold text-lg text-purple-800">🤝 In Trouble at IIT</h4>
-                    </div>
-                    <p class="text-purple-700 mb-3 text-sm">Reach out to your mentor or club president</p>
-                    <div class="space-y-2">
-                        <a href="#" class="block w-full text-center py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition">
-                            <i class="fas fa-user-graduate mr-2"></i> Contact Mentor
-                        </a>
-                        <a href="#" class="block w-full text-center py-2 border border-purple-600 text-purple-600 rounded-lg hover:bg-purple-50 transition">
-                            <i class="fas fa-users mr-2"></i> Club Presidents
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Direct Access to Management -->
-                <div class="bg-amber-50 border border-amber-200 rounded-xl p-4">
-                    <div class="flex items-center mb-3">
-                        <div class="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center mr-3">
-                            <i class="fas fa-user-tie text-amber-600"></i>
-                        </div>
-                        <h4 class="font-bold text-lg text-amber-800">👔 Direct Access to Management</h4>
-                    </div>
-                    <p class="text-amber-700 mb-3 text-sm">Connect directly with institute management</p>
-                    <div class="space-y-2">
-                        <a href="#" class="block w-full text-center py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition">
-                            <i class="fas fa-envelope mr-2"></i> Email Management
-                        </a>
-                        <a href="#" class="block w-full text-center py-2 border border-amber-600 text-amber-600 rounded-lg hover:bg-amber-50 transition">
-                            <i class="fas fa-calendar-alt mr-2"></i> Schedule Meeting
-                        </a>
-                    </div>
-                </div>
-
-                <!-- I Need Help -->
-                <div class="bg-rose-50 border border-rose-200 rounded-xl p-4">
-                    <div class="flex items-center mb-3">
-                        <div class="w-10 h-10 rounded-full bg-rose-100 flex items-center justify-center mr-3">
-                            <i class="fas fa-life-ring text-rose-600"></i>
-                        </div>
-                        <h4 class="font-bold text-lg text-rose-800">🆘 I Need Help!</h4>
-                    </div>
-                    <p class="text-rose-700 mb-3 text-sm">Immediate assistance for any problem</p>
-                    <div class="space-y-2">
-                        <a href="#" class="block w-full text-center py-2 bg-rose-600 text-white rounded-lg hover:bg-rose-700 transition">
-                            <i class="fas fa-exclamation-triangle mr-2"></i> Get Immediate Help
-                        </a>
-                        <a href="#" class="block w-full text-center py-2 border border-rose-600 text-rose-600 rounded-lg hover:bg-rose-50 transition">
-                            <i class="fas fa-info-circle mr-2"></i> Resources & Guides
-                        </a>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="p-6 bg-gray-50 border-t border-gray-200 rounded-b-2xl">
-                <div class="text-center text-gray-600">
-                    <p class="font-medium">Remember, you're not alone. We're here to support you.</p>
-                    <p class="text-sm mt-1">All conversations are confidential and handled with care.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-    
     <footer class="bg-gray-900 text-gray-300">
         <!-- Footer content remains the same -->
     </footer>
@@ -792,35 +623,6 @@
 
             if (desktopDropdownContainer && !desktopDropdownContainer.contains(event.target) && !desktopDropdown.classList.contains('hidden')) {
                 desktopDropdown.classList.add('hidden');
-            }
-        });
-
-        // Safety Net Modal Functions
-        function openSafetyNetModal() {
-            const modal = document.getElementById('safetyNetModal');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-            document.body.style.overflow = 'hidden'; // Prevent background scrolling
-        }
-
-        function closeSafetyNetModal() {
-            const modal = document.getElementById('safetyNetModal');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-            document.body.style.overflow = 'auto'; // Restore scrolling
-        }
-
-        // Close modal when clicking outside the content
-        document.getElementById('safetyNetModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeSafetyNetModal();
-            }
-        });
-
-        // Close modal with Escape key
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                closeSafetyNetModal();
             }
         });
 
