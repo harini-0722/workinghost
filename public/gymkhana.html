@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Gymkhana - IIT Indore</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Apply the Inter font */
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        /* Helper class to hide elements */
+        .page {
+            display: none; /* Hidden by default */
+        }
+        .page.active {
+            display: block; /* Shown when active */
+        }
+
+        /* Smooth scroll behavior */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Custom shadow for cards */
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Gradient text effect */
+        .text-gradient {
+            background-image: linear-gradient(to right, #4F46E5, #D946EF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900">
+
+    <nav class="bg-white/95 shadow-md sticky top-0 z-50 backdrop-blur-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex-shrink-0">
+                    <a href="#" onclick="showPage('home')" class="flex items-center space-x-2">
+                        <img class="h-12 w-auto" src="https://placehold.co/100x100/003366/FFFFFF?text=IITI&font=inter" alt="IIT Indore Logo">
+                        <span class="font-extrabold text-xl text-indigo-800">Gymkhana</span>
+                    </a>
+                </div>
+                
+                <div class="hidden md:flex md:items-center md:space-x-8">
+                    <a href="#" onclick="showPage('home')" class="font-medium text-gray-700 hover:text-indigo-600 transition duration-150">Home</a>
+                    
+                    <div class="relative" id="desktop-dropdown-container">
+                        <button type="button" onclick="toggleDropdown('desktop-dropdown')" class="font-medium text-gray-700 hover:text-indigo-600 transition duration-150 flex items-center">
+                            Clubs
+                            <i class="fas fa-chevron-down text-xs ml-1"></i>
+                        </button>
+                        <div id="desktop-dropdown" class="hidden absolute z-10 -ml-4 mt-3 transform px-2 w-screen max-w-xs sm:px-0 lg:ml-0 lg:left-1/2 lg:-translate-x-1/2">
+                            <div class="rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden">
+                                <div class="relative grid gap-6 bg-white px-5 py-6 sm:gap-8 sm:p-8">
+                                    <a href="#" onclick="showPage('techClubs')" class="-m-3 p-3 flex items-start rounded-lg hover:bg-gray-50 transition">
+                                        <i class="fas fa-cogs fa-fw text-indigo-600 mt-1"></i>
+                                        <div class="ml-4">
+                                            <p class="text-base font-medium text-gray-900">SciTech Council</p>
+                                            <p class="mt-1 text-sm text-gray-500">Innovation and technology.</p>
+                                        </div>
+                                    </a>
+                                    <a href="#" onclick="showPage('culturalClubs')" class="-m-3 p-3 flex items-start rounded-lg hover:bg-gray-50 transition">
+                                        <i class="fas fa-palette fa-fw text-rose-500 mt-1"></i>
+                                        <div class="ml-4">
+                                            <p class="text-base font-medium text-gray-900">Cultural Council</p>
+                                            <p class="mt-1 text-sm text-gray-500">Creativity and expression.</p>
+                                        </div>
+                                    </a>
+                                    <a href="#" onclick="showPage('sportsClubs')" class="-m-3 p-3 flex items-start rounded-lg hover:bg-gray-50 transition">
+                                        <i class="fas fa-trophy fa-fw text-green-500 mt-1"></i>
+                                        <div class="ml-4">
+                                            <p class="text-base font-medium text-gray-900">Sports Council</p>
+                                            <p class="mt-1 text-sm text-gray-500">Fitness and teamwork.</p>
+                                        </div>
+                                    </a>
+                                    <a href="#" onclick="showPage('academicClubs')" class="-m-3 p-3 flex items-start rounded-lg hover:bg-gray-50 transition">
+                                        <i class="fas fa-graduation-cap fa-fw text-amber-500 mt-1"></i>
+                                        <div class="ml-4">
+                                            <p class="text-base font-medium text-gray-900">Academic Council</p>
+                                            <p class="mt-1 text-sm text-gray-500">Beyond the curriculum.</p>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <a href="#" onclick="showPage('events')" class="font-medium text-gray-700 hover:text-indigo-600 transition duration-150">Events</a>
+                    <a href="#" onclick="showPage('elections')" class="font-medium text-gray-700 hover:text-indigo-600 transition duration-150">Elections</a>
+                </div>
+                
+                <div class="-mr-2 flex md:hidden">
+                    <button type="button" onclick="toggleMobileMenu()" class="bg-white rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500" aria-expanded="false">
+                        <span class="sr-only">Open main menu</span>
+                        <i id="menu-icon-open" class="fas fa-bars h-6 w-6"></i>
+                        <i id="menu-icon-close" class="fas fa-times h-6 w-6 hidden"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="mobile-menu" class="md:hidden hidden">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#" onclick="showPage('home')" class="text-gray-700 hover:bg-gray-50 block px-3 py-2 rounded-md text-base font-medium">Home</a>
+                
+                <div class="border-t border-gray-200 pt-2">
+                    <p class="px-3 py-2 text-sm font-semibold text-gray-500 uppercase">Clubs</p>
+                    <a href="#" onclick="showPage('techClubs')" class="text-gray-700 hover:bg-gray-50 block px-3 py-2 rounded-md text-base font-medium ml-4">SciTech Council</a>
+                    <a href="#" onclick="showPage('culturalClubs')" class="text-gray-700 hover:bg-gray-50 block px-3 py-2 rounded-md text-base font-medium ml-4">Cultural Council</a>
+                    <a href="#" onclick="showPage('sportsClubs')" class="text-gray-700 hover:bg-gray-50 block px-3 py-2 rounded-md text-base font-medium ml-4">Sports Council</a>
+                    <a href="#" onclick="showPage('academicClubs')" class="text-gray-700 hover:bg-gray-50 block px-3 py-2 rounded-md text-base font-medium ml-4">Academic Council</a>
+                </div>
+
+                <div class="border-t border-gray-200 pt-2">
+                    <a href="#" onclick="showPage('events')" class="text-gray-700 hover:bg-gray-50 block px-3 py-2 rounded-md text-base font-medium">Events</a>
+                    <a href="#" onclick="showPage('elections')" class="text-gray-700 hover:bg-gray-50 block px-3 py-2 rounded-md text-base font-medium">Elections</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <main>
+
+        <div id="home" class="page active">
+            
+            <section class="relative h-[85vh] min-h-[600px] flex items-center justify-center text-center text-white overflow-hidden">
+                <div class="absolute inset-0">
+                    <img src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&q=80&w=1920&h=1080" 
+                         alt="IIT Indore Campus" 
+                         class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-indigo-900 bg-opacity-60"></div>
+                </div>
+                
+                <div class="relative z-10 p-4">
+                    <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight" style="text-shadow: 2px 2px 8px rgba(0,0,0,0.5)">
+                        Student Gymkhana
+                    </h1>
+                    <h2 class="text-3xl md:text-5xl font-medium mt-4 opacity-90" style="text-shadow: 1px 1px 4px rgba(0,0,0,0.4)">
+                        IIT Indore
+                    </h2>
+                    <p class="mt-8 max-w-2xl text-lg md:text-xl opacity-90">
+                        The center of all student activities, fostering leadership, creativity, and community on campus.
+                    </p>
+                </div>
+            </section>
+            
+            <section class="py-24 bg-white">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                    <h2 class="text-base text-indigo-600 font-semibold tracking-wide uppercase">Our Structure</h2>
+                    <p class="mt-2 text-4xl font-extrabold text-gray-900 sm:text-5xl">
+                        The Councils
+                    </p>
+                    <p class="mt-6 max-w-2xl mx-auto text-xl text-gray-500">
+                        The Gymkhana is organized into specialized councils, each dedicated to a specific domain of student life.
+                    </p>
+                    
+                    <div class="mt-16 grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3">
+                        <div class="p-8 bg-gray-50 rounded-2xl shadow-lg transition-all duration-300 hover:bg-white hover:shadow-2xl">
+                            <div class="flex items-center justify-center h-16 w-16 rounded-full bg-blue-100 text-blue-600 mx-auto">
+                                <i class="fas fa-gavel fa-2x"></i>
+                            </div>
+                            <h3 class="mt-6 text-2xl font-bold text-gray-900">Presidential Council</h3>
+                            <p class="mt-3 text-gray-500">
+                                Oversees executive functions and coordinates all councils.
+                            </p>
+                        </div>
+                        <div class="p-8 bg-gray-50 rounded-2xl shadow-lg transition-all duration-300 hover:bg-white hover:shadow-2xl">
+                            <div class="flex items-center justify-center h-16 w-16 rounded-full bg-indigo-100 text-indigo-600 mx-auto">
+                                <i class="fas fa-cogs fa-2x"></i>
+                            </div>
+                            <h3 class="mt-6 text-2xl font-bold text-gray-900">SciTech Council</h3>
+                            <p class="mt-3 text-gray-500">
+                                Driving technical innovation, from coding to robotics.
+                            </p>
+                        </div>
+                        <div class="p-8 bg-gray-50 rounded-2xl shadow-lg transition-all duration-300 hover:bg-white hover:shadow-2xl">
+                            <div class="flex items-center justify-center h-16 w-16 rounded-full bg-rose-100 text-rose-600 mx-auto">
+                                <i class="fas fa-palette fa-2x"></i>
+                            </div>
+                            <h3 class="mt-6 text-2xl font-bold text-gray-900">Cultural Council</h3>
+                            <p class="mt-3 text-gray-500">
+                                Celebrating art, music, dance, and diversity.
+                            </p>
+                        </div>
+                        <div class="p-8 bg-gray-50 rounded-2xl shadow-lg transition-all duration-300 hover:bg-white hover:shadow-2xl">
+                            <div class="flex items-center justify-center h-16 w-16 rounded-full bg-amber-100 text-amber-600 mx-auto">
+                                <i class="fas fa-graduation-cap fa-2x"></i>
+                            </div>
+                            <h3 class="mt-6 text-2xl font-bold text-gray-900">Academic Council</h3>
+                            <p class="mt-3 text-gray-500">
+                                Bridging the gap between students and academics.
+                            </p>
+                        </div>
+                        <div class="p-8 bg-gray-50 rounded-2xl shadow-lg transition-all duration-300 hover:bg-white hover:shadow-2xl">
+                            <div class="flex items-center justify-center h-16 w-16 rounded-full bg-green-100 text-green-600 mx-auto">
+                                <i class="fas fa-trophy fa-2x"></i>
+                            </div>
+                            <h3 class="mt-6 text-2xl font-bold text-gray-900">Sports Council</h3>
+                            <p class="mt-3 text-gray-500">
+                                Promoting physical wellness and sporting spirit.
+                            </p>
+                        </div>
+                        <div class="p-8 bg-gray-50 rounded-2xl shadow-lg transition-all duration-300 hover:bg-white hover:shadow-2xl">
+                            <div class="flex items-center justify-center h-16 w-16 rounded-full bg-cyan-100 text-cyan-600 mx-auto">
+                                <i class="fas fa-bullhorn fa-2x"></i>
+                            </div>
+                            <h3 class="mt-6 text-2xl font-bold text-gray-900">COA Council</h3>
+                            <p class="mt-3 text-gray-500">
+                                Fosters counselling, alumni relations, and outreach.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="py-24 bg-gray-100">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="text-center">
+                        <h2 class="text-4xl font-extrabold text-gray-900">Executive Members</h2>
+                        <p class="mt-4 max-w-2xl mx-auto text-xl text-gray-500">
+                            Meet the elected student leaders guiding the Gymkhana.
+                        </p>
+                    </div>
+                    
+                    <div id="home-members-grid" class="mt-16 grid grid-cols-1 gap-10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+                        </div>
+                </div>
+            </section>
+            
+            <section class="py-24 bg-white">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="flex flex-col md:flex-row items-center gap-16">
+                        <div class="md:w-1/2">
+                            <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1200&q=80" 
+                                 alt="Students" 
+                                 class="rounded-2xl shadow-xl w-full h-auto object-cover">
+                        </div>
+                        <div class="md:w-1/2">
+                            <h2 class="text-base text-indigo-600 font-semibold tracking-wide uppercase">Who We Are</h2>
+                            <p class="mt-2 text-4xl font-extrabold text-gray-900 sm:text-5xl">About the Gymkhana</p>
+                            
+                            <div id="home-about-text" class="mt-6 text-lg text-gray-500 space-y-4">
+                                <p>Loading...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="py-24 bg-gray-100">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="text-center">
+                        <h2 class="text-4xl font-extrabold text-gray-900">Explore Our Clubs</h2>
+                        <p class="mt-4 max-w-2xl mx-auto text-xl text-gray-500">
+                            Find your passion. Join a community.
+                        </p>
+                    </div>
+                    
+                    <div class="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                        <div class="relative rounded-2xl shadow-2xl overflow-hidden group card-hover">
+                            <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80" alt="Tech" class="w-full h-96 object-cover transition-transform duration-500 group-hover:scale-110">
+                            <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/70 to-transparent"></div>
+                            <div class="absolute inset-0 p-8 flex flex-col justify-end">
+                                <i class="fas fa-cogs fa-3x text-indigo-300"></i>
+                                <h3 class="mt-4 text-3xl font-bold text-white">SciTech Council</h3>
+                                <p class="mt-2 text-indigo-100 opacity-90">From AI to Robotics, build the future.</p>
+                                <button onclick="showPage('techClubs')" class="mt-6 self-start inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700">
+                                    See More <i class="fas fa-arrow-right ml-2"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="relative rounded-2xl shadow-2xl overflow-hidden group card-hover">
+                            <img src="https://placehold.co/1200x800/BE185D/FFFFFF?text=Cultural&font=inter" alt="Cultural" class="w-full h-96 object-cover transition-transform duration-500 group-hover:scale-110">
+                            <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/70 to-transparent"></div>
+                            <div class="absolute inset-0 p-8 flex flex-col justify-end">
+                                <i class="fas fa-palette fa-3x text-rose-300"></i>
+                                <h3 class="mt-4 text-3xl font-bold text-white">Cultural Council</h3>
+                                <p class="mt-2 text-rose-100 opacity-90">Express yourself through art, music, and more.</p>
+                                <button onclick="showPage('culturalClubs')" class="mt-6 self-start inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-rose-600 hover:bg-rose-700">
+                                    See More <i class="fas fa-arrow-right ml-2"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="relative rounded-2xl shadow-2xl overflow-hidden group card-hover">
+                            <img src="https://placehold.co/1200x800/166534/FFFFFF?text=Sports&font=inter" alt="Sports" class="w-full h-96 object-cover transition-transform duration-500 group-hover:scale-110">
+                            <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/70 to-transparent"></div>
+                            <div class="absolute inset-0 p-8 flex flex-col justify-end">
+                                <i class="fas fa-trophy fa-3x text-green-300"></i>
+                                <h3 class="mt-4 text-3xl font-bold text-white">Sports Council</h3>
+                                <p class="mt-2 text-green-100 opacity-90">Unleash your spirit on the field.</p>
+                                <button onclick="showPage('sportsClubs')" class="mt-6 self-start inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700">
+                                    See More <i class="fas fa-arrow-right ml-2"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="relative rounded-2xl shadow-2xl overflow-hidden group card-hover">
+                            <img src="https://placehold.co/1200x800/B45309/FFFFFF?text=Academic&font=inter" alt="Academic" class="w-full h-96 object-cover transition-transform duration-500 group-hover:scale-110">
+                            <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/70 to-transparent"></div>
+                            <div class="absolute inset-0 p-8 flex flex-col justify-end">
+                                <i class="fas fa-graduation-cap fa-3x text-amber-300"></i>
+                                <h3 class="mt-4 text-3xl font-bold text-white">Academic Council</h3>
+                                <p class="mt-2 text-amber-100 opacity-90">Explore interests beyond the curriculum.</p>
+                                <button onclick="showPage('academicClubs')" class="mt-6 self-start inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-amber-600 hover:bg-amber-700">
+                                    See More <i class="fas fa-arrow-right ml-2"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <div id="techClubs" class="page">
+            
+            <section class="relative h-[60vh] min-h-[400px] flex items-center justify-center text-center text-white overflow-hidden">
+                <div class="absolute inset-0">
+                    <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1920&q=80" 
+                         alt="SciTech Background" 
+                         class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-indigo-900 bg-opacity-70"></div>
+                </div>
+                <div class="relative z-10 p-4">
+                    <h1 class="text-6xl md:text-8xl font-extrabold tracking-tight">SciTech Council</h1>
+                    <p class="mt-6 max-w-2xl text-xl md:text-2xl opacity-90">
+                        Where ideas become reality.
+                    </p>
+                </div>
+            </section>
+            
+            <section class="py-24 bg-white">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <h2 class="text-4xl font-extrabold text-gray-900 text-center">Our Clubs</h2>
+                    
+                    <div id="tech-clubs-grid" class="mt-16 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+                        </div>
+                </div>
+            </section>
+            
+            <section class="py-24 bg-gray-100">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <h2 class="text-4xl font-extrabold text-gray-900 text-center">SciTech Council Heads</h2>
+                    
+                    <div id="tech-heads-grid" class="mt-16 grid grid-cols-1 gap-12 sm:grid-cols-2">
+                        </div>
+                </div>
+            </section>
+        </div>
+
+        <div id="culturalClubs" class="page">
+            
+            <section class="relative h-[60vh] min-h-[400px] flex items-center justify-center text-center text-white overflow-hidden">
+                <div class="absolute inset-0">
+                    <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=1920&q=80" 
+                         alt="Cultural Background" 
+                         class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-rose-900 bg-opacity-70"></div>
+                </div>
+                <div class="relative z-10 p-4">
+                    <h1 class="text-6xl md:text-8xl font-extrabold tracking-tight">Cultural Council</h1>
+                    <p class="mt-6 max-w-2xl text-xl md:text-2xl opacity-90">
+                        Art is how we decorate space, music is how we decorate time.
+                    </p>
+                </div>
+            </section>
+            
+            <section class="py-24 bg-white">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <h2 class="text-4xl font-extrabold text-gray-900 text-center">Our Clubs</h2>
+                    
+                    <div id="cultural-clubs-grid" class="mt-16 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+                        </div>
+                </div>
+            </section>
+            
+            <section class="py-24 bg-gray-100">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <h2 class="text-4xl font-extrabold text-gray-900 text-center">Cultural Council Heads</h2>
+                    
+                    <div id="cultural-heads-grid" class="mt-16 grid grid-cols-1 gap-12 sm:grid-cols-2">
+                        </div>
+                </div>
+            </section>
+        </div>
+
+        <div id="sportsClubs" class="page">
+            
+            <section class="relative h-[60vh] min-h-[400px] flex items-center justify-center text-center text-white overflow-hidden">
+                <div class="absolute inset-0">
+                    <img src="https://images.unsplash.com/photo-1579952363873-27f3bade9f55?auto=format&fit=crop&w=1920&q=80" 
+                         alt="Sports Background" 
+                         class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-green-900 bg-opacity-70"></div>
+                </div>
+                <div class="relative z-10 p-4">
+                    <h1 class="text-6xl md:text-8xl font-extrabold tracking-tight">Sports Council</h1>
+                    <p class="mt-6 max-w-2xl text-xl md:text-2xl opacity-90">
+                        Strength. Stamina. Spirit.
+                    </p>
+                </div>
+            </section>
+            
+            <section class="py-24 bg-white">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <h2 class="text-4xl font-extrabold text-gray-900 text-center">Our Clubs</h2>
+                    
+                    <div id="sports-clubs-grid" class="mt-16 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+                        </div>
+                </div>
+            </section>
+            
+            <section class="py-24 bg-gray-100">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <h2 class="text-4xl font-extrabold text-gray-900 text-center">Sports Council Heads</h2>
+                    
+                    <div id="sports-heads-grid" class="mt-16 grid grid-cols-1 gap-12 sm:grid-cols-2">
+                        </div>
+                </div>
+            </section>
+        </div>
+
+        <div id="academicClubs" class="page">
+            
+            <section class="relative h-[60vh] min-h-[400px] flex items-center justify-center text-center text-white overflow-hidden">
+                <div class="absolute inset-0">
+                    <img src="https://images.unsplash.com/photo-1488998427799-e3362cec87c3?auto=format&fit=crop&w=1920&q=80" 
+                         alt="Academic Background" 
+                         class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-amber-900 bg-opacity-70"></div>
+                </div>
+                <div class="relative z-10 p-4">
+                    <h1 class="text-6xl md:text-8xl font-extrabold tracking-tight">Academic Council</h1>
+                    <p class="mt-6 max-w-2xl text-xl md:text-2xl opacity-90">
+                        Nurturing intellectual curiosity.
+                    </p>
+                </div>
+            </section>
+            
+            <section class="py-24 bg-white">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <h2 class="text-4xl font-extrabold text-gray-900 text-center">Our Clubs</h2>
+                    
+                    <div id="academic-clubs-grid" class="mt-16 flex justify-center">
+                        </div>
+                </div>
+            </section>
+            
+            <section class="py-24 bg-gray-100">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <h2 class="text-4xl font-extrabold text-gray-900 text-center">Academic Council Heads</h2>
+                    
+                    <div id="academic-heads-grid" class="mt-16 grid grid-cols-1 gap-12 sm:grid-cols-2">
+                        </div>
+                </div>
+            </section>
+        </div>
+
+        <div id="events" class="page">
+            
+            <section class="relative h-[60vh] min-h-[400px] flex items-center justify-center text-center text-white overflow-hidden">
+                <div class="absolute inset-0">
+                    <img src="https://images.unsplash.com/photo-1527529482837-4698179dc6ce?auto=format&fit=crop&w=1920&q=80" 
+                         alt="Campus Events" 
+                         class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-indigo-900 bg-opacity-70"></div>
+                </div>
+                <div class="relative z-10 p-4">
+                    <h1 class="text-6xl md:text-8xl font-extrabold tracking-tight">Events</h1>
+                    <p class="mt-6 max-w-2xl text-xl md:text-2xl opacity-90">
+                        What's happening on campus.
+                    </p>
+                </div>
+            </section>
+            
+            <section class="py-24 bg-white">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    
+                    <div id="events-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                        </div>
+                </div>
+            </section>
+        </div>
+        
+        <div id="elections" class="page">
+            
+            <section class="relative h-[60vh] min-h-[400px] flex items-center justify-center text-center text-white overflow-hidden">
+                <div class="absolute inset-0">
+                    <img src="https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?auto=format&fit=crop&w=1920&q=80" 
+                         alt="Elections Background" 
+                         class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gray-900 bg-opacity-70"></div>
+                </div>
+                <div class="relative z-10 p-4">
+                    <h1 class="text-6xl md:text-8xl font-extrabold tracking-tight">Gymkhana Elections</h1>
+                    <p class="mt-6 max-w-2xl text-xl md:text-2xl opacity-90">
+                        Your Voice, Your Vote.
+                    </p>
+                </div>
+            </section>
+            
+            <section class="py-24 bg-white">
+                <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-12">
+                    
+                    <div class="md:col-span-1">
+                        <div class="bg-indigo-50 p-8 rounded-2xl shadow-lg sticky top-28">
+                            <h3 class="text-2xl font-bold text-indigo-800">Important Dates</h3>
+                            
+                            <ul id="election-dates-list" class="mt-6 space-y-4">
+                                </ul>
+                            <button class="mt-8 w-full bg-indigo-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-indigo-700 transition duration-300">
+                                VOTE NOW (Opens April 10)
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="md:col-span-2">
+                        <h2 class="text-4xl font-extrabold text-gray-900">Candidates</h2>
+                        
+                        <div id="candidates-list" class="mt-10 space-y-8">
+                           </div>
+                        
+                    </div>
+                    
+                </div>
+            </section>
+        </div>
+        
+    </main>
+    
+    <footer class="bg-gray-900 text-gray-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12">
+                
+                <div class="col-span-1 md:col-span-2">
+                    <a href="#" onclick="showPage('home')" class="flex items-center space-x-2">
+                        <img class="h-10 w-auto" src="https://placehold.co/100x100/4F46E5/FFFFFF?text=IITI&font=inter" alt="IIT Indore Logo">
+                        <span class="font-extrabold text-2xl text-white">Student Gymkhana</span>
+                    </a>
+                    <p class="mt-4 text-gray-400 max-w-lg">
+                        Indian Institute of Technology Indore,
+                        Khandwa Road, Simrol,
+                        Indore 453552, India
+                    </p>
+                    <div class="mt-6 flex space-x-6">
+                        <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-linkedin fa-xl"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-facebook fa-xl"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-instagram fa-xl"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-x-twitter fa-xl"></i></a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold text-white uppercase tracking-wider">Quick Links</h4>
+                    <ul class="mt-4 space-y-3">
+                        <li><a href="#" onclick="showPage('home')" class="hover:text-white transition">Home</a></li>
+                        <li><a href="#" onclick="showPage('events')" class="hover:text-white transition">Events</a></li>
+                        <li><a href="#" onclick="showPage('elections')" class="hover:text-white transition">Elections</a></li>
+                        <li><a href="https://www.iiti.ac.in/" target="_blank" class="hover:text-white transition">IIT Indore Main Website</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold text-white uppercase tracking-wider">Councils</h4>
+                    <ul class="mt-4 space-y-3">
+                        <li><a href="#" onclick="showPage('techClubs')" class="hover:text-white transition">SciTech</a></li>
+                        <li><a href="#" onclick="showPage('culturalClubs')" class="hover:text-white transition">Cultural</a></li>
+                        <li><a href="#" onclick="showPage('sportsClubs')" class="hover:text-white transition">Sports</a></li>
+                        <li><a href="#" onclick="showPage('academicClubs')" class="hover:text-white transition">Academic</a></li>
+                    </ul>
+                </div>
+                
+            </div>
+            
+            <div class="mt-12 border-t border-gray-700 pt-8 text-center">
+                <p class="text-gray-400">&copy; 2025 Student Gymkhana, IIT Indore. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+
+    <script>
+        // Store the active page ID
+        let currentPage = 'home';
+
+        // Function to show a specific page
+        function showPage(pageId) {
+            // Hide the current page
+            const currentPageEl = document.getElementById(currentPage);
+            if (currentPageEl) {
+                currentPageEl.classList.remove('active');
+            }
+            
+            // Show the new page
+            const newPageEl = document.getElementById(pageId);
+            if (newPageEl) {
+                newPageEl.classList.add('active');
+            }
+            
+            // Update the current page ID
+            currentPage = pageId;
+            
+            // Scroll to the top of the page
+            window.scrollTo(0, 0);
+
+            // Close any open menus
+            closeAllMenus();
+        }
+        
+        // Function to toggle the mobile menu
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            const iconOpen = document.getElementById('menu-icon-open');
+            const iconClose = document.getElementById('menu-icon-close');
+            
+            menu.classList.toggle('hidden');
+            iconOpen.classList.toggle('hidden');
+            iconClose.classList.toggle('hidden');
+        }
+
+        // Function to toggle the desktop dropdown
+        function toggleDropdown(dropdownId) {
+            const dropdown = document.getElementById(dropdownId);
+            dropdown.classList.toggle('hidden');
+        }
+
+        // Helper function to close all menus
+        function closeAllMenus() {
+            // Close mobile menu
+            const menu = document.getElementById('mobile-menu');
+            const iconOpen = document.getElementById('menu-icon-open');
+            const iconClose = document.getElementById('menu-icon-close');
+            if (!menu.classList.contains('hidden')) {
+                menu.classList.add('hidden');
+                iconOpen.classList.remove('hidden');
+                iconClose.classList.add('hidden');
+            }
+            
+            // Close desktop dropdown
+            const desktopDropdown = document.getElementById('desktop-dropdown');
+            if (!desktopDropdown.classList.contains('hidden')) {
+                desktopDropdown.classList.add('hidden');
+            }
+        }
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const desktopDropdownContainer = document.getElementById('desktop-dropdown-container');
+            const desktopDropdown = document.getElementById('desktop-dropdown');
+
+            if (desktopDropdownContainer && !desktopDropdownContainer.contains(event.target) && !desktopDropdown.classList.contains('hidden')) {
+                desktopDropdown.classList.add('hidden');
+            }
+        });
+
+        // Initialize the first page on load
+        document.addEventListener('DOMContentLoaded', () => {
+            showPage('home');
+        });
+        
+    </script>
+    
+    <script src="public-gymkhana.js" defer></script>
+
+</body>
+</html>
