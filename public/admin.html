@@ -37,7 +37,7 @@
                     <span class="ml-2 text-gray-500 font-medium hidden sm:inline">| Indian Institute of Technology</span>
                 </div>
                 <div class="flex items-center">
-                    <button class="flex items-center text-sm font-medium text-red-600 hover:text-red-800">
+                    <button id="show-complaints-view-btn" class="flex items-center text-sm font-medium text-red-600 hover:text-red-800">
                         <hero-icon-outline name="exclamation-circle" class="h-5 w-5 mr-1"></hero-icon-outline>
                         Complaints
                     </button>
@@ -113,7 +113,7 @@
                     <div class="flex justify-between items-start">
                         <div>
                             <span class="text-sm font-medium text-red-900 opacity-70">⚠️ OPEN COMPLAINTS</span>
-                            <p class="text-3xl font-extrabold text-red-900 mt-2">03</p>
+                            <p class="text-3xl font-extrabold text-red-900 mt-2" id="stat-open-complaints">0</p>
                             <p class="text-sm text-red-900 opacity-60">Pending Resolution</p>
                         </div>
                         <div class="p-3 bg-white rounded-full shadow-md">
@@ -346,13 +346,58 @@
                             <tr>
                                 <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Visitor Name</th>
                                 <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Student Visited</th>
-                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Room</th>
+                                <th class="px-6py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Room</th>
                                 <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Date</th>
                                 <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Time In</th>
                                 <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Time Out</th>
                             </tr>
                         </thead>
                         <tbody id="visitor-log-container" class="divide-y divide-gray-200">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- NEW: Complaints View -->
+        <div id="complaints-view" class="hidden">
+            <div class="relative mb-6 pb-4">
+                <button id="back-to-dashboard-from-complaints-btn" class="flex items-center text-sm font-medium text-gray-600 hover:text-gray-900">
+                    <hero-icon-solid name="arrow-left" class="h-4 w-4 mr-2"></hero-icon-solid>
+                    🔙 Back to Dashboard
+                </button>
+                <div class="flex items-center justify-center absolute inset-x-0 top-0 -z-10">
+                     <h1 class="text-xl sm:text-3xl font-bold text-red-700">
+                         ⚠️ Student Complaints
+                     </h1>
+                </div>
+            </div>
+            
+            <div class="flex flex-col md:flex-row justify-end items-center mb-6 gap-4">
+                <input type="text" id="complaint-search-input" placeholder="🔍 Search by student name or room..." class="px-4 py-2 border rounded-lg shadow-sm w-full md:w-auto">
+                <select id="complaint-status-filter" class="px-4 py-2 border rounded-lg shadow-sm w-full md:w-auto">
+                    <option value="All">All Status</option>
+                    <option value="Pending">⏳ Pending</option>
+                    <option value="In Progress">🔧 In Progress</option>
+                    <option value="Resolved">✅ Resolved</option>
+                </select>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full min-w-max">
+                        <thead class="bg-gray-100 border-b border-gray-200">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Student</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Room</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Complaint Type</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Description</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Date</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
+                                <th class="px-6 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="complaints-list-container" class="divide-y divide-gray-200">
                             </tbody>
                     </table>
                 </div>
@@ -760,6 +805,9 @@
              { id: 2, visitorName: 'Sita Devi', studentName: 'Rohan Verma', roomNumber: 'B-205', date: '2025-11-05', timeIn: '10:00 AM', timeOut: '11:00 AM' },
              { id: 3, visitorName: 'Arjun Singh', studentName: 'Vikram Singh', roomNumber: 'B-202', date: '2025-11-04', timeIn: '04:00 PM', timeOut: '05:00 PM' }
         ];
+        
+        // NEW: Complaints Data
+        let complaintsData = [];
         let currentRoomData = null; 
 
         // --- 2. DOM Elements ---
@@ -784,6 +832,15 @@
         const visitorSearchInput = document.getElementById('visitor-search-input');
         const visitorDateFilter = document.getElementById('visitor-date-filter');
         const statVisitorsToday = document.getElementById('stat-visitors-today');
+        
+        // NEW: Complaints View Elements
+        const complaintsView = document.getElementById('complaints-view');
+        const showComplaintsViewBtn = document.getElementById('show-complaints-view-btn');
+        const backToDashboardFromComplaintsBtn = document.getElementById('back-to-dashboard-from-complaints-btn');
+        const complaintsListContainer = document.getElementById('complaints-list-container');
+        const complaintSearchInput = document.getElementById('complaint-search-input');
+        const complaintStatusFilter = document.getElementById('complaint-status-filter');
+        const statOpenComplaints = document.getElementById('stat-open-complaints');
         // === END NEW ELEMENTS ===
         
         const hostelBlockContainer = document.getElementById('hostel-block-container');
@@ -842,7 +899,6 @@
         const addStudentAssetRowBtn = document.getElementById('add-student-asset-row-btn');
         const studentAssetAssignmentContainer = document.getElementById('student-asset-assignment-container');
 
-
         // --- 3. THEME/HELPER DATA ---
         // (This section is unchanged)
         const themes = { 
@@ -881,6 +937,102 @@
             return null;
         }
 
+        // NEW: Load complaints from database
+        async function loadComplaintsData() {
+            try {
+                const res = await fetch('/api/complaints');
+                if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+                const data = await res.json();
+                if (data.success) {
+                    complaintsData = data.complaints;
+                    console.log('✅ Complaints Data loaded from server:', complaintsData);
+                    
+                    // Update open complaints count
+                    const openComplaints = complaintsData.filter(complaint => 
+                        complaint.status === 'Pending' || complaint.status === 'In Progress'
+                    ).length;
+                    statOpenComplaints.textContent = openComplaints;
+                    
+                    // If we're in complaints view, re-render
+                    if (!complaintsView.classList.contains('hidden')) {
+                        renderComplaintsView();
+                    }
+                } else {
+                    throw new Error(data.message);
+                }
+            } catch (error) {
+                console.error('❌ Failed to load complaints data:', error);
+                // For demo purposes, use mock data
+                complaintsData = [
+                    {
+                        _id: '1',
+                        studentId: 'student1',
+                        studentName: 'Priya Sharma',
+                        roomNumber: 'A-101',
+                        complaintType: 'Maintenance',
+                        description: 'AC not working properly, making strange noise',
+                        status: 'Pending',
+                        createdAt: new Date().toISOString()
+                    },
+                    {
+                        _id: '2', 
+                        studentId: 'student2',
+                        studentName: 'Rohan Verma',
+                        roomNumber: 'B-205',
+                        complaintType: 'Cleaning',
+                        description: 'Washroom needs urgent cleaning',
+                        status: 'In Progress',
+                        createdAt: new Date(Date.now() - 86400000).toISOString()
+                    },
+                    {
+                        _id: '3',
+                        studentId: 'student3',
+                        studentName: 'Vikram Singh',
+                        roomNumber: 'B-202',
+                        complaintType: 'Electrical',
+                        description: 'Power socket not working in room',
+                        status: 'Resolved',
+                        createdAt: new Date(Date.now() - 172800000).toISOString()
+                    }
+                ];
+                
+                const openComplaints = complaintsData.filter(complaint => 
+                    complaint.status === 'Pending' || complaint.status === 'In Progress'
+                ).length;
+                statOpenComplaints.textContent = openComplaints;
+            }
+        }
+
+        // NEW: Update complaint status
+        async function updateComplaintStatus(complaintId, newStatus) {
+            try {
+                const res = await fetch(`/api/complaints/${complaintId}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ status: newStatus })
+                });
+                
+                const data = await res.json();
+                if (data.success) {
+                    console.log(`✅ Complaint ${complaintId} status updated to ${newStatus}`);
+                    await loadComplaintsData(); // Reload complaints data
+                    return true;
+                } else {
+                    throw new Error(data.message);
+                }
+            } catch (error) {
+                console.error('❌ Failed to update complaint status:', error);
+                // For demo purposes, update locally
+                const complaint = complaintsData.find(c => c._id === complaintId);
+                if (complaint) {
+                    complaint.status = newStatus;
+                    await loadComplaintsData(); // Reload to update counts
+                }
+                return true;
+            }
+        }
 
         // --- 4. RENDER FUNCTIONS ---
         // (All your render functions are unchanged, except renderDashboard)
@@ -1303,6 +1455,88 @@
             });
         }
 
+        // NEW: Render Complaints View
+        function renderComplaintsView() {
+            const statusFilter = complaintStatusFilter.value;
+            const searchTerm = complaintSearchInput.value.toLowerCase();
+            complaintsListContainer.innerHTML = '';
+            
+            const filteredComplaints = complaintsData.filter(complaint => {
+                const statusMatch = (statusFilter === 'All') || (complaint.status === statusFilter);
+                const searchMatch = (complaint.studentName.toLowerCase().includes(searchTerm)) ||
+                                    (complaint.roomNumber.toLowerCase().includes(searchTerm)) ||
+                                    (complaint.complaintType.toLowerCase().includes(searchTerm));
+                return statusMatch && searchMatch;
+            });
+
+            if (filteredComplaints.length === 0) {
+                complaintsListContainer.innerHTML = `<tr><td colspan="7" class="text-center text-gray-500 py-6">No complaints match the criteria.</td></tr>`;
+                return;
+            }
+
+            filteredComplaints.slice().reverse().forEach(complaint => {
+                const statusColors = {
+                    'Pending': 'bg-yellow-100 text-yellow-800',
+                    'In Progress': 'bg-blue-100 text-blue-800', 
+                    'Resolved': 'bg-green-100 text-green-800'
+                };
+                
+                const statusColor = statusColors[complaint.status] || 'bg-gray-100 text-gray-800';
+                const formattedDate = new Date(complaint.createdAt).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                });
+
+                const rowHTML = `
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="ml-4">
+                                    <div class="text-sm font-medium text-gray-900">${complaint.studentName}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                            ${complaint.roomNumber}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                            ${complaint.complaintType}
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-700 max-w-xs">
+                            <div class="truncate" title="${complaint.description}">${complaint.description}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            ${formattedDate}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${statusColor}">
+                                ${complaint.status}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium space-x-2">
+                            ${complaint.status !== 'Resolved' ? `
+                                <button class="update-complaint-status-btn px-3 py-1 bg-green-500 text-white text-xs font-medium rounded-md shadow-sm hover:bg-green-600" data-complaint-id="${complaint._id}" data-new-status="Resolved">
+                                    ✅ Resolve
+                                </button>
+                            ` : ''}
+                            ${complaint.status === 'Pending' ? `
+                                <button class="update-complaint-status-btn px-3 py-1 bg-blue-500 text-white text-xs font-medium rounded-md shadow-sm hover:bg-blue-600" data-complaint-id="${complaint._id}" data-new-status="In Progress">
+                                    🔧 In Progress
+                                </button>
+                            ` : ''}
+                            ${complaint.status === 'In Progress' ? `
+                                <button class="update-complaint-status-btn px-3 py-1 bg-yellow-500 text-white text-xs font-medium rounded-md shadow-sm hover:bg-yellow-600" data-complaint-id="${complaint._id}" data-new-status="Pending">
+                                    ⏳ Pending
+                                </button>
+                            ` : ''}
+                        </td>
+                    </tr>
+                `;
+                complaintsListContainer.innerHTML += rowHTML;
+            });
+        }
+
         // --- 5. MODAL & VIEW-SWITCHING LOGIC ---
         // (This section is modified to include new views)
 
@@ -1332,6 +1566,7 @@
             // === FIX: Removed electionView ===
             feesView.classList.add('hidden');
             visitorsView.classList.add('hidden');
+            complaintsView.classList.add('hidden'); // NEW
         }
 
         document.addEventListener('click', (e) => {
@@ -1445,7 +1680,6 @@
             
             return assignedAssets;
         }
-
 
         // --- 7. FORM & DATA HANDLERS ---
         // (All your form handlers are unchanged)
@@ -1674,7 +1908,6 @@
             }
         });
 
-
         // --- 8. DETAIL VIEW & MODAL LISTENERS ---
         // (This section is unchanged)
         function filterAndSearchRooms() {
@@ -1828,7 +2061,6 @@
             }
         });
 
-
         // --- 10. "SHOW MODAL" BUTTON LISTENERS ---
         // (This section is modified)
         showAddBlockModalBtn.addEventListener('click', () => showModal('add-block-modal'));
@@ -1875,6 +2107,18 @@
             hideAllViews();
             dashboardView.classList.remove('hidden');
         });
+
+        // NEW: Complaints View Listeners
+        showComplaintsViewBtn.addEventListener('click', () => {
+            hideAllViews();
+            complaintsView.classList.remove('hidden');
+            renderComplaintsView(); // Render the complaints view
+        });
+        
+        backToDashboardFromComplaintsBtn.addEventListener('click', () => {
+            hideAllViews();
+            dashboardView.classList.remove('hidden');
+        });
         // === END NEW LISTENERS ===
         
         // --- 11. OTHER LISTENERS ---
@@ -1892,6 +2136,10 @@
         
         visitorSearchInput.addEventListener('input', renderVisitorsView);
         visitorDateFilter.addEventListener('change', renderVisitorsView);
+        
+        // NEW: Listeners for Complaints page filters
+        complaintSearchInput.addEventListener('input', renderComplaintsView);
+        complaintStatusFilter.addEventListener('change', renderComplaintsView);
         
         // NEW: Listener for Toggling Fee Status
         feesStudentListContainer.addEventListener('click', (e) => {
@@ -1911,13 +2159,27 @@
             }
         });
 
+        // NEW: Listener for Updating Complaint Status
+        complaintsListContainer.addEventListener('click', async (e) => {
+            const button = e.target.closest('.update-complaint-status-btn');
+            if (button) {
+                const complaintId = button.dataset.complaintId;
+                const newStatus = button.dataset.newStatus;
+                
+                if (await updateComplaintStatus(complaintId, newStatus)) {
+                    renderComplaintsView(); // Re-render the complaints view
+                }
+            }
+        });
+
         // --- 12. INITIALIZE APP ---
-        // (This section is unchanged)
+        // (This section is updated to load complaints data)
         function initApp() {
             console.log('🚀 Initializing Admin Dashboard...');
             loadHostelData();
             loadClubActivities();
             loadAssetData(); 
+            loadComplaintsData(); // NEW: Load complaints data
             renderEvents();
         }
 

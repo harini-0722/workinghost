@@ -183,23 +183,25 @@ async function returnAssetsToStock(assetsArray) {
 // ------------------------------------------
 // --- HOSTEL: BLOCK & ROOM API ROUTES ---
 // ------------------------------------------
+// This is your NEW route for server.js
 app.get("/api/blocks", async (req, res) => {
-    try {
-        const blocks = await Block.find({})
-            .populate({
-                path: 'rooms',
-                populate: {
-                    path: 'students'
-                }
-            })
-            .sort({ createdAt: 'desc' });
-        res.json({ success: true, blocks });
-    } catch (error) {
-        console.error("❌ Error fetching blocks:", error);
-        res.status(500).json({ success: false, message: "Server error" });
-    }
+    try {
+        const blocks = await Block.find({})
+            .populate({
+                path: 'rooms',
+                // We now populate an array:
+                populate: [
+                    { path: 'students' }, // 1. Populate students
+                    { path: 'complaints' } // 2. Populate complaints
+                ]
+            })
+            .sort({ createdAt: 'desc' });
+        res.json({ success: true, blocks });
+    } catch (error) {
+        console.error("❌ Error fetching blocks:", error);
+        res.status(500).json({ success: false, message: "Server error" });
+    }
 });
-
 app.post("/api/blocks", async (req, res) => {
     try {
         const { blockName, blockKey, blockTheme } = req.body;
