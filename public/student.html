@@ -429,30 +429,65 @@
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
                         <div class="lg:col-span-1 bg-card-bg p-6 rounded-xl shadow-lift border-l-4 border-complaint-theme">
                             <h3 class="text-xl font-bold text-complaint-theme mb-4">Submit New Complaint</h3>
-                            <form onsubmit="event.preventDefault(); submitComplaint();" class="space-y-4">
+                            <form id="complaint-form" onsubmit="event.preventDefault(); submitComplaint();" class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-secondary-gray mb-1">Complaint Type</label>
+                                    <select id="complaint-type" class="w-full p-3 border border-text-muted rounded-lg focus:ring-primary-blue focus:border-primary-blue bg-light-bg" required>
+                                        <option value="">Select Complaint Type</option>
+                                        <option value="Maintenance">Maintenance</option>
+                                        <option value="Electrical">Electrical Issue</option>
+                                        <option value="Plumbing">Plumbing/Water Issue</option>
+                                        <option value="Cleaning">Cleaning/Housekeeping</option>
+                                        <option value="Furniture">Furniture Repair</option>
+                                        <option value="Noise">Noise Complaint</option>
+                                        <option value="Security">Security Concern</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                                
                                 <div>
                                     <label class="block text-sm font-medium text-secondary-gray mb-1">Issue Location</label>
-                                    <select id="complaint-location" class="w-full p-3 border border-text-muted rounded-lg focus:ring-primary-blue focus:border-primary-blue bg-light-bg">
-                                        <option>My Room</option>
-                                        <option>Floor Washroom</option>
-                                        <option>Hostel Common Area</option>
+                                    <select id="complaint-location" class="w-full p-3 border border-text-muted rounded-lg focus:ring-primary-blue focus:border-primary-blue bg-light-bg" required>
+                                        <option value="">Select Location</option>
+                                        <option value="My Room">My Room</option>
+                                        <option value="Floor Washroom">Floor Washroom</option>
+                                        <option value="Common Washroom">Common Washroom</option>
+                                        <option value="Hostel Common Area">Hostel Common Area</option>
+                                        <option value="Mess/Dining">Mess/Dining Area</option>
+                                        <option value="Corridor">Corridor</option>
+                                        <option value="Staircase">Staircase</option>
+                                        <option value="Other Area">Other Area</option>
                                     </select>
                                 </div>
+                                
                                 <div>
-                                    <label class="block text-sm font-medium text-secondary-gray mb-1">Issue Type</label>
-                                    <select id="complaint-type" class="w-full p-3 border border-text-muted rounded-lg focus:ring-primary-blue focus:border-primary-blue bg-light-bg">
-                                        <option>Plumbing/Water Leakage</option>
-                                        <option>Electrical/Light/Fan failure</option>
-                                        <option>Noise Complaint</option>
-                                        <option>Pest Control</option>
+                                    <label class="block text-sm font-medium text-secondary-gray mb-1">Specific Location Details</label>
+                                    <input type="text" id="complaint-location-details" placeholder="e.g., Room 101, 2nd floor washroom cubicle 3" class="w-full p-3 border border-text-muted rounded-lg focus:ring-primary-blue focus:border-primary-blue bg-light-bg">
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-secondary-gray mb-1">Issue Date</label>
+                                    <input type="date" id="complaint-date" class="w-full p-3 border border-text-muted rounded-lg focus:ring-primary-blue focus:border-primary-blue bg-light-bg" required>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-secondary-gray mb-1">Priority Level</label>
+                                    <select id="complaint-priority" class="w-full p-3 border border-text-muted rounded-lg focus:ring-primary-blue focus:border-primary-blue bg-light-bg" required>
+                                        <option value="">Select Priority</option>
+                                        <option value="Low">Low</option>
+                                        <option value="Medium">Medium</option>
+                                        <option value="High">High</option>
+                                        <option value="Critical">Critical</option>
                                     </select>
                                 </div>
+                                
                                 <div>
-                                    <label class="block text-sm font-medium text-secondary-gray mb-1">Description</label>
-                                    <textarea id="complaint-description" rows="3" class="w-full p-3 border border-text-muted rounded-lg focus:ring-primary-blue focus:border-primary-blue bg-light-bg"></textarea>
+                                    <label class="block text-sm font-medium text-secondary-gray mb-1">Detailed Description</label>
+                                    <textarea id="complaint-description" rows="4" placeholder="Please describe the issue in detail..." class="w-full p-3 border border-text-muted rounded-lg focus:ring-primary-blue focus:border-primary-blue bg-light-bg" required></textarea>
                                 </div>
-                                <button type="submit" class="btn-classy-lift bg-complaint-theme text-card-bg w-full py-3 rounded-lg shadow-lift hover:bg-orange-700">
-                                    Send Request
+                                
+                                <button type="submit" class="btn-classy-lift bg-complaint-theme text-card-bg w-full py-3 rounded-lg shadow-lift hover:bg-orange-700 font-semibold">
+                                    Submit Complaint
                                 </button>
                             </form>
                         </div>
@@ -464,9 +499,10 @@
                                          <tr>
                                              <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">ID</th>
                                              <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Date</th>
-                                             <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Issue</th>
-                                             <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Status</th>
+                                             <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Type</th>
+                                             <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Location</th>
                                              <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Priority</th>
+                                             <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Status</th>
                                          </tr>
                                      </thead>
                                      <tbody id="student-complaint-history" class="bg-card-bg divide-y divide-text-muted">
@@ -1387,13 +1423,22 @@
             const myComplaints = g_complaints.sort((a, b) => new Date(b.date) - new Date(a.date));
 
             if (myComplaints.length === 0) {
-                tableBody.innerHTML = `<tr><td colspan="5" class="py-4 px-6 text-center text-secondary-gray">You have not filed any complaints.</td></tr>`;
+                tableBody.innerHTML = `<tr><td colspan="6" class="py-4 px-6 text-center text-secondary-gray">You have not filed any complaints.</td></tr>`;
                 return;
             }
 
             myComplaints.forEach(c => {
-                let priority = c.status === 'Critical' ? 'Critical' : (c.status === 'Pending' ? 'Medium' : 'Low');
-                let priorityColorClass = priority === 'Critical' ? 'text-accent-red' : (priority === 'Medium' ? 'text-info-yellow' : 'text-accent-green');
+                let priorityColorClass = '';
+                if (c.priority === 'Critical') {
+                    priorityColorClass = 'text-accent-red';
+                } else if (c.priority === 'High') {
+                    priorityColorClass = 'text-orange-500';
+                } else if (c.priority === 'Medium') {
+                    priorityColorClass = 'text-info-yellow';
+                } else {
+                    priorityColorClass = 'text-accent-green';
+                }
+                
                 let statusColorClass = c.status === 'Resolved' ? 'text-accent-green' : (c.status === 'Pending' || c.status === 'Critical' ? 'text-info-yellow' : 'text-secondary-gray');
                 let formattedDate = c.date ? new Date(c.date).toLocaleDateString() : 'N/A';
 
@@ -1401,9 +1446,10 @@
                     <tr class="hover:bg-light-bg transition duration-150">
                         <td class="py-3 px-6 whitespace-nowrap text-sm text-accent-dark">#C00${c._id ? c._id.substring(c._id.length - 4) : 'N/A'}</td>
                         <td class="py-3 px-6 whitespace-nowrap text-sm text-secondary-gray">${formattedDate}</td>
-                        <td class="py-3 px-6 text-sm text-accent-dark">${c.title}</td>    
+                        <td class="py-3 px-6 whitespace-nowrap text-sm text-accent-dark">${c.type || c.title}</td>
+                        <td class="py-3 px-6 text-sm text-secondary-gray">${c.location} ${c.locationDetails ? `(${c.locationDetails})` : ''}</td>
+                        <td class="py-3 px-6 whitespace-nowrap text-sm font-medium ${priorityColorClass}">${c.priority}</td>
                         <td class="py-3 px-6 whitespace-nowrap text-sm font-medium ${statusColorClass}">${c.status}</td>
-                        <td class="py-3 px-6 whitespace-nowrap text-sm font-medium ${priorityColorClass}">${priority}</td>
                     </tr>
                 `;
             });
@@ -1436,9 +1482,65 @@
         }
         
         function submitComplaint() {
-            const issue = document.getElementById('complaint-type').value;
-            alert(`Complaint submitted successfully: "${issue}" in Room ${g_room.roomNumber}. Await admin resolution.`);
-            // TODO: In a real app, send this to the server.
+            const type = document.getElementById('complaint-type').value;
+            const location = document.getElementById('complaint-location').value;
+            const locationDetails = document.getElementById('complaint-location-details').value;
+            const date = document.getElementById('complaint-date').value;
+            const priority = document.getElementById('complaint-priority').value;
+            const description = document.getElementById('complaint-description').value;
+
+            // Validation
+            if (!type || !location || !date || !priority || !description) {
+                alert('Please fill all required fields.');
+                return;
+            }
+
+            // Create complaint object
+            const newComplaint = {
+                _id: 'C' + Date.now(), // Generate unique ID
+                studentId: g_student._id,
+                type: type,
+                location: location,
+                locationDetails: locationDetails,
+                date: date,
+                priority: priority,
+                description: description,
+                status: 'Pending',
+                submissionDate: new Date().toISOString(),
+                title: `${type} - ${location}` // For backward compatibility
+            };
+
+            // Add to complaints array
+            g_complaints.push(newComplaint);
+            
+            // Update dashboard open requests count
+            updateDashboardComplaintCount();
+            
+            // Update complaint history display
+            populateStudentComplaintHistory();
+            
+            // Reset form
+            document.getElementById('complaint-form').reset();
+            
+            // Show success message
+            alert(`Complaint submitted successfully!\n\nComplaint ID: ${newComplaint._id}\nPriority: ${priority}\nStatus: Pending Review`);
+            
+            // In a real application, you would send this to the server:
+            // sendComplaintToAdmin(newComplaint);
+        }
+
+        function updateDashboardComplaintCount() {
+            const pendingComplaints = g_complaints.filter(c => c.status === 'Pending');
+            const openRequestsEl = document.getElementById('dashboard-open-requests');
+            const openRequestsText = openRequestsEl.nextElementSibling;
+            
+            openRequestsEl.textContent = String(pendingComplaints.length).padStart(2, '0');
+            
+            if (pendingComplaints.length > 0) {
+                openRequestsText.textContent = `Complaint Pending (${pendingComplaints[0].type || pendingComplaints[0].title})`;
+            } else {
+                openRequestsText.textContent = 'No open complaints.';
+            }
         }
 
         function submitLeave() {
@@ -1584,8 +1686,8 @@
                     const item = `
                         <div class="flex justify-between items-center bg-gray-50 p-4 rounded-lg border">
                             <div>
-                                <p class="font-medium text-gray-800">${complaint.title}</p>
-                                <p class="text-sm text-gray-500">Filed on: ${formatDate(complaint.date)}</p>
+                                <p class="font-medium text-gray-800">${complaint.type || complaint.title}</p>
+                                <p class="text-sm text-gray-500">Filed on: ${formatDate(complaint.date)} | Priority: ${complaint.priority}</p>
                             </div>
                             <span class="text-xs font-bold px-3 py-1 rounded-full ${statusColor}">${complaint.status}</span>
                         </div>
