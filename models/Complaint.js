@@ -1,50 +1,63 @@
-const mongoose = require('mongoose');
+// models/Complaint.js
 
-const complaintSchema = new mongoose.Schema({
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+
+const complaintSchema = new Schema({
+    // --- Links ---
     student: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: 'Student',
         required: true
     },
     room: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Room',
-        required: true
+        type: Schema.Types.ObjectId,
+        ref: 'Room'
     },
     block: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Block',
-        required: true
+        type: Schema.Types.ObjectId,
+        ref: 'Block'
+    },
+    
+    // --- Complaint Details (from form) ---
+    type: {
+        type: String,
+        required: true,
+        enum: ['Maintenance', 'Electrical', 'Plumbing', 'Cleaning', 'Furniture', 'Noise', 'Security', 'Other']
     },
     location: {
         type: String,
         required: true
     },
-    issueType: {
-        type: String,
+    date: { // The date the issue occurred
+        type: Date,
         required: true
-    },
-    description: {
-        type: String
-    },
-    status: {
-        type: String,
-        required: true,
-        enum: ['Pending', 'In Progress', 'Resolved'],
-        default: 'Pending'
     },
     priority: {
         type: String,
         required: true,
-        enum: ['Low', 'Medium', 'High'],
-        default: 'Medium'
+        enum: ['Low', 'Medium', 'High', 'Critical']
     },
-    date: {
+    description: {
+        type: String,
+        required: true
+    },
+    
+    // --- Admin Tracking ---
+    status: {
+        type: String,
+        default: 'Pending',
+        enum: ['Pending', 'In Progress', 'Resolved', 'Critical']
+    },
+    submissionDate: { // The date the form was submitted
         type: Date,
         default: Date.now
+    },
+    
+    // Legacy title (from your original object)
+    title: {
+        type: String
     }
-}, { timestamps: true });
+});
 
-const Complaint = mongoose.model('Complaint', complaintSchema);
-
-module.exports = Complaint;
+module.exports = mongoose.model('Complaint', complaintSchema);

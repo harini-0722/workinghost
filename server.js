@@ -10,7 +10,7 @@ const fs = require('fs');
 
 // --- IMPORT ROUTES ---
 const gymkhanaRoutes = require('./routes/gymkhana');
-
+const complaintRoutes = require('./routes/complaintRoutes');
 // --- IMPORT MODELS ---
 const Room = require('./models/Room');
 const Block = require('./models/Block');
@@ -19,7 +19,7 @@ const ClubActivity = require('./models/ClubActivity');
 const Attendance = require('./models/Attendance');
 const Asset = require('./models/Asset');
 const User = require('./models/user'); // Assuming your User model is in 'models/user.js'
-
+const Complaint = require('./models/Complaint');
 const app = express();
 const PORT = 5000;
 
@@ -37,6 +37,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
 // --- API ROUTES ---
 // 4. Gymkhana API Routes
 app.use('/api/gymkhana', gymkhanaRoutes);
+app.use('/api', complaintRoutes);
 // ----------------------------------------------------
 
 // --- Multer Configuration ---
@@ -391,40 +392,52 @@ app.post('/api/students', upload.single('profileImage'), async (req, res) => {
 app.get('/api/student/:id', async (req, res) => {
     try {
         const studentId = req.params.id;
-        const student = await Student.findById(studentId);
+        const student = await Student.findById(studentId)
+            .populate('assets.asset'); // Optionally populate asset details
+            
         if (!student) {
             return res.status(404).json({ success: false, message: 'Student not found.' });
         }
+
         const room = await Room.findById(student.room);
         if (!room) {
             return res.status(404).json({ success: false, message: 'Room not found for student.' });
         }
+
         const block = await Block.findById(room.block);
         if (!block) {
             return res.status(404).json({ success: false, message: 'Block not found for room.' });
         }
+
+        // Find roommates in the same room, excluding the student
         const roommates = await Student.find({
             room: room._id,
-            _id: { $ne: studentId }
+            _id: { $ne: studentId } // $ne means "not equal"
         });
+
+        // Fetch real attendance records
         const realAttendance = await Attendance.find({ student: studentId })
             .sort({ date: -1 })
             .limit(30);
-        const mockComplaints = [
-            { _id: 'c1001', title: 'Leaky Faucet in Washroom', status: 'Pending', date: '2025-10-20' },
-            { _id: 'c1002', title: 'Wi-Fi speed is very slow in the evening', status: 'Pending', date: '2025-10-18' },
-            { _id: 'c1003', title: 'Study lamp bulb fused', status: 'Resolved', date: '2025-10-15' },
-        ];
+
+        // --- THIS IS THE FIX ---
+        // Fetch REAL complaints from the database for this student
+        const realComplaints = await Complaint.find({ student: studentId })
+            .sort({ submissionDate: -1 }) // Show newest first
+            .limit(20);
+        // --- END OF FIX ---
+
         res.json({
             success: true,
             student: student,
-            room: room,
+            room: room, // Send the full room object
             blockName: block.blockName,
             roommates: roommates,
             attendance: realAttendance,
-            complaints: mockComplaints,
-            roomNumber: room.roomNumber 
+            complaints: realComplaints,  // <-- Send the real data
+            roomNumber: room.roomNumber // Keep this for convenience
         });
+
     } catch (error) {
         console.error("❌ Error fetching student profile:", error);
         res.status(500).json({ success: false, message: 'Error fetching student profile' });

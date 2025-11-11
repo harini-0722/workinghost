@@ -1476,7 +1476,7 @@
             });
         }
         
-        function submitComplaint() {
+        async function submitComplaint() {
             const type = document.getElementById('complaint-type').value;
             const location = document.getElementById('complaint-location').value;
             const date = document.getElementById('complaint-date').value;
@@ -1488,38 +1488,60 @@
                 alert('Please fill all required fields.');
                 return;
             }
+            
+            // This is the student ID from your global 'g_student' object
+            if (!g_student || !g_student._id) {
+                alert('Error: Student session not found. Please log in again.');
+                logout();
+                return;
+            }
 
-            // Create complaint object
-            const newComplaint = {
-                _id: 'C' + Date.now(), // Generate unique ID
-                studentId: g_student._id,
+            const complaintData = {
+                studentId: g_student._id, // Send the student's ID
                 type: type,
                 location: location,
                 date: date,
                 priority: priority,
                 description: description,
-                status: 'Pending',
-                submissionDate: new Date().toISOString(),
-                title: `${type} - ${location}` // For backward compatibility
+                title: `${type} - ${location}` // Keep this for compatibility
             };
 
-            // Add to complaints array
-            g_complaints.push(newComplaint);
-            
-            // Update dashboard open requests count
-            updateDashboardComplaintCount();
-            
-            // Update complaint history display
-            populateStudentComplaintHistory();
-            
-            // Reset form
-            document.getElementById('complaint-form').reset();
-            
-            // Show success message
-            alert(`Complaint submitted successfully!\n\nComplaint ID: ${newComplaint._id}\nPriority: ${priority}\nStatus: Pending Review`);
-            
-            // In a real application, you would send this to the server:
-            // sendComplaintToAdmin(newComplaint);
+            try {
+                // Send the complaint to the server
+                const response = await fetch('/api/complaints', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(complaintData),
+                });
+
+                const data = await response.json();
+
+                if (!response.ok || !data.success) {
+                    throw new Error(data.message || 'Failed to submit complaint.');
+                }
+
+                // --- Success ---
+                
+                // 1. Show success message
+                alert(`Complaint submitted successfully!\nPriority: ${priority}\nStatus: Pending Review`);
+                
+                // 2. Reset the form
+                document.getElementById('complaint-form').reset();
+                
+                // 3. Reload ALL student data from the server.
+                // This is the best way to get the *actual* updated complaint list.
+                await loadStudentData(); 
+                
+                // 4. Now that g_complaints is updated, refresh the UI
+                updateDashboardComplaintCount();
+                populateStudentComplaintHistory();
+
+            } catch (error) {
+                console.error('Error submitting complaint:', error);
+                alert(`Error: ${error.message}`);
+            }
         }
 
         function updateDashboardComplaintCount() {
