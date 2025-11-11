@@ -460,8 +460,6 @@
                                     </select>
                                 </div>
                                 
-                               
-                                
                                 <div>
                                     <label class="block text-sm font-medium text-secondary-gray mb-1">Issue Date</label>
                                     <input type="date" id="complaint-date" class="w-full p-3 border border-text-muted rounded-lg focus:ring-primary-blue focus:border-primary-blue bg-light-bg" required>
@@ -1444,13 +1442,12 @@
                         <td class="py-3 px-6 whitespace-nowrap text-sm text-accent-dark">#C00${c._id ? c._id.substring(c._id.length - 4) : 'N/A'}</td>
                         <td class="py-3 px-6 whitespace-nowrap text-sm text-secondary-gray">${formattedDate}</td>
                         <td class="py-3 px-6 whitespace-nowrap text-sm text-accent-dark">${c.type || c.title}</td>
+                        <td class="py-3 px-6 text-sm text-secondary-gray">${c.location}</td>
                         <td class="py-3 px-6 whitespace-nowrap text-sm font-medium ${priorityColorClass}">${c.priority}</td>
                         <td class="py-3 px-6 whitespace-nowrap text-sm font-medium ${statusColorClass}">${c.status}</td>
                     </tr>
                 `;
             });
-
-        
         }
         
         function populateStudentLeaveHistory() {
@@ -1482,7 +1479,6 @@
         function submitComplaint() {
             const type = document.getElementById('complaint-type').value;
             const location = document.getElementById('complaint-location').value;
-            const locationDetails = document.getElementById('complaint-location-details').value;
             const date = document.getElementById('complaint-date').value;
             const priority = document.getElementById('complaint-priority').value;
             const description = document.getElementById('complaint-description').value;
@@ -1499,7 +1495,6 @@
                 studentId: g_student._id,
                 type: type,
                 location: location,
-                locationDetails: locationDetails,
                 date: date,
                 priority: priority,
                 description: description,
