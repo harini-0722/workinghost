@@ -489,20 +489,22 @@
                         <div class="lg:col-span-2">
                             <h3 class="text-xl font-bold text-accent-dark mb-5">My Complaint History</h3>
                             <div class="bg-card-bg rounded-xl shadow-lift overflow-x-auto">
-                                 <table class="min-w-full divide-y divide-text-muted">
-                                     <thead class="bg-light-bg">
-                                         <tr>
-                                             <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">ID</th>
-                                             <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Date</th>
-                                             <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Type</th>
-                                             <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Location</th>
-                                             <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Priority</th>
-                                             <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Status</th>
-                                         </tr>
-                                     </thead>
-                                     <tbody id="student-complaint-history" class="bg-card-bg divide-y divide-text-muted">
-                                     </tbody>
-                                 </table>
+                                 <table class="w-full text-sm text-left text-gray-500">
+    <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+        <tr>
+            <th scope="col" class="px-6 py-3">ID</th>
+            <th scope="col" class="px-6 py-3">Date Filed</th>
+            <th scope="col" class="px-6 py-3">Type</th>
+            <th scope="col" class="px-6 py-3">Location</th>
+            <th scope="col" class="px-6 py-3">Priority</th>
+            <th scope="col" class="px-6 py-3">Title</th>
+            <th scope="col" class="px-6 py-3 max-w-xs">Description</th>
+            <th scope="col" class="px-6 py-3">Status</th>
+        </tr>
+    </thead>
+    <tbody id="student-complaint-table-body">
+        </tbody>
+</table>
                             </div>
                         </div>
                     </div>
@@ -1411,44 +1413,44 @@
             }
         }
         
-        function populateStudentComplaintHistory() {
-            const tableBody = document.getElementById('student-complaint-history');
-            tableBody.innerHTML = '';
-            
-            const myComplaints = g_complaints.sort((a, b) => new Date(b.date) - new Date(a.date));
+       
+        function renderComplaintsTable(complaints) {
+    const container = document.getElementById('student-complaint-table-body');
+    container.innerHTML = ''; // Clear existing rows
 
-            if (myComplaints.length === 0) {
-                tableBody.innerHTML = `<tr><td colspan="6" class="py-4 px-6 text-center text-secondary-gray">You have not filed any complaints.</td></tr>`;
-                return;
-            }
+    if (!complaints || complaints.length === 0) {
+        container.innerHTML = '<tr><td colspan="8" class="text-center py-4">No complaints filed yet.</td></tr>';
+        return;
+    }
+    
+    complaints.forEach(complaint => {
+        const priorityClass = getPriorityClass(complaint.priority);
+        const statusClass = getStatusClass(complaint.status);
+        const submissionDate = new Date(complaint.submissionDate || complaint.createdAt).toLocaleDateString();
 
-            myComplaints.forEach(c => {
-                let priorityColorClass = '';
-                if (c.priority === 'Critical') {
-                    priorityColorClass = 'text-accent-red';
-                } else if (c.priority === 'High') {
-                    priorityColorClass = 'text-orange-500';
-                } else if (c.priority === 'Medium') {
-                    priorityColorClass = 'text-info-yellow';
-                } else {
-                    priorityColorClass = 'text-accent-green';
-                }
-                
-                let statusColorClass = c.status === 'Resolved' ? 'text-accent-green' : (c.status === 'Pending' || c.status === 'Critical' ? 'text-info-yellow' : 'text-secondary-gray');
-                let formattedDate = c.date ? new Date(c.date).toLocaleDateString() : 'N/A';
-
-                tableBody.innerHTML += `
-                    <tr class="hover:bg-light-bg transition duration-150">
-                        <td class="py-3 px-6 whitespace-nowrap text-sm text-accent-dark">#C00${c._id ? c._id.substring(c._id.length - 4) : 'N/A'}</td>
-                        <td class="py-3 px-6 whitespace-nowrap text-sm text-secondary-gray">${formattedDate}</td>
-                        <td class="py-3 px-6 whitespace-nowrap text-sm text-accent-dark">${c.type || c.title}</td>
-                        <td class="py-3 px-6 text-sm text-secondary-gray">${c.location}</td>
-                        <td class="py-3 px-6 whitespace-nowrap text-sm font-medium ${priorityColorClass}">${c.priority}</td>
-                        <td class="py-3 px-6 whitespace-nowrap text-sm font-medium ${statusColorClass}">${c.status}</td>
-                    </tr>
-                `;
-            });
-        }
+        const row = `
+            <tr class="bg-white border-b hover:bg-gray-50">
+                <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">#${complaint._id.substring(0, 6)}</td>
+                <td class="px-6 py-4">${submissionDate}</td>
+                <td class="px-6 py-4">${complaint.type}</td>
+                <td class="px-6 py-4">${complaint.location}</td>
+                <td class="px-6 py-4">
+                    <span class="${priorityClass} px-2 inline-flex text-xs leading-5 font-semibold rounded-full">
+                        ${complaint.priority}
+                    </span>
+                </td>
+                <td class="px-6 py-4 font-semibold text-gray-800">${complaint.title}</td>
+                <td class="px-6 py-4 max-w-xs truncate" title="${complaint.description}">${complaint.description}</td>
+                <td class="px-6 py-4">
+                    <span class="${statusClass} px-2 inline-flex text-xs leading-5 font-semibold rounded-full">
+                        ${complaint.status}
+                    </span>
+                </td>
+            </tr>
+        `;
+        container.innerHTML += row;
+    });
+}
         
         function populateStudentLeaveHistory() {
             const tableBody = document.getElementById('student-leave-history');
