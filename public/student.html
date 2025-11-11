@@ -1478,75 +1478,73 @@
             });
         }
         
-       async function submitComplaint() {
-    const type = document.getElementById('complaint-type').value;
-    const location = document.getElementById('complaint-location').value;
-    const date = document.getElementById('complaint-date').value;
-    const priority = document.getElementById('complaint-priority').value;
-    const description = document.getElementById('complaint-description').value;
-    const title = document.getElementById('complaint-title') ? 
-                  document.getElementById('complaint-title').value : 
-                  `${type} - ${location}`; // Use title if available, otherwise fallback
+        async function submitComplaint() {
+            const type = document.getElementById('complaint-type').value;
+            const location = document.getElementById('complaint-location').value;
+            const date = document.getElementById('complaint-date').value;
+            const priority = document.getElementById('complaint-priority').value;
+            const description = document.getElementById('complaint-description').value;
 
-    // Validation
-    if (!type || !location || !date || !priority || !description) {
-        alert('Please fill all required fields.');
-        return;
-    }
-    
-    if (!g_student || !g_student._id) {
-        alert('Error: Student session not found. Please log in again.');
-        logout();
-        return;
-    }
+            // Validation
+            if (!type || !location || !date || !priority || !description) {
+                alert('Please fill all required fields.');
+                return;
+            }
+            
+            // This is the student ID from your global 'g_student' object
+            if (!g_student || !g_student._id) {
+                alert('Error: Student session not found. Please log in again.');
+                logout();
+                return;
+            }
 
-    const complaintData = {
-        studentId: g_student._id,
-        type: type,
-        location: location,
-        date: date,
-        priority: priority,
-        description: description,
-        title: title // Ensure title is included
-    };
+            const complaintData = {
+                studentId: g_student._id, // Send the student's ID
+                type: type,
+                location: location,
+                date: date,
+                priority: priority,
+                description: description,
+                title: `${type} - ${location}` // Keep this for compatibility
+            };
 
-    try {
-        const response = await fetch('/api/complaints', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(complaintData),
-        });
+            try {
+                // Send the complaint to the server
+                const response = await fetch('/api/complaints', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(complaintData),
+                });
 
-        const data = await response.json();
+                const data = await response.json();
 
-        if (!response.ok || !data.success) {
-            throw new Error(data.message || 'Failed to submit complaint.');
+                if (!response.ok || !data.success) {
+                    throw new Error(data.message || 'Failed to submit complaint.');
+                }
+
+                // --- Success ---
+                
+                // 1. Show success message
+                alert(`Complaint submitted successfully!\nPriority: ${priority}\nStatus: Pending Review`);
+                
+                // 2. Reset the form
+                document.getElementById('complaint-form').reset();
+                
+                // 3. Reload ALL student data from the server.
+                // This is the best way to get the *actual* updated complaint list.
+                await loadStudentData(); 
+                
+                // 4. Now that g_complaints is updated, refresh the UI
+                updateDashboardComplaintCount();
+                populateStudentComplaintHistory();
+
+            } catch (error) {
+                console.error('Error submitting complaint:', error);
+                alert(`Error: ${error.message}`);
+            }
         }
-
-        // --- Success ---
-        alert(`Complaint submitted successfully!\nPriority: ${priority}\nStatus: Pending Review`);
-        
-        // Reset the form (assuming your form tag has id="complaint-form")
-        document.getElementById('complaint-form').reset();
-        
-        // 1. Reload ALL student data from the server (updates g_student.complaints)
-        await loadStudentData(); 
-        
-        // 2. Refresh the UI metrics (if defined)
-        if (typeof updateDashboardComplaintCount === 'function') {
-            updateDashboardComplaintCount();
-        }
-        
-        // 3. Populate the complaint history table (This is the fix for your error)
-        populateStudentComplaintHistory();
-
-    } catch (error) {
-        console.error('Error submitting complaint:', error);
-        alert(`Error: ${error.message}`);
-    }
-}
 
         function updateDashboardComplaintCount() {
             const pendingComplaints = g_complaints.filter(c => c.status === 'Pending');
