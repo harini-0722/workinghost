@@ -1160,40 +1160,61 @@
                 const icon = complaintIcons[complaint.complaintType] || '📝';
 
                 const rowHTML = `
-                    <tr class="hover:bg-gray-50">
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm font-medium text-gray-900">${complaint.studentName}</div>
-                            <div class="text-xs text-gray-500">${complaint.studentRollNumber || ''}</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                            ${complaint.roomNumber}
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                            ${complaint.complaintType}
-                        </td>
-                        <td class="px-6 py-4 text-sm text-gray-700 max-w-xs">
-                            <div class="font-semibold" title="${complaint.title}">${complaint.title || complaint.complaintType}</div>
-                            <div class="truncate text-xs text-gray-500" title="${complaint.description}">${complaint.description}</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            ${formattedDate}
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${statusColor}">
-                                ${complaint.status}
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium space-x-2">
-                            ${complaint.status !== 'Resolved' ? `
-                                <button class="update-complaint-status-btn px-3 py-1 bg-green-500 text-white text-xs font-medium rounded-md shadow-sm hover:bg-green-600" data-complaint-id="${complaint._id}" data-new-status="Resolved">
-                                    ✅ Resolve
-                                </button>
-                            ` : ''}
-                                                    </td>
-                    </tr>
-                `;
-                complaintsListContainer.innerHTML += rowHTML;
-            });
+                    <tr class="hover:bg-gray-50 complaint-row" data-complaint-id="${complaint._id}">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="ml-4">
+                                    <div class="text-sm font-medium text-gray-900">${complaint.studentName}</div>
+                                    <div class="text-sm text-gray-500">${complaint.studentId || ''}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                            ${complaint.roomNumber}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                            <div class="flex items-center">
+                                <span class="text-lg mr-2">${icon}</span>
+                                ${complaint.complaintType}
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-700 max-w-xs">
+                            <div class="truncate complaint-description" title="${complaint.description}">
+                                ${complaint.description}
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            ${formattedDate}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${statusColor}">
+                                ${complaint.status}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium space-x-2">
+                            <button class="view-complaint-details-btn px-3 py-1 bg-blue-500 text-white text-xs font-medium rounded-md shadow-sm hover:bg-blue-600" data-complaint-id="${complaint._id}">
+                                👀 View
+                            </button>
+                            ${complaint.status !== 'Resolved' ? `
+                                <button class="update-complaint-status-btn px-3 py-1 bg-green-500 text-white text-xs font-medium rounded-md shadow-sm hover:bg-green-600" data-complaint-id="${complaint._id}" data-new-status="Resolved">
+                                    ✅ Resolve
+                                </button>
+                            ` : ''}
+                            ${complaint.status === 'Pending' ? `
+                                <button class="update-complaint-status-btn px-3 py-1 bg-blue-500 text-white text-xs font-medium rounded-md shadow-sm hover:bg-blue-600" data-complaint-id="${complaint._id}" data-new-status="In Progress">
+                                    🔧 Start Progress
+                                </button>
+                            ` : ''}
+                            ${complaint.status === 'In Progress' ? `
+                                <button class="update-complaint-status-btn px-3 py-1 bg-yellow-500 text-white text-xs font-medium rounded-md shadow-sm hover:bg-yellow-600" data-complaint-id="${complaint._id}" data-new-status="Pending">
+                                    ⏳ Mark Pending
+                                </button>
+                            ` : ''}
+                        </td>
+                    </tr>
+                `;
+                complaintsListContainer.innerHTML += rowHTML;
+            });
         }
 
         // Show complaint details modal
