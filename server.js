@@ -11,6 +11,7 @@ const fs = require('fs');
 // --- IMPORT ROUTES ---
 const gymkhanaRoutes = require('./routes/gymkhana');
 const complaintRoutes = require('./routes/complaintRoutes');
+const visitorRoutes = require('./routes/visitorRoutes');
 // --- IMPORT MODELS ---
 const Room = require('./models/Room');
 const Block = require('./models/Block');
@@ -26,6 +27,7 @@ const PORT = 5000;
 // --- MIDDLEWARE (Order is very important) ---
 // 1. CORS
 app.use(cors());
+app.use(express.json());
 // 2. JSON/Body Parser
 app.use(bodyParser.json());
 // 3. Static Files (This fixes your 404 error)
@@ -38,6 +40,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
 // 4. Gymkhana API Routes
 app.use('/api/gymkhana', gymkhanaRoutes);
 app.use('/api', complaintRoutes);
+app.use('/api/visitor-request', visitorRoutes);
 // ----------------------------------------------------
 
 // --- Multer Configuration ---
