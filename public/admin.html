@@ -9,7 +9,6 @@
     <script type="module" src="https://unpkg.com/heroicons@2.1.1/dist/outline/index.js"></script>
     
     <style>
-        /* All your styles are unchanged */
         .progress-ring-text { font-size: 0.75rem; font-weight: 600; }
         .modal-backdrop { background-color: rgba(0, 0, 0, 0.5); transition: opacity 0.3s ease-in-out; }
         .modal-content { transition: all 0.3s ease-in-out; transform: translateY(-20px); opacity: 0; }
@@ -24,7 +23,6 @@
             object-fit: cover;
             width: 100%;
         }
-        
     </style>
 </head>
 <body class="bg-blue-50 min-h-screen flex flex-col">
@@ -42,12 +40,10 @@
                         Complaints
                     </button>
 
-                    <!-- === FIX: Changed button to an <a> tag pointing to the new page === -->
                     <a href="adminhandlegymkhana.html" target="_top" class="ml-6 flex items-center text-sm font-medium text-purple-600 hover:text-purple-800">
                         <hero-icon-outline name="users" class="h-5 w-5 mr-1"></hero-icon-outline>
                         Gymkhana
                     </a>
-                    <!-- === END FIX === -->
                     
                     <div class="ml-6 flex items-center">
                         <span class="text-sm font-medium text-gray-700 mr-3">👨‍💼 Admin</span>
@@ -278,8 +274,6 @@
              </div>
         </div>
 
-        <!-- === FIX: Removed the entire 'election-view' div === -->
-        
         <div id="fees-view" class="hidden">
             <div class="relative mb-6 pb-4">
                 <button id="back-to-dashboard-from-fees-btn" class="flex items-center text-sm font-medium text-gray-600 hover:text-gray-900">
@@ -346,7 +340,7 @@
                             <tr>
                                 <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Visitor Name</th>
                                 <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Student Visited</th>
-                                <th class="px-6py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Room</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Room</th>
                                 <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Date</th>
                                 <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Time In</th>
                                 <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Time Out</th>
@@ -359,7 +353,6 @@
             </div>
         </div>
 
-        <!-- NEW: Complaints View -->
         <div id="complaints-view" class="hidden">
             <div class="relative mb-6 pb-4">
                 <button id="back-to-dashboard-from-complaints-btn" class="flex items-center text-sm font-medium text-gray-600 hover:text-gray-900">
@@ -373,14 +366,30 @@
                 </div>
             </div>
             
-            <div class="flex flex-col md:flex-row justify-end items-center mb-6 gap-4">
-                <input type="text" id="complaint-search-input" placeholder="🔍 Search by student name or room..." class="px-4 py-2 border rounded-lg shadow-sm w-full md:w-auto">
-                <select id="complaint-status-filter" class="px-4 py-2 border rounded-lg shadow-sm w-full md:w-auto">
-                    <option value="All">All Status</option>
-                    <option value="Pending">⏳ Pending</option>
-                    <option value="In Progress">🔧 In Progress</option>
-                    <option value="Resolved">✅ Resolved</option>
-                </select>
+            <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+                <div class="flex flex-col md:flex-row gap-4 w-full md:w-auto">
+                    <input type="text" id="complaint-search-input" placeholder="🔍 Search by student name or room..." class="px-4 py-2 border rounded-lg shadow-sm w-full md:w-auto">
+                    <select id="complaint-status-filter" class="px-4 py-2 border rounded-lg shadow-sm w-full md:w-auto">
+                        <option value="All">All Status</option>
+                        <option value="Pending">⏳ Pending</option>
+                        <option value="In Progress">🔧 In Progress</option>
+                        <option value="Resolved">✅ Resolved</option>
+                    </select>
+                    <select id="complaint-type-filter" class="px-4 py-2 border rounded-lg shadow-sm w-full md:w-auto">
+                        <option value="All">All Types</option>
+                        <option value="Maintenance">🔧 Maintenance</option>
+                        <option value="Cleaning">🧹 Cleaning</option>
+                        <option value="Electrical">⚡ Electrical</option>
+                        <option value="Plumbing">💧 Plumbing</option>
+                        <option value="Internet">🌐 Internet</option>
+                        <option value="Security">🔒 Security</option>
+                        <option value="Other">📝 Other</option>
+                    </select>
+                </div>
+                <button id="refresh-complaints-btn" class="flex items-center px-4 py-2 bg-blue-600 text-white font-medium rounded-lg shadow-md hover:bg-blue-700 transition-all duration-300">
+                    <hero-icon-solid name="arrow-path" class="h-5 w-5 mr-2"></hero-icon-solid>
+                    Refresh
+                </button>
             </div>
             
             <div class="bg-white rounded-lg shadow-lg overflow-hidden">
@@ -398,7 +407,7 @@
                             </tr>
                         </thead>
                         <tbody id="complaints-list-container" class="divide-y divide-gray-200">
-                            </tbody>
+                        </tbody>
                     </table>
                 </div>
             </div>
@@ -414,7 +423,6 @@
         </div>
     </footer>
 
-    <!-- All Modals are unchanged -->
     <div id="add-block-modal" class="modal hidden fixed inset-0 z-30 flex items-center justify-center">
         <div class="modal-backdrop fixed inset-0" data-modal-hide="add-block-modal"></div>
         <div class="modal-content bg-white p-6 rounded-lg shadow-xl z-40 w-full max-w-md mx-4">
@@ -786,6 +794,18 @@
             </form>
         </div>
     </div>
+
+    <div id="complaint-details-modal" class="modal hidden fixed inset-0 z-30 flex items-center justify-center">
+        <div class="modal-backdrop fixed inset-0" data-modal-hide="complaint-details-modal"></div>
+        <div class="modal-content bg-white p-6 rounded-lg shadow-xl z-40 w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
+            <h2 class="text-xl font-semibold mb-4">📋 Complaint Details</h2>
+            <div id="complaint-details-content" class="space-y-4">
+            </div>
+            <div class="flex justify-end space-x-3 pt-4 mt-6 border-t">
+                <button type="button" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300" data-modal-hide="complaint-details-modal">❌ Close</button>
+            </div>
+        </div>
+    </div>
     
     <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -793,30 +813,23 @@
         // --- 1. GLOBAL STATE ---
         let appState = { 
             blocks: [], 
-            assets: []
+            assets: [],
+            complaints: []
         }; 
         let eventData = [
             { id: 1, title: '⚽ Inter-Hostel Cricket Match', type: 'Sports', date: '2025-11-10', description: 'Finals between Men\'s Hostel and Women\'s Hostel.' },
             { id: 2, title: '🍽️ Mess Committee Meeting', type: 'Announcement', date: '2025-11-05', description: 'Discussing the new menu for next month.' }
         ];
-        // NEW: Mock Visitor Data
         let visitorLogData = [
              { id: 1, visitorName: 'Ramesh Kumar', studentName: 'Priya Sharma', roomNumber: 'A-101', date: '2025-11-05', timeIn: '09:00 AM', timeOut: '10:30 AM' },
              { id: 2, visitorName: 'Sita Devi', studentName: 'Rohan Verma', roomNumber: 'B-205', date: '2025-11-05', timeIn: '10:00 AM', timeOut: '11:00 AM' },
              { id: 3, visitorName: 'Arjun Singh', studentName: 'Vikram Singh', roomNumber: 'B-202', date: '2025-11-04', timeIn: '04:00 PM', timeOut: '05:00 PM' }
         ];
-        
-        // NEW: Complaints Data
-        let complaintsData = [];
         let currentRoomData = null; 
 
         // --- 2. DOM Elements ---
         const dashboardView = document.getElementById('dashboard-view');
         const detailView = document.getElementById('detail-view');
-        
-        // === FIX: Removed Election View elements ===
-
-        // === NEW FEES & VISITOR ELEMENTS ===
         const feesView = document.getElementById('fees-view');
         const showFeesViewBtn = document.getElementById('show-fees-view-btn');
         const backToDashboardFromFeesBtn = document.getElementById('back-to-dashboard-from-fees-btn');
@@ -833,15 +846,18 @@
         const visitorDateFilter = document.getElementById('visitor-date-filter');
         const statVisitorsToday = document.getElementById('stat-visitors-today');
         
-        // NEW: Complaints View Elements
+        // Complaints View Elements
         const complaintsView = document.getElementById('complaints-view');
         const showComplaintsViewBtn = document.getElementById('show-complaints-view-btn');
         const backToDashboardFromComplaintsBtn = document.getElementById('back-to-dashboard-from-complaints-btn');
         const complaintsListContainer = document.getElementById('complaints-list-container');
         const complaintSearchInput = document.getElementById('complaint-search-input');
         const complaintStatusFilter = document.getElementById('complaint-status-filter');
+        const complaintTypeFilter = document.getElementById('complaint-type-filter');
+        const refreshComplaintsBtn = document.getElementById('refresh-complaints-btn');
         const statOpenComplaints = document.getElementById('stat-open-complaints');
-        // === END NEW ELEMENTS ===
+        const complaintDetailsModal = document.getElementById('complaint-details-modal');
+        const complaintDetailsContent = document.getElementById('complaint-details-content');
         
         const hostelBlockContainer = document.getElementById('hostel-block-container');
         const statTotalCapacity = document.getElementById('stat-total-capacity');
@@ -868,7 +884,7 @@
         const addEventForm = document.getElementById('add-event-form');
         const adminLogoutBtn = document.getElementById('admin-logout-btn'); 
         
-        // --- Room Detail Modal Elements ---
+        // Room Detail Modal Elements
         const roomDetailsModal = document.getElementById('room-details-modal');
         const modalRoomTitle = document.getElementById('modal-room-title');
         const modalRoomComplaintsBadge = document.getElementById('modal-room-complaints-badge');
@@ -881,26 +897,25 @@
         const modalIssuesContainer = document.getElementById('modal-issues-container');
         const modalDeleteRoomBtn = document.getElementById('modal-delete-room-btn'); 
 
-        // --- Club Activity Elements ---
+        // Club Activity Elements
         const clubActivityContainer = document.getElementById('club-activity-container');
         const showAddClubActivityModalBtn = document.getElementById('show-add-club-activity-modal-btn');
         const addClubActivityForm = document.getElementById('add-club-activity-form');
         
-        // --- Asset Elements ---
+        // Asset Elements
         const assetInventoryContainer = document.getElementById('asset-inventory-container');
         const showAddAssetModalBtn = document.getElementById('show-add-asset-modal-btn');
         const addAssetForm = document.getElementById('add-asset-form');
         const assetTypeSelect = document.getElementById('asset-type');
         const assetNameOtherWrapper = document.getElementById('asset-name-other-wrapper');
         
-        // --- ASSET ASSIGNMENT ELEMENTS ---
+        // Asset Assignment Elements
         const addRoomAssetRowBtn = document.getElementById('add-room-asset-row-btn');
         const roomAssetAssignmentContainer = document.getElementById('room-asset-assignment-container');
         const addStudentAssetRowBtn = document.getElementById('add-student-asset-row-btn');
         const studentAssetAssignmentContainer = document.getElementById('student-asset-assignment-container');
 
         // --- 3. THEME/HELPER DATA ---
-        // (This section is unchanged)
         const themes = { 
             pink: { border: 'border-pink-500', bg: 'bg-pink-100', text: 'text-pink-600', icon: 'user-group' },
             blue: { border: 'border-blue-500', bg: 'bg-blue-100', text: 'text-blue-600', icon: 'user-group' },
@@ -926,7 +941,7 @@
             return { text: '✅ Available', classes: 'bg-green-500 text-white', progress: 'bg-green-500' };
         };
         
-        // NEW: Helper to find a student by ID in the complex appState
+        // Helper to find a student by ID
         function findStudentById(studentId) {
             for (const block of appState.blocks) {
                 for (const room of block.rooms) {
@@ -937,105 +952,406 @@
             return null;
         }
 
-        // NEW: Load complaints from database
+        // --- COMPLAINT MANAGEMENT FUNCTIONS ---
+
+        // Load real complaints from database
         async function loadComplaintsData() {
             try {
+                console.log('🔄 Loading complaints from database...');
                 const res = await fetch('/api/complaints');
-                if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+                
+                if (!res.ok) {
+                    throw new Error(`HTTP error! status: ${res.status}`);
+                }
+                
                 const data = await res.json();
+                
                 if (data.success) {
-                    complaintsData = data.complaints;
-                    console.log('✅ Complaints Data loaded from server:', complaintsData);
+                    appState.complaints = data.complaints;
+                    console.log('✅ Complaints loaded from server:', appState.complaints);
                     
                     // Update open complaints count
-                    const openComplaints = complaintsData.filter(complaint => 
-                        complaint.status === 'Pending' || complaint.status === 'In Progress'
-                    ).length;
-                    statOpenComplaints.textContent = openComplaints;
+                    updateComplaintsCount();
                     
-                    // If we're in complaints view, re-render
+                    // Re-render if we're in complaints view
                     if (!complaintsView.classList.contains('hidden')) {
                         renderComplaintsView();
                     }
                 } else {
-                    throw new Error(data.message);
+                    throw new Error(data.message || 'Failed to load complaints');
                 }
             } catch (error) {
                 console.error('❌ Failed to load complaints data:', error);
-                // For demo purposes, use mock data
-                complaintsData = [
-                    {
-                        _id: '1',
-                        studentId: 'student1',
-                        studentName: 'Priya Sharma',
-                        roomNumber: 'A-101',
-                        complaintType: 'Maintenance',
-                        description: 'AC not working properly, making strange noise',
-                        status: 'Pending',
-                        createdAt: new Date().toISOString()
-                    },
-                    {
-                        _id: '2', 
-                        studentId: 'student2',
-                        studentName: 'Rohan Verma',
-                        roomNumber: 'B-205',
-                        complaintType: 'Cleaning',
-                        description: 'Washroom needs urgent cleaning',
-                        status: 'In Progress',
-                        createdAt: new Date(Date.now() - 86400000).toISOString()
-                    },
-                    {
-                        _id: '3',
-                        studentId: 'student3',
-                        studentName: 'Vikram Singh',
-                        roomNumber: 'B-202',
-                        complaintType: 'Electrical',
-                        description: 'Power socket not working in room',
-                        status: 'Resolved',
-                        createdAt: new Date(Date.now() - 172800000).toISOString()
-                    }
-                ];
+                showError('Failed to load complaints: ' + error.message);
                 
-                const openComplaints = complaintsData.filter(complaint => 
-                    complaint.status === 'Pending' || complaint.status === 'In Progress'
-                ).length;
-                statOpenComplaints.textContent = openComplaints;
+                // Update UI to show error state
+                complaintsListContainer.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="text-center text-red-500 py-6">
+                            ❌ Failed to load complaints. Please try again.
+                        </td>
+                    </tr>
+                `;
             }
         }
 
-        // NEW: Update complaint status
-        async function updateComplaintStatus(complaintId, newStatus) {
+        // Update complaint status
+        async function updateComplaintStatus(complaintId, newStatus, adminNotes = '') {
             try {
+                console.log(`🔄 Updating complaint ${complaintId} to status: ${newStatus}`);
+                
                 const res = await fetch(`/api/complaints/${complaintId}`, {
                     method: 'PATCH',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ status: newStatus })
+                    body: JSON.stringify({ 
+                        status: newStatus,
+                        adminNotes: adminNotes,
+                        resolvedAt: newStatus === 'Resolved' ? new Date().toISOString() : null
+                    })
                 });
                 
                 const data = await res.json();
+                
                 if (data.success) {
                     console.log(`✅ Complaint ${complaintId} status updated to ${newStatus}`);
-                    await loadComplaintsData(); // Reload complaints data
+                    
+                    // Update local state
+                    const complaintIndex = appState.complaints.findIndex(c => c._id === complaintId);
+                    if (complaintIndex !== -1) {
+                        appState.complaints[complaintIndex].status = newStatus;
+                        if (adminNotes) {
+                            appState.complaints[complaintIndex].adminNotes = adminNotes;
+                        }
+                        if (newStatus === 'Resolved') {
+                            appState.complaints[complaintIndex].resolvedAt = new Date().toISOString();
+                        }
+                    }
+                    
+                    // Update counts and re-render
+                    updateComplaintsCount();
+                    renderComplaintsView();
+                    
+                    showSuccess(`Complaint status updated to ${newStatus}`);
                     return true;
                 } else {
-                    throw new Error(data.message);
+                    throw new Error(data.message || 'Failed to update complaint status');
                 }
             } catch (error) {
                 console.error('❌ Failed to update complaint status:', error);
-                // For demo purposes, update locally
-                const complaint = complaintsData.find(c => c._id === complaintId);
-                if (complaint) {
-                    complaint.status = newStatus;
-                    await loadComplaintsData(); // Reload to update counts
-                }
-                return true;
+                showError('Failed to update complaint: ' + error.message);
+                return false;
             }
         }
 
+        // Add admin response to complaint
+        async function addComplaintResponse(complaintId, response) {
+            try {
+                console.log(`🔄 Adding response to complaint ${complaintId}`);
+                
+                const res = await fetch(`/api/complaints/${complaintId}/response`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ 
+                        response: response,
+                        respondedAt: new Date().toISOString()
+                    })
+                });
+                
+                const data = await res.json();
+                
+                if (data.success) {
+                    console.log(`✅ Response added to complaint ${complaintId}`);
+                    
+                    // Update local state
+                    const complaintIndex = appState.complaints.findIndex(c => c._id === complaintId);
+                    if (complaintIndex !== -1) {
+                        if (!appState.complaints[complaintIndex].responses) {
+                            appState.complaints[complaintIndex].responses = [];
+                        }
+                        appState.complaints[complaintIndex].responses.push({
+                            response: response,
+                            respondedAt: new Date().toISOString(),
+                            respondedBy: 'Admin'
+                        });
+                    }
+                    
+                    renderComplaintsView();
+                    showSuccess('Response added successfully');
+                    return true;
+                } else {
+                    throw new Error(data.message || 'Failed to add response');
+                }
+            } catch (error) {
+                console.error('❌ Failed to add complaint response:', error);
+                showError('Failed to add response: ' + error.message);
+                return false;
+            }
+        }
+
+        // Update complaints count on dashboard
+        function updateComplaintsCount() {
+            const openComplaints = appState.complaints.filter(complaint => 
+                complaint.status === 'Pending' || complaint.status === 'In Progress'
+            ).length;
+            statOpenComplaints.textContent = openComplaints;
+        }
+
+        // Render complaints view
+        function renderComplaintsView() {
+            const statusFilter = complaintStatusFilter.value;
+            const typeFilter = complaintTypeFilter.value;
+            const searchTerm = complaintSearchInput.value.toLowerCase();
+            
+            complaintsListContainer.innerHTML = '';
+            
+            const filteredComplaints = appState.complaints.filter(complaint => {
+                const statusMatch = (statusFilter === 'All') || (complaint.status === statusFilter);
+                const typeMatch = (typeFilter === 'All') || (complaint.complaintType === typeFilter);
+                const searchMatch = (complaint.studentName.toLowerCase().includes(searchTerm)) ||
+                                    (complaint.roomNumber.toLowerCase().includes(searchTerm)) ||
+                                    (complaint.description.toLowerCase().includes(searchTerm));
+                return statusMatch && typeMatch && searchMatch;
+            });
+
+            if (filteredComplaints.length === 0) {
+                complaintsListContainer.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="text-center text-gray-500 py-6">
+                            📝 No complaints found matching the criteria.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            // Sort by date (newest first)
+            filteredComplaints.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+            filteredComplaints.forEach(complaint => {
+                const statusColors = {
+                    'Pending': 'bg-yellow-100 text-yellow-800',
+                    'In Progress': 'bg-blue-100 text-blue-800', 
+                    'Resolved': 'bg-green-100 text-green-800'
+                };
+                
+                const statusColor = statusColors[complaint.status] || 'bg-gray-100 text-gray-800';
+                const formattedDate = new Date(complaint.createdAt).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+
+                const complaintIcons = {
+                    'Maintenance': '🔧',
+                    'Cleaning': '🧹',
+                    'Electrical': '⚡',
+                    'Plumbing': '💧',
+                    'Internet': '🌐',
+                    'Security': '🔒',
+                    'Other': '📝'
+                };
+
+                const icon = complaintIcons[complaint.complaintType] || '📝';
+
+                const rowHTML = `
+                    <tr class="hover:bg-gray-50 complaint-row" data-complaint-id="${complaint._id}">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="ml-4">
+                                    <div class="text-sm font-medium text-gray-900">${complaint.studentName}</div>
+                                    <div class="text-sm text-gray-500">${complaint.studentId || ''}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                            ${complaint.roomNumber}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                            <div class="flex items-center">
+                                <span class="text-lg mr-2">${icon}</span>
+                                ${complaint.complaintType}
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-700 max-w-xs">
+                            <div class="truncate complaint-description" title="${complaint.description}">
+                                ${complaint.description}
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            ${formattedDate}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${statusColor}">
+                                ${complaint.status}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium space-x-2">
+                            <button class="view-complaint-details-btn px-3 py-1 bg-blue-500 text-white text-xs font-medium rounded-md shadow-sm hover:bg-blue-600" data-complaint-id="${complaint._id}">
+                                👀 View
+                            </button>
+                            ${complaint.status !== 'Resolved' ? `
+                                <button class="update-complaint-status-btn px-3 py-1 bg-green-500 text-white text-xs font-medium rounded-md shadow-sm hover:bg-green-600" data-complaint-id="${complaint._id}" data-new-status="Resolved">
+                                    ✅ Resolve
+                                </button>
+                            ` : ''}
+                            ${complaint.status === 'Pending' ? `
+                                <button class="update-complaint-status-btn px-3 py-1 bg-blue-500 text-white text-xs font-medium rounded-md shadow-sm hover:bg-blue-600" data-complaint-id="${complaint._id}" data-new-status="In Progress">
+                                    🔧 Start Progress
+                                </button>
+                            ` : ''}
+                            ${complaint.status === 'In Progress' ? `
+                                <button class="update-complaint-status-btn px-3 py-1 bg-yellow-500 text-white text-xs font-medium rounded-md shadow-sm hover:bg-yellow-600" data-complaint-id="${complaint._id}" data-new-status="Pending">
+                                    ⏳ Mark Pending
+                                </button>
+                            ` : ''}
+                        </td>
+                    </tr>
+                `;
+                complaintsListContainer.innerHTML += rowHTML;
+            });
+        }
+
+        // Show complaint details modal
+        function showComplaintDetails(complaintId) {
+            const complaint = appState.complaints.find(c => c._id === complaintId);
+            if (!complaint) {
+                showError('Complaint not found');
+                return;
+            }
+
+            const formattedDate = new Date(complaint.createdAt).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+
+            const resolvedDate = complaint.resolvedAt ? new Date(complaint.resolvedAt).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            }) : 'Not resolved yet';
+
+            const complaintIcons = {
+                'Maintenance': '🔧',
+                'Cleaning': '🧹',
+                'Electrical': '⚡',
+                'Plumbing': '💧',
+                'Internet': '🌐',
+                'Security': '🔒',
+                'Other': '📝'
+            };
+
+            const icon = complaintIcons[complaint.complaintType] || '📝';
+
+            let responsesHTML = '';
+            if (complaint.responses && complaint.responses.length > 0) {
+                responsesHTML = `
+                    <div class="mt-4">
+                        <h4 class="font-semibold text-gray-900 mb-2">Admin Responses:</h4>
+                        ${complaint.responses.map(response => `
+                            <div class="bg-blue-50 p-3 rounded-lg mb-2">
+                                <p class="text-sm text-gray-700">${response.response}</p>
+                                <p class="text-xs text-gray-500 mt-1">
+                                    By ${response.respondedBy} on ${new Date(response.respondedAt).toLocaleDateString()}
+                                </p>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+
+            complaintDetailsContent.innerHTML = `
+                <div class="space-y-4">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Student Name</label>
+                            <p class="mt-1 text-sm text-gray-900">${complaint.studentName}</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Room Number</label>
+                            <p class="mt-1 text-sm text-gray-900">${complaint.roomNumber}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Complaint Type</label>
+                            <p class="mt-1 text-sm text-gray-900">${icon} ${complaint.complaintType}</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Status</label>
+                            <p class="mt-1 text-sm text-gray-900">
+                                <span class="px-2 py-1 text-xs font-semibold rounded-full ${
+                                    complaint.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' :
+                                    complaint.status === 'In Progress' ? 'bg-blue-100 text-blue-800' :
+                                    'bg-green-100 text-green-800'
+                                }">
+                                    ${complaint.status}
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Description</label>
+                        <p class="mt-1 text-sm text-gray-900 bg-gray-50 p-3 rounded-lg">${complaint.description}</p>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Submitted On</label>
+                            <p class="mt-1 text-sm text-gray-900">${formattedDate}</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Resolved On</label>
+                            <p class="mt-1 text-sm text-gray-900">${resolvedDate}</p>
+                        </div>
+                    </div>
+                    
+                    ${complaint.adminNotes ? `
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Admin Notes</label>
+                            <p class="mt-1 text-sm text-gray-900 bg-blue-50 p-3 rounded-lg">${complaint.adminNotes}</p>
+                        </div>
+                    ` : ''}
+                    
+                    ${responsesHTML}
+                    
+                    <div class="mt-6">
+                        <label for="complaint-response" class="block text-sm font-medium text-gray-700">Add Response</label>
+                        <textarea id="complaint-response" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="Enter your response to the student..."></textarea>
+                        <button id="submit-complaint-response" data-complaint-id="${complaint._id}" class="mt-2 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md shadow-sm hover:bg-blue-700">
+                            Send Response
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            showModal('complaint-details-modal');
+        }
+
+        // Utility functions for notifications
+        function showSuccess(message) {
+            console.log('✅ ' + message);
+            alert('✅ ' + message);
+        }
+
+        function showError(message) {
+            console.error('❌ ' + message);
+            alert('❌ ' + message);
+        }
+
         // --- 4. RENDER FUNCTIONS ---
-        // (All your render functions are unchanged, except renderDashboard)
         async function loadHostelData() {
             try {
                 const res = await fetch('/api/blocks');
@@ -1101,7 +1417,7 @@
             hostelBlockContainer.innerHTML = '';
             let grandTotalCapacity = 0;
             let grandTotalStudents = 0;
-            let totalPendingFees = 0; // NEW
+            let totalPendingFees = 0;
 
             if (!appState.blocks || appState.blocks.length === 0) {
                  hostelBlockContainer.innerHTML = `<p class="text-gray-500 col-span-full">🏘️ No hostel blocks found. Add one to get started!</p>`;
@@ -1119,7 +1435,6 @@
                         currentStudents += studentsInRoom;
                         totalCapacity += (room.capacity || 0);
                         
-                        // NEW: Calculate pending fees
                         if (room.students) {
                             room.students.forEach(student => {
                                 if (student.feeStatus === 'Pending') {
@@ -1159,16 +1474,14 @@
                 hostelBlockContainer.innerHTML += blockHTML;
             }
             
-            // Update stats
             statTotalCapacity.textContent = grandTotalCapacity;
             const occupancyPercent = grandTotalCapacity > 0 ? (grandTotalStudents / grandTotalCapacity * 100) : 0;
             statOccupancyPercent.textContent = occupancyPercent.toFixed(1) + '%';
             statOccupancyLabel.textContent = occupancyPercent.toFixed(0) + '%';
             statOccupancyRing.style.strokeDashoffset = 100 - occupancyPercent;
             
-            // NEW: Update Fees and Visitor Stats
             statFeesPending.textContent = `${totalPendingFees} Pending`;
-            const today = new Date().toISOString().split('T')[0]; // e.g., '2025-11-05'
+            const today = new Date().toISOString().split('T')[0];
             const visitorsToday = visitorLogData.filter(v => v.date === today).length;
             statVisitorsToday.textContent = `${visitorsToday} Today`;
         }
@@ -1183,7 +1496,6 @@
              roomListContainer.innerHTML = '';
              studentRoomSelect.innerHTML = '<option value="" disabled selected>-- Select an available room --</option>';
              const rooms = block.rooms || [];
-             // Sort rooms by roomNumber
              rooms.sort((a, b) => a.roomNumber.localeCompare(b.roomNumber, undefined, { numeric: true, sensitivity: 'base' }));
 
              rooms.forEach(room => {
@@ -1191,13 +1503,10 @@
                  const max = room.capacity; hostelCapacity += max; hostelOccupancy += current;
                  const status = getStatus(current, max); const percent = max > 0 ? (current / max) * 100 : 0;
                  const studentNames = (room.students && room.students.length > 0) ? room.students.map(s => s.name).join(', ') : 'None';
-                 // --- THIS IS THE UPDATED CODE ---
                  const imageUrl = room.imageUrl || `https://via.placeholder.com/300x150/e0e0e0/909090?text=${room.roomNumber}`;
                  const roomHTML = `
                      <div class="room-card bg-white rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl hover:scale-105 cursor-pointer" data-room-id="${room.roomNumber}" data-room-status="${status.text}">
-                         
                          <img src="${imageUrl}" alt="Room ${room.roomNumber}" class="activity-card-image">
-                         
                          <div class="p-5">
                              <div class="flex justify-between items-center mb-2">
                                  <h3 class="text-xl font-bold text-gray-800">${room.roomNumber}</h3>
@@ -1317,7 +1626,7 @@
             }
             
             assets.forEach(asset => {
-                const assetName = asset.name; // Use the name from the DB
+                const assetName = asset.name;
                 const imageUrl = asset.imageUrl || `https://via.placeholder.com/300x150/e0e0e0/909090?text=${assetName.replace(' ', '+')}`;
                 
                 const assetIcons = {
@@ -1347,14 +1656,11 @@
             });
         }
         
-        // --- NEW RENDER FUNCTIONS for Fees and Visitors ---
-        
         function renderFeesView() {
             const statusFilter = feesFilterSelect.value;
             const searchTerm = feesSearchInput.value.toLowerCase();
             feesStudentListContainer.innerHTML = '';
             
-            // 1. Flatten all students from all blocks/rooms
             const allStudents = appState.blocks.flatMap(block => 
                 (block.rooms || []).flatMap(room => 
                     (room.students || []).map(student => ({
@@ -1365,7 +1671,6 @@
                 )
             );
             
-            // 2. Filter them
             const filteredStudents = allStudents.filter(student => {
                 const statusMatch = (statusFilter === 'All') || (student.feeStatus === statusFilter);
                 const searchMatch = (student.name.toLowerCase().includes(searchTerm)) || 
@@ -1378,7 +1683,6 @@
                 return;
             }
             
-            // 3. Render them
             filteredStudents.forEach(student => {
                 const isPaid = student.feeStatus === 'Paid';
                 const statusClass = isPaid ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700';
@@ -1425,7 +1729,7 @@
         
         function renderVisitorsView() {
             const searchTerm = visitorSearchInput.value.toLowerCase();
-            const dateFilter = visitorDateFilter.value; // 'YYYY-MM-DD'
+            const dateFilter = visitorDateFilter.value;
             visitorLogContainer.innerHTML = '';
             
             const filteredLogs = visitorLogData.filter(log => {
@@ -1455,91 +1759,7 @@
             });
         }
 
-        // NEW: Render Complaints View
-        function renderComplaintsView() {
-            const statusFilter = complaintStatusFilter.value;
-            const searchTerm = complaintSearchInput.value.toLowerCase();
-            complaintsListContainer.innerHTML = '';
-            
-            const filteredComplaints = complaintsData.filter(complaint => {
-                const statusMatch = (statusFilter === 'All') || (complaint.status === statusFilter);
-                const searchMatch = (complaint.studentName.toLowerCase().includes(searchTerm)) ||
-                                    (complaint.roomNumber.toLowerCase().includes(searchTerm)) ||
-                                    (complaint.complaintType.toLowerCase().includes(searchTerm));
-                return statusMatch && searchMatch;
-            });
-
-            if (filteredComplaints.length === 0) {
-                complaintsListContainer.innerHTML = `<tr><td colspan="7" class="text-center text-gray-500 py-6">No complaints match the criteria.</td></tr>`;
-                return;
-            }
-
-            filteredComplaints.slice().reverse().forEach(complaint => {
-                const statusColors = {
-                    'Pending': 'bg-yellow-100 text-yellow-800',
-                    'In Progress': 'bg-blue-100 text-blue-800', 
-                    'Resolved': 'bg-green-100 text-green-800'
-                };
-                
-                const statusColor = statusColors[complaint.status] || 'bg-gray-100 text-gray-800';
-                const formattedDate = new Date(complaint.createdAt).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'short',
-                    day: 'numeric'
-                });
-
-                const rowHTML = `
-                    <tr class="hover:bg-gray-50">
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="flex items-center">
-                                <div class="ml-4">
-                                    <div class="text-sm font-medium text-gray-900">${complaint.studentName}</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                            ${complaint.roomNumber}
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                            ${complaint.complaintType}
-                        </td>
-                        <td class="px-6 py-4 text-sm text-gray-700 max-w-xs">
-                            <div class="truncate" title="${complaint.description}">${complaint.description}</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            ${formattedDate}
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${statusColor}">
-                                ${complaint.status}
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium space-x-2">
-                            ${complaint.status !== 'Resolved' ? `
-                                <button class="update-complaint-status-btn px-3 py-1 bg-green-500 text-white text-xs font-medium rounded-md shadow-sm hover:bg-green-600" data-complaint-id="${complaint._id}" data-new-status="Resolved">
-                                    ✅ Resolve
-                                </button>
-                            ` : ''}
-                            ${complaint.status === 'Pending' ? `
-                                <button class="update-complaint-status-btn px-3 py-1 bg-blue-500 text-white text-xs font-medium rounded-md shadow-sm hover:bg-blue-600" data-complaint-id="${complaint._id}" data-new-status="In Progress">
-                                    🔧 In Progress
-                                </button>
-                            ` : ''}
-                            ${complaint.status === 'In Progress' ? `
-                                <button class="update-complaint-status-btn px-3 py-1 bg-yellow-500 text-white text-xs font-medium rounded-md shadow-sm hover:bg-yellow-600" data-complaint-id="${complaint._id}" data-new-status="Pending">
-                                    ⏳ Pending
-                                </button>
-                            ` : ''}
-                        </td>
-                    </tr>
-                `;
-                complaintsListContainer.innerHTML += rowHTML;
-            });
-        }
-
         // --- 5. MODAL & VIEW-SWITCHING LOGIC ---
-        // (This section is modified to include new views)
-
         function showModal(modalId) {
             const modal = document.getElementById(modalId);
             if (!modal) return;
@@ -1563,10 +1783,9 @@
         function hideAllViews() {
             dashboardView.classList.add('hidden');
             detailView.classList.add('hidden');
-            // === FIX: Removed electionView ===
             feesView.classList.add('hidden');
             visitorsView.classList.add('hidden');
-            complaintsView.classList.add('hidden'); // NEW
+            complaintsView.classList.add('hidden');
         }
 
         document.addEventListener('click', (e) => {
@@ -1595,8 +1814,6 @@
         });
         
         // --- 6. ASSET ASSIGNMENT LOGIC ---
-        // (This section is unchanged)
-        
         function getAssetOptionsHTML() {
             let optionsHTML = '<option value="" disabled selected>Select asset...</option>';
             const availableAssets = appState.assets.filter(a => a.quantity > 0);
@@ -1682,7 +1899,6 @@
         }
 
         // --- 7. FORM & DATA HANDLERS ---
-        // (All your form handlers are unchanged)
         addBlockForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const blockName = document.getElementById('block-name').value;
@@ -1909,7 +2125,6 @@
         });
 
         // --- 8. DETAIL VIEW & MODAL LISTENERS ---
-        // (This section is unchanged)
         function filterAndSearchRooms() {
             const searchTerm = roomSearchInput.value.toLowerCase();
             const filterTerm = roomFilterSelect.value;
@@ -2001,7 +2216,6 @@
         });
         
         // --- 9. DELETE HANDLERS (for cards) ---
-        // (This section is unchanged)
         hostelBlockContainer.addEventListener('click', async (e) => {
             const button = e.target.closest('.remove-block-btn');
             if (button) {
@@ -2062,7 +2276,6 @@
         });
 
         // --- 10. "SHOW MODAL" BUTTON LISTENERS ---
-        // (This section is modified)
         showAddBlockModalBtn.addEventListener('click', () => showModal('add-block-modal'));
         
         showAddRoomModalBtn.addEventListener('click', () => {
@@ -2081,26 +2294,24 @@
         showAddClubActivityModalBtn.addEventListener('click', () => showModal('add-club-activity-modal'));
         showAddAssetModalBtn.addEventListener('click', () => showModal('add-asset-modal')); 
 
-        // === NEW VIEW LISTENERS ===
-        // === FIX: Removed listeners for election view ===
-        
+        // View navigation listeners
         showFeesViewBtn.addEventListener('click', () => {
             hideAllViews();
             feesView.classList.remove('hidden');
-            renderFeesView(); // Render the fees view
+            renderFeesView();
         });
         
         backToDashboardFromFeesBtn.addEventListener('click', () => {
             hideAllViews();
             dashboardView.classList.remove('hidden');
-            renderDashboard(); // Re-render dashboard to update stats
+            renderDashboard();
         });
         
         showVisitorsViewBtn.addEventListener('click', () => {
             hideAllViews();
             visitorsView.classList.remove('hidden');
-            visitorDateFilter.value = new Date().toISOString().split('T')[0]; // Default to today
-            renderVisitorsView(); // Render the visitors view
+            visitorDateFilter.value = new Date().toISOString().split('T')[0];
+            renderVisitorsView();
         });
         
         backToDashboardFromVisitorsBtn.addEventListener('click', () => {
@@ -2108,78 +2319,106 @@
             dashboardView.classList.remove('hidden');
         });
 
-        // NEW: Complaints View Listeners
+        // Complaints View Listeners
         showComplaintsViewBtn.addEventListener('click', () => {
             hideAllViews();
             complaintsView.classList.remove('hidden');
-            renderComplaintsView(); // Render the complaints view
+            loadComplaintsData();
         });
         
         backToDashboardFromComplaintsBtn.addEventListener('click', () => {
             hideAllViews();
             dashboardView.classList.remove('hidden');
         });
-        // === END NEW LISTENERS ===
-        
+
+        // Complaints filtering and search
+        complaintSearchInput.addEventListener('input', renderComplaintsView);
+        complaintStatusFilter.addEventListener('change', renderComplaintsView);
+        complaintTypeFilter.addEventListener('change', renderComplaintsView);
+
+        // Refresh complaints
+        refreshComplaintsBtn.addEventListener('click', () => {
+            loadComplaintsData();
+            showSuccess('Complaints refreshed');
+        });
+
+        // Complaint actions
+        complaintsListContainer.addEventListener('click', async (e) => {
+            const viewBtn = e.target.closest('.view-complaint-details-btn');
+            const statusBtn = e.target.closest('.update-complaint-status-btn');
+            
+            if (viewBtn) {
+                const complaintId = viewBtn.dataset.complaintId;
+                showComplaintDetails(complaintId);
+            }
+            
+            if (statusBtn) {
+                const complaintId = statusBtn.dataset.complaintId;
+                const newStatus = statusBtn.dataset.newStatus;
+                
+                let adminNotes = '';
+                if (newStatus === 'Resolved') {
+                    adminNotes = prompt('Enter resolution notes:');
+                    if (adminNotes === null) return;
+                }
+                
+                if (await updateComplaintStatus(complaintId, newStatus, adminNotes)) {
+                    renderComplaintsView();
+                }
+            }
+        });
+
+        // Add response to complaint
+        complaintDetailsContent.addEventListener('click', async (e) => {
+            if (e.target.id === 'submit-complaint-response') {
+                const complaintId = e.target.dataset.complaintId;
+                const responseText = document.getElementById('complaint-response').value.trim();
+                
+                if (!responseText) {
+                    showError('Please enter a response');
+                    return;
+                }
+                
+                if (await addComplaintResponse(complaintId, responseText)) {
+                    document.getElementById('complaint-response').value = '';
+                    showComplaintDetails(complaintId);
+                }
+            }
+        });
+
         // --- 11. OTHER LISTENERS ---
-        // (This section is unchanged, but new listeners are added)
         adminLogoutBtn.addEventListener('click', () => {
             if (confirm('Are you sure you want to log out?')) {
-                // localStorage.removeItem('adminToken');
-                window.location.href = '/login.html'; // Redirect to login page
+                window.location.href = '/login.html';
             }
         });
         
-        // NEW: Listeners for Fees and Visitor page filters
         feesSearchInput.addEventListener('input', renderFeesView);
         feesFilterSelect.addEventListener('change', renderFeesView);
         
         visitorSearchInput.addEventListener('input', renderVisitorsView);
         visitorDateFilter.addEventListener('change', renderVisitorsView);
         
-        // NEW: Listeners for Complaints page filters
-        complaintSearchInput.addEventListener('input', renderComplaintsView);
-        complaintStatusFilter.addEventListener('change', renderComplaintsView);
-        
-        // NEW: Listener for Toggling Fee Status
         feesStudentListContainer.addEventListener('click', (e) => {
             const button = e.target.closest('.toggle-fee-status-btn');
             if (button) {
                 const studentId = button.dataset.studentId;
                 const student = findStudentById(studentId);
                 if (student) {
-                    // This is a client-side simulation.
-                    // TODO: In a real app, send a FETCH request to the server here.
                     student.feeStatus = (student.feeStatus === 'Paid') ? 'Pending' : 'Paid';
                     console.log(`Updated student ${student.name} fee status to ${student.feeStatus}`);
-                    
-                    // Re-render the fees view to show the change
                     renderFeesView();
                 }
             }
         });
 
-        // NEW: Listener for Updating Complaint Status
-        complaintsListContainer.addEventListener('click', async (e) => {
-            const button = e.target.closest('.update-complaint-status-btn');
-            if (button) {
-                const complaintId = button.dataset.complaintId;
-                const newStatus = button.dataset.newStatus;
-                
-                if (await updateComplaintStatus(complaintId, newStatus)) {
-                    renderComplaintsView(); // Re-render the complaints view
-                }
-            }
-        });
-
         // --- 12. INITIALIZE APP ---
-        // (This section is updated to load complaints data)
         function initApp() {
             console.log('🚀 Initializing Admin Dashboard...');
             loadHostelData();
             loadClubActivities();
-            loadAssetData(); 
-            loadComplaintsData(); // NEW: Load complaints data
+            loadAssetData();
+            loadComplaintsData();
             renderEvents();
         }
 
