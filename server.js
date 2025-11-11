@@ -392,8 +392,7 @@ app.post('/api/students', upload.single('profileImage'), async (req, res) => {
 app.get('/api/student/:id', async (req, res) => {
     try {
         const studentId = req.params.id;
-        const student = await Student.findById(studentId)
-            .populate('assets.asset'); // Optionally populate asset details
+       const student = await Student.findById(studentId);
             
         if (!student) {
             return res.status(404).json({ success: false, message: 'Student not found.' });
