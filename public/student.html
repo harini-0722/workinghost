@@ -1955,10 +1955,10 @@ function populateVisitorRequestHistory() {
             const tableBody = document.getElementById('visitor-request-history-body');
             tableBody.innerHTML = '';
             // Filter for this student
-            const myVisitorHistory = mockVisitorRequests
-                .filter(v => v.studentId === g_student._id || v.studentId === 1) // Added fallback for demo
-                .sort((a, b) => new Date(b.start) - new Date(a.start));
-
+          // CORRECTED CODE:
+const myVisitorHistory = g_visitorRequests
+    .filter(v => v.studentId === g_student._id || v.studentId === 1)
+    .sort((a, b) => new Date(b.startDate) - new Date(a.startDate)); // NOTE: Changed 'start' to 'startDate' based on new schema
             if (myVisitorHistory.length === 0) {
                 tableBody.innerHTML = `<tr><td colspan="5" class="py-4 px-6 text-center text-secondary-gray">No visitor request history.</td></tr>`;
                 return;
