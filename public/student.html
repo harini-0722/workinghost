@@ -1690,88 +1690,32 @@
                     attendanceTable.innerHTML += row;
                 });
             }
-// --- HELPER FUNCTIONS for Complaint Styling ---
-function getPriorityClass(priority) {
-    if (!priority) return 'bg-gray-100 text-gray-700';
-    const p = priority.toLowerCase();
-    if (p === 'critical') return 'bg-red-200 text-red-700 font-bold';
-    if (p === 'high') return 'bg-orange-200 text-orange-700';
-    if (p === 'medium') return 'bg-yellow-100 text-yellow-700';
-    if (p === 'low') return 'bg-blue-100 text-blue-700';
-    return 'bg-gray-100 text-gray-700';
-}
 
-function getStatusClass(status) {
-    if (!status) return 'bg-gray-100 text-gray-700';
-    const s = status.toLowerCase();
-    if (s === 'resolved') return 'bg-accent-green/20 text-accent-green';
-    if (s === 'in progress') return 'bg-primary-blue/20 text-primary-blue';
-    if (s === 'critical') return 'bg-accent-red/20 text-accent-red';
-    if (s === 'pending') return 'bg-info-yellow/20 text-info-yellow';
-    return 'bg-gray-100 text-gray-700';
-}
-
-// --- FIX: The Missing Function Definition ---
-// This function reads the global data and passes it to the renderer
-function populateStudentComplaintHistory() {
-    if (g_student && g_student.complaints && typeof renderComplaintsTable === 'function') {
-        // g_student.complaints is updated by loadStudentData()
-        renderComplaintsTable(g_student.complaints);
-    } else {
-        console.warn("Cannot populate complaint history: Data or renderer is missing.");
-        // Optional: clear the table in case of error
-        document.getElementById('student-complaint-table-body').innerHTML = 
-            '<tr><td colspan="8" class="text-center py-4 text-secondary-gray">Error loading history or no data found.</td></tr>';
-    }
-}
             // --- 6. Populate Complaints List ---
-     function renderComplaintsTable(complaints) {
-    const container = document.getElementById('student-complaint-table-body');
-    container.innerHTML = ''; // Clear existing rows
+            const complaintsList = document.getElementById('profile-complaints-list');
+            if (!complaints || complaints.length === 0) {
+                complaintsList.innerHTML = '<p class="text-gray-500">No complaints filed by this student.</p>';
+            } else {
+                complaintsList.innerHTML = '';
+                complaints.forEach(complaint => {
+                    const statusColor = complaint.status === 'Resolved'    
+                        ? 'bg-green-100 text-green-700'    
+                        : 'bg-yellow-100 text-yellow-700';
+                    
+                    const item = `
+                        <div class="flex justify-between items-center bg-gray-50 p-4 rounded-lg border">
+                            <div>
+                                <p class="font-medium text-gray-800">${complaint.type || complaint.title}</p>
+                                <p class="text-sm text-gray-500">Filed on: ${formatDate(complaint.date)} | Priority: ${complaint.priority}</p>
+                            </div>
+                            <span class="text-xs font-bold px-3 py-1 rounded-full ${statusColor}">${complaint.status}</span>
+                        </div>
+                    `;
+                    complaintsList.innerHTML += item;
+                });
+            }
+        }
 
-    if (!complaints || complaints.length === 0) {
-        container.innerHTML = '<tr><td colspan="8" class="text-center py-4 text-gray-500">No complaints filed yet.</td></tr>';
-        return;
-    }
-    
-    // Sort by submission date (newest first)
-    const sortedComplaints = complaints.sort((a, b) => 
-        new Date(b.submissionDate || b.createdAt) - new Date(a.submissionDate || a.createdAt)
-    );
-
-    sortedComplaints.forEach(complaint => {
-        // Use the newly defined helper functions
-        const priorityClass = getPriorityClass(complaint.priority);
-        const statusClass = getStatusClass(complaint.status); 
-        
-        const submissionDate = new Date(complaint.submissionDate || complaint.createdAt).toLocaleDateString('en-US', {
-             year: 'numeric', month: 'short', day: 'numeric' 
-        });
-
-        const row = `
-            <tr class="bg-white border-b hover:bg-gray-50">
-                <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">#${complaint._id.substring(0, 6)}</td>
-                <td class="px-6 py-4">${submissionDate}</td>
-                <td class="px-6 py-4">${complaint.type}</td>
-                <td class="px-6 py-4">${complaint.location}</td>
-                <td class="px-6 py-4">
-                    <span class="${priorityClass} px-2 inline-flex text-xs leading-5 font-semibold rounded-full">
-                        ${complaint.priority}
-                    </span>
-                </td>
-                <td class="px-6 py-4 font-semibold text-gray-800">${complaint.title || complaint.type}</td>
-                <td class="px-6 py-4 max-w-xs truncate" title="${complaint.description}">${complaint.description}</td>
-                <td class="px-6 py-4">
-                    <span class="${statusClass} px-2 inline-flex text-xs leading-5 font-semibold rounded-full">
-                        ${complaint.status}
-                    </span>
-                </td>
-            </tr>
-        `;
-        container.innerHTML += row;
-    });
-}
-}
 
         // =========================================================================
         // --- ATTENDANCE & OTHER FUNCTIONS ---
