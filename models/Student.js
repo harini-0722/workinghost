@@ -1,12 +1,12 @@
 // models/Student.js
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema; // Use Schema for consistency
 
-const studentSchema = new mongoose.Schema({
+const studentSchema = new Schema({
     name: {
         type: String,
         required: true,
     },
-    // --- NEW FIELD (from your form) ---
     rollNumber: {
         type: String,
         required: true,
@@ -22,7 +22,7 @@ const studentSchema = new mongoose.Schema({
         required: true,
     },
     room: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: 'Room',
         required: true
     },
@@ -37,16 +37,23 @@ const studentSchema = new mongoose.Schema({
         default: 'Pending'
     },
     paymentMethod: String,
-    // --- NEW FIELD ---
     profileImageUrl: {
         type: String // Path to profile image, e.g., /uploads/student-123.jpg
     },
-    // --- NEW FIELD ---
     // This stores a snapshot of assets assigned to the student
     assets: [{
         name: String,
         quantity: Number
+    }],
+
+    // --- THIS IS THE FIX ---
+    // The complaints array must be INSIDE the schema definition
+    complaints: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Complaint'
     }]
+    
 }, { timestamps: true });
+
 
 module.exports = mongoose.model('Student', studentSchema);
