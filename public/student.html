@@ -460,6 +460,8 @@
                                     </select>
                                 </div>
                                 
+                               
+                                
                                 <div>
                                     <label class="block text-sm font-medium text-secondary-gray mb-1">Issue Date</label>
                                     <input type="date" id="complaint-date" class="w-full p-3 border border-text-muted rounded-lg focus:ring-primary-blue focus:border-primary-blue bg-light-bg" required>
@@ -489,22 +491,20 @@
                         <div class="lg:col-span-2">
                             <h3 class="text-xl font-bold text-accent-dark mb-5">My Complaint History</h3>
                             <div class="bg-card-bg rounded-xl shadow-lift overflow-x-auto">
-                                 <table class="w-full text-sm text-left text-gray-500">
-    <thead class="text-xs text-gray-700 uppercase bg-gray-50">
-        <tr>
-            <th scope="col" class="px-6 py-3">ID</th>
-            <th scope="col" class="px-6 py-3">Date Filed</th>
-            <th scope="col" class="px-6 py-3">Type</th>
-            <th scope="col" class="px-6 py-3">Location</th>
-            <th scope="col" class="px-6 py-3">Priority</th>
-            <th scope="col" class="px-6 py-3">Title</th>
-            <th scope="col" class="px-6 py-3 max-w-xs">Description</th>
-            <th scope="col" class="px-6 py-3">Status</th>
-        </tr>
-    </thead>
-    <tbody id="student-complaint-table-body">
-        </tbody>
-</table>
+                                 <table class="min-w-full divide-y divide-text-muted">
+                                     <thead class="bg-light-bg">
+                                         <tr>
+                                             <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">ID</th>
+                                             <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Date</th>
+                                             <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Type</th>
+                                             <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Location</th>
+                                             <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Priority</th>
+                                             <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Status</th>
+                                         </tr>
+                                     </thead>
+                                     <tbody id="student-complaint-history" class="bg-card-bg divide-y divide-text-muted">
+                                     </tbody>
+                                 </table>
                             </div>
                         </div>
                     </div>
@@ -855,10 +855,7 @@
         ];
         
         // UPDATED: New mock data for visitor requests
-        let mockVisitorRequests = [
-            { id: 'V001', studentId: 1, name: 'Ravi Sharma (Father)', start: '2025-09-10', end: '2025-09-12', reason: 'Family visit', status: 'Approved' },
-            { id: 'V002', studentId: 1, name: 'Priya Singh', start: '2025-11-10', end: '2025-11-11', reason: 'Group study', status: 'Pending' }
-        ];
+       
 
         const mockLostFound = [
             { id: 'F001', item: 'Blue Umbrella', dateFound: '2025-10-20', location: 'Hostel Lobby', status: 'Available' },
@@ -875,7 +872,135 @@
             }
         ];
         
+        async function loadStudentData() {
+    const studentId = localStorage.getItem('currentStudentId');
+    // ... (rest of the existing loadStudentData function) ...
+
+    // --- NEW: Load Visitor Requests
+    await loadVisitorRequests(studentId);
+    
+    // ... (return true)
+}
+
+// =========================================================================
+// NEW: API Functions for Visitor Requests
+// =========================================================================
+
+// NEW FUNCTION to load visitor history from the backend
+async function loadVisitorRequests(studentId) {
+    try {
+        const response = await fetch(`/api/visitor-request/history/${studentId}`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        if (data.success) {
+            g_visitorRequests = data.requests;
+            console.log('✅ Visitor requests loaded:', g_visitorRequests);
+        } else {
+            console.warn('Could not load visitor requests from API, falling back to empty list.');
+            g_visitorRequests = []; // Ensure it's empty on failure
+        }
+    } catch (error) {
+        console.error('❌ Failed to load visitor requests:', error);
+        // Fallback to mock if API fails completely (optional, use empty array for prod)
+        // g_visitorRequests = [...mockVisitorRequests]; 
+        g_visitorRequests = []; // Use empty list for a clean slate
+    }
+}
+
+// UPDATED: Function to submit visitor request to the MongoDB backend
+async function submitVisitorRequest() {
+    const name = document.getElementById('visitor-name').value;
+    const startDate = document.getElementById('visitor-start-date').value;
+    const endDate = document.getElementById('visitor-end-date').value;
+    const reason = document.getElementById('visitor-reason').value;
+    const studentId = g_student._id; // Get the student ID from the globally loaded student object
+
+    if (!name || !startDate || !endDate || !reason || !studentId) {
+        alert('Please fill out all fields and ensure you are logged in.');
+        return;
+    }
+    if (new Date(endDate) < new Date(startDate)) {
+        alert('End date must be after the start date.');
+        return;
+    }
+    
+    const requestData = {
+        studentId: studentId,
+        visitorName: name,
+        startDate: startDate,
+        endDate: endDate,
+        reason: reason,
+        submissionDate: new Date().toISOString(),
+        status: 'Pending'
+    };
+
+    try {
+        const response = await fetch('/api/visitor-request', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestData)
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+            alert(`Visitor request for ${name} submitted successfully! Status: Pending`);
+            
+            // Re-load the history to include the new submission and update the table
+            await loadVisitorRequests(studentId);
+            populateVisitorRequestHistory();
+            
+            // Reset form
+            document.getElementById('visitor-request-form').reset();
+        } else {
+            throw new Error(data.message || 'Failed to submit visitor request on the server.');
+        }
+
+    } catch (error) {
+        console.error('Submission Error:', error);
+        alert(`Failed to submit request: ${error.message}`);
+    }
+}
+
+// UPDATED: Function to populate history using the global g_visitorRequests array
+function populateVisitorRequestHistory() {
+    const tableBody = document.getElementById('visitor-request-history-body');
+    tableBody.innerHTML = '';
+    
+    // Sort by start date, newest first
+    const sortedHistory = g_visitorRequests
+        .sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
+
+    if (sortedHistory.length === 0) {
+        tableBody.innerHTML = `<tr><td colspan="5" class="py-4 px-6 text-center text-secondary-gray">No visitor request history.</td></tr>`;
+        return;
+    }
+
+    sortedHistory.forEach(v => {
+        let statusClass;
+        if (v.status === 'Approved') {
+            statusClass = 'text-accent-green';
+        } else if (v.status === 'Pending') {
+            statusClass = 'text-info-yellow';
+        } else {
+            statusClass = 'text-accent-red'; // For 'Rejected'
+        }
         
+        tableBody.innerHTML += `
+            <tr class="hover:bg-light-bg transition duration-150">
+                <td class="py-3 px-6 whitespace-nowrap text-sm text-accent-dark">${v.visitorName}</td>
+                <td class="py-3 px-6 whitespace-nowrap text-sm text-secondary-gray">${formatDate(v.startDate)}</td>
+                <td class="py-3 px-6 whitespace-nowrap text-sm text-secondary-gray">${formatDate(v.endDate)}</td>
+                <td class="py-3 px-6 text-sm text-secondary-gray">${v.reason}</td>
+                <td class="py-3 px-6 whitespace-nowrap text-sm font-medium ${statusClass}">${v.status}</td>
+            </tr>
+        `;
+    });
+}
         // --- UPDATED: loadStudentData ---
         // This function is now more robust at finding the room object
         async function loadStudentData() {
@@ -1413,44 +1538,45 @@
             }
         }
         
-       
-        function renderComplaintsTable(complaints) {
-    const container = document.getElementById('student-complaint-table-body');
-    container.innerHTML = ''; // Clear existing rows
+        function populateStudentComplaintHistory() {
+            const tableBody = document.getElementById('student-complaint-history');
+            tableBody.innerHTML = '';
+            
+            const myComplaints = g_complaints.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-    if (!complaints || complaints.length === 0) {
-        container.innerHTML = '<tr><td colspan="8" class="text-center py-4">No complaints filed yet.</td></tr>';
-        return;
-    }
-    
-    complaints.forEach(complaint => {
-        const priorityClass = getPriorityClass(complaint.priority);
-        const statusClass = getStatusClass(complaint.status);
-        const submissionDate = new Date(complaint.submissionDate || complaint.createdAt).toLocaleDateString();
+            if (myComplaints.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="6" class="py-4 px-6 text-center text-secondary-gray">You have not filed any complaints.</td></tr>`;
+                return;
+            }
 
-        const row = `
-            <tr class="bg-white border-b hover:bg-gray-50">
-                <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">#${complaint._id.substring(0, 6)}</td>
-                <td class="px-6 py-4">${submissionDate}</td>
-                <td class="px-6 py-4">${complaint.type}</td>
-                <td class="px-6 py-4">${complaint.location}</td>
-                <td class="px-6 py-4">
-                    <span class="${priorityClass} px-2 inline-flex text-xs leading-5 font-semibold rounded-full">
-                        ${complaint.priority}
-                    </span>
-                </td>
-                <td class="px-6 py-4 font-semibold text-gray-800">${complaint.title}</td>
-                <td class="px-6 py-4 max-w-xs truncate" title="${complaint.description}">${complaint.description}</td>
-                <td class="px-6 py-4">
-                    <span class="${statusClass} px-2 inline-flex text-xs leading-5 font-semibold rounded-full">
-                        ${complaint.status}
-                    </span>
-                </td>
-            </tr>
-        `;
-        container.innerHTML += row;
-    });
-}
+            myComplaints.forEach(c => {
+                let priorityColorClass = '';
+                if (c.priority === 'Critical') {
+                    priorityColorClass = 'text-accent-red';
+                } else if (c.priority === 'High') {
+                    priorityColorClass = 'text-orange-500';
+                } else if (c.priority === 'Medium') {
+                    priorityColorClass = 'text-info-yellow';
+                } else {
+                    priorityColorClass = 'text-accent-green';
+                }
+                
+                let statusColorClass = c.status === 'Resolved' ? 'text-accent-green' : (c.status === 'Pending' || c.status === 'Critical' ? 'text-info-yellow' : 'text-secondary-gray');
+                let formattedDate = c.date ? new Date(c.date).toLocaleDateString() : 'N/A';
+
+                tableBody.innerHTML += `
+                    <tr class="hover:bg-light-bg transition duration-150">
+                        <td class="py-3 px-6 whitespace-nowrap text-sm text-accent-dark">#C00${c._id ? c._id.substring(c._id.length - 4) : 'N/A'}</td>
+                        <td class="py-3 px-6 whitespace-nowrap text-sm text-secondary-gray">${formattedDate}</td>
+                        <td class="py-3 px-6 whitespace-nowrap text-sm text-accent-dark">${c.type || c.title}</td>
+                        <td class="py-3 px-6 whitespace-nowrap text-sm font-medium ${priorityColorClass}">${c.priority}</td>
+                        <td class="py-3 px-6 whitespace-nowrap text-sm font-medium ${statusColorClass}">${c.status}</td>
+                    </tr>
+                `;
+            });
+
+        
+        }
         
         function populateStudentLeaveHistory() {
             const tableBody = document.getElementById('student-leave-history');
@@ -1478,9 +1604,10 @@
             });
         }
         
-        async function submitComplaint() {
+        function submitComplaint() {
             const type = document.getElementById('complaint-type').value;
             const location = document.getElementById('complaint-location').value;
+            const locationDetails = document.getElementById('complaint-location-details').value;
             const date = document.getElementById('complaint-date').value;
             const priority = document.getElementById('complaint-priority').value;
             const description = document.getElementById('complaint-description').value;
@@ -1490,60 +1617,39 @@
                 alert('Please fill all required fields.');
                 return;
             }
-            
-            // This is the student ID from your global 'g_student' object
-            if (!g_student || !g_student._id) {
-                alert('Error: Student session not found. Please log in again.');
-                logout();
-                return;
-            }
 
-            const complaintData = {
-                studentId: g_student._id, // Send the student's ID
+            // Create complaint object
+            const newComplaint = {
+                _id: 'C' + Date.now(), // Generate unique ID
+                studentId: g_student._id,
                 type: type,
                 location: location,
+                locationDetails: locationDetails,
                 date: date,
                 priority: priority,
                 description: description,
-                title: `${type} - ${location}` // Keep this for compatibility
+                status: 'Pending',
+                submissionDate: new Date().toISOString(),
+                title: `${type} - ${location}` // For backward compatibility
             };
 
-            try {
-                // Send the complaint to the server
-                const response = await fetch('/api/complaints', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(complaintData),
-                });
-
-                const data = await response.json();
-
-                if (!response.ok || !data.success) {
-                    throw new Error(data.message || 'Failed to submit complaint.');
-                }
-
-                // --- Success ---
-                
-                // 1. Show success message
-                alert(`Complaint submitted successfully!\nPriority: ${priority}\nStatus: Pending Review`);
-                
-                // 2. Reset the form
-                document.getElementById('complaint-form').reset();
-                
-                // 3. Reload ALL student data from the server.
-                // This is the best way to get the *actual* updated complaint list.
-                await loadStudentData(); 
-                
-                // 4. Now that g_complaints is updated, refresh the UI
-                updateDashboardComplaintCount();
-                populateStudentComplaintHistory();
-
-            } catch (error) {
-                console.error('Error submitting complaint:', error);
-                alert(`Error: ${error.message}`);
-            }
+            // Add to complaints array
+            g_complaints.push(newComplaint);
+            
+            // Update dashboard open requests count
+            updateDashboardComplaintCount();
+            
+            // Update complaint history display
+            populateStudentComplaintHistory();
+            
+            // Reset form
+            document.getElementById('complaint-form').reset();
+            
+            // Show success message
+            alert(`Complaint submitted successfully!\n\nComplaint ID: ${newComplaint._id}\nPriority: ${priority}\nStatus: Pending Review`);
+            
+            // In a real application, you would send this to the server:
+            // sendComplaintToAdmin(newComplaint);
         }
 
         function updateDashboardComplaintCount() {
