@@ -49,11 +49,17 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
+        
+        /* New: Voting Modal Styles */
+        .voting-container {
+            max-height: 80vh;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-900">
 
-    <!-- NEW: Medical Emergency Modal (Only the modal remains red for actual emergency) -->
     <div id="medical-modal" class="fixed inset-0 bg-gray-900 bg-opacity-75 z-[100] hidden items-center justify-center p-4">
         <div class="bg-white rounded-xl p-8 max-w-lg w-full shadow-2xl transform transition-all scale-100">
             <h3 class="text-3xl font-bold text-red-600 flex items-center"><i class="fas fa-heartbeat mr-3"></i> IMMEDIATE MEDICAL ATTENTION</h3>
@@ -61,7 +67,6 @@
                 **Are you experiencing a severe, life-threatening emergency?** If yes, please use the following contacts immediately.
             </p>
             <div class="mt-6 space-y-3">
-                <!-- Placeholder numbers based on common emergency format -->
                 <a href="tel:9999999998" class="block w-full text-center bg-red-600 text-white font-bold py-3 rounded-lg hover:bg-red-700 transition">
                     <i class="fas fa-phone-alt mr-2"></i> Call Campus Ambulance/Health Now (99999 99998)
                 </a>
@@ -74,8 +79,31 @@
             </button>
         </div>
     </div>
-    <!-- End Modal -->
+    <div id="voting-modal" class="fixed inset-0 bg-gray-900 bg-opacity-75 z-[100] hidden items-center justify-center p-4">
+        <div class="bg-white rounded-xl max-w-3xl w-full shadow-2xl transform transition-all scale-100 p-0">
+            <div class="p-6 bg-indigo-700 text-white rounded-t-xl flex justify-between items-center">
+                <h3 class="text-2xl font-bold flex items-center"><i class="fas fa-vote-yea mr-3"></i> OFFICIAL ELECTION BALLOT</h3>
+                <button onclick="hideModal('voting-modal')" class="text-white hover:text-gray-200"><i class="fas fa-times fa-lg"></i></button>
+            </div>
+            <div class="voting-container p-6">
+                <p class="mb-4 text-sm text-red-600 font-medium border border-red-200 bg-red-50 p-2 rounded">
+                    WARNING: This is a secure ballot. Once you click "Submit Final Vote," your choices cannot be changed.
+                </p>
 
+                <form id="voting-form" class="space-y-6">
+                    </form>
+                
+                <div id="vote-message" class="mt-6 text-center hidden p-3 rounded-lg font-medium"></div>
+
+                <div class="mt-6 pt-4 border-t border-gray-200">
+                    <button type="submit" form="voting-form" class="w-full bg-green-600 text-white font-bold py-3 rounded-lg hover:bg-green-700 transition">
+                        SUBMIT FINAL VOTE <i class="fas fa-check ml-2"></i>
+                    </button>
+                    <p class="text-xs text-gray-500 mt-2 text-center">Your Roll Number will be recorded against your vote for authentication.</p>
+                </div>
+            </div>
+        </div>
+    </div>
     <nav class="bg-white/95 shadow-md sticky top-0 z-50 backdrop-blur-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-20">
@@ -89,7 +117,6 @@
                 <div class="hidden md:flex md:items-center md:space-x-8">
                     <a href="#" onclick="showPage('home')" class="font-medium text-gray-700 hover:text-indigo-600 transition duration-150">Home</a>
                     
-                    <!-- NEW: TECH USAGE LINK -->
                     <a href="#" onclick="showPage('aiTechHub')" class="font-medium text-gray-700 hover:text-indigo-600 transition duration-150">Tech Usage</a>
                     
                     <div class="relative" id="desktop-dropdown-container">
@@ -136,7 +163,6 @@
                     <a href="#" onclick="showPage('events')" class="font-medium text-gray-700 hover:text-indigo-600 transition duration-150">Events</a>
                     <a href="#" onclick="showPage('elections')" class="font-medium text-gray-700 hover:text-indigo-600 transition duration-150">Elections</a>
                     
-                    <!-- MOVED: HELP LINK TO THE END OF NAVBAR (After Elections) -->
                     <a href="#" onclick="showPage('safetyNet')" class="font-bold text-indigo-600 hover:text-indigo-700 transition duration-150 border-2 border-indigo-600 rounded-lg px-3 py-1 bg-indigo-50 hover:bg-indigo-100">Help!</a>
                 </div>
                 
@@ -154,10 +180,8 @@
             <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
                 <a href="#" onclick="showPage('home')" class="text-gray-700 hover:bg-gray-50 block px-3 py-2 rounded-md text-base font-medium">Home</a>
                 
-                <!-- NEW: TECH USAGE LINK (Mobile) -->
                 <a href="#" onclick="showPage('aiTechHub')" class="text-gray-700 hover:bg-gray-50 block px-3 py-2 rounded-md text-base font-medium">Tech Usage</a>
                 
-                <!-- UPDATED: HELP LINK IN MOBILE MENU (Now professional indigo) -->
                 <a href="#" onclick="showPage('safetyNet')" class="text-white bg-indigo-600 hover:bg-indigo-700 block px-3 py-2 rounded-md text-base font-bold text-center">I Need Help! (Safety Net)</a>
 
                 <div class="border-t border-gray-200 pt-2">
@@ -183,8 +207,8 @@
             <section class="relative h-[85vh] min-h-[600px] flex items-center justify-center text-center text-white overflow-hidden">
                 <div class="absolute inset-0">
                     <img src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&q=80&w=1920&h=1080" 
-                            alt="IIT Indore Campus" 
-                            class="w-full h-full object-cover">
+                                alt="IIT Indore Campus" 
+                                class="w-full h-full object-cover">
                     <div class="absolute inset-0 bg-indigo-900 bg-opacity-60"></div>
                 </div>
                 
@@ -201,7 +225,6 @@
                 </div>
             </section>
             
-            <!-- UPDATED SECTION: SAFETY NET / EMERGENCY ACCESS (Now professional indigo look) -->
             <section id="safety-net-home-section" class="py-16 bg-indigo-900 text-white shadow-2xl">
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                     <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight">
@@ -212,28 +235,24 @@
                     </p>
 
                     <div class="mt-12 grid grid-cols-2 lg:grid-cols-4 gap-6">
-                        <!-- Emergency Call Now -->
                         <a href="tel:9999999999" class="p-6 bg-indigo-800 hover:bg-indigo-700 rounded-xl shadow-lg transition duration-300 card-hover flex flex-col items-center justify-center space-y-3">
                             <i class="fas fa-phone-alt fa-3x text-white"></i>
                             <span class="text-lg md:text-xl font-bold">Emergency Call Now</span>
                             <span class="text-xs md:text-sm opacity-80">(Campus Security)</span>
                         </a>
                         
-                        <!-- Medical Emergency (Triggers Modal) -->
                         <a href="#" onclick="showModal('medical-modal'); return false;" class="p-6 bg-indigo-800 hover:bg-indigo-700 rounded-xl shadow-lg transition duration-300 card-hover flex flex-col items-center justify-center space-y-3">
                             <i class="fas fa-ambulance fa-3x text-white"></i>
                             <span class="text-lg md:text-xl font-bold">Medical Emergency</span>
                             <span class="text-xs md:text-sm opacity-80">(We are here)</span>
                         </a>
 
-                        <!-- Raise a Concern (Links to full Safety Net Page) -->
                         <a href="#" onclick="showPage('safetyNet'); return false;" class="p-6 bg-indigo-800 hover:bg-indigo-700 rounded-xl shadow-lg transition duration-300 card-hover flex flex-col items-center justify-center space-y-3">
                             <i class="fas fa-headset fa-3x text-white"></i>
                             <span class="text-lg md:text-xl font-bold">Raise a Concern</span>
                             <span class="text-xs md:text-sm opacity-80">(Confidential Reporting)</span>
                         </a>
 
-                        <!-- Direct Access to Management (Links to full Safety Net Page) -->
                         <a href="#" onclick="showPage('safetyNet'); return false;" class="p-6 bg-indigo-800 hover:bg-indigo-700 rounded-xl shadow-lg transition duration-300 card-hover flex flex-col items-center justify-center space-y-3">
                             <i class="fas fa-user-shield fa-3x text-white"></i>
                             <span class="text-lg md:text-xl font-bold">Management Access</span>
@@ -246,9 +265,6 @@
                     </button>
                 </div>
             </section>
-            <!-- END NEW SAFETY NET SECTION -->
-
-            <!-- NEW QUICK LINK TO AI TECH HUB PAGE (Replaces previous AI section) -->
             <section class="py-12 bg-white">
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                     <h2 class="text-3xl font-extrabold text-gray-900">
@@ -262,8 +278,6 @@
                     </a>
                 </div>
             </section>
-            <!-- END AI QUICK LINK -->
-            
             <section class="py-24 bg-white">
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                     <h2 class="text-base text-indigo-600 font-semibold tracking-wide uppercase">Our Structure</h2>
@@ -438,8 +452,8 @@
             <section class="relative h-[60vh] min-h-[400px] flex items-center justify-center text-center text-white overflow-hidden">
                 <div class="absolute inset-0">
                     <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1920&q=80" 
-                            alt="SciTech Background" 
-                            class="w-full h-full object-cover">
+                                alt="SciTech Background" 
+                                class="w-full h-full object-cover">
                     <div class="absolute inset-0 bg-indigo-900 bg-opacity-70"></div>
                 </div>
                 <div class="relative z-10 p-4">
@@ -474,8 +488,8 @@
             <section class="relative h-[60vh] min-h-[400px] flex items-center justify-center text-center text-white overflow-hidden">
                 <div class="absolute inset-0">
                     <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=1920&q=80" 
-                            alt="Cultural Background" 
-                            class="w-full h-full object-cover">
+                                alt="Cultural Background" 
+                                class="w-full h-full object-cover">
                     <div class="absolute inset-0 bg-rose-900 bg-opacity-70"></div>
                 </div>
                 <div class="relative z-10 p-4">
@@ -510,8 +524,8 @@
             <section class="relative h-[60vh] min-h-[400px] flex items-center justify-center text-center text-white overflow-hidden">
                 <div class="absolute inset-0">
                     <img src="https://images.unsplash.com/photo-1579952363873-27f3bade9f55?auto=format&fit=crop&w=1920&q=80" 
-                            alt="Sports Background" 
-                            class="w-full h-full object-cover">
+                                alt="Sports Background" 
+                                class="w-full h-full object-cover">
                     <div class="absolute inset-0 bg-green-900 bg-opacity-70"></div>
                 </div>
                 <div class="relative z-10 p-4">
@@ -546,8 +560,8 @@
             <section class="relative h-[60vh] min-h-[400px] flex items-center justify-center text-center text-white overflow-hidden">
                 <div class="absolute inset-0">
                     <img src="https://images.unsplash.com/photo-1488998427799-e3362cec87c3?auto=format&fit=crop&w=1920&q=80" 
-                            alt="Academic Background" 
-                            class="w-full h-full object-cover">
+                                alt="Academic Background" 
+                                class="w-full h-full object-cover">
                     <div class="absolute inset-0 bg-amber-900 bg-opacity-70"></div>
                 </div>
                 <div class="relative z-10 p-4">
@@ -582,8 +596,8 @@
             <section class="relative h-[60vh] min-h-[400px] flex items-center justify-center text-center text-white overflow-hidden">
                 <div class="absolute inset-0">
                     <img src="https://images.unsplash.com/photo-1527529482837-4698179dc6ce?auto=format&fit=crop&w=1920&q=80" 
-                            alt="Campus Events" 
-                            class="w-full h-full object-cover">
+                                alt="Campus Events" 
+                                class="w-full h-full object-cover">
                     <div class="absolute inset-0 bg-indigo-900 bg-opacity-70"></div>
                 </div>
                 <div class="relative z-10 p-4">
@@ -602,87 +616,80 @@
                 </div>
             </section>
         </div>
+        
         <div id="elections" class="page">
-    
-    <section class="relative h-[55vh] min-h-[400px] flex items-center justify-center text-center text-white overflow-hidden">
-        <div class="absolute inset-0">
-            <img src="https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?auto=format&fit=crop&w=1920&q=80" 
-                    alt="Elections Background" 
-                    class="w-full h-full object-cover">
-            <div class="absolute inset-0 bg-gray-900 bg-opacity-70"></div>
-        </div>
-        <div class="relative z-10 p-4">
-            <h1 class="text-6xl md:text-8xl font-extrabold tracking-tight">Gymkhana Elections</h1>
-            <p class="mt-6 max-w-2xl text-xl md:text-2xl opacity-90">
-                Your Voice, Your Vote. Electing the leaders of tomorrow.
-            </p>
-        </div>
-    </section>
-    
-    <section class="py-16 bg-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
-                
-                <div class="lg:col-span-1 space-y-10">
+            <section class="relative h-[55vh] min-h-[400px] flex items-center justify-center text-center text-white overflow-hidden">
+                <div class="absolute inset-0">
+                    <img src="https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?auto=format&fit=crop&w=1920&q=80" 
+                            alt="Elections Background" 
+                            class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gray-900 bg-opacity-70"></div>
+                </div>
+                <div class="relative z-10 p-4">
+                    <h1 class="text-6xl md:text-8xl font-extrabold tracking-tight">Gymkhana Elections</h1>
+                    <p class="mt-6 max-w-2xl text-xl md:text-2xl opacity-90">
+                        Your Voice, Your Vote. Electing the leaders of tomorrow.
+                    </p>
+                </div>
+            </section>
+            
+            <section class="py-16 bg-white">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     
-                    <div class="bg-indigo-50 p-6 rounded-xl shadow-lg sticky top-24">
-                        <h3 class="text-2xl font-bold text-indigo-800 flex items-center">
-                            <i class="fas fa-calendar-check mr-3"></i> Election Schedule
-                        </h3>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
                         
-                        <ul id="election-schedule-list" class="mt-6 space-y-4">
-                            <li class="text-gray-500">Loading schedule...</li>
-                        </ul>
-                        
-                        <a href="#candidates-section" class="mt-8 w-full block text-center bg-indigo-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-indigo-700 transition duration-300">
-                            View Candidate Manifestos
-                        </a>
-                        
-                        <button id="vote-button" class="mt-3 w-full bg-green-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-green-700 transition duration-300 hidden" disabled>
-                            <i class="fas fa-vote-yea mr-2"></i> VOTE NOW (Live)
-                        </button>
+                        <div class="lg:col-span-1 space-y-10">
+                            
+                            <div class="bg-indigo-50 p-6 rounded-xl shadow-lg">
+                                <h3 class="text-2xl font-bold text-indigo-800 flex items-center">
+                                    <i class="fas fa-calendar-check mr-3"></i> Election Schedule
+                                </h3>
+                                
+                                <ul id="election-schedule-list" class="mt-6 space-y-4">
+                                    <li class="text-gray-500">Loading schedule...</li>
+                                </ul>
+                                
+                                <a href="#candidates-section" class="mt-8 w-full block text-center bg-indigo-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-indigo-700 transition duration-300">
+                                    View Candidate Manifestos
+                                </a>
+                                
+                                <button id="vote-button" onclick="showVotingModal()" class="mt-3 w-full bg-green-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-green-700 transition duration-300 hidden" disabled>
+                                    <i class="fas fa-vote-yea mr-2"></i> VOTE NOW (Live)
+                                </button>
 
-                        <p id="voting-status" class="mt-3 text-center text-sm text-red-600">Voting is currently **CLOSED**.</p>
-                    </div>
+                                <p id="voting-status" class="mt-3 text-center text-sm text-red-600">Voting is currently **CLOSED**.</p>
+                            </div>
 
-                    <div class="bg-yellow-50 p-6 rounded-xl shadow-lg">
-                        <h3 class="text-2xl font-bold text-yellow-800 flex items-center">
-                            <i class="fas fa-bullhorn mr-3"></i> Latest Announcements
-                        </h3>
-                        <div id="election-announcements" class="mt-4 space-y-4">
-                             <p class="text-gray-500">No announcements yet.</p>
+                            <div class="bg-yellow-50 p-6 rounded-xl shadow-lg">
+                                <h3 class="text-2xl font-bold text-yellow-800 flex items-center">
+                                    <i class="fas fa-bullhorn mr-3"></i> Latest Announcements
+                                </h3>
+                                <div id="election-announcements" class="mt-4 space-y-4">
+                                     <p class="text-gray-500">No announcements yet.</p>
+                                </div>
+                            </div>
+
                         </div>
+                        
+                        <div class="lg:col-span-2" id="candidates-section">
+                            
+                            <h2 class="text-4xl font-extrabold text-gray-900 mb-10 border-b pb-4">
+                                Meet Your Electoral Candidates
+                            </h2>
+                            
+                            <div id="positions-and-candidates-container" class="space-y-12">
+                                <p class="text-gray-500 text-lg">Positions and candidates loading...</p>
+                            </div>
+                            
+                        </div>
+                        
                     </div>
-
-                </div>
-                
-                <div class="lg:col-span-2" id="candidates-section">
-                    
-                    <h2 class="text-4xl font-extrabold text-gray-900 mb-10 border-b pb-4">
-                        Meet Your Electoral Candidates
-                    </h2>
-                    
-                    <div id="positions-and-candidates-container" class="space-y-12">
-                        <p class="text-gray-500 text-lg">Positions and candidates loading...</p>
-                    </div>
                     
                 </div>
-                
-            </div>
-            
-        </div>
-    </section>
-</div>
-
-
-       
-                    
-               
             </section>
         </div>
         
-        <!-- NEW: SAFETY NET PAGE (Updated with Concern Form and clarified Mentor/President section) -->
         <div id="safetyNet" class="page">
             <section class="relative py-32 bg-indigo-700 text-white overflow-hidden">
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -701,7 +708,6 @@
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         
-                        <!-- Card 1: Emergency Contact -->
                         <div class="bg-white p-8 rounded-2xl shadow-xl border-t-4 border-indigo-600 card-hover">
                             <div class="flex items-center space-x-4">
                                 <i class="fas fa-exclamation-triangle fa-2x text-indigo-600"></i>
@@ -723,7 +729,6 @@
                             </div>
                         </div>
 
-                        <!-- Card 2: Medical & Wellness -->
                         <div class="bg-white p-8 rounded-2xl shadow-xl border-t-4 border-blue-600 card-hover">
                             <div class="flex items-center space-x-4">
                                 <i class="fas fa-heartbeat fa-2x text-blue-600"></i>
@@ -745,7 +750,6 @@
                             </div>
                         </div>
 
-                        <!-- Card 3: Raise a Concern / Confidential Reporting -->
                         <div class="bg-white p-8 rounded-2xl shadow-xl border-t-4 border-purple-600 card-hover">
                             <div class="flex items-center space-x-4">
                                 <i class="fas fa-comment-dots fa-2x text-purple-600"></i>
@@ -791,7 +795,6 @@
                     <h2 class="text-4xl font-extrabold text-gray-900 mt-20 mb-12 text-center">In Trouble? Reach Out Now.</h2>
 
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                        <!-- Card 4: Student & Peer Support (UPDATED WITH FORM) -->
                         <div class="bg-white p-8 rounded-2xl shadow-xl border-t-4 border-indigo-600 card-hover">
                             <div class="flex items-center space-x-4">
                                 <i class="fas fa-user-friends fa-2x text-indigo-600"></i>
@@ -825,7 +828,6 @@
                             </form>
                         </div>
 
-                        <!-- Card 5: Direct Access to Management -->
                         <div class="bg-white p-8 rounded-2xl shadow-xl border-t-4 border-teal-600 card-hover">
                             <div class="flex items-center space-x-4">
                                 <i class="fas fa-building fa-2x text-teal-600"></i>
@@ -844,9 +846,6 @@
                 </div>
             </section>
         </div>
-        <!-- END NEW SAFETY NET PAGE -->
-        
-        <!-- NEW AI TECH HUB PAGE -->
         <div id="aiTechHub" class="page">
             <section class="relative py-32 bg-indigo-700 text-white overflow-hidden">
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -862,21 +861,18 @@
                     <h2 class="text-3xl font-extrabold text-gray-900 mb-12 text-center">AI Tools for Productivity</h2>
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        <!-- ChatGPT -->
                         <a href="https://chat.openai.com/" target="_blank" class="p-6 bg-white rounded-2xl shadow-xl border-t-4 border-green-500 card-hover">
                             <h3 class="text-2xl font-bold text-gray-900">ChatGPT</h3>
                             <p class="mt-2 text-gray-600">Use AI to write circulars, reports, or creative ideas instantly.</p>
                             <p class="mt-4 text-green-600 font-semibold flex items-center">Open ChatGPT &rarr;</p>
                         </a>
 
-                        <!-- Google Gemini -->
                         <a href="https://gemini.google.com/" target="_blank" class="p-6 bg-white rounded-2xl shadow-xl border-t-4 border-indigo-500 card-hover">
                             <h3 class="text-2xl font-bold text-gray-900">Google Gemini</h3>
                             <p class="mt-2 text-gray-600">Quickly generate slides, reports, and research insights.</p>
                             <p class="mt-4 text-indigo-600 font-semibold flex items-center">Open Gemini &rarr;</p>
                         </a>
 
-                        <!-- Claude -->
                         <a href="https://claude.ai/" target="_blank" class="p-6 bg-white rounded-2xl shadow-xl border-t-4 border-amber-500 card-hover">
                             <h3 class="text-2xl font-bold text-gray-900">Claude</h3>
                             <p class="mt-2 text-gray-600">Get structured, professional writing help from Claude AI.</p>
@@ -885,14 +881,12 @@
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8 max-w-4xl mx-auto">
-                        <!-- Perplexity -->
                         <a href="https://www.perplexity.ai/" target="_blank" class="p-6 bg-white rounded-2xl shadow-xl border-t-4 border-purple-500 card-hover">
                             <h3 class="text-2xl font-bold text-gray-900">Perplexity</h3>
                             <p class="mt-2 text-gray-600">Research smarter with AI-powered search and summaries.</p>
                             <p class="mt-4 text-purple-600 font-semibold flex items-center">Open Perplexity &rarr;</p>
                         </a>
 
-                        <!-- GitHub Copilot -->
                         <a href="https://github.com/features/copilot" target="_blank" class="p-6 bg-white rounded-2xl shadow-xl border-t-4 border-gray-500 card-hover">
                             <h3 class="text-2xl font-bold text-gray-900">GitHub Copilot</h3>
                             <p class="mt-2 text-gray-600">Use AI to help you code, automate tasks, and develop faster.</p>
@@ -907,9 +901,7 @@
                 </div>
             </section>
         </div>
-        <!-- END AI TECH HUB PAGE -->
-        
-    </main>
+        </main>
     
     <footer class="bg-gray-900 text-gray-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -937,9 +929,7 @@
                     <h4 class="text-lg font-semibold text-white uppercase tracking-wider">Quick Links</h4>
                     <ul class="mt-4 space-y-3">
                         <li><a href="#" onclick="showPage('home')" class="hover:text-white transition">Home</a></li>
-                        <!-- NEW: Tech Usage Link in Footer -->
                         <li><a href="#" onclick="showPage('aiTechHub')" class="hover:text-white transition">Tech Usage</a></li>
-                        <!-- UPDATED: Safety Net Link in Footer (Now professional indigo) -->
                         <li><a href="#" onclick="showPage('safetyNet')" class="hover:text-indigo-400 text-indigo-300 transition font-bold">Safety Net / Help</a></li>
                         <li><a href="#" onclick="showPage('events')" class="hover:text-white transition">Events</a></li>
                         <li><a href="#" onclick="showPage('elections')" class="hover:text-white transition">Elections</a></li>
@@ -970,7 +960,53 @@
         // Store the active page ID
         let currentPage = 'home';
 
-        // Function to show a specific page
+        // --- Data Mocking (Simulates DB/Backend Data Fetching) ---
+        // NOTE: In your live system, replace these arrays with data retrieved via fetch()
+        
+        const MOCK_SCHEDULE_DATA = [
+            { title: "Nomination Filing Starts", date: "2025-04-01", status: "completed" },
+            { title: "Last Date for Nomination", date: "2025-04-05", status: "current" },
+            { title: "Campaigning Period", date: "2025-04-06 to 2025-04-09", status: "upcoming" },
+            { title: "Voting Day", date: "2025-04-10", status: "live" }, // Mocked as LIVE for demonstration
+            { title: "Results Announcement", date: "2025-04-10 (Evening)", status: "upcoming" },
+        ];
+
+        const MOCK_ANNOUNCEMENT_DATA = [
+            { title: "Mandatory Manifestos Submission", content: "All candidates must submit their manifestos to the Electoral Commission by 5 PM today.", date: "2025-04-04" },
+            { title: "Change in Debate Venue", content: "The Presidential debate venue is moved to LT-3, due to capacity concerns.", date: "2025-04-03" },
+        ];
+
+        const MOCK_POSITIONS_AND_CANDIDATES = [
+            {
+                position: "President, Student Gymkhana",
+                block: "Institute Wide",
+                candidates: [
+                    { id: 'pres1', name: "Arjun Mehta", roll: "B21CS001", manifesto: "Vision 2026: Campus Infrastructure & Digitalization.", image: "https://placehold.co/100x100/4F46E5/FFFFFF?text=AM" },
+                    { id: 'pres2', name: "Priya Sharma", roll: "M22ME005", manifesto: "Focus on student welfare, mental health, and research grants.", image: "https://placehold.co/100x100/D946EF/FFFFFF?text=PS" },
+                    { id: 'nota_pres', name: "None of the Above (NOTA)", roll: "NOTA", manifesto: "Registering dissent if no candidate is deemed suitable.", image: "" },
+                ]
+            },
+            {
+                position: "General Secretary, Cultural Council",
+                block: "Cultural Activities",
+                candidates: [
+                    { id: 'cult1', name: "Karan Singh", roll: "B22EE012", manifesto: "Bringing back 'Alankar' fest, better club funding.", image: "https://placehold.co/100x100/F43F5E/FFFFFF?text=KS" },
+                    { id: 'cult2', name: "Nisha Patel", roll: "B23CH007", manifesto: "Diversity in events, supporting traditional arts.", image: "https://placehold.co/100x100/F43F5E/FFFFFF?text=NP" },
+                    { id: 'nota_cult', name: "None of the Above (NOTA)", roll: "NOTA", manifesto: "Registering dissent if no candidate is deemed suitable.", image: "" },
+                ]
+            },
+            {
+                position: "Hall Secretary, CVR Hall",
+                block: "Hostel Affairs",
+                candidates: [
+                    { id: 'hall1', name: "Vivek Yadav", roll: "B23ME045", manifesto: "Better common rooms and mess quality improvement.", image: "https://placehold.co/100x100/16A34A/FFFFFF?text=VY" },
+                    { id: 'nota_hall', name: "None of the Above (NOTA)", roll: "NOTA", manifesto: "Registering dissent if no candidate is deemed suitable.", image: "" },
+                ]
+            }
+        ];
+
+        // --- Core Navigation and Utility Functions ---
+
         function showPage(pageId) {
             // Hide the current page
             const currentPageEl = document.getElementById(currentPage);
@@ -992,199 +1028,13 @@
 
             // Close any open menus
             closeAllMenus();
+
+            // Initialize elections content if navigating to the elections page
+            if (pageId === 'elections') {
+                initializeElectionsPage();
+            }
         }
-        //
-        // --- Elections Page Logic (Student View) ---
-
-// Mock Data Structure (Simulating your Admin Backend data)
-// In a live system, this data would come from:
-// fetch('/api/getElectionData').then(res => res.json())
-
-const MOCK_SCHEDULE_DATA = [
-    { title: "Nomination Filing Starts", date: "2025-04-01", status: "completed" },
-    { title: "Last Date for Nomination", date: "2025-04-05", status: "current" },
-    { title: "Campaigning Period", date: "2025-04-06 to 2025-04-09", status: "upcoming" },
-    { title: "Voting Day", date: "2025-04-10", status: "upcoming" },
-    { title: "Results Announcement", date: "2025-04-10 (Evening)", status: "upcoming" },
-];
-
-const MOCK_ANNOUNCEMENT_DATA = [
-    { title: "Mandatory Manifestos Submission", content: "All candidates must submit their manifestos to the Electoral Commission by 5 PM today.", date: "Nov 12, 2025" },
-    { title: "Change in Debate Venue", content: "The Presidential debate venue is moved to LT-3, due to capacity concerns.", date: "Nov 10, 2025" },
-];
-
-const MOCK_POSITIONS_AND_CANDIDATES = [
-    {
-        position: "President, Student Gymkhana",
-        block: "Institute Wide",
-        candidates: [
-            { name: "Arjun Mehta", roll: "B21CS001", manifesto: "Vision 2026: Campus Infrastructure & Digitalization.", image: "https://placehold.co/100x100/4F46E5/FFFFFF?text=AM" },
-            { name: "Priya Sharma", roll: "M22ME005", manifesto: "Focus on student welfare, mental health, and research grants.", image: "https://placehold.co/100x100/D946EF/FFFFFF?text=PS" },
-        ]
-    },
-    {
-        position: "General Secretary, Cultural Council",
-        block: "Cultural Activities",
-        candidates: [
-            { name: "Karan Singh", roll: "B22EE012", manifesto: "Bringing back 'Alankar' fest, better club funding.", image: "https://placehold.co/100x100/F43F5E/FFFFFF?text=KS" },
-            { name: "Nisha Patel", roll: "B23CH007", manifesto: "Diversity in events, supporting traditional arts.", image: "https://placehold.co/100x100/F43F5E/FFFFFF?text=NP" },
-        ]
-    },
-    // Mock data for the position added in the admin panel example:
-    {
-        position: "General Secretary, SciTech Council",
-        block: "SciTech Activities",
-        candidates: [
-            { name: "Amit Saini", roll: "B22ME045", manifesto: "Robotics lab upgrade and Hackathon support.", image: "https://placehold.co/100x100/16A34A/FFFFFF?text=AS" },
-        ]
-    }
-];
-
-// --- Rendering Functions ---
-
-function renderElectionSchedule() {
-    const scheduleList = document.getElementById('election-schedule-list');
-    scheduleList.innerHTML = '';
-    
-    MOCK_SCHEDULE_DATA.forEach(item => {
-        let statusClass = '';
-        if (item.status === 'completed') {
-            statusClass = 'text-green-600 font-medium';
-        } else if (item.status === 'current') {
-            statusClass = 'text-red-600 font-bold';
-        } else {
-            statusClass = 'text-gray-600';
-        }
-
-        const listItem = document.createElement('li');
-        listItem.className = 'flex justify-between items-start border-b pb-2';
-        listItem.innerHTML = `
-            <div>
-                <span class="font-medium text-gray-800">${item.title}</span>
-                <p class="text-xs ${statusClass}">(${item.status.toUpperCase()})</p>
-            </div>
-            <span class="font-bold text-sm text-indigo-600">${item.date}</span>
-        `;
-        scheduleList.appendChild(listItem);
-    });
-}
-
-function renderAnnouncements() {
-    const announcementList = document.getElementById('election-announcements');
-    announcementList.innerHTML = '';
-
-    if (MOCK_ANNOUNCEMENT_DATA.length === 0) {
-        announcementList.innerHTML = '<p class="text-gray-500">No announcements yet.</p>';
-        return;
-    }
-
-    MOCK_ANNOUNCEMENT_DATA.forEach(announcement => {
-        const card = document.createElement('div');
-        card.className = 'border-l-4 border-yellow-600 bg-yellow-50 p-3 rounded-lg';
-        card.innerHTML = `
-            <p class="font-bold text-gray-900">${announcement.title}</p>
-            <p class="text-sm text-gray-700 mt-1">${announcement.content}</p>
-            <p class="text-xs text-gray-500 mt-2">Posted: ${announcement.date}</p>
-        `;
-        announcementList.appendChild(card);
-    });
-}
-
-function renderCandidates() {
-    const container = document.getElementById('positions-and-candidates-container');
-    container.innerHTML = '';
-
-    if (MOCK_POSITIONS_AND_CANDIDATES.length === 0) {
-        container.innerHTML = '<p class="text-gray-500 text-lg">No official positions have been announced for the current election cycle.</p>';
-        return;
-    }
-
-    MOCK_POSITIONS_AND_CANDIDATES.forEach(positionData => {
-        const positionBlock = document.createElement('div');
-        positionBlock.className = 'border-2 border-indigo-200 bg-white p-6 rounded-xl shadow-md';
         
-        // Position Header
-        let candidatesHtml = '';
-        if (positionData.candidates.length > 0) {
-            candidatesHtml = positionData.candidates.map(candidate => `
-                <div class="flex items-start p-4 bg-gray-50 rounded-lg border border-gray-200 transition-shadow hover:shadow-lg">
-                    <img class="h-16 w-16 rounded-full object-cover mr-4 shadow-md" src="${candidate.image}" alt="Candidate Image">
-                    <div class="flex-1">
-                        <p class="text-xl font-extrabold text-indigo-700">${candidate.name}</p>
-                        <p class="text-sm text-gray-500">Roll No: ${candidate.roll}</p>
-                        <p class="mt-2 text-gray-700 italic border-l-2 pl-3 border-rose-500">Manifesto: ${candidate.manifesto}</p>
-                    </div>
-                    <div class="ml-4 flex-shrink-0">
-                        <button class="text-sm text-white bg-rose-500 py-1 px-3 rounded hover:bg-rose-600 transition">
-                            Details
-                        </button>
-                    </div>
-                </div>
-            `).join('');
-        } else {
-            candidatesHtml = '<p class="text-gray-500 p-4">No candidates finalized for this post yet.</p>';
-        }
-
-        positionBlock.innerHTML = `
-            <h3 class="text-3xl font-extrabold text-gray-900 border-b pb-3 mb-6">
-                ${positionData.position}
-                <span class="text-base font-medium text-indigo-500 ml-3">(${positionData.block})</span>
-            </h3>
-            <div class="space-y-4">
-                ${candidatesHtml}
-            </div>
-        `;
-        container.appendChild(positionBlock);
-    });
-}
-
-// Global initialization function for the elections page
-function initializeElectionsPage() {
-    renderElectionSchedule();
-    renderAnnouncements();
-    renderCandidates();
-
-    // Determine voting status dynamically based on current date vs MOCK_SCHEDULE_DATA
-    const votingStatusEl = document.getElementById('voting-status');
-    const voteButtonEl = document.getElementById('vote-button');
-    const votingDay = MOCK_SCHEDULE_DATA.find(item => item.title === "Voting Day");
-    const today = new Date().toISOString().slice(0, 10);
-
-    if (votingDay && votingDay.date === today) {
-        // Assume voting is live only on the exact day
-        votingStatusEl.textContent = "VOTING IS LIVE NOW!";
-        votingStatusEl.classList.remove('text-red-600');
-        votingStatusEl.classList.add('text-green-600', 'font-bold', 'text-lg');
-        voteButtonEl.classList.remove('hidden');
-        voteButtonEl.disabled = false;
-        voteButtonEl.textContent = "CLICK TO CAST YOUR VOTE (LIVE)";
-    } else {
-        // Mock the date from the schedule data for display
-        const dateText = votingDay ? votingDay.date : "TBD";
-        votingStatusEl.textContent = `Voting is CLOSED. Voting Day: ${dateText}`;
-    }
-}
-
-// --- DOMContentLoaded check and hook ---
-document.addEventListener('DOMContentLoaded', () => {
-    // Other page initializations (already present in your original script)
-    // ...
-
-    // Hook the election initialization logic into the page change
-    const originalShowPage = window.showPage;
-    window.showPage = function(pageId) {
-        originalShowPage(pageId);
-        if (pageId === 'elections') {
-            initializeElectionsPage();
-        }
-    };
-
-    // Ensure initial render runs if the page starts on 'elections'
-    if (currentPage === 'elections') {
-         initializeElectionsPage();
-    }
-});
-        // Function to toggle the mobile menu
         function toggleMobileMenu() {
             const menu = document.getElementById('mobile-menu');
             const iconOpen = document.getElementById('menu-icon-open');
@@ -1195,13 +1045,11 @@ document.addEventListener('DOMContentLoaded', () => {
             iconClose.classList.toggle('hidden');
         }
 
-        // Function to toggle the desktop dropdown
         function toggleDropdown(dropdownId) {
             const dropdown = document.getElementById(dropdownId);
             dropdown.classList.toggle('hidden');
         }
 
-        // Helper function to close all menus
         function closeAllMenus() {
             // Close mobile menu
             const menu = document.getElementById('mobile-menu');
@@ -1220,18 +1068,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
         
-        // Close dropdown when clicking outside
-        document.addEventListener('click', function(event) {
-            const desktopDropdownContainer = document.getElementById('desktop-dropdown-container');
-            const desktopDropdown = document.getElementById('desktop-dropdown');
-
-            if (desktopDropdownContainer && !desktopDropdownContainer.contains(event.target) && !desktopDropdown.classList.contains('hidden')) {
-                desktopDropdown.classList.add('hidden');
-            }
-        });
-
-        // NEW: Modal Control Functions
-        // Required for the Medical Emergency button functionality
         function showModal(modalId) {
             const modal = document.getElementById(modalId);
             if (modal) {
@@ -1250,7 +1086,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // NEW: Function to handle the CONCERN form submission
         function submitConcern(event) {
             event.preventDefault(); // Stop the default form submission behavior
 
@@ -1278,7 +1113,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 5000);
         }
 
-        // NEW: Function to handle the PEER SUPPORT form submission
         function submitPeerSupport(event) {
             event.preventDefault(); 
 
@@ -1308,15 +1142,213 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 5000);
         }
 
-        // Initialize the first page on load
+        // --- Election Specific Functions ---
+
+        function renderElectionSchedule() {
+            const scheduleList = document.getElementById('election-schedule-list');
+            const votingStatusEl = document.getElementById('voting-status');
+            const voteButtonEl = document.getElementById('vote-button');
+            scheduleList.innerHTML = '';
+            
+            let isVotingLive = false;
+
+            MOCK_SCHEDULE_DATA.forEach(item => {
+                let statusClass = 'text-gray-600';
+                if (item.status === 'completed') {
+                    statusClass = 'text-green-600 font-medium';
+                } else if (item.status === 'current') {
+                    statusClass = 'text-orange-600 font-bold';
+                } else if (item.status === 'live') {
+                    statusClass = 'text-red-600 font-bold';
+                    isVotingLive = true;
+                }
+
+                const listItem = document.createElement('li');
+                listItem.className = 'flex justify-between items-start border-b pb-2';
+                listItem.innerHTML = `
+                    <div>
+                        <span class="font-medium text-gray-800">${item.title}</span>
+                        <p class="text-xs ${statusClass}">(${item.status.toUpperCase()})</p>
+                    </div>
+                    <span class="font-bold text-sm text-indigo-600">${item.date}</span>
+                `;
+                scheduleList.appendChild(listItem);
+            });
+
+            // Update Voting Status UI
+            if (isVotingLive) {
+                votingStatusEl.textContent = "VOTING IS LIVE NOW! Click VOTE NOW.";
+                votingStatusEl.classList.remove('text-red-600');
+                votingStatusEl.classList.add('text-green-600', 'font-bold', 'text-lg');
+                voteButtonEl.classList.remove('hidden');
+                voteButtonEl.disabled = false;
+                voteButtonEl.textContent = "CLICK TO CAST YOUR VOTE (LIVE)";
+            } else {
+                votingStatusEl.textContent = "Voting is currently CLOSED. Check schedule for date.";
+                votingStatusEl.classList.add('text-red-600');
+                voteButtonEl.classList.add('hidden');
+                voteButtonEl.disabled = true;
+            }
+        }
+
+        function renderAnnouncements() {
+            const announcementList = document.getElementById('election-announcements');
+            announcementList.innerHTML = '';
+
+            if (MOCK_ANNOUNCEMENT_DATA.length === 0) {
+                announcementList.innerHTML = '<p class="text-gray-500">No announcements yet.</p>';
+                return;
+            }
+
+            MOCK_ANNOUNCEMENT_DATA.forEach(announcement => {
+                const card = document.createElement('div');
+                card.className = 'border-l-4 border-yellow-600 bg-yellow-50 p-3 rounded-lg';
+                card.innerHTML = `
+                    <p class="font-bold text-gray-900">${announcement.title}</p>
+                    <p class="text-sm text-gray-700 mt-1">${announcement.content}</p>
+                    <p class="text-xs text-gray-500 mt-2">Posted: ${announcement.date}</p>
+                `;
+                announcementList.appendChild(card);
+            });
+        }
+
+        function renderCandidates() {
+            const container = document.getElementById('positions-and-candidates-container');
+            container.innerHTML = '';
+
+            if (MOCK_POSITIONS_AND_CANDIDATES.length === 0) {
+                container.innerHTML = '<p class="text-gray-500 text-lg">No official positions have been announced for the current election cycle.</p>';
+                return;
+            }
+
+            MOCK_POSITIONS_AND_CANDIDATES.forEach(positionData => {
+                const positionBlock = document.createElement('div');
+                positionBlock.className = 'border-2 border-indigo-200 bg-white p-6 rounded-xl shadow-md';
+                
+                let candidatesHtml = '';
+                if (positionData.candidates.length > 0) {
+                    candidatesHtml = positionData.candidates.map(candidate => `
+                        <div class="flex items-start p-4 bg-gray-50 rounded-lg border border-gray-200 transition-shadow hover:shadow-lg">
+                            <img class="h-16 w-16 rounded-full object-cover mr-4 shadow-md ${candidate.roll === 'NOTA' ? 'bg-gray-400' : ''}" src="${candidate.image || 'https://placehold.co/100x100/E5E7EB/6B7280?text=NOTA'}" alt="Candidate Image">
+                            <div class="flex-1">
+                                <p class="text-xl font-extrabold ${candidate.roll === 'NOTA' ? 'text-gray-600' : 'text-indigo-700'}">${candidate.name}</p>
+                                <p class="text-sm text-gray-500">Roll No: ${candidate.roll === 'NOTA' ? 'N/A' : candidate.roll}</p>
+                                <p class="mt-2 text-gray-700 italic border-l-2 pl-3 border-rose-500">Manifesto: ${candidate.manifesto}</p>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    candidatesHtml = '<p class="text-gray-500 p-4">No candidates finalized for this post yet.</p>';
+                }
+
+                positionBlock.innerHTML = `
+                    <h3 class="text-3xl font-extrabold text-gray-900 border-b pb-3 mb-6">
+                        ${positionData.position}
+                        <span class="text-base font-medium text-indigo-500 ml-3">(${positionData.block})</span>
+                    </h3>
+                    <div class="space-y-4">
+                        ${candidatesHtml}
+                    </div>
+                `;
+                container.appendChild(positionBlock);
+            });
+        }
+        
+        function createVotingForm() {
+            const form = document.getElementById('voting-form');
+            form.innerHTML = ''; // Clear previous content
+
+            MOCK_POSITIONS_AND_CANDIDATES.forEach((positionData, index) => {
+                const fieldsetId = `position-${index}`;
+                const fieldset = document.createElement('fieldset');
+                fieldset.className = 'p-4 border border-gray-300 rounded-lg bg-gray-50';
+                fieldset.innerHTML = `<legend class="text-xl font-bold text-gray-900 px-2">${positionData.position}</legend>`;
+
+                positionData.candidates.forEach(candidate => {
+                    const candidateId = `vote-${candidate.id}`;
+                    const label = document.createElement('label');
+                    label.className = 'flex items-center space-x-3 p-3 mt-2 border rounded-md cursor-pointer hover:bg-white transition bg-white';
+                    label.innerHTML = `
+                        <input type="radio" name="${positionData.position}" value="${candidate.id}" id="${candidateId}" required class="h-4 w-4 text-indigo-600 border-gray-300 focus:ring-indigo-500">
+                        <img class="h-8 w-8 rounded-full object-cover shadow-sm" src="${candidate.image || 'https://placehold.co/100x100/E5E7EB/6B7280?text=N/A'}" alt="${candidate.name} Image">
+                        <span class="text-base font-medium text-gray-900">${candidate.name}</span>
+                        <span class="text-xs text-gray-500">(${candidate.roll === 'NOTA' ? 'NOTA' : candidate.roll})</span>
+                    `;
+                    fieldset.appendChild(label);
+                });
+
+                form.appendChild(fieldset);
+            });
+            
+            // Add final submit listener
+            form.onsubmit = submitFinalVote;
+        }
+        
+        function showVotingModal() {
+            createVotingForm();
+            // Clear message element from previous votes
+            const messageEl = document.getElementById('vote-message');
+            messageEl.classList.add('hidden');
+            showModal('voting-modal');
+        }
+
+        function submitFinalVote(e) {
+            e.preventDefault();
+            
+            const form = e.target;
+            const messageEl = document.getElementById('vote-message');
+            const formData = new FormData(form);
+            const votes = {};
+
+            MOCK_POSITIONS_AND_CANDIDATES.forEach(positionData => {
+                const votedCandidateId = formData.get(positionData.position);
+                votes[positionData.position] = votedCandidateId || 'UNVOTED';
+            });
+            
+            // Basic Validation Check (ensure all positions are voted)
+            const unvotedPositions = Object.values(votes).filter(v => v === 'UNVOTED');
+            if (unvotedPositions.length > 0) {
+                 messageEl.textContent = `ERROR: You must vote for all ${MOCK_POSITIONS_AND_CANDIDATES.length} positions. You missed ${unvotedPositions.length}.`;
+                 messageEl.classList.remove('hidden', 'bg-green-100', 'text-green-700');
+                 messageEl.classList.add('bg-red-100', 'text-red-700', 'block');
+                 return;
+            }
+
+            // Simulate server submission
+            console.log("Submitting Votes:", votes);
+            
+            messageEl.textContent = "SUCCESS! Your votes have been securely cast. Thank you for participating in the Gymkhana Election.";
+            messageEl.classList.remove('hidden', 'bg-red-100', 'text-red-700');
+            messageEl.classList.add('bg-green-100', 'text-green-700', 'block');
+
+            // Disable the vote button and close modal after a delay (simulating successful block on repeat voting)
+            document.getElementById('vote-button').disabled = true;
+            document.getElementById('vote-button').textContent = "VOTE CASTED";
+            
+            setTimeout(() => {
+                hideModal('voting-modal');
+            }, 3000);
+
+            // *** NOTE on DB/Backend: Here you would use fetch() to send the 'votes' object to your server. ***
+            // Example: fetch('/api/elections/submit-vote', { method: 'POST', body: JSON.stringify(votes), headers: {'Content-Type': 'application/json'} });
+        }
+
+
+        function initializeElectionsPage() {
+            renderElectionSchedule();
+            renderAnnouncements();
+            renderCandidates();
+        }
+
+        // --- DOMContentLoaded check and hook ---
         document.addEventListener('DOMContentLoaded', () => {
-            // Ensure home is shown first, but technically any registered page in the HTML can be shown
-            showPage('home'); 
+            
+            // Show dashboard on initial load
+            showPage('home');
         });
         
     </script>
-    
-    <!-- This script tag references a file which is not part of this output, but is required to remain in the HTML as requested. -->
+
     <script src="public-gymkhana.js" defer></script>
 
 </body>
