@@ -250,29 +250,39 @@
                     </div>
                 </div>
 <div id="page-content-elections" class="page-content">
-    <!-- Election Header -->
+    <!-- Main Election Header -->
     <div class="mb-8">
         <div class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 text-white">
-            <h2 class="text-3xl font-bold mb-2">HORC Election-2025 Admin Panel</h2>
-            <p class="text-lg opacity-90">IIT Indore - Complete Election Management System</p>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-6">
-                <div class="bg-white/20 p-4 rounded-lg">
-                    <p class="text-2xl font-bold" id="total-voters">2891</p>
-                    <p class="text-sm opacity-90">Total Voters</p>
+            <div class="flex justify-between items-center">
+                <div>
+                    <h2 class="text-3xl font-bold mb-2">Admin Panel for HORC Election-2025, IIT Indore</h2>
+                    <p class="text-lg opacity-90">Complete Election Management System</p>
                 </div>
-                <div class="bg-white/20 p-4 rounded-lg">
-                    <p class="text-2xl font-bold" id="votes-casted">1437</p>
-                    <p class="text-sm opacity-90">Votes Casted</p>
-                </div>
-                <div class="bg-white/20 p-4 rounded-lg">
-                    <p class="text-2xl font-bold" id="voting-percent">49.71%</p>
-                    <p class="text-sm opacity-90">Voting %</p>
-                </div>
-                <div class="bg-white/20 p-4 rounded-lg">
-                    <p class="text-2xl font-bold" id="time-remaining">ACTIVE</p>
-                    <p class="text-sm opacity-90">Status</p>
+                <div class="text-right">
+                    <div class="text-2xl font-bold">Total Vote Casted: <span id="total-votes-count">1437</span></div>
+                    <div class="text-sm opacity-90">Young Percent: 49.71%</div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+            <div class="text-2xl font-bold text-gray-900">2891</div>
+            <div class="text-sm text-gray-600 mt-1">Total Voters</div>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+            <div class="text-2xl font-bold text-gray-900">1437</div>
+            <div class="text-sm text-gray-600 mt-1">Votes Casted</div>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+            <div class="text-2xl font-bold text-gray-900">49.71%</div>
+            <div class="text-sm text-gray-600 mt-1">Voting %</div>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+            <div class="text-2xl font-bold text-green-600">ACTIVE</div>
+            <div class="text-sm text-gray-600 mt-1">Election Status</div>
         </div>
     </div>
 
@@ -280,7 +290,7 @@
     <div class="bg-white rounded-2xl shadow-lg mb-8">
         <div class="border-b border-gray-200">
             <nav class="flex flex-wrap -mb-px">
-                <button id="tab-election-details" class="tab-btn py-4 px-6 text-lg font-medium border-b-2 border-transparent hover:text-blue-600 hover:border-blue-300 transition-all duration-200 active" data-tab="election-details">
+                <button id="tab-election-details" class="tab-btn py-4 px-6 text-lg font-medium border-b-2 border-blue-600 text-blue-600 transition-all duration-200 active" data-tab="election-details">
                     <i class="fas fa-info-circle mr-2"></i>Election Details
                 </button>
                 <button id="tab-candidate-management" class="tab-btn py-4 px-6 text-lg font-medium border-b-2 border-transparent hover:text-blue-600 hover:border-blue-300 transition-all duration-200" data-tab="candidate-management">
@@ -292,9 +302,6 @@
                 <button id="tab-announcements" class="tab-btn py-4 px-6 text-lg font-medium border-b-2 border-transparent hover:text-blue-600 hover:border-blue-300 transition-all duration-200" data-tab="announcements">
                     <i class="fas fa-bullhorn mr-2"></i>Announcements
                 </button>
-                <button id="tab-clubs" class="tab-btn py-4 px-6 text-lg font-medium border-b-2 border-transparent hover:text-blue-600 hover:border-blue-300 transition-all duration-200" data-tab="clubs">
-                    <i class="fas fa-users mr-2"></i>Clubs & Councils
-                </button>
             </nav>
         </div>
 
@@ -302,103 +309,51 @@
         <div class="p-6">
             <!-- Tab 1: Election Details Form -->
             <div id="tab-content-election-details" class="tab-content active">
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    <div class="lg:col-span-2">
-                        <form id="election-details-form" class="bg-gray-50 p-6 rounded-lg space-y-6">
-                            <h3 class="text-2xl font-bold text-gray-900 mb-4">Gymkhana Election Details</h3>
-                            
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <label for="election-title" class="block text-sm font-medium text-gray-700 mb-2">Election Title *</label>
-                                    <input type="text" id="election-title" name="title" value="HORC Election-2025" required 
-                                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200">
-                                </div>
-                                <div>
-                                    <label for="election-type" class="block text-sm font-medium text-gray-700 mb-2">Election Type *</label>
-                                    <select id="election-type" name="type" required 
-                                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200">
-                                        <option value="general">General Gymkhana Elections</option>
-                                        <option value="bypoll">By-Poll Elections</option>
-                                        <option value="special">Special Elections</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <label for="election-start" class="block text-sm font-medium text-gray-700 mb-2">Start Date & Time *</label>
-                                    <input type="datetime-local" id="election-start" name="startDate" required 
-                                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200">
-                                </div>
-                                <div>
-                                    <label for="election-end" class="block text-sm font-medium text-gray-700 mb-2">End Date & Time *</label>
-                                    <input type="datetime-local" id="election-end" name="endDate" required 
-                                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200">
-                                </div>
-                            </div>
-
+                <div class="max-w-4xl mx-auto">
+                    <form id="election-details-form" class="bg-gray-50 p-8 rounded-lg space-y-6">
+                        <h3 class="text-2xl font-bold text-gray-900 mb-6 text-center">Election Configuration</h3>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <label for="total-voters-input" class="block text-sm font-medium text-gray-700 mb-2">Total Eligible Voters *</label>
-                                <input type="number" id="total-voters-input" name="totalVoters" value="2891" required 
-                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200">
+                                <label for="election-title" class="block text-sm font-medium text-gray-700 mb-2">Election Title *</label>
+                                <input type="text" id="election-title" name="title" value="HORC Election-2025" required 
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                             </div>
-
                             <div>
-                                <label for="election-description" class="block text-sm font-medium text-gray-700 mb-2">Election Description & Instructions</label>
-                                <textarea id="election-description" name="description" rows="4" 
-                                          class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200" 
-                                          placeholder="Enter detailed election description, rules, and instructions for voters...">HORC Election-2025 for various hostel positions across all hostels of IIT Indore. Each voter can vote for one candidate per position in their respective hostel.</textarea>
-                            </div>
-
-                            <div class="flex space-x-4">
-                                <button type="submit" class="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors duration-200 flex items-center">
-                                    <i class="fas fa-save mr-2"></i>Save Election Details
-                                </button>
-                                <button type="button" id="preview-election" class="bg-green-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors duration-200 flex items-center">
-                                    <i class="fas fa-eye mr-2"></i>Preview Election
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-
-                    <div class="lg:col-span-1">
-                        <div class="bg-white p-6 rounded-lg shadow-lg border border-gray-200">
-                            <h4 class="text-lg font-bold text-gray-900 mb-4">Quick Actions</h4>
-                            <div class="space-y-4">
-                                <button id="start-election" class="w-full bg-green-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-green-700 transition-colors duration-200 flex items-center justify-center">
-                                    <i class="fas fa-play mr-2"></i>Start Election
-                                </button>
-                                <button id="pause-election" class="w-full bg-yellow-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-yellow-700 transition-colors duration-200 flex items-center justify-center">
-                                    <i class="fas fa-pause mr-2"></i>Pause Election
-                                </button>
-                                <button id="end-election" class="w-full bg-red-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-red-700 transition-colors duration-200 flex items-center justify-center">
-                                    <i class="fas fa-stop mr-2"></i>End Election
-                                </button>
-                            </div>
-
-                            <div class="mt-6 pt-6 border-t border-gray-200">
-                                <h4 class="text-lg font-bold text-gray-900 mb-3">Election Statistics</h4>
-                                <div class="space-y-3 text-sm">
-                                    <div class="flex justify-between">
-                                        <span class="text-gray-600">Nominations Received:</span>
-                                        <span class="font-semibold">42</span>
-                                    </div>
-                                    <div class="flex justify-between">
-                                        <span class="text-gray-600">Positions Contested:</span>
-                                        <span class="font-semibold">15</span>
-                                    </div>
-                                    <div class="flex justify-between">
-                                        <span class="text-gray-600">Hostels Participating:</span>
-                                        <span class="font-semibold">6</span>
-                                    </div>
-                                    <div class="flex justify-between">
-                                        <span class="text-gray-600">Last Updated:</span>
-                                        <span class="font-semibold" id="last-updated">Just now</span>
-                                    </div>
-                                </div>
+                                <label for="election-year" class="block text-sm font-medium text-gray-700 mb-2">Academic Year *</label>
+                                <input type="text" id="election-year" name="year" value="2025" required 
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                             </div>
                         </div>
-                    </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="election-start" class="block text-sm font-medium text-gray-700 mb-2">Start Date & Time *</label>
+                                <input type="datetime-local" id="election-start" name="startDate" required 
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+                            <div>
+                                <label for="election-end" class="block text-sm font-medium text-gray-700 mb-2">End Date & Time *</label>
+                                <input type="datetime-local" id="election-end" name="endDate" required 
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="total-voters-input" class="block text-sm font-medium text-gray-700 mb-2">Total Eligible Voters *</label>
+                            <input type="number" id="total-voters-input" name="totalVoters" value="2891" required 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+
+                        <div class="flex space-x-4 justify-center pt-4">
+                            <button type="submit" class="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors duration-200 flex items-center">
+                                <i class="fas fa-save mr-2"></i>Save Election Details
+                            </button>
+                            <button type="button" id="reset-election" class="bg-gray-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-gray-700 transition-colors duration-200 flex items-center">
+                                <i class="fas fa-redo mr-2"></i>Reset Election
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
 
@@ -408,19 +363,19 @@
                     <!-- Add Candidate Form -->
                     <div class="lg:col-span-1">
                         <form id="add-candidate-form" class="bg-white p-6 rounded-lg shadow-lg border border-gray-200 space-y-4 sticky top-28">
-                            <h3 class="text-xl font-bold text-gray-900 mb-2">Add New Candidate</h3>
+                            <h3 class="text-xl font-bold text-gray-900 mb-4">Add Candidate</h3>
                             
                             <div>
-                                <label for="candidate-name" class="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
+                                <label for="candidate-name" class="block text-sm font-medium text-gray-700 mb-1">Candidate Name *</label>
                                 <input type="text" id="candidate-name" name="name" required 
-                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200" 
-                                       placeholder="Enter candidate's full name">
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                                       placeholder="Enter full name">
                             </div>
 
                             <div>
                                 <label for="candidate-hostel" class="block text-sm font-medium text-gray-700 mb-1">Hostel *</label>
                                 <select id="candidate-hostel" name="hostel" required 
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200">
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                                     <option value="">Select Hostel</option>
                                     <option value="CVR">CVR Hostel</option>
                                     <option value="DA">DA Hostel</option>
@@ -434,7 +389,7 @@
                             <div>
                                 <label for="candidate-position" class="block text-sm font-medium text-gray-700 mb-1">Position *</label>
                                 <select id="candidate-position" name="position" required 
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200">
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                                     <option value="">Select Position</option>
                                     <option value="Hall Secretary">Hall Secretary</option>
                                     <option value="Dining Secretary">Dining Secretary</option>
@@ -445,9 +400,9 @@
                             </div>
 
                             <div>
-                                <label for="candidate-year" class="block text-sm font-medium text-gray-700 mb-1">Academic Year *</label>
-                                <select id="candidate-year" name="year" required 
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200">
+                                <label for="candidate-year" class="block text-sm font-medium text-gray-700 mb-1">Academic Year</label>
+                                <select id="candidate-year" name="year" 
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                                     <option value="">Select Year</option>
                                     <option value="1st Year">1st Year</option>
                                     <option value="2nd Year">2nd Year</option>
@@ -460,26 +415,26 @@
                             <div>
                                 <label for="candidate-department" class="block text-sm font-medium text-gray-700 mb-1">Department</label>
                                 <input type="text" id="candidate-department" name="department" 
-                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200" 
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
                                        placeholder="e.g., Computer Science">
                             </div>
 
                             <div>
-                                <label for="candidate-manifesto" class="block text-sm font-medium text-gray-700 mb-1">Manifesto (Brief)</label>
-                                <textarea id="candidate-manifesto" name="manifesto" rows="3" 
-                                          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200" 
-                                          placeholder="Brief description of candidate's agenda..."></textarea>
-                            </div>
-
-                            <div>
-                                <label for="candidate-image" class="block text-sm font-medium text-gray-700 mb-1">Profile Picture</label>
-                                <input type="file" id="candidate-image" name="image" accept="image/*" 
-                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                                <label for="initial-votes" class="block text-sm font-medium text-gray-700 mb-1">Initial Votes</label>
+                                <input type="number" id="initial-votes" name="initialVotes" value="0" 
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                             </div>
 
                             <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center">
                                 <i class="fas fa-user-plus mr-2"></i>Add Candidate
                             </button>
+
+                            <!-- Quick Add NOTA -->
+                            <div class="pt-4 border-t border-gray-200">
+                                <button type="button" id="add-nota-btn" class="w-full bg-gray-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-gray-700 transition-colors duration-200 flex items-center justify-center">
+                                    <i class="fas fa-user-slash mr-2"></i>Add NOTA for Position
+                                </button>
+                            </div>
                         </form>
                     </div>
 
@@ -488,7 +443,7 @@
                         <div class="bg-white rounded-lg shadow-lg border border-gray-200">
                             <div class="p-6 border-b border-gray-200">
                                 <div class="flex justify-between items-center">
-                                    <h3 class="text-2xl font-bold text-gray-900">All Candidates</h3>
+                                    <h3 class="text-2xl font-bold text-gray-900">Candidate Database</h3>
                                     <div class="flex space-x-3">
                                         <select id="filter-hostel" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                                             <option value="">All Hostels</option>
@@ -510,23 +465,10 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="overflow-x-auto">
-                                <table class="min-w-full divide-y divide-gray-200">
-                                    <thead class="bg-gray-50">
-                                        <tr>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Candidate</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Hostel</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Position</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Year</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Department</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="candidates-table-body" class="bg-white divide-y divide-gray-200">
-                                        <!-- Candidates will be populated here -->
-                                    </tbody>
-                                </table>
+                            
+                            <!-- Candidates by Hostel and Position -->
+                            <div id="candidates-display" class="p-6">
+                                <!-- Dynamic content will be loaded here -->
                             </div>
                         </div>
                     </div>
@@ -566,31 +508,31 @@
                             </div>
 
                             <div class="space-y-3">
+                                <button id="refresh-results" class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center">
+                                    <i class="fas fa-sync-alt mr-2"></i>Refresh Results
+                                </button>
                                 <button id="export-results" class="w-full bg-green-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-green-700 transition-colors duration-200 flex items-center justify-center">
                                     <i class="fas fa-file-export mr-2"></i>Export to Excel
                                 </button>
-                                <button id="generate-report" class="w-full bg-purple-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-purple-700 transition-colors duration-200 flex items-center justify-center">
-                                    <i class="fas fa-chart-pie mr-2"></i>Generate Report
-                                </button>
-                                <button id="declare-results" class="w-full bg-red-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-red-700 transition-colors duration-200 flex items-center justify-center">
+                                <button id="declare-winners" class="w-full bg-red-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-red-700 transition-colors duration-200 flex items-center justify-center">
                                     <i class="fas fa-trophy mr-2"></i>Declare Winners
                                 </button>
                             </div>
 
                             <div class="pt-4 border-t border-gray-200">
-                                <h4 class="text-lg font-bold text-gray-900 mb-3">Quick Stats</h4>
+                                <h4 class="text-lg font-bold text-gray-900 mb-3">Statistics</h4>
                                 <div class="space-y-2 text-sm">
                                     <div class="flex justify-between">
                                         <span class="text-gray-600">Total Candidates:</span>
                                         <span class="font-semibold" id="stat-total-candidates">0</span>
                                     </div>
                                     <div class="flex justify-between">
-                                        <span class="text-gray-600">Positions Decided:</span>
-                                        <span class="font-semibold" id="stat-positions-decided">0</span>
+                                        <span class="text-gray-600">Positions:</span>
+                                        <span class="font-semibold" id="stat-total-positions">0</span>
                                     </div>
                                     <div class="flex justify-between">
-                                        <span class="text-gray-600">Close Contests:</span>
-                                        <span class="font-semibold" id="stat-close-contests">0</span>
+                                        <span class="text-gray-600">Voting Completed:</span>
+                                        <span class="font-semibold" id="stat-voting-completed">0%</span>
                                     </div>
                                 </div>
                             </div>
@@ -598,60 +540,39 @@
                     </div>
 
                     <div class="lg:col-span-3">
-                        <!-- Live Results Dashboard -->
+                        <!-- Results Overview -->
                         <div class="bg-white rounded-lg shadow-lg border border-gray-200 p-6 mb-6">
                             <div class="flex justify-between items-center mb-6">
-                                <h3 class="text-2xl font-bold text-gray-900">Live Results Dashboard</h3>
-                                <button id="refresh-results" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200 flex items-center">
-                                    <i class="fas fa-sync-alt mr-2"></i>Refresh Results
-                                </button>
+                                <h3 class="text-2xl font-bold text-gray-900">Live Election Results</h3>
+                                <div class="text-sm text-gray-600">Last Updated: <span id="last-updated-time">Just now</span></div>
                             </div>
 
-                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6" id="results-summary-cards">
-                                <!-- Results summary cards will be populated here -->
-                            </div>
-
-                            <!-- Detailed Results Table -->
-                            <div class="mt-6">
-                                <h4 class="text-xl font-bold text-gray-900 mb-4">Detailed Results</h4>
-                                <div class="overflow-x-auto">
-                                    <table class="min-w-full bg-white border border-gray-300">
-                                        <thead class="bg-gray-50">
-                                            <tr>
-                                                <th class="px-4 py-3 text-left text-sm font-medium text-gray-700 uppercase">Hostel</th>
-                                                <th class="px-4 py-3 text-left text-sm font-medium text-gray-700 uppercase">Position</th>
-                                                <th class="px-4 py-3 text-left text-sm font-medium text-gray-700 uppercase">Candidate</th>
-                                                <th class="px-4 py-3 text-center text-sm font-medium text-gray-700 uppercase">Votes</th>
-                                                <th class="px-4 py-3 text-center text-sm font-medium text-gray-700 uppercase">%</th>
-                                                <th class="px-4 py-3 text-center text-sm font-medium text-gray-700 uppercase">Status</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="detailed-results-body">
-                                            <!-- Detailed results will be populated here -->
-                                        </tbody>
-                                    </table>
-                                </div>
+                            <!-- Results Grid Matching Image Format -->
+                            <div id="results-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                <!-- Results will be populated here in card format -->
                             </div>
                         </div>
 
-                        <!-- Analytics Charts -->
+                        <!-- Detailed Results Table -->
                         <div class="bg-white rounded-lg shadow-lg border border-gray-200 p-6">
-                            <h3 class="text-2xl font-bold text-gray-900 mb-6">Election Analytics</h3>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div class="bg-gray-50 p-4 rounded-lg">
-                                    <h4 class="text-lg font-semibold text-gray-800 mb-4">Voting Percentage by Hostel</h4>
-                                    <div id="hostel-voting-chart" class="h-64 flex items-center justify-center text-gray-500">
-                                        <!-- Chart will be rendered here -->
-                                        <p>Voting percentage chart will be displayed here</p>
-                                    </div>
-                                </div>
-                                <div class="bg-gray-50 p-4 rounded-lg">
-                                    <h4 class="text-lg font-semibold text-gray-800 mb-4">Position-wise Contest Status</h4>
-                                    <div id="position-status-chart" class="h-64 flex items-center justify-center text-gray-500">
-                                        <!-- Chart will be rendered here -->
-                                        <p>Position status chart will be displayed here</p>
-                                    </div>
-                                </div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-4">Detailed Results</h3>
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full bg-white border border-gray-300">
+                                    <thead class="bg-gray-50">
+                                        <tr>
+                                            <th class="px-4 py-3 text-left text-sm font-medium text-gray-700 uppercase">Hostel</th>
+                                            <th class="px-4 py-3 text-left text-sm font-medium text-gray-700 uppercase">Position</th>
+                                            <th class="px-4 py-3 text-left text-sm font-medium text-gray-700 uppercase">Candidate</th>
+                                            <th class="px-4 py-3 text-center text-sm font-medium text-gray-700 uppercase">Votes</th>
+                                            <th class="px-4 py-3 text-center text-sm font-medium text-gray-700 uppercase">%</th>
+                                            <th class="px-4 py-3 text-center text-sm font-medium text-gray-700 uppercase">Status</th>
+                                            <th class="px-4 py-3 text-center text-sm font-medium text-gray-700 uppercase">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="detailed-results-body">
+                                        <!-- Detailed results will be populated here -->
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -705,106 +626,10 @@
                     <div class="lg:col-span-2">
                         <div class="bg-white rounded-lg shadow-lg border border-gray-200">
                             <div class="p-6 border-b border-gray-200">
-                                <h3 class="text-2xl font-bold text-gray-900">All Announcements</h3>
+                                <h3 class="text-2xl font-bold text-gray-900">Election Announcements</h3>
                             </div>
                             <div id="announcements-list" class="divide-y divide-gray-200">
                                 <!-- Announcements will be populated here -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Tab 5: Clubs & Councils -->
-            <div id="tab-content-clubs" class="tab-content">
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    <div class="lg:col-span-1">
-                        <form id="club-management-form" class="bg-white p-6 rounded-lg shadow-lg border border-gray-200 space-y-4 sticky top-28">
-                            <h3 class="text-xl font-bold text-gray-900">Manage Club</h3>
-                            
-                            <div>
-                                <label for="club-name" class="block text-sm font-medium text-gray-700 mb-1">Club Name *</label>
-                                <input type="text" id="club-name" name="name" required 
-                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
-                                       placeholder="Enter club name">
-                            </div>
-
-                            <div>
-                                <label for="club-council" class="block text-sm font-medium text-gray-700 mb-1">Council *</label>
-                                <select id="club-council" name="council" required 
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                    <option value="">Select Council</option>
-                                    <option value="SciTech">SciTech Council</option>
-                                    <option value="Cultural">Cultural Council</option>
-                                    <option value="Sports">Sports Council</option>
-                                    <option value="Academic">Academic Council</option>
-                                    <option value="COA">COA Council</option>
-                                </select>
-                            </div>
-
-                            <div>
-                                <label for="club-description" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                                <textarea id="club-description" name="description" rows="3" 
-                                          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
-                                          placeholder="Brief description of the club..."></textarea>
-                            </div>
-
-                            <div>
-                                <label for="club-head" class="block text-sm font-medium text-gray-700 mb-1">Club Head</label>
-                                <input type="text" id="club-head" name="head" 
-                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
-                                       placeholder="Current club head">
-                            </div>
-
-                            <div>
-                                <label for="club-members" class="block text-sm font-medium text-gray-700 mb-1">Total Members</label>
-                                <input type="number" id="club-members" name="members" 
-                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
-                                       placeholder="Number of members">
-                            </div>
-
-                            <div class="flex space-x-3">
-                                <button type="submit" class="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors duration-200">
-                                    Add Club
-                                </button>
-                                <button type="button" id="update-club" class="flex-1 bg-green-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-green-700 transition-colors duration-200">
-                                    Update
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-
-                    <div class="lg:col-span-2">
-                        <div class="bg-white rounded-lg shadow-lg border border-gray-200">
-                            <div class="p-6 border-b border-gray-200">
-                                <div class="flex justify-between items-center">
-                                    <h3 class="text-2xl font-bold text-gray-900">All Clubs & Councils</h3>
-                                    <select id="club-council-filter" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                        <option value="">All Councils</option>
-                                        <option value="SciTech">SciTech Council</option>
-                                        <option value="Cultural">Cultural Council</option>
-                                        <option value="Sports">Sports Council</option>
-                                        <option value="Academic">Academic Council</option>
-                                        <option value="COA">COA Council</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="overflow-x-auto">
-                                <table class="min-w-full divide-y divide-gray-200">
-                                    <thead class="bg-gray-50">
-                                        <tr>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Club Name</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Council</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Head</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Members</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="clubs-table-body" class="bg-white divide-y divide-gray-200">
-                                        <!-- Clubs will be populated here -->
-                                    </tbody>
-                                </table>
                             </div>
                         </div>
                     </div>
