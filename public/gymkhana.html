@@ -602,48 +602,83 @@
                 </div>
             </section>
         </div>
-        
         <div id="elections" class="page">
+    
+    <section class="relative h-[55vh] min-h-[400px] flex items-center justify-center text-center text-white overflow-hidden">
+        <div class="absolute inset-0">
+            <img src="https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?auto=format&fit=crop&w=1920&q=80" 
+                    alt="Elections Background" 
+                    class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gray-900 bg-opacity-70"></div>
+        </div>
+        <div class="relative z-10 p-4">
+            <h1 class="text-6xl md:text-8xl font-extrabold tracking-tight">Gymkhana Elections</h1>
+            <p class="mt-6 max-w-2xl text-xl md:text-2xl opacity-90">
+                Your Voice, Your Vote. Electing the leaders of tomorrow.
+            </p>
+        </div>
+    </section>
+    
+    <section class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             
-            <section class="relative h-[60vh] min-h-[400px] flex items-center justify-center text-center text-white overflow-hidden">
-                <div class="absolute inset-0">
-                    <img src="https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?auto=format&fit=crop&w=1920&q=80" 
-                            alt="Elections Background" 
-                            class="w-full h-full object-cover">
-                    <div class="absolute inset-0 bg-gray-900 bg-opacity-70"></div>
-                </div>
-                <div class="relative z-10 p-4">
-                    <h1 class="text-6xl md:text-8xl font-extrabold tracking-tight">Gymkhana Elections</h1>
-                    <p class="mt-6 max-w-2xl text-xl md:text-2xl opacity-90">
-                        Your Voice, Your Vote.
-                    </p>
-                </div>
-            </section>
-            
-            <section class="py-24 bg-white">
-                <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-12">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+                
+                <div class="lg:col-span-1 space-y-10">
                     
-                    <div class="md:col-span-1">
-                        <div class="bg-indigo-50 p-8 rounded-2xl shadow-lg sticky top-28">
-                            <h3 class="text-2xl font-bold text-indigo-800">Important Dates</h3>
-                            
-                            <ul id="election-dates-list" class="mt-6 space-y-4">
-                                </ul>
-                            <button class="mt-8 w-full bg-indigo-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-indigo-700 transition duration-300">
-                                VOTE NOW (Opens April 10)
-                            </button>
+                    <div class="bg-indigo-50 p-6 rounded-xl shadow-lg sticky top-24">
+                        <h3 class="text-2xl font-bold text-indigo-800 flex items-center">
+                            <i class="fas fa-calendar-check mr-3"></i> Election Schedule
+                        </h3>
+                        
+                        <ul id="election-schedule-list" class="mt-6 space-y-4">
+                            <li class="text-gray-500">Loading schedule...</li>
+                        </ul>
+                        
+                        <a href="#candidates-section" class="mt-8 w-full block text-center bg-indigo-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-indigo-700 transition duration-300">
+                            View Candidate Manifestos
+                        </a>
+                        
+                        <button id="vote-button" class="mt-3 w-full bg-green-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-green-700 transition duration-300 hidden" disabled>
+                            <i class="fas fa-vote-yea mr-2"></i> VOTE NOW (Live)
+                        </button>
+
+                        <p id="voting-status" class="mt-3 text-center text-sm text-red-600">Voting is currently **CLOSED**.</p>
+                    </div>
+
+                    <div class="bg-yellow-50 p-6 rounded-xl shadow-lg">
+                        <h3 class="text-2xl font-bold text-yellow-800 flex items-center">
+                            <i class="fas fa-bullhorn mr-3"></i> Latest Announcements
+                        </h3>
+                        <div id="election-announcements" class="mt-4 space-y-4">
+                             <p class="text-gray-500">No announcements yet.</p>
                         </div>
                     </div>
+
+                </div>
+                
+                <div class="lg:col-span-2" id="candidates-section">
                     
-                    <div class="md:col-span-2">
-                        <h2 class="text-4xl font-extrabold text-gray-900">Candidates</h2>
-                        
-                        <div id="candidates-list" class="mt-10 space-y-8">
-                            </div>
-                        
+                    <h2 class="text-4xl font-extrabold text-gray-900 mb-10 border-b pb-4">
+                        Meet Your Electoral Candidates
+                    </h2>
+                    
+                    <div id="positions-and-candidates-container" class="space-y-12">
+                        <p class="text-gray-500 text-lg">Positions and candidates loading...</p>
                     </div>
                     
                 </div>
+                
+            </div>
+            
+        </div>
+    </section>
+</div>
+
+
+       
+                    
+               
             </section>
         </div>
         
@@ -958,7 +993,197 @@
             // Close any open menus
             closeAllMenus();
         }
+        //
+        // --- Elections Page Logic (Student View) ---
+
+// Mock Data Structure (Simulating your Admin Backend data)
+// In a live system, this data would come from:
+// fetch('/api/getElectionData').then(res => res.json())
+
+const MOCK_SCHEDULE_DATA = [
+    { title: "Nomination Filing Starts", date: "2025-04-01", status: "completed" },
+    { title: "Last Date for Nomination", date: "2025-04-05", status: "current" },
+    { title: "Campaigning Period", date: "2025-04-06 to 2025-04-09", status: "upcoming" },
+    { title: "Voting Day", date: "2025-04-10", status: "upcoming" },
+    { title: "Results Announcement", date: "2025-04-10 (Evening)", status: "upcoming" },
+];
+
+const MOCK_ANNOUNCEMENT_DATA = [
+    { title: "Mandatory Manifestos Submission", content: "All candidates must submit their manifestos to the Electoral Commission by 5 PM today.", date: "Nov 12, 2025" },
+    { title: "Change in Debate Venue", content: "The Presidential debate venue is moved to LT-3, due to capacity concerns.", date: "Nov 10, 2025" },
+];
+
+const MOCK_POSITIONS_AND_CANDIDATES = [
+    {
+        position: "President, Student Gymkhana",
+        block: "Institute Wide",
+        candidates: [
+            { name: "Arjun Mehta", roll: "B21CS001", manifesto: "Vision 2026: Campus Infrastructure & Digitalization.", image: "https://placehold.co/100x100/4F46E5/FFFFFF?text=AM" },
+            { name: "Priya Sharma", roll: "M22ME005", manifesto: "Focus on student welfare, mental health, and research grants.", image: "https://placehold.co/100x100/D946EF/FFFFFF?text=PS" },
+        ]
+    },
+    {
+        position: "General Secretary, Cultural Council",
+        block: "Cultural Activities",
+        candidates: [
+            { name: "Karan Singh", roll: "B22EE012", manifesto: "Bringing back 'Alankar' fest, better club funding.", image: "https://placehold.co/100x100/F43F5E/FFFFFF?text=KS" },
+            { name: "Nisha Patel", roll: "B23CH007", manifesto: "Diversity in events, supporting traditional arts.", image: "https://placehold.co/100x100/F43F5E/FFFFFF?text=NP" },
+        ]
+    },
+    // Mock data for the position added in the admin panel example:
+    {
+        position: "General Secretary, SciTech Council",
+        block: "SciTech Activities",
+        candidates: [
+            { name: "Amit Saini", roll: "B22ME045", manifesto: "Robotics lab upgrade and Hackathon support.", image: "https://placehold.co/100x100/16A34A/FFFFFF?text=AS" },
+        ]
+    }
+];
+
+// --- Rendering Functions ---
+
+function renderElectionSchedule() {
+    const scheduleList = document.getElementById('election-schedule-list');
+    scheduleList.innerHTML = '';
+    
+    MOCK_SCHEDULE_DATA.forEach(item => {
+        let statusClass = '';
+        if (item.status === 'completed') {
+            statusClass = 'text-green-600 font-medium';
+        } else if (item.status === 'current') {
+            statusClass = 'text-red-600 font-bold';
+        } else {
+            statusClass = 'text-gray-600';
+        }
+
+        const listItem = document.createElement('li');
+        listItem.className = 'flex justify-between items-start border-b pb-2';
+        listItem.innerHTML = `
+            <div>
+                <span class="font-medium text-gray-800">${item.title}</span>
+                <p class="text-xs ${statusClass}">(${item.status.toUpperCase()})</p>
+            </div>
+            <span class="font-bold text-sm text-indigo-600">${item.date}</span>
+        `;
+        scheduleList.appendChild(listItem);
+    });
+}
+
+function renderAnnouncements() {
+    const announcementList = document.getElementById('election-announcements');
+    announcementList.innerHTML = '';
+
+    if (MOCK_ANNOUNCEMENT_DATA.length === 0) {
+        announcementList.innerHTML = '<p class="text-gray-500">No announcements yet.</p>';
+        return;
+    }
+
+    MOCK_ANNOUNCEMENT_DATA.forEach(announcement => {
+        const card = document.createElement('div');
+        card.className = 'border-l-4 border-yellow-600 bg-yellow-50 p-3 rounded-lg';
+        card.innerHTML = `
+            <p class="font-bold text-gray-900">${announcement.title}</p>
+            <p class="text-sm text-gray-700 mt-1">${announcement.content}</p>
+            <p class="text-xs text-gray-500 mt-2">Posted: ${announcement.date}</p>
+        `;
+        announcementList.appendChild(card);
+    });
+}
+
+function renderCandidates() {
+    const container = document.getElementById('positions-and-candidates-container');
+    container.innerHTML = '';
+
+    if (MOCK_POSITIONS_AND_CANDIDATES.length === 0) {
+        container.innerHTML = '<p class="text-gray-500 text-lg">No official positions have been announced for the current election cycle.</p>';
+        return;
+    }
+
+    MOCK_POSITIONS_AND_CANDIDATES.forEach(positionData => {
+        const positionBlock = document.createElement('div');
+        positionBlock.className = 'border-2 border-indigo-200 bg-white p-6 rounded-xl shadow-md';
         
+        // Position Header
+        let candidatesHtml = '';
+        if (positionData.candidates.length > 0) {
+            candidatesHtml = positionData.candidates.map(candidate => `
+                <div class="flex items-start p-4 bg-gray-50 rounded-lg border border-gray-200 transition-shadow hover:shadow-lg">
+                    <img class="h-16 w-16 rounded-full object-cover mr-4 shadow-md" src="${candidate.image}" alt="Candidate Image">
+                    <div class="flex-1">
+                        <p class="text-xl font-extrabold text-indigo-700">${candidate.name}</p>
+                        <p class="text-sm text-gray-500">Roll No: ${candidate.roll}</p>
+                        <p class="mt-2 text-gray-700 italic border-l-2 pl-3 border-rose-500">Manifesto: ${candidate.manifesto}</p>
+                    </div>
+                    <div class="ml-4 flex-shrink-0">
+                        <button class="text-sm text-white bg-rose-500 py-1 px-3 rounded hover:bg-rose-600 transition">
+                            Details
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        } else {
+            candidatesHtml = '<p class="text-gray-500 p-4">No candidates finalized for this post yet.</p>';
+        }
+
+        positionBlock.innerHTML = `
+            <h3 class="text-3xl font-extrabold text-gray-900 border-b pb-3 mb-6">
+                ${positionData.position}
+                <span class="text-base font-medium text-indigo-500 ml-3">(${positionData.block})</span>
+            </h3>
+            <div class="space-y-4">
+                ${candidatesHtml}
+            </div>
+        `;
+        container.appendChild(positionBlock);
+    });
+}
+
+// Global initialization function for the elections page
+function initializeElectionsPage() {
+    renderElectionSchedule();
+    renderAnnouncements();
+    renderCandidates();
+
+    // Determine voting status dynamically based on current date vs MOCK_SCHEDULE_DATA
+    const votingStatusEl = document.getElementById('voting-status');
+    const voteButtonEl = document.getElementById('vote-button');
+    const votingDay = MOCK_SCHEDULE_DATA.find(item => item.title === "Voting Day");
+    const today = new Date().toISOString().slice(0, 10);
+
+    if (votingDay && votingDay.date === today) {
+        // Assume voting is live only on the exact day
+        votingStatusEl.textContent = "VOTING IS LIVE NOW!";
+        votingStatusEl.classList.remove('text-red-600');
+        votingStatusEl.classList.add('text-green-600', 'font-bold', 'text-lg');
+        voteButtonEl.classList.remove('hidden');
+        voteButtonEl.disabled = false;
+        voteButtonEl.textContent = "CLICK TO CAST YOUR VOTE (LIVE)";
+    } else {
+        // Mock the date from the schedule data for display
+        const dateText = votingDay ? votingDay.date : "TBD";
+        votingStatusEl.textContent = `Voting is CLOSED. Voting Day: ${dateText}`;
+    }
+}
+
+// --- DOMContentLoaded check and hook ---
+document.addEventListener('DOMContentLoaded', () => {
+    // Other page initializations (already present in your original script)
+    // ...
+
+    // Hook the election initialization logic into the page change
+    const originalShowPage = window.showPage;
+    window.showPage = function(pageId) {
+        originalShowPage(pageId);
+        if (pageId === 'elections') {
+            initializeElectionsPage();
+        }
+    };
+
+    // Ensure initial render runs if the page starts on 'elections'
+    if (currentPage === 'elections') {
+         initializeElectionsPage();
+    }
+});
         // Function to toggle the mobile menu
         function toggleMobileMenu() {
             const menu = document.getElementById('mobile-menu');
