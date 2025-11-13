@@ -3,12 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hostel Admin Dashboard</title>
+    <title>Hostel Admin Dashboard | Professional View</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script type="module" src="https://unpkg.com/heroicons@2.1.1/dist/solid/index.js"></script>
     <script type="module" src="https://unpkg.com/heroicons@2.1.1/dist/outline/index.js"></script>
     
     <style>
+        /* 2. Apply Inter Font and new subtle background */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
         .progress-ring-text { font-size: 0.75rem; font-weight: 600; }
         .modal-backdrop { background-color: rgba(0, 0, 0, 0.5); transition: opacity 0.3s ease-in-out; }
         .modal-content { transition: all 0.3s ease-in-out; transform: translateY(-20px); opacity: 0; }
@@ -23,38 +28,42 @@
             object-fit: cover;
             width: 100%;
         }
+        /* Custom scrollbar for better look in modals/tables on supported browsers */
+        .overflow-y-auto::-webkit-scrollbar { width: 8px; }
+        .overflow-y-auto::-webkit-scrollbar-thumb { background-color: #d1d5db; border-radius: 10px; }
     </style>
 </head>
-<body class="bg-blue-50 min-h-screen flex flex-col">
+<body class="bg-gray-50 min-h-screen flex flex-col">
 
-    <nav class="bg-white shadow-sm sticky top-0 z-20">
+    <nav class="bg-white shadow-lg sticky top-0 z-20 border-b border-gray-200">
         <div class="w-full mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
                 <div class="flex-shrink-0 flex items-center">
-                    <h1 class="text-xl font-bold text-blue-600">🏠 HOSTEL MANAGEMENT</h1>
-                    <span class="ml-2 text-gray-500 font-medium hidden sm:inline">| Indian Institute of Technology</span>
+                    <hero-icon-solid name="building-library" class="h-8 w-8 text-indigo-600 mr-3"></hero-icon-solid>
+                    <h1 class="text-xl font-extrabold text-gray-800 tracking-tight">HOSTEL ADMIN DASHBOARD</h1>
+                    <span class="ml-4 text-gray-400 font-normal hidden sm:inline border-l pl-4">Indian Institute of Technology</span>
                 </div>
-                <div class="flex items-center">
-                    <button id="show-complaints-view-btn" class="flex items-center text-sm font-medium text-red-600 hover:text-red-800">
-                        <hero-icon-outline name="exclamation-circle" class="h-5 w-5 mr-1"></hero-icon-outline>
+                <div class="flex items-center space-x-6">
+                    <button id="show-complaints-view-btn" class="flex items-center text-sm font-medium text-red-600 hover:text-red-700 transition duration-150">
+                        <hero-icon-outline name="bell-alert" class="h-5 w-5 mr-1"></hero-icon-outline>
                         Complaints
                     </button>
 
-                    <a href="adminhandlegymkhana.html" target="_top" class="ml-6 flex items-center text-sm font-medium text-purple-600 hover:text-purple-800">
+                    <a href="adminhandlegymkhana.html" target="_top" class="flex items-center text-sm font-medium text-purple-600 hover:text-purple-700 transition duration-150">
                         <hero-icon-outline name="users" class="h-5 w-5 mr-1"></hero-icon-outline>
                         Gymkhana
                     </a>
                     
-                    <div class="ml-6 flex items-center">
-                        <span class="text-sm font-medium text-gray-700 mr-3">👨‍💼 Admin</span>
+                    <div class="flex items-center">
+                        <span class="text-sm font-medium text-gray-700 mr-3 hidden sm:inline">Admin User</span>
                         <div class="flex-shrink-0">
-                            <span class="inline-flex items-center justify-center h-10 w-10 rounded-full bg-yellow-400">
-                                <span class="font-medium text-white">A</span>
+                            <span class="inline-flex items-center justify-center h-10 w-10 rounded-full bg-indigo-500 border-2 border-white shadow-md">
+                                <span class="font-semibold text-white">A</span>
                             </span>
                         </div>
                     </div>
                     
-                    <button id="admin-logout-btn" class="ml-6 flex items-center text-sm font-medium text-gray-600 hover:text-gray-900">
+                    <button id="admin-logout-btn" class="flex items-center text-sm font-medium text-gray-600 hover:text-gray-900 transition duration-150">
                         <hero-icon-outline name="arrow-right-on-rectangle" class="h-5 w-5 mr-1"></hero-icon-outline>
                         Logout
                     </button>
@@ -63,35 +72,35 @@
         </div>
     </nav>
 
-    <main class="mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-grow">
+    <main class="mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full flex-grow max-w-7xl">
         
         <div id="dashboard-view">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 
-                <div class="bg-indigo-50 p-5 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+                <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-indigo-500 transition-all duration-300 hover:shadow-lg hover:scale-[1.02]">
                     <div class="flex justify-between items-start">
                         <div>
-                            <span class="text-sm font-medium text-indigo-900 opacity-70">🏢 TOTAL CAPACITY</span>
-                            <p class="text-3xl font-extrabold text-indigo-900 mt-2" id="stat-total-capacity">0</p>
-                            <p class="text-sm text-indigo-900 opacity-60">Total Hostel Units</p>
+                            <span class="text-xs font-semibold text-gray-500 tracking-wider uppercase">TOTAL CAPACITY</span>
+                            <p class="text-4xl font-extrabold text-indigo-700 mt-2" id="stat-total-capacity">0</p>
+                            <p class="text-sm text-gray-500 mt-1">Total Hostel Units</p>
                         </div>
-                        <div class="p-3 bg-white rounded-full shadow-md">
-                            <hero-icon-outline name="building-office-2" class="h-6 w-6 text-indigo-500"></hero-icon-outline>
+                        <div class="p-3 bg-indigo-100 rounded-full shadow-inner">
+                            <hero-icon-outline name="home-modern" class="h-7 w-7 text-indigo-500"></hero-icon-outline>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-amber-50 p-5 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+                <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-amber-500 transition-all duration-300 hover:shadow-lg hover:scale-[1.02]">
                     <div class="flex justify-between items-start">
                         <div>
-                            <span class="text-sm font-medium text-amber-900 opacity-70">📊 OCCUPANCY</span>
-                            <p class="text-3xl font-extrabold text-amber-900 mt-2" id="stat-occupancy-percent">0%</p>
-                            <p class="text-sm text-amber-900 opacity-60">Beds Filled</p>
+                            <span class="text-xs font-semibold text-gray-500 tracking-wider uppercase">OCCUPANCY RATE</span>
+                            <p class="text-4xl font-extrabold text-amber-700 mt-2" id="stat-occupancy-percent">0%</p>
+                            <p class="text-sm text-gray-500 mt-1">Beds Filled</p>
                         </div>
                         <div class="relative h-20 w-20 flex-shrink-0">
                             <svg class="h-full w-full" width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
-                                <circle cx="18" cy="18" r="16" fill="none" class="text-amber-100" stroke-width="5"></circle>
-                                <circle cx="18" cy="18" r="16" fill="none" class="progress-ring-circle text-amber-400" 
+                                <circle cx="18" cy="18" r="16" fill="none" class="text-amber-100 stroke-current" stroke-width="5"></circle>
+                                <circle cx="18" cy="18" r="16" fill="none" class="progress-ring-circle text-amber-500 stroke-current" 
                                         stroke-width="5" 
                                         stroke-dasharray="100" 
                                         stroke-dashoffset="100" 
@@ -105,30 +114,30 @@
                     </div>
                 </div>
 
-                <div class="bg-red-50 p-5 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+                <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-red-500 transition-all duration-300 hover:shadow-lg hover:scale-[1.02]">
                     <div class="flex justify-between items-start">
                         <div>
-                            <span class="text-sm font-medium text-red-900 opacity-70">⚠️ OPEN COMPLAINTS</span>
-                            <p class="text-3xl font-extrabold text-red-900 mt-2" id="stat-open-complaints">0</p>
-                            <p class="text-sm text-red-900 opacity-60">Pending Resolution</p>
+                            <span class="text-xs font-semibold text-gray-500 tracking-wider uppercase">OPEN COMPLAINTS</span>
+                            <p class="text-4xl font-extrabold text-red-700 mt-2" id="stat-open-complaints">0</p>
+                            <p class="text-sm text-gray-500 mt-1">Pending Resolution</p>
                         </div>
-                        <div class="p-3 bg-white rounded-full shadow-md">
-                            <hero-icon-outline name="exclamation-triangle" class="h-6 w-6 text-red-500"></hero-icon-outline>
+                        <div class="p-3 bg-red-100 rounded-full shadow-inner">
+                            <hero-icon-outline name="exclamation-triangle" class="h-7 w-7 text-red-500"></hero-icon-outline>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-emerald-50 p-5 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+                <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-emerald-500 transition-all duration-300 hover:shadow-lg hover:scale-[1.02]">
                     <div class="flex justify-between items-start">
                         <div>
-                            <span class="text-sm font-medium text-emerald-900 opacity-70">👥 DAILY ATTENDANCE</span>
-                            <p class="text-3xl font-extrabold text-emerald-900 mt-2" id="stat-attendance-percent">98%</p>
-                            <p class="text-sm text-emerald-900 opacity-60">Latest Check-in Rate</p>
+                            <span class="text-xs font-semibold text-gray-500 tracking-wider uppercase">DAILY ATTENDANCE</span>
+                            <p class="text-4xl font-extrabold text-emerald-700 mt-2" id="stat-attendance-percent">98%</p>
+                            <p class="text-sm text-gray-500 mt-1">Latest Check-in Rate</p>
                         </div>
                         <div class="relative h-20 w-20 flex-shrink-0">
                             <svg class="h-full w-full" width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
-                                <circle cx="18" cy="18" r="16" fill="none" class="text-emerald-100" stroke-width="5"></circle>
-                                <circle cx="18" cy="18" r="16" fill="none" class="progress-ring-circle text-emerald-400" 
+                                <circle cx="18" cy="18" r="16" fill="none" class="text-emerald-100 stroke-current" stroke-width="5"></circle>
+                                <circle cx="18" cy="18" r="16" fill="none" class="progress-ring-circle text-emerald-500 stroke-current" 
                                         stroke-width="5" 
                                         stroke-dasharray="100" 
                                         stroke-dashoffset="2" 
@@ -142,170 +151,208 @@
                     </div>
                 </div>
 
-                <div id="show-fees-view-btn" class="bg-teal-50 p-5 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer">
+                <div id="show-fees-view-btn" class="bg-white p-6 rounded-xl shadow-md border-t-4 border-teal-500 transition-all duration-300 hover:shadow-lg hover:scale-[1.02] cursor-pointer col-span-2">
                     <div class="flex justify-between items-start">
                         <div>
-                            <span class="text-sm font-medium text-teal-900 opacity-70">💰 FEES STATUS</span>
-                            <p class="text-3xl font-extrabold text-teal-900 mt-2" id="stat-fees-pending">0 Pending</p>
-                            <p class="text-sm text-teal-900 opacity-60">Total Dues</p>
+                            <span class="text-xs font-semibold text-gray-500 tracking-wider uppercase">FEES COLLECTION STATUS</span>
+                            <p class="text-4xl font-extrabold text-teal-700 mt-2" id="stat-fees-pending">0 Pending</p>
+                            <p class="text-sm text-gray-500 mt-1">Total Outstanding Dues</p>
                         </div>
-                        <div class="p-3 bg-white rounded-full shadow-md">
-                            <hero-icon-outline name="banknotes" class="h-6 w-6 text-teal-500"></hero-icon-outline>
+                        <div class="p-3 bg-teal-100 rounded-full shadow-inner">
+                            <hero-icon-outline name="banknotes" class="h-7 w-7 text-teal-500"></hero-icon-outline>
                         </div>
                     </div>
                 </div>
 
-                <div id="show-visitors-view-btn" class="bg-sky-50 p-5 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer">
+                <div id="show-visitors-view-btn" class="bg-white p-6 rounded-xl shadow-md border-t-4 border-sky-500 transition-all duration-300 hover:shadow-lg hover:scale-[1.02] cursor-pointer col-span-2">
                     <div class="flex justify-between items-start">
                         <div>
-                            <span class="text-sm font-medium text-sky-900 opacity-70">🚶‍♂️ VISITOR LOGS</span>
-                            <p class="text-3xl font-extrabold text-sky-900 mt-2" id="stat-visitors-today">0 Today</p>
-                            <p class="text-sm text-sky-900 opacity-60">Current Entries</p>
+                            <span class="text-xs font-semibold text-gray-500 tracking-wider uppercase">DAILY VISITOR LOGS</span>
+                            <p class="text-4xl font-extrabold text-sky-700 mt-2" id="stat-visitors-today">0 Today</p>
+                            <p class="text-sm text-gray-500 mt-1">Current Entries on Record</p>
                         </div>
-                        <div class="p-3 bg-white rounded-full shadow-md">
-                            <hero-icon-outline name="identification" class="h-6 w-6 text-sky-500"></hero-icon-outline>
+                        <div class="p-3 bg-sky-100 rounded-full shadow-inner">
+                            <hero-icon-outline name="identification" class="h-7 w-7 text-sky-500"></hero-icon-outline>
                         </div>
                     </div>
                 </div>
-
             </div>
             
+            <hr class="my-10 border-gray-200">
+
             <div class="mt-10">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
-                    <h2 class="text-2xl font-semibold text-gray-900">🏘️ Hostel Block Summary</h2>
-                    <button id="show-add-block-modal-btn" class="mt-4 sm:mt-0 flex items-center px-5 py-3 bg-blue-600 text-white font-medium rounded-lg shadow-md hover:bg-blue-700 transition-all duration-300 hover:scale-105">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
+                    <h2 class="text-3xl font-extrabold text-gray-800 flex items-center">
+                        <hero-icon-solid name="building-office-2" class="h-7 w-7 text-gray-600 mr-2"></hero-icon-solid>
+                        Hostel Block Management
+                    </h2>
+                    <button id="show-add-block-modal-btn" class="mt-4 sm:mt-0 flex items-center px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg shadow-lg hover:bg-indigo-700 transition-all duration-300 hover:scale-[1.02] text-sm">
                         <hero-icon-solid name="plus" class="h-5 w-5 mr-2"></hero-icon-solid>
-                        ➕ Add New Block
+                        Add New Block
                     </button>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="hostel-block-container">
-                </div>
+                    </div>
             </div>
 
-            <div class="mt-10">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
-                    <h2 class="text-2xl font-semibold text-gray-900">📅 Events & Announcements</h2>
-                    <button id="show-add-event-modal-btn" class="mt-4 sm:mt-0 flex items-center px-5 py-3 bg-blue-600 text-white font-medium rounded-lg shadow-md hover:bg-blue-700 transition-all duration-300 hover:scale-105">
-                        <hero-icon-solid name="calendar-days" class="h-5 w-5 mr-2"></hero-icon-solid>
-                        ➕ Add New Event
-                    </button>
-                </div>
-                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="event-list-container">
-                 </div>
-            </div>
+            <hr class="my-10 border-gray-200">
 
             <div class="mt-10">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
-                    <h2 class="text-2xl font-semibold text-gray-900">🎭 Club Activities / Gymkhana</h2>
-                    <button id="show-add-club-activity-modal-btn" class="mt-4 sm:mt-0 flex items-center px-5 py-3 bg-blue-600 text-white font-medium rounded-lg shadow-md hover:bg-blue-700 transition-all duration-300 hover:scale-105">
-                        <hero-icon-solid name="puzzle-piece" class="h-5 w-5 mr-2"></hero-icon-solid>
-                        ➕ Add New Activity
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
+                    <h2 class="text-3xl font-extrabold text-gray-800 flex items-center">
+                        <hero-icon-solid name="calendar-days" class="h-7 w-7 text-gray-600 mr-2"></hero-icon-solid>
+                        Events & Announcements
+                    </h2>
+                    <button id="show-add-event-modal-btn" class="mt-4 sm:mt-0 flex items-center px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg shadow-lg hover:bg-indigo-700 transition-all duration-300 hover:scale-[1.02] text-sm">
+                        <hero-icon-solid name="calendar-plus" class="h-5 w-5 mr-2"></hero-icon-solid>
+                        Post New Event
                     </button>
                 </div>
-                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="club-activity-container">
-                 </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="event-list-container">
+                    </div>
             </div>
             
+            <hr class="my-10 border-gray-200">
+
             <div class="mt-10">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
-                    <h2 class="text-2xl font-semibold text-gray-900">🪑 Hostel Asset Inventory</h2>
-                    <button id="show-add-asset-modal-btn" class="mt-4 sm:mt-0 flex items-center px-5 py-3 bg-blue-600 text-white font-medium rounded-lg shadow-md hover:bg-blue-700 transition-all duration-300 hover:scale-105">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
+                    <h2 class="text-3xl font-extrabold text-gray-800 flex items-center">
+                        <hero-icon-solid name="puzzle-piece" class="h-7 w-7 text-gray-600 mr-2"></hero-icon-solid>
+                        Club Activities / Gymkhana
+                    </h2>
+                    <button id="show-add-club-activity-modal-btn" class="mt-4 sm:mt-0 flex items-center px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg shadow-lg hover:bg-indigo-700 transition-all duration-300 hover:scale-[1.02] text-sm">
+                        <hero-icon-solid name="calendar-plus" class="h-5 w-5 mr-2"></hero-icon-solid>
+                        Add New Activity
+                    </button>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="club-activity-container">
+                    </div>
+            </div>
+            
+            <hr class="my-10 border-gray-200">
+
+            <div class="mt-10">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
+                    <h2 class="text-3xl font-extrabold text-gray-800 flex items-center">
+                        <hero-icon-solid name="archive-box" class="h-7 w-7 text-gray-600 mr-2"></hero-icon-solid>
+                        Hostel Asset Inventory
+                    </h2>
+                    <button id="show-add-asset-modal-btn" class="mt-4 sm:mt-0 flex items-center px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg shadow-lg hover:bg-indigo-700 transition-all duration-300 hover:scale-[1.02] text-sm">
                         <hero-icon-solid name="archive-box-arrow-down" class="h-5 w-5 mr-2"></hero-icon-solid>
-                        ➕ Add New Asset
+                        Add New Asset
                     </button>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="asset-inventory-container">
-                    <p class="text-gray-500 col-span-full">📦 No assets added yet. Add assets to the inventory.</p>
+                    <p class="text-gray-500 col-span-full">
+                        <hero-icon-outline name="cube" class="h-5 w-5 inline-block mr-1 text-gray-400"></hero-icon-outline>
+                        No assets added yet. Add assets to the inventory.
+                    </p>
                 </div>
             </div>
-        </div> 
+        </div>
 
         <div id="detail-view" class="hidden">
-             <div class="relative mb-6 pb-4">
-                 <button id="back-to-dashboard-btn" class="flex items-center text-sm font-medium text-gray-600 hover:text-gray-900">
-                     <hero-icon-solid name="arrow-left" class="h-4 w-4 mr-2"></hero-icon-solid>
-                     🔙 Back to Dashboard
-                 </button>
-                 <div class="flex items-center justify-center absolute inset-x-0 top-0 -z-10">
-                     <h1 id="detail-hostel-name" class="text-xl sm:text-3xl font-bold text-gray-800" style="color: #4b0082;"></h1>
-                 </div>
-             </div>
+            <div class="relative mb-8 pb-4 border-b border-gray-200">
+                <button id="back-to-dashboard-btn" class="flex items-center text-sm font-semibold text-gray-600 hover:text-indigo-700 transition duration-150 p-2 rounded-lg hover:bg-gray-100">
+                    <hero-icon-solid name="arrow-left" class="h-5 w-5 mr-2"></hero-icon-solid>
+                    Back to Dashboard
+                </button>
+                <div class="flex items-center justify-center absolute inset-x-0 top-0 z-0">
+                    <h1 id="detail-hostel-name" class="text-3xl font-extrabold text-gray-800 tracking-tight" style="color: #4b0082;"></h1>
+                </div>
+            </div>
             
-             <div class="bg-white p-4 sm:p-6 rounded-lg shadow-md border-l-8 border-blue-500 mb-8">
-                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
-                     <div>
-                         <span class="text-gray-500">🏢 Capacity: </span>
-                         <span class="text-xl sm:text-2xl font-bold" style="color: #800080;" id="detail-stat-capacity">0</span>
-                     </div>
-                     <div>
-                         <span class="text-gray-500">📊 Occupancy: </span>
-                         <span class="text-xl sm:text-2xl font-bold" style="color: #ffa500;" id="detail-stat-occupancy">0</span>
-                     </div>
-                     <div>
-                         <span class="text-gray-500">🛏️ Available Beds: </span>
-                         <span class="text-xl sm:text-2xl font-bold" style="color: #008000;" id="detail-stat-available">0</span>
-                     </div>
-                 </div>
-             </div>
+            <div class="bg-white p-6 rounded-xl shadow-lg border-l-8 border-indigo-500 mb-8">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+                    <div>
+                        <span class="text-gray-500 font-semibold text-sm uppercase tracking-wider">Capacity</span>
+                        <div class="flex items-center justify-center mt-2">
+                            <hero-icon-outline name="building-office-2" class="h-6 w-6 text-purple-600 mr-2"></hero-icon-outline>
+                            <span class="text-3xl font-bold text-purple-700" id="detail-stat-capacity">0</span>
+                        </div>
+                    </div>
+                    <div class="border-l border-r border-gray-200">
+                        <span class="text-gray-500 font-semibold text-sm uppercase tracking-wider">Occupancy</span>
+                        <div class="flex items-center justify-center mt-2">
+                            <hero-icon-outline name="chart-pie" class="h-6 w-6 text-yellow-600 mr-2"></hero-icon-outline>
+                            <span class="text-3xl font-bold text-yellow-700" id="detail-stat-occupancy">0</span>
+                        </div>
+                    </div>
+                    <div>
+                        <span class="text-gray-500 font-semibold text-sm uppercase tracking-wider">Available Beds</span>
+                        <div class="flex items-center justify-center mt-2">
+                            <hero-icon-outline name="squares-plus" class="h-6 w-6 text-green-600 mr-2"></hero-icon-outline>
+                            <span class="text-3xl font-bold text-green-700" id="detail-stat-available">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
             
-             <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
-                 <div class="flex flex-wrap gap-4">
-                      <button id="show-add-student-modal-btn" class="flex items-center px-5 py-3 bg-blue-600 text-white font-medium rounded-lg shadow-md hover:bg-blue-700 transition-all duration-300 hover:scale-105">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4 bg-white p-4 rounded-xl shadow-md">
+                <div class="flex flex-wrap gap-4">
+                    <button id="show-add-student-modal-btn" class="flex items-center px-5 py-2.5 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition-all duration-300 text-sm">
                            <hero-icon-solid name="user-plus" class="h-5 w-5 mr-2"></hero-icon-solid>
-                           👨‍🎓 Add New Student
-                         </button>
-                      <button id="show-add-room-modal-btn" class="flex items-center px-5 py-3 bg-blue-600 text-white font-medium rounded-lg shadow-md hover:bg-blue-700 transition-all duration-300 hover:scale-105">
-                           <hero-icon-solid name="building-office-plus" class="h-5 w-5 mr-2"></hero-icon-solid>
-                           🏢 Add New Room
-                         </button>
-                 </div>
+                           Add New Student
+                    </button>
+                    <button id="show-add-room-modal-btn" class="flex items-center px-5 py-2.5 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition-all duration-300 text-sm">
+                           <hero-icon-solid name="building-office-2" class="h-5 w-5 mr-2"></hero-icon-solid>
+                           Add New Room
+                    </button>
+                </div>
                 
-                 <div class="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
-                     <input type="text" id="room-search-input" placeholder="🔍 Search room number..." class="px-4 py-2 border rounded-lg shadow-sm w-full sm:w-auto">
-                     <select id="room-filter-select" class="px-4 py-2 border rounded-lg shadow-sm w-full sm:w-auto">
-                         <option value="All">All Rooms</option>
-                         <option value="Full">🚫 Full</option>
-                         <option value="Available">✅ Available</option>
-                     </select>
-                 </div>
-             </div>
+                <div class="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
+                    <div class="relative w-full sm:w-auto">
+                        <hero-icon-outline name="magnifying-glass" class="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400"></hero-icon-outline>
+                        <input type="text" id="room-search-input" placeholder="Search room number..." class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg shadow-sm w-full sm:w-48 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition duration-150">
+                    </div>
+                    <select id="room-filter-select" class="px-4 py-2 border border-gray-300 rounded-lg shadow-sm w-full sm:w-32 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition duration-150">
+                        <option value="All">All Rooms</option>
+                        <option value="Full">Full</option>
+                        <option value="Available">Available</option>
+                    </select>
+                </div>
+            </div>
 
-             <div id="room-list-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-             </div>
+            <div id="room-list-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            </div>
         </div>
 
         <div id="fees-view" class="hidden">
-            <div class="relative mb-6 pb-4">
-                <button id="back-to-dashboard-from-fees-btn" class="flex items-center text-sm font-medium text-gray-600 hover:text-gray-900">
-                    <hero-icon-solid name="arrow-left" class="h-4 w-4 mr-2"></hero-icon-solid>
-                    🔙 Back to Dashboard
+            <div class="relative mb-8 pb-4 border-b border-gray-200">
+                <button id="back-to-dashboard-from-fees-btn" class="flex items-center text-sm font-semibold text-gray-600 hover:text-teal-700 transition duration-150 p-2 rounded-lg hover:bg-gray-100">
+                    <hero-icon-solid name="arrow-left" class="h-5 w-5 mr-2"></hero-icon-solid>
+                    Back to Dashboard
                 </button>
-                <div class="flex items-center justify-center absolute inset-x-0 top-0 -z-10">
-                     <h1 class="text-xl sm:text-3xl font-bold text-teal-700">
-                         💰 Fees Management
-                     </h1>
+                <div class="flex items-center justify-center absolute inset-x-0 top-0 z-0">
+                    <h1 class="text-3xl font-extrabold text-teal-700 tracking-tight">
+                        <hero-icon-solid name="banknotes" class="h-7 w-7 inline-block mr-2"></hero-icon-solid>
+                        Fees Management
+                    </h1>
                 </div>
             </div>
             
-            <div class="flex flex-col md:flex-row justify-end items-center mb-6 gap-4">
-                <input type="text" id="fees-search-input" placeholder="🔍 Search by name or roll no..." class="px-4 py-2 border rounded-lg shadow-sm w-full md:w-auto">
-                <select id="fees-filter-select" class="px-4 py-2 border rounded-lg shadow-sm w-full md:w-auto">
+            <div class="flex flex-col md:flex-row justify-end items-center mb-6 gap-4 bg-white p-4 rounded-xl shadow-md">
+                <div class="relative w-full md:w-64">
+                    <hero-icon-outline name="magnifying-glass" class="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400"></hero-icon-outline>
+                    <input type="text" id="fees-search-input" placeholder="Search by name or roll no..." class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg shadow-sm w-full focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition duration-150">
+                </div>
+                <select id="fees-filter-select" class="px-4 py-2 border border-gray-300 rounded-lg shadow-sm w-full md:w-32 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition duration-150">
                     <option value="All">All Statuses</option>
-                    <option value="Paid">✅ Paid</option>
-                    <option value="Pending">⏳ Pending</option>
+                    <option value="Paid">Paid</option>
+                    <option value="Pending">Pending</option>
                 </select>
             </div>
             
-            <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden">
                 <div class="overflow-x-auto">
                     <table class="w-full min-w-max">
                         <thead class="bg-gray-100 border-b border-gray-200">
                             <tr>
-                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Student Name</th>
-                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Roll Number</th>
-                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Block / Room</th>
-                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
-                                <th class="px-6 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Action</th>
+                                <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Student Name</th>
+                                <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Roll Number</th>
+                                <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Block / Room</th>
+                                <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Status</th>
+                                <th class="px-6 py-3 text-center text-xs font-bold text-gray-700 uppercase tracking-wider">Action</th>
                             </tr>
                         </thead>
                         <tbody id="fees-student-list-container" class="divide-y divide-gray-200">
@@ -316,34 +363,38 @@
         </div>
         
         <div id="visitors-view" class="hidden">
-            <div class="relative mb-6 pb-4">
-                <button id="back-to-dashboard-from-visitors-btn" class="flex items-center text-sm font-medium text-gray-600 hover:text-gray-900">
-                    <hero-icon-solid name="arrow-left" class="h-4 w-4 mr-2"></hero-icon-solid>
-                    🔙 Back to Dashboard
+            <div class="relative mb-8 pb-4 border-b border-gray-200">
+                <button id="back-to-dashboard-from-visitors-btn" class="flex items-center text-sm font-semibold text-gray-600 hover:text-sky-700 transition duration-150 p-2 rounded-lg hover:bg-gray-100">
+                    <hero-icon-solid name="arrow-left" class="h-5 w-5 mr-2"></hero-icon-solid>
+                    Back to Dashboard
                 </button>
-                <div class="flex items-center justify-center absolute inset-x-0 top-0 -z-10">
-                     <h1 class="text-xl sm:text-3xl font-bold text-sky-700">
-                         🚶‍♂️ Visitor Logs
-                     </h1>
+                <div class="flex items-center justify-center absolute inset-x-0 top-0 z-0">
+                    <h1 class="text-3xl font-extrabold text-sky-700 tracking-tight">
+                        <hero-icon-solid name="user-group" class="h-7 w-7 inline-block mr-2"></hero-icon-solid>
+                        Visitor Logs
+                    </h1>
                 </div>
             </div>
             
-            <div class="flex flex-col md:flex-row justify-end items-center mb-6 gap-4">
-                <input type="text" id="visitor-search-input" placeholder="🔍 Search by visitor or student name..." class="px-4 py-2 border rounded-lg shadow-sm w-full md:w-auto">
-                 <input type="date" id="visitor-date-filter" class="px-4 py-2 border rounded-lg shadow-sm w-full md:w-auto">
+            <div class="flex flex-col md:flex-row justify-end items-center mb-6 gap-4 bg-white p-4 rounded-xl shadow-md">
+                <div class="relative w-full md:w-64">
+                    <hero-icon-outline name="magnifying-glass" class="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400"></hero-icon-outline>
+                    <input type="text" id="visitor-search-input" placeholder="Search by visitor or student name..." class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg shadow-sm w-full focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition duration-150">
+                </div>
+                <input type="date" id="visitor-date-filter" class="px-4 py-2 border border-gray-300 rounded-lg shadow-sm w-full md:w-36 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition duration-150">
             </div>
             
-            <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden">
                 <div class="overflow-x-auto">
                     <table class="w-full min-w-max">
                         <thead class="bg-gray-100 border-b border-gray-200">
                             <tr>
-                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Visitor Name</th>
-                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Student Visited</th>
-                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Room</th>
-                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Date</th>
-                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Time In</th>
-                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Time Out</th>
+                                <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Visitor Name</th>
+                                <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Student Visited</th>
+                                <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Room</th>
+                                <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Date</th>
+                                <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Time In</th>
+                                <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Time Out</th>
                             </tr>
                         </thead>
                         <tbody id="visitor-log-container" class="divide-y divide-gray-200">
@@ -354,60 +405,64 @@
         </div>
 
         <div id="complaints-view" class="hidden">
-            <div class="relative mb-6 pb-4">
-                <button id="back-to-dashboard-from-complaints-btn" class="flex items-center text-sm font-medium text-gray-600 hover:text-gray-900">
-                    <hero-icon-solid name="arrow-left" class="h-4 w-4 mr-2"></hero-icon-solid>
-                    🔙 Back to Dashboard
+            <div class="relative mb-8 pb-4 border-b border-gray-200">
+                <button id="back-to-dashboard-from-complaints-btn" class="flex items-center text-sm font-semibold text-gray-600 hover:text-red-700 transition duration-150 p-2 rounded-lg hover:bg-gray-100">
+                    <hero-icon-solid name="arrow-left" class="h-5 w-5 mr-2"></hero-icon-solid>
+                    Back to Dashboard
                 </button>
-                <div class="flex items-center justify-center absolute inset-x-0 top-0 -z-10">
-                     <h1 class="text-xl sm:text-3xl font-bold text-red-700">
-                         ⚠️ Student Complaints
-                     </h1>
+                <div class="flex items-center justify-center absolute inset-x-0 top-0 z-0">
+                    <h1 class="text-3xl font-extrabold text-red-700 tracking-tight">
+                        <hero-icon-solid name="bell-alert" class="h-7 w-7 inline-block mr-2"></hero-icon-solid>
+                        Student Complaints
+                    </h1>
                 </div>
             </div>
             
-            <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4 bg-white p-4 rounded-xl shadow-md">
                 <div class="flex flex-col md:flex-row gap-4 w-full md:w-auto">
-                    <input type="text" id="complaint-search-input" placeholder="🔍 Search by student name or room..." class="px-4 py-2 border rounded-lg shadow-sm w-full md:w-auto">
-                    <select id="complaint-status-filter" class="px-4 py-2 border rounded-lg shadow-sm w-full md:w-auto">
+                    <div class="relative w-full md:w-56">
+                        <hero-icon-outline name="magnifying-glass" class="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400"></hero-icon-outline>
+                        <input type="text" id="complaint-search-input" placeholder="Search by student or room..." class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg shadow-sm w-full focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition duration-150">
+                    </div>
+                    <select id="complaint-status-filter" class="px-4 py-2 border border-gray-300 rounded-lg shadow-sm w-full md:w-36 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition duration-150">
                         <option value="All">All Status</option>
-                        <option value="Pending">⏳ Pending</option>
-                        <option value="In Progress">🔧 In Progress</option>
-                        <option value="Resolved">✅ Resolved</option>
+                        <option value="Pending">Pending</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Resolved">Resolved</option>
                     </select>
-                    <select id="complaint-type-filter" class="px-4 py-2 border rounded-lg shadow-sm w-full md:w-auto">
+                    <select id="complaint-type-filter" class="px-4 py-2 border border-gray-300 rounded-lg shadow-sm w-full md:w-40 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition duration-150">
                         <option value="All">All Types</option>
-                        <option value="Maintenance">🔧 Maintenance</option>
-                        <option value="Cleaning">🧹 Cleaning</option>
-                        <option value="Electrical">⚡ Electrical</option>
-                        <option value="Plumbing">💧 Plumbing</option>
-                        <option value="Internet">🌐 Internet</option>
-                        <option value="Security">🔒 Security</option>
-                        <option value="Other">📝 Other</option>
+                        <option value="Maintenance">Maintenance</option>
+                        <option value="Cleaning">Cleaning</option>
+                        <option value="Electrical">Electrical</option>
+                        <option value="Plumbing">Plumbing</option>
+                        <option value="Internet">Internet</option>
+                        <option value="Security">Security</option>
+                        <option value="Other">Other</option>
                     </select>
                 </div>
-                <button id="refresh-complaints-btn" class="flex items-center px-4 py-2 bg-blue-600 text-white font-medium rounded-lg shadow-md hover:bg-blue-700 transition-all duration-300">
+                <button id="refresh-complaints-btn" class="flex items-center px-4 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition-all duration-300 text-sm">
                     <hero-icon-solid name="arrow-path" class="h-5 w-5 mr-2"></hero-icon-solid>
                     Refresh
                 </button>
             </div>
             
-            <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden">
                 <div class="overflow-x-auto">
                     <table class="w-full min-w-max">
                         <thead class="bg-gray-100 border-b border-gray-200">
                             <tr>
-                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Student</th>
-                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Room</th>
-                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Complaint Type</th>
-                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Description</th>
-                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Date</th>
-                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
-                                <th class="px-6 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Actions</th>
+                                <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Student</th>
+                                <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Room</th>
+                                <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Complaint Type</th>
+                                <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Description</th>
+                                <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Date</th>
+                                <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Status</th>
+                                <th class="px-6 py-3 text-center text-xs font-bold text-gray-700 uppercase tracking-wider">Actions</th>
                             </tr>
                         </thead>
                         <tbody id="complaints-list-container" class="divide-y divide-gray-200">
-                        </tbody>
+                            </tbody>
                     </table>
                 </div>
             </div>
@@ -415,7 +470,7 @@
 
     </main>
 
-    <footer class="mt-12 py-6 border-t border-gray-200 bg-white">
+    <footer class="mt-12 py-6 border-t border-gray-200 bg-white shadow-inner">
         <div class="w-full mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <p class="text-sm text-gray-500">
                 &copy; 2025 Indian Institute of Technology. All rights reserved.
@@ -425,30 +480,39 @@
 
     <div id="add-block-modal" class="modal hidden fixed inset-0 z-30 flex items-center justify-center">
         <div class="modal-backdrop fixed inset-0" data-modal-hide="add-block-modal"></div>
-        <div class="modal-content bg-white p-6 rounded-lg shadow-xl z-40 w-full max-w-md mx-4">
-            <h2 class="text-xl font-semibold mb-4">🏘️ Add New Hostel Block</h2>
+        <div class="modal-content bg-white p-8 rounded-xl shadow-2xl z-40 w-full max-w-md mx-4">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                <hero-icon-outline name="building-office-2" class="h-6 w-6 text-indigo-500 mr-2"></hero-icon-outline>
+                Add New Hostel Block
+            </h2>
             <form id="add-block-form" class="space-y-4">
                 <div>
-                    <label for="block-name" class="block text-sm font-medium text-gray-700">🏷️ Block Name</label>
-                    <input type="text" id="block-name" name="blockName" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="e.g., 🚺 Sarojini Hall" required>
+                    <label for="block-name" class="block text-sm font-semibold text-gray-700">Block Name</label>
+                    <input type="text" id="block-name" name="blockName" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="e.g., Sarojini Hall" required>
                 </div>
                  <div>
-                    <label for="block-key" class="block text-sm font-medium text-gray-700">🔑 Unique Key</label>
-                    <input type="text" id="block-key" name="blockKey" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="e.g., 'sarojini' (lowercase, no spaces)" required>
+                    <label for="block-key" class="block text-sm font-semibold text-gray-700">Unique Key</label>
+                    <input type="text" id="block-key" name="blockKey" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="e.g., 'sarojini' (lowercase, no spaces)" required>
                 </div>
                 <div>
-                    <label for="block-theme" class="block text-sm font-medium text-gray-700">🎨 Theme Color</label>
-                    <select id="block-theme" name="blockTheme" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
-                        <option value="pink">🩷 Pink (Women)</option>
-                        <option value="blue">💙 Blue (Men)</option>
-                        <option value="green">💚 Green</option>
-                        <option value="purple">💜 Purple</option>
-                        <option value="yellow">💛 Yellow</option>
+                    <label for="block-theme" class="block text-sm font-semibold text-gray-700">Theme Color</label>
+                    <select id="block-theme" name="blockTheme" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        <option value="pink">Pink (Women)</option>
+                        <option value="blue">Blue (Men)</option>
+                        <option value="green">Green</option>
+                        <option value="purple">Purple</option>
+                        <option value="yellow">Yellow</option>
                     </select>
                 </div>
-                <div class="flex justify-end space-x-3 pt-4">
-                    <button type="button" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300" data-modal-hide="add-block-modal">❌ Cancel</button>
-                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">💾 Save Block</button>
+                <div class="flex justify-end space-x-3 pt-4 border-t border-gray-100">
+                    <button type="button" class="flex items-center px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 font-medium" data-modal-hide="add-block-modal">
+                        <hero-icon-solid name="x-mark" class="h-5 w-5 mr-1"></hero-icon-solid>
+                        Cancel
+                    </button>
+                    <button type="submit" class="flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium">
+                        <hero-icon-solid name="folder-plus" class="h-5 w-5 mr-1"></hero-icon-solid>
+                        Save Block
+                    </button>
                 </div>
             </form>
         </div>
@@ -456,46 +520,55 @@
     
     <div id="add-room-modal" class="modal hidden fixed inset-0 z-30 flex items-center justify-center">
         <div class="modal-backdrop fixed inset-0" data-modal-hide="add-room-modal"></div>
-        <div class="modal-content bg-white p-6 rounded-lg shadow-xl z-40 w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto">
-            <h2 class="text-xl font-semibold mb-4">🏢 Add New Room</h2>
+        <div class="modal-content bg-white p-8 rounded-xl shadow-2xl z-40 w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                <hero-icon-outline name="building-office" class="h-6 w-6 text-indigo-500 mr-2"></hero-icon-outline>
+                Add New Room
+            </h2>
             <form id="add-room-form" class="space-y-4">
                 <div>
-                    <label for="room-id" class="block text-sm font-medium text-gray-700">🏷️ Room ID / Number</label>
-                    <input type="text" id="room-id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="e.g., A-103" required>
+                    <label for="room-id" class="block text-sm font-semibold text-gray-700">Room ID / Number</label>
+                    <input type="text" id="room-id" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="e.g., A-103" required>
                 </div>
                  <div>
-                    <label for="room-floor" class="block text-sm font-medium text-gray-700">🏢 Floor Details</label>
-                    <input type="text" id="room-floor" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="e.g., 1st Floor, A-Block" required>
+                    <label for="room-floor" class="block text-sm font-semibold text-gray-700">Floor Details</label>
+                    <input type="text" id="room-floor" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="e.g., 1st Floor, A-Block" required>
                 </div>
                 <div>
-                    <label for="room-capacity" class="block text-sm font-medium text-gray-700">👥 Total Capacity</label>
-                    <input type="number" id="room-capacity" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" value="2" min="1" required>
+                    <label for="room-capacity" class="block text-sm font-semibold text-gray-700">Total Capacity</label>
+                    <input type="number" id="room-capacity" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" value="2" min="1" required>
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700">🪑 Assign Assets to Room</label>
-                    <div id="room-asset-assignment-container" class="mt-2 space-y-3">
-                    </div>
-                    <button type="button" id="add-room-asset-row-btn" class="mt-2 text-sm font-medium text-blue-600 hover:text-blue-800 flex items-center">
+                    <label class="block text-sm font-semibold text-gray-700">Assign Assets to Room</label>
+                    <div id="room-asset-assignment-container" class="mt-2 space-y-3 p-3 border border-gray-200 rounded-lg bg-gray-50">
+                        </div>
+                    <button type="button" id="add-room-asset-row-btn" class="mt-3 text-sm font-medium text-indigo-600 hover:text-indigo-800 flex items-center">
                         <hero-icon-solid name="plus-circle" class="h-5 w-5 mr-1"></hero-icon-solid>
-                        Add Asset
+                        Add Asset Row
                     </button>
                 </div>
 
                 <div>
-                    <label for="room-image-file" class="block text-sm font-medium text-gray-700">🖼️ Upload Room Image</label>
+                    <label for="room-image-file" class="block text-sm font-semibold text-gray-700">Upload Room Image</label>
                     <input type="file" id="room-image-file" name="roomImage" class="mt-1 block w-full text-sm text-gray-500
-                                file:mr-4 file:py-2 file:px-4
-                                file:rounded-full file:border-0
-                                file:text-sm file:font-semibold
-                                file:bg-blue-50 file:text-blue-700
-                                hover:file:bg-blue-100"
-                                accept="image/*">
+                                 file:mr-4 file:py-2 file:px-4
+                                 file:rounded-full file:border-0
+                                 file:text-sm file:font-semibold
+                                 file:bg-indigo-50 file:text-indigo-700
+                                 hover:file:bg-indigo-100"
+                                 accept="image/*">
                     <p class="mt-1 text-xs text-gray-500">Upload an image of the room (PNG, JPG, etc.).</p>
                 </div>
-                <div class="flex justify-end space-x-3 pt-4">
-                    <button type="button" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300" data-modal-hide="add-room-modal">❌ Cancel</button>
-                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">➕ Add Room</button>
+                <div class="flex justify-end space-x-3 pt-4 border-t border-gray-100">
+                    <button type="button" class="flex items-center px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 font-medium" data-modal-hide="add-room-modal">
+                        <hero-icon-solid name="x-mark" class="h-5 w-5 mr-1"></hero-icon-solid>
+                        Cancel
+                    </button>
+                    <button type="submit" class="flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium">
+                        <hero-icon-solid name="plus" class="h-5 w-5 mr-1"></hero-icon-solid>
+                        Add Room
+                    </button>
                 </div>
             </form>
         </div>
@@ -503,140 +576,158 @@
     
     <div id="add-student-modal" class="modal hidden fixed inset-0 z-30 flex items-center justify-center">
         <div class="modal-backdrop fixed inset-0" data-modal-hide="add-student-modal"></div>
-        <div class="modal-content bg-white p-6 rounded-lg shadow-xl z-40 w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto">
-            <h2 class="text-xl font-semibold mb-4">👨‍🎓 Add New Student</h2>
+        <div class="modal-content bg-white p-8 rounded-xl shadow-2xl z-40 w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                <hero-icon-outline name="user-group" class="h-6 w-6 text-indigo-500 mr-2"></hero-icon-outline>
+                Add New Student
+            </h2>
             <form id="add-student-form" class="space-y-4">
-                 <h3 class="text-sm font-medium text-gray-500 border-b pb-1">🔐 Login Details</h3>
+                 <h3 class="text-sm font-bold text-gray-600 border-b pb-1">Login Details</h3>
                  <div class="grid grid-cols-2 gap-4">
                      <div>
-                         <label for="student-username" class="block text-sm font-medium text-gray-700">👤 Username</label>
-                         <input type="text" id="student-username" name="username" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
-                     </div>
-                    <div>
-                         <label for="student-password" class="block text-sm font-medium text-gray-700">🔒 Password</label>
-                         <input type="password" id="student-password" name="password" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
-                    </div>
-                </div>
-
-                <h3 class="text-sm font-medium text-gray-500 border-b pt-2 pb-1">🏠 Hostel Details</h3>
-                <div>
-                    <label for="student-room-id" class="block text-sm font-medium text-gray-700">🏢 Select Room</label>
-                    <select id="student-room-id" name="roomId" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" required>
-                    </select>
-                </div>
-                <div>
-                    <label for="student-joining-date" class="block text-sm font-medium text-gray-700">📅 Joining Date</label>
-                    <input type="date" id="student-joining-date" name="joiningDate" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
-                </div>
-                 <div class="grid grid-cols-2 gap-4">
-                     <div>
-                         <label for="student-fee-status" class="block text-sm font-medium text-gray-700">💰 Fee Status</label>
-                         <select id="student-fee-status" name="feeStatus" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
-                             <option value="Paid">✅ Paid</option>
-                             <option value="Pending" selected>⏳ Pending</option>
-                         </select>
+                         <label for="student-username" class="block text-sm font-semibold text-gray-700">Username</label>
+                         <input type="text" id="student-username" name="username" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
                      </div>
                      <div>
-                         <label for="student-payment-method" class="block text-sm font-medium text-gray-700">💳 Payment Method</label>
-                         <select id="student-payment-method" name="paymentMethod" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
-                             <option value="Not Paid">❌ Not Paid</option>
-                             <option value="Cash">💵 Cash</option>
-                             <option value="Card">💳 Card</option>
-                             <option value="Online">🌐 Online</option>
-                         </select>
+                         <label for="student-password" class="block text-sm font-semibold text-gray-700">Password</label>
+                         <input type="password" id="student-password" name="password" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
                      </div>
                  </div>
 
-                <h3 class="text-sm font-medium text-gray-500 border-b pt-2 pb-1">👤 Personal & Academic</h3>
-                <div>
-                    <label for="student-name" class="block text-sm font-medium text-gray-700">👤 Student Name</label>
-                    <input type="text" id="student-name" name="name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="Enter full name" required>
-                </div>
-                
-                <div>
-                    <label for="student-roll-number" class="block text-sm font-medium text-gray-700">🆔 Roll Number</label>
-                    <input type="text" id="student-roll-number" name="rollNumber" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="e.g., 21CS10001" required>
-                </div>
-                
-                <div>
-                    <label for="student-course" class="block text-sm font-medium text-gray-700">🎓 Course</label>
-                    <input type="text" id="student-course" name="course" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="e.g., B.Tech">
-                </div>
-                <div>
-                    <label for="student-department" class="block text-sm font-medium text-gray-700">🏛️ Department</label>
-                    <input type="text" id="student-department" name="department" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="e.g., CSE">
-                </div>
-                <div>
-                    <label for="student-year" class="block text-sm font-medium text-gray-700">📚 Year</label>
-                    <input type="text" id="student-year" name="year" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="e.g., 3rd Year">
-                </div>
-                <div>
-                    <label for="student-email" class="block text-sm font-medium text-gray-700">📧 Email</label>
-                    <input type="email" id="student-email" name="email" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="student@iit.edu">
-                </div>
-                <div>
-                    <label for="student-phone" class="block text-sm font-medium text-gray-700">📞 Phone</label>
-                    <input type="tel" id="student-phone" name="phone" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="+91 XXXXX XXXXX">
-                </div>
-                
-                <div>
-                    <label for="student-profile-image" class="block text-sm font-medium text-gray-700">🖼️ Upload Profile Photo</label>
-                    <input type="file" id="student-profile-image" name="profileImage" class="mt-1 block w-full text-sm text-gray-500
-                                file:mr-4 file:py-2 file:px-4
-                                file:rounded-full file:border-0
-                                file:text-sm file:font-semibold
-                                file:bg-blue-50 file:text-blue-700
-                                hover:file:bg-blue-100"
-                                accept="image/*">
-                </div>
+                 <h3 class="text-sm font-bold text-gray-600 border-b pt-2 pb-1">Hostel Details</h3>
+                 <div>
+                     <label for="student-room-id" class="block text-sm font-semibold text-gray-700">Select Room</label>
+                     <select id="student-room-id" name="roomId" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
+                     </select>
+                 </div>
+                 <div>
+                     <label for="student-joining-date" class="block text-sm font-semibold text-gray-700">Joining Date</label>
+                     <input type="date" id="student-joining-date" name="joiningDate" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                 </div>
+                  <div class="grid grid-cols-2 gap-4">
+                      <div>
+                          <label for="student-fee-status" class="block text-sm font-semibold text-gray-700">Fee Status</label>
+                          <select id="student-fee-status" name="feeStatus" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
+                              <option value="Paid">Paid</option>
+                              <option value="Pending" selected>Pending</option>
+                          </select>
+                      </div>
+                      <div>
+                          <label for="student-payment-method" class="block text-sm font-semibold text-gray-700">Payment Method</label>
+                          <select id="student-payment-method" name="paymentMethod" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                              <option value="Not Paid">Not Paid</option>
+                              <option value="Cash">Cash</option>
+                              <option value="Card">Card</option>
+                              <option value="Online">Online</option>
+                          </select>
+                      </div>
+                  </div>
 
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">🪑 Assign Assets to Student</label>
-                    <div id="student-asset-assignment-container" class="mt-2 space-y-3">
-                            </div>
-                    <button type="button" id="add-student-asset-row-btn" class="mt-2 text-sm font-medium text-blue-600 hover:text-blue-800 flex items-center">
-                        <hero-icon-solid name="plus-circle" class="h-5 w-5 mr-1"></hero-icon-solid>
-                        Add Asset
+                 <h3 class="text-sm font-bold text-gray-600 border-b pt-2 pb-1">Personal & Academic</h3>
+                 <div>
+                     <label for="student-name" class="block text-sm font-semibold text-gray-700">Student Name</label>
+                     <input type="text" id="student-name" name="name" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="Enter full name" required>
+                 </div>
+                 
+                 <div>
+                     <label for="student-roll-number" class="block text-sm font-semibold text-gray-700">Roll Number</label>
+                     <input type="text" id="student-roll-number" name="rollNumber" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="e.g., 21CS10001" required>
+                 </div>
+                 
+                 <div>
+                     <label for="student-course" class="block text-sm font-semibold text-gray-700">Course</label>
+                     <input type="text" id="student-course" name="course" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="e.g., B.Tech">
+                 </div>
+                 <div>
+                     <label for="student-department" class="block text-sm font-semibold text-gray-700">Department</label>
+                     <input type="text" id="student-department" name="department" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="e.g., CSE">
+                 </div>
+                 <div>
+                     <label for="student-year" class="block text-sm font-semibold text-gray-700">Year</label>
+                     <input type="text" id="student-year" name="year" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="e.g., 3rd Year">
+                 </div>
+                 <div>
+                     <label for="student-email" class="block text-sm font-semibold text-gray-700">Email</label>
+                     <input type="email" id="student-email" name="email" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="student@iit.edu">
+                 </div>
+                 <div>
+                     <label for="student-phone" class="block text-sm font-semibold text-gray-700">Phone</label>
+                     <input type="tel" id="student-phone" name="phone" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="+91 XXXXX XXXXX">
+                 </div>
+                 
+                 <div>
+                     <label for="student-profile-image" class="block text-sm font-semibold text-gray-700">Upload Profile Photo</label>
+                     <input type="file" id="student-profile-image" name="profileImage" class="mt-1 block w-full text-sm text-gray-500
+                                 file:mr-4 file:py-2 file:px-4
+                                 file:rounded-full file:border-0
+                                 file:text-sm file:font-semibold
+                                 file:bg-indigo-50 file:text-indigo-700
+                                 hover:file:bg-indigo-100"
+                                 accept="image/*">
+                 </div>
+
+                 <div>
+                     <label class="block text-sm font-semibold text-gray-700">Assign Assets to Student</label>
+                     <div id="student-asset-assignment-container" class="mt-2 space-y-3 p-3 border border-gray-200 rounded-lg bg-gray-50">
+                             </div>
+                     <button type="button" id="add-student-asset-row-btn" class="mt-3 text-sm font-medium text-indigo-600 hover:text-indigo-800 flex items-center">
+                         <hero-icon-solid name="plus-circle" class="h-5 w-5 mr-1"></hero-icon-solid>
+                         Add Asset Row
+                     </button>
+                 </div>
+
+                 <div class="flex justify-end space-x-3 pt-4 border-t border-gray-100">
+                     <button type="button" class="flex items-center px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 font-medium" data-modal-hide="add-student-modal">
+                        <hero-icon-solid name="x-mark" class="h-5 w-5 mr-1"></hero-icon-solid>
+                        Cancel
                     </button>
-                </div>
-
-                <div class="flex justify-end space-x-3 pt-4">
-                    <button type="button" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300" data-modal-hide="add-student-modal">❌ Cancel</button>
-                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">➕ Add Student</button>
-                </div>
+                     <button type="submit" class="flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium">
+                        <hero-icon-solid name="user-plus" class="h-5 w-5 mr-1"></hero-icon-solid>
+                        Add Student
+                    </button>
+                 </div>
             </form>
         </div>
     </div>
-    
+
     <div id="add-event-modal" class="modal hidden fixed inset-0 z-30 flex items-center justify-center">
         <div class="modal-backdrop fixed inset-0" data-modal-hide="add-event-modal"></div>
-        <div class="modal-content bg-white p-6 rounded-lg shadow-xl z-40 w-full max-w-md mx-4">
-            <h2 class="text-xl font-semibold mb-4">📅 Add Event or Announcement</h2>
+        <div class="modal-content bg-white p-8 rounded-xl shadow-2xl z-40 w-full max-w-md mx-4">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                <hero-icon-outline name="calendar-days" class="h-6 w-6 text-indigo-500 mr-2"></hero-icon-outline>
+                Add Event or Announcement
+            </h2>
             <form id="add-event-form" class="space-y-4">
                  <div>
-                    <label for="event-title" class="block text-sm font-medium text-gray-700">🏷️ Title</label>
-                    <input type="text" id="event-title" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
+                    <label for="event-title" class="block text-sm font-semibold text-gray-700">Title</label>
+                    <input type="text" id="event-title" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
                 </div>
                  <div>
-                    <label for="event-type" class="block text-sm font-medium text-gray-700">📋 Type</label>
-                    <select id="event-type" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
-                        <option value="Sports">⚽ Sports</option>
-                        <option value="Club Activity">🎭 Club Activity</option>
-                        <option value="Announcement">📢 Announcement</option>
-                        <option value="General">📝 General</option>
+                    <label for="event-type" class="block text-sm font-semibold text-gray-700">Type</label>
+                    <select id="event-type" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        <option value="Sports">Sports</option>
+                        <option value="Club Activity">Club Activity</option>
+                        <option value="Announcement">Announcement</option>
+                        <option value="General">General</option>
                     </select>
                 </div>
                 <div>
-                    <label for="event-date" class="block text-sm font-medium text-gray-700">📅 Date</label>
-                    <input type="date" id="event-date" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
+                    <label for="event-date" class="block text-sm font-semibold text-gray-700">Date</label>
+                    <input type="date" id="event-date" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
                 </div>
                 <div>
-                    <label for="event-description" class="block text-sm font-medium text-gray-700">📝 Description</label>
-                    <textarea id="event-description" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"></textarea>
+                    <label for="event-description" class="block text-sm font-semibold text-gray-700">Description</label>
+                    <textarea id="event-description" rows="3" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"></textarea>
                 </div>
-                <div class="flex justify-end space-x-3 pt-4">
-                    <button type="button" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300" data-modal-hide="add-event-modal">❌ Cancel</button>
-                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">📝 Post Event</button>
+                <div class="flex justify-end space-x-3 pt-4 border-t border-gray-100">
+                    <button type="button" class="flex items-center px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 font-medium" data-modal-hide="add-event-modal">
+                        <hero-icon-solid name="x-mark" class="h-5 w-5 mr-1"></hero-icon-solid>
+                        Cancel
+                    </button>
+                    <button type="submit" class="flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium">
+                        <hero-icon-solid name="paper-airplane" class="h-5 w-5 mr-1"></hero-icon-solid>
+                        Post Event
+                    </button>
                 </div>
             </form>
         </div>
@@ -644,56 +735,56 @@
 
     <div id="room-details-modal" class="modal hidden fixed inset-0 z-30 flex items-center justify-center">
         <div class="modal-backdrop fixed inset-0" data-modal-hide="room-details-modal"></div>
-        <div class="modal-content bg-gray-50 rounded-lg shadow-xl z-40 w-full max-w-3xl mx-4 max-h-[90vh] flex flex-col">
-             <div class="flex justify-between items-center p-5 border-b bg-white rounded-t-lg">
+        <div class="modal-content bg-gray-50 rounded-xl shadow-2xl z-40 w-full max-w-3xl mx-4 max-h-[90vh] flex flex-col">
+             <div class="flex justify-between items-center p-6 border-b bg-white rounded-t-xl">
                  <div class="flex items-center gap-3">
-                     <h2 class="text-xl font-bold text-gray-800" id="modal-room-title">🏢 Room Details: A-101</h2>
+                     <h2 class="text-xl font-bold text-gray-800" id="modal-room-title">Room Details: A-101</h2>
                      <span id="modal-room-complaints-badge" class="hidden items-center text-xs font-bold px-3 py-1 bg-red-100 text-red-600 rounded-full">
-                         <hero-icon-solid name="exclamation-circle" class="h-4 w-4 mr-1"></hero-icon-solid>
-                         <span id="modal-room-complaints-count">1</span> Complaint
+                          <hero-icon-solid name="exclamation-circle" class="h-4 w-4 mr-1"></hero-icon-solid>
+                          <span id="modal-room-complaints-count">1</span> Complaint
                      </span>
                  </div>
-                 <button data-modal-hide="room-details-modal" class="text-gray-400 hover:text-gray-600">
+                 <button data-modal-hide="room-details-modal" class="text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-100 transition duration-150">
                      <hero-icon-solid name="x-mark" class="h-6 w-6"></hero-icon-solid>
                  </button>
              </div>
             <div class="p-6 overflow-y-auto space-y-6">
-                <div class="bg-white p-4 rounded-lg shadow-sm">
-                    <div class="flex gap-4 text-center">
-                        <div class="flex-1">
-                            <span class="text-sm text-gray-500">🏢 Capacity</span>
-                            <p class="text-2xl font-bold text-gray-800" id="modal-room-capacity">2</p>
+                <div class="bg-white p-4 rounded-lg shadow-md border-t-4 border-indigo-500">
+                    <div class="grid grid-cols-3 gap-4 text-center">
+                        <div class="border-r border-gray-200">
+                            <span class="text-sm text-gray-500 font-semibold uppercase tracking-wider">Capacity</span>
+                            <p class="text-2xl font-bold text-gray-800 mt-1" id="modal-room-capacity">2</p>
                         </div>
-                        <div class="flex-1">
-                            <span class="text-sm text-gray-500">📊 Occupancy</span>
-                            <p class="text-2xl font-bold text-blue-600" id="modal-room-occupancy">2</p>
+                        <div class="border-r border-gray-200">
+                            <span class="text-sm text-gray-500 font-semibold uppercase tracking-wider">Occupancy</span>
+                            <p class="text-2xl font-bold text-blue-600 mt-1" id="modal-room-occupancy">2</p>
                         </div>
-                        <div class="flex-1">
-                            <span class="text-sm text-gray-500">🛏️ Available Beds</span>
-                            <p class="text-2xl font-bold text-green-600" id="modal-room-available">0</p>
+                        <div>
+                            <span class="text-sm text-gray-500 font-semibold uppercase tracking-wider">Available Beds</span>
+                            <p class="text-2xl font-bold text-green-600 mt-1" id="modal-room-available">0</p>
                         </div>
                     </div>
                 </div>
                 <div>
                     <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-lg font-semibold text-gray-900" id="modal-occupant-title">👨‍🎓 Current Occupants (2)</h3>
-                        <button id="modal-delete-room-btn" class="flex items-center px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-lg shadow-md hover:bg-red-700">
+                        <h3 class="text-lg font-semibold text-gray-900" id="modal-occupant-title">Current Occupants (2)</h3>
+                        <button id="modal-delete-room-btn" class="flex items-center px-4 py-2 bg-red-600 text-white text-sm font-semibold rounded-lg shadow-md hover:bg-red-700 transition duration-150">
                             <hero-icon-solid name="trash" class="h-5 w-5 mr-2"></hero-icon-solid>
-                            🗑️ Delete Room
+                            Delete Room
                         </button>
                     </div>
                     <div id="modal-occupant-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
                 </div>
                 <div>
                     <div class="flex items-center gap-2 mb-4">
-                        <hero-icon-solid name="exclamation-triangle" class="h-5 w-5 text-yellow-600"></hero-icon-solid>
-                        <h3 class="text-lg font-semibold text-gray-900">⚠️ Open Issues In This Room</h3>
+                        <hero-icon-solid name="exclamation-triangle" class="h-5 w-5 text-red-600"></hero-icon-solid>
+                        <h3 class="text-lg font-semibold text-gray-900">Open Issues In This Room</h3>
                     </div>
                     <div id="modal-issues-container" class="space-y-3"></div>
                 </div>
             </div>
-             <div class="p-4 bg-white border-t rounded-b-lg text-right">
-                 <a href="#" id="modal-view-all-complaints" class="text-sm font-medium text-blue-600 hover:text-blue-800">
+             <div class="p-4 bg-white border-t rounded-b-xl text-right">
+                 <a href="#" id="modal-view-all-complaints" class="text-sm font-medium text-indigo-600 hover:text-indigo-800 hover:underline transition duration-150">
                      View All Complaint Tickets &rarr;
                  </a>
              </div>
@@ -702,45 +793,54 @@
     
     <div id="add-club-activity-modal" class="modal hidden fixed inset-0 z-30 flex items-center justify-center">
         <div class="modal-backdrop fixed inset-0" data-modal-hide="add-club-activity-modal"></div>
-        <div class="modal-content bg-white p-6 rounded-lg shadow-xl z-40 w-full max-w-md mx-4">
-            <h2 class="text-xl font-semibold mb-4">🎭 Add New Club Activity</h2>
+        <div class="modal-content bg-white p-8 rounded-xl shadow-2xl z-40 w-full max-w-md mx-4">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                <hero-icon-outline name="puzzle-piece" class="h-6 w-6 text-indigo-500 mr-2"></hero-icon-outline>
+                Add New Club Activity
+            </h2>
             <form id="add-club-activity-form" class="space-y-4">
                 <div>
-                    <label for="club-activity-title" class="block text-sm font-medium text-gray-700">🏷️ Activity Title</label>
-                    <input type="text" id="club-activity-title" name="title" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="e.g., Inter-Hostel Cricket Finals" required>
+                    <label for="club-activity-title" class="block text-sm font-semibold text-gray-700">Activity Title</label>
+                    <input type="text" id="club-activity-title" name="title" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="e.g., Inter-Hostel Cricket Finals" required>
                 </div>
                  <div>
-                    <label for="club-activity-type" class="block text-sm font-medium text-gray-700">📋 Activity Type</label>
-                    <select id="club-activity-type" name="type" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
-                        <option value="Sports">⚽ Sports</option>
-                        <option value="Cultural">💃 Cultural</option>
-                        <option value="Technical">💻 Technical</option>
-                        <option value="Workshop">🔧 Workshop</option>
-                        <option value="General">📝 General</option>
+                    <label for="club-activity-type" class="block text-sm font-semibold text-gray-700">Activity Type</label>
+                    <select id="club-activity-type" name="type" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        <option value="Sports">Sports</option>
+                        <option value="Cultural">Cultural</option>
+                        <option value="Technical">Technical</option>
+                        <option value="Workshop">Workshop</option>
+                        <option value="General">General</option>
                     </select>
                 </div>
                 <div>
-                    <label for="club-activity-date" class="block text-sm font-medium text-gray-700">📅 Date</label>
-                    <input type="date" id="club-activity-date" name="date" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
+                    <label for="club-activity-date" class="block text-sm font-semibold text-gray-700">Date</label>
+                    <input type="date" id="club-activity-date" name="date" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
                 </div>
                 <div>
-                    <label for="club-activity-description" class="block text-sm font-medium text-gray-700">📝 Description</label>
-                    <textarea id="club-activity-description" name="description" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="Add relevant details..."></textarea>
+                    <label for="club-activity-description" class="block text-sm font-semibold text-gray-700">Description</label>
+                    <textarea id="club-activity-description" name="description" rows="3" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="Add relevant details..."></textarea>
                 </div>
                 <div>
-                    <label for="club-activity-image-file" class="block text-sm font-medium text-gray-700">🖼️ Upload Image</label>
+                    <label for="club-activity-image-file" class="block text-sm font-semibold text-gray-700">Upload Image</label>
                     <input type="file" id="club-activity-image-file" name="clubActivityImage" class="mt-1 block w-full text-sm text-gray-500
-                                file:mr-4 file:py-2 file:px-4
-                                file:rounded-full file:border-0
-                                file:text-sm file:font-semibold
-                                file:bg-blue-50 file:text-blue-700
-                                hover:file:bg-blue-100"
-                                accept="image/*">
+                                 file:mr-4 file:py-2 file:px-4
+                                 file:rounded-full file:border-0
+                                 file:text-sm file:font-semibold
+                                 file:bg-indigo-50 file:text-indigo-700
+                                 hover:file:bg-indigo-100"
+                                 accept="image/*">
                     <p class="mt-1 text-xs text-gray-500">Upload an image from your device (PNG, JPG, etc.).</p>
                 </div>
-                <div class="flex justify-end space-x-3 pt-4">
-                    <button type="button" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300" data-modal-hide="add-club-activity-modal">❌ Cancel</button>
-                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">📝 Post Activity</button>
+                <div class="flex justify-end space-x-3 pt-4 border-t border-gray-100">
+                    <button type="button" class="flex items-center px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 font-medium" data-modal-hide="add-club-activity-modal">
+                        <hero-icon-solid name="x-mark" class="h-5 w-5 mr-1"></hero-icon-solid>
+                        Cancel
+                    </button>
+                    <button type="submit" class="flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium">
+                        <hero-icon-solid name="paper-airplane" class="h-5 w-5 mr-1"></hero-icon-solid>
+                        Post Activity
+                    </button>
                 </div>
             </form>
         </div>
@@ -748,48 +848,57 @@
 
     <div id="add-asset-modal" class="modal hidden fixed inset-0 z-30 flex items-center justify-center">
         <div class="modal-backdrop fixed inset-0" data-modal-hide="add-asset-modal"></div>
-        <div class="modal-content bg-white p-6 rounded-lg shadow-xl z-40 w-full max-w-md mx-4">
-            <h2 class="text-xl font-semibold mb-4">🪑 Add New Asset to Inventory</h2>
+        <div class="modal-content bg-white p-8 rounded-xl shadow-2xl z-40 w-full max-w-md mx-4">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                <hero-icon-outline name="archive-box" class="h-6 w-6 text-indigo-500 mr-2"></hero-icon-outline>
+                Add New Asset to Inventory
+            </h2>
             <form id="add-asset-form" class="space-y-4">
                 <div>
-                    <label for="asset-type" class="block text-sm font-medium text-gray-700">📋 Asset Type</label>
-                    <select id="asset-type" name="type" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
-                        <option value="Table">🪑 Table</option>
-                        <option value="Chair">🪑 Chair</option>
-                        <option value="Bed">🛏️ Bed</option>
-                        <option value="Mattress">🛏️ Mattress</option>
-                        <option value="Cupboard">🚪 Cupboard</option>
-                        <option value="Fan">💨 Fan</option>
-                        <option value="Light">💡 Light</option>
-                        <option value="System">💻 System (PC)</option>
-                        <option value="Other">📝 Other (Specify)</option>
+                    <label for="asset-type" class="block text-sm font-semibold text-gray-700">Asset Type</label>
+                    <select id="asset-type" name="type" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        <option value="Table">Table</option>
+                        <option value="Chair">Chair</option>
+                        <option value="Bed">Bed</option>
+                        <option value="Mattress">Mattress</option>
+                        <option value="Cupboard">Cupboard</option>
+                        <option value="Fan">Fan</option>
+                        <option value="Light">Light</option>
+                        <option value="System">System (PC)</option>
+                        <option value="Other">Other (Specify)</option>
                     </select>
                 </div>
                 <div id="asset-name-other-wrapper" class="hidden">
-                    <label for="asset-name-other" class="block text-sm font-medium text-gray-700">🏷️ Specify Asset Name</label>
-                    <input type="text" id="asset-name-other" name="name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="e.g., Study Lamp">
+                    <label for="asset-name-other" class="block text-sm font-semibold text-gray-700">Specify Asset Name</label>
+                    <input type="text" id="asset-name-other" name="name" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="e.g., Study Lamp">
                 </div>
                 <div>
-                    <label for="asset-quantity" class="block text-sm font-medium text-gray-700">🔢 Quantity</label>
-                    <input type="number" id="asset-quantity" name="quantity" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" min="1" value="1" required>
+                    <label for="asset-quantity" class="block text-sm font-semibold text-gray-700">Quantity</label>
+                    <input type="number" id="asset-quantity" name="quantity" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" min="1" value="1" required>
                 </div>
-                             <div>
-                    <label for="asset-description" class="block text-sm font-medium text-gray-700">📝 Description / Notes</label>
-                    <textarea id="asset-description" name="description" rows="2" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="e.g., Location, condition..."></textarea>
+                            <div>
+                    <label for="asset-description" class="block text-sm font-semibold text-gray-700">Description / Notes</label>
+                    <textarea id="asset-description" name="description" rows="2" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="e.g., Location, condition..."></textarea>
                 </div>
                 <div>
-                    <label for="asset-image-file" class="block text-sm font-medium text-gray-700">🖼️ Upload Asset Image</label>
+                    <label for="asset-image-file" class="block text-sm font-semibold text-gray-700">Upload Asset Image</label>
                     <input type="file" id="asset-image-file" name="assetImage" class="mt-1 block w-full text-sm text-gray-500
-                                file:mr-4 file:py-2 file:px-4
-                                file:rounded-full file:border-0
-                                file:text-sm file:font-semibold
-                                file:bg-blue-50 file:text-blue-700
-                                hover:file:bg-blue-100"
-                                accept="image/*">
+                                 file:mr-4 file:py-2 file:px-4
+                                 file:rounded-full file:border-0
+                                 file:text-sm file:font-semibold
+                                 file:bg-indigo-50 file:text-indigo-700
+                                 hover:file:bg-indigo-100"
+                                 accept="image/*">
                 </div>
-                <div class="flex justify-end space-x-3 pt-4">
-                    <button type="button" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300" data-modal-hide="add-asset-modal">❌ Cancel</button>
-                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">💾 Save Asset</button>
+                <div class="flex justify-end space-x-3 pt-4 border-t border-gray-100">
+                    <button type="button" class="flex items-center px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 font-medium" data-modal-hide="add-asset-modal">
+                        <hero-icon-solid name="x-mark" class="h-5 w-5 mr-1"></hero-icon-solid>
+                        Cancel
+                    </button>
+                    <button type="submit" class="flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium">
+                        <hero-icon-solid name="check-badge" class="h-5 w-5 mr-1"></hero-icon-solid>
+                        Save Asset
+                    </button>
                 </div>
             </form>
         </div>
@@ -797,12 +906,18 @@
 
     <div id="complaint-details-modal" class="modal hidden fixed inset-0 z-30 flex items-center justify-center">
         <div class="modal-backdrop fixed inset-0" data-modal-hide="complaint-details-modal"></div>
-        <div class="modal-content bg-white p-6 rounded-lg shadow-xl z-40 w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
-            <h2 class="text-xl font-semibold mb-4">📋 Complaint Details</h2>
+        <div class="modal-content bg-white p-8 rounded-xl shadow-2xl z-40 w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                <hero-icon-outline name="clipboard-document-check" class="h-6 w-6 text-indigo-500 mr-2"></hero-icon-outline>
+                Complaint Details
+            </h2>
             <div id="complaint-details-content" class="space-y-4">
-            </div>
-            <div class="flex justify-end space-x-3 pt-4 mt-6 border-t">
-                <button type="button" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300" data-modal-hide="complaint-details-modal">❌ Close</button>
+                </div>
+            <div class="flex justify-end space-x-3 pt-4 mt-6 border-t border-gray-100">
+                <button type="button" class="flex items-center px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 font-medium" data-modal-hide="complaint-details-modal">
+                    <hero-icon-solid name="x-mark" class="h-5 w-5 mr-1"></hero-icon-solid>
+                    Close
+                </button>
             </div>
         </div>
     </div>
@@ -817,8 +932,8 @@
             complaints: []
         }; 
         let eventData = [
-            { id: 1, title: '⚽ Inter-Hostel Cricket Match', type: 'Sports', date: '2025-11-10', description: 'Finals between Men\'s Hostel and Women\'s Hostel.' },
-            { id: 2, title: '🍽️ Mess Committee Meeting', type: 'Announcement', date: '2025-11-05', description: 'Discussing the new menu for next month.' }
+            { id: 1, title: 'Inter-Hostel Cricket Match', type: 'Sports', date: '2025-11-10', description: 'Finals between Men\'s Hostel and Women\'s Hostel.' },
+            { id: 2, title: 'Mess Committee Meeting', type: 'Announcement', date: '2025-11-05', description: 'Discussing the new menu for next month.' }
         ];
         let visitorLogData = [
              { id: 1, visitorName: 'Ramesh Kumar', studentName: 'Priya Sharma', roomNumber: 'A-101', date: '2025-11-05', timeIn: '09:00 AM', timeOut: '10:30 AM' },
@@ -916,12 +1031,13 @@
         const studentAssetAssignmentContainer = document.getElementById('student-asset-assignment-container');
 
         // --- 3. THEME/HELPER DATA ---
+        // Using hero-icon names in theme data
         const themes = { 
-            pink: { border: 'border-pink-500', bg: 'bg-pink-100', text: 'text-pink-600', icon: 'user-group' },
-            blue: { border: 'border-blue-500', bg: 'bg-blue-100', text: 'text-blue-600', icon: 'user-group' },
+            pink: { border: 'border-pink-500', bg: 'bg-pink-100', text: 'text-pink-600', icon: 'building-office' },
+            blue: { border: 'border-blue-500', bg: 'bg-blue-100', text: 'text-blue-600', icon: 'building-office' },
             green: { border: 'border-green-500', bg: 'bg-green-100', text: 'text-green-600', icon: 'building-office' },
-            purple: { border: 'border-purple-500', bg: 'bg-purple-100', text: 'text-purple-600', icon: 'academic-cap' },
-            yellow: { border: 'border-yellow-500', bg: 'bg-yellow-100', text: 'text-yellow-600', icon: 'beaker' },
+            purple: { border: 'border-purple-500', bg: 'bg-purple-100', text: 'text-purple-600', icon: 'building-office' },
+            yellow: { border: 'border-yellow-500', bg: 'bg-yellow-100', text: 'text-yellow-600', icon: 'building-office' },
         };
         const eventThemes = { 
             'Sports': { border: 'border-green-500', bg: 'bg-green-100', text: 'text-green-700' },
@@ -937,8 +1053,8 @@
             'General': { border: 'border-gray-500', bg: 'bg-gray-100', text: 'text-gray-700' },
         };
         const getStatus = (current, max) => { 
-            if (current >= max) return { text: '🚫 Full', classes: 'bg-red-500 text-white', progress: 'bg-red-500' };
-            return { text: '✅ Available', classes: 'bg-green-500 text-white', progress: 'bg-green-500' };
+            if (current >= max) return { text: 'Full', classes: 'bg-red-500 text-white', progress: 'bg-red-500' };
+            return { text: 'Available', classes: 'bg-green-500 text-white', progress: 'bg-green-500' };
         };
         
         // Helper to find a student by ID
@@ -988,7 +1104,7 @@
                 complaintsListContainer.innerHTML = `
                     <tr>
                         <td colspan="7" class="text-center text-red-500 py-6">
-                            ❌ Failed to load complaints. Please try again.
+                            <hero-icon-solid name="exclamation-circle" class="h-5 w-5 inline-block mr-1"></hero-icon-solid> Failed to load complaints. Please try again.
                         </td>
                     </tr>
                 `;
@@ -1057,7 +1173,8 @@
                     },
                     body: JSON.stringify({ 
                         response: response,
-                        respondedAt: new Date().toISOString()
+                        respondedAt: new Date().toISOString(),
+                        respondedBy: 'Admin'
                     })
                 });
                 
@@ -1112,8 +1229,8 @@
                 const statusMatch = (statusFilter === 'All') || (complaint.status === statusFilter);
                 const typeMatch = (typeFilter === 'All') || (complaint.complaintType === typeFilter);
                 const searchMatch = (complaint.studentName.toLowerCase().includes(searchTerm)) ||
-                                    (complaint.roomNumber.toLowerCase().includes(searchTerm)) ||
-                                    (complaint.description.toLowerCase().includes(searchTerm));
+                                     (complaint.roomNumber.toLowerCase().includes(searchTerm)) ||
+                                     (complaint.description.toLowerCase().includes(searchTerm));
                 return statusMatch && typeMatch && searchMatch;
             });
 
@@ -1121,7 +1238,7 @@
                 complaintsListContainer.innerHTML = `
                     <tr>
                         <td colspan="7" class="text-center text-gray-500 py-6">
-                            📝 No complaints found matching the criteria.
+                            <hero-icon-solid name="document-check" class="h-5 w-5 inline-block mr-1 text-gray-400"></hero-icon-solid> No complaints found matching the criteria.
                         </td>
                     </tr>
                 `;
@@ -1147,17 +1264,17 @@
                     minute: '2-digit'
                 });
 
+                // Mapping types to Heroicons for professional look in the table
                 const complaintIcons = {
-                    'Maintenance': '🔧',
-                    'Cleaning': '🧹',
-                    'Electrical': '⚡',
-                    'Plumbing': '💧',
-                    'Internet': '🌐',
-                    'Security': '🔒',
-                    'Other': '📝'
+                    'Maintenance': 'wrench-screwdriver',
+                    'Cleaning': 'trash',
+                    'Electrical': 'light-bulb',
+                    'Plumbing': 'water-symbol',
+                    'Internet': 'wifi',
+                    'Security': 'lock-closed',
+                    'Other': 'document-text'
                 };
-
-                const icon = complaintIcons[complaint.complaintType] || '📝';
+                const iconName = complaintIcons[complaint.complaintType] || 'document-text';
 
                 const rowHTML = `
                     <tr class="hover:bg-gray-50 complaint-row" data-complaint-id="${complaint._id}">
@@ -1165,7 +1282,7 @@
                             <div class="flex items-center">
                                 <div class="ml-4">
                                     <div class="text-sm font-medium text-gray-900">${complaint.studentName}</div>
-                                    <div class="text-sm text-gray-500">${complaint.studentId || ''}</div>
+                                    <div class="text-xs text-gray-500">${complaint.studentId || ''}</div>
                                 </div>
                             </div>
                         </td>
@@ -1174,7 +1291,7 @@
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                             <div class="flex items-center">
-                                <span class="text-lg mr-2">${icon}</span>
+                                <hero-icon-solid name="${iconName}" class="h-5 w-5 mr-2 text-gray-500"></hero-icon-solid>
                                 ${complaint.complaintType}
                             </div>
                         </td>
@@ -1192,22 +1309,22 @@
                             </span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium space-x-2">
-                            <button class="view-complaint-details-btn px-3 py-1 bg-blue-500 text-white text-xs font-medium rounded-md shadow-sm hover:bg-blue-600" data-complaint-id="${complaint._id}">
-                                👀 View
+                            <button class="view-complaint-details-btn px-3 py-1 bg-indigo-500 text-white text-xs font-medium rounded-md shadow-sm hover:bg-indigo-600 transition duration-150" data-complaint-id="${complaint._id}">
+                                <hero-icon-outline name="eye" class="h-4 w-4 inline-block"></hero-icon-outline> View
                             </button>
                             ${complaint.status !== 'Resolved' ? `
-                                <button class="update-complaint-status-btn px-3 py-1 bg-green-500 text-white text-xs font-medium rounded-md shadow-sm hover:bg-green-600" data-complaint-id="${complaint._id}" data-new-status="Resolved">
-                                    ✅ Resolve
+                                <button class="update-complaint-status-btn px-3 py-1 bg-green-500 text-white text-xs font-medium rounded-md shadow-sm hover:bg-green-600 transition duration-150" data-complaint-id="${complaint._id}" data-new-status="Resolved">
+                                    <hero-icon-outline name="check-circle" class="h-4 w-4 inline-block"></hero-icon-outline> Resolve
                                 </button>
                             ` : ''}
                             ${complaint.status === 'Pending' ? `
-                                <button class="update-complaint-status-btn px-3 py-1 bg-blue-500 text-white text-xs font-medium rounded-md shadow-sm hover:bg-blue-600" data-complaint-id="${complaint._id}" data-new-status="In Progress">
-                                    🔧 Start Progress
+                                <button class="update-complaint-status-btn px-3 py-1 bg-blue-500 text-white text-xs font-medium rounded-md shadow-sm hover:bg-blue-600 transition duration-150" data-complaint-id="${complaint._id}" data-new-status="In Progress">
+                                    <hero-icon-outline name="wrench-screwdriver" class="h-4 w-4 inline-block"></hero-icon-outline> Start Progress
                                 </button>
                             ` : ''}
                             ${complaint.status === 'In Progress' ? `
-                                <button class="update-complaint-status-btn px-3 py-1 bg-yellow-500 text-white text-xs font-medium rounded-md shadow-sm hover:bg-yellow-600" data-complaint-id="${complaint._id}" data-new-status="Pending">
-                                    ⏳ Mark Pending
+                                <button class="update-complaint-status-btn px-3 py-1 bg-yellow-500 text-white text-xs font-medium rounded-md shadow-sm hover:bg-yellow-600 transition duration-150" data-complaint-id="${complaint._id}" data-new-status="Pending">
+                                    <hero-icon-outline name="clock" class="h-4 w-4 inline-block"></hero-icon-outline> Mark Pending
                                 </button>
                             ` : ''}
                         </td>
@@ -1242,27 +1359,27 @@
             }) : 'Not resolved yet';
 
             const complaintIcons = {
-                'Maintenance': '🔧',
-                'Cleaning': '🧹',
-                'Electrical': '⚡',
-                'Plumbing': '💧',
-                'Internet': '🌐',
-                'Security': '🔒',
-                'Other': '📝'
+                'Maintenance': 'wrench-screwdriver',
+                'Cleaning': 'trash',
+                'Electrical': 'light-bulb',
+                'Plumbing': 'water-symbol',
+                'Internet': 'wifi',
+                'Security': 'lock-closed',
+                'Other': 'document-text'
             };
 
-            const icon = complaintIcons[complaint.complaintType] || '📝';
+            const iconName = complaintIcons[complaint.complaintType] || 'document-text';
 
             let responsesHTML = '';
             if (complaint.responses && complaint.responses.length > 0) {
                 responsesHTML = `
                     <div class="mt-4">
-                        <h4 class="font-semibold text-gray-900 mb-2">Admin Responses:</h4>
+                        <h4 class="font-bold text-gray-800 mb-2 border-b pb-1">Admin Responses:</h4>
                         ${complaint.responses.map(response => `
-                            <div class="bg-blue-50 p-3 rounded-lg mb-2">
+                            <div class="bg-indigo-50 p-3 rounded-lg mb-2 shadow-sm">
                                 <p class="text-sm text-gray-700">${response.response}</p>
-                                <p class="text-xs text-gray-500 mt-1">
-                                    By ${response.respondedBy} on ${new Date(response.respondedAt).toLocaleDateString()}
+                                <p class="text-xs text-gray-500 mt-1 flex items-center">
+                                    <hero-icon-outline name="user-circle" class="h-4 w-4 mr-1"></hero-icon-outline> By ${response.respondedBy} on ${new Date(response.respondedAt).toLocaleDateString()}
                                 </p>
                             </div>
                         `).join('')}
@@ -1272,26 +1389,29 @@
 
             complaintDetailsContent.innerHTML = `
                 <div class="space-y-4">
-                    <div class="grid grid-cols-2 gap-4">
+                    <div class="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-lg border border-gray-200">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">Student Name</label>
-                            <p class="mt-1 text-sm text-gray-900">${complaint.studentName}</p>
+                            <label class="block text-xs font-bold text-gray-500 uppercase">Student Name</label>
+                            <p class="mt-1 text-sm font-semibold text-gray-900">${complaint.studentName}</p>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">Room Number</label>
-                            <p class="mt-1 text-sm text-gray-900">${complaint.roomNumber}</p>
+                            <label class="block text-xs font-bold text-gray-500 uppercase">Room Number</label>
+                            <p class="mt-1 text-sm font-semibold text-gray-900">${complaint.roomNumber}</p>
                         </div>
                     </div>
                     
-                    <div class="grid grid-cols-2 gap-4">
+                    <div class="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-lg border border-gray-200">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">Complaint Type</label>
-                            <p class="mt-1 text-sm text-gray-900">${icon} ${complaint.complaintType}</p>
+                            <label class="block text-xs font-bold text-gray-500 uppercase">Complaint Type</label>
+                            <p class="mt-1 text-sm font-semibold text-gray-900 flex items-center">
+                                <hero-icon-solid name="${iconName}" class="h-5 w-5 text-indigo-500 mr-2"></hero-icon-solid>
+                                ${complaint.complaintType}
+                            </p>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">Status</label>
+                            <label class="block text-xs font-bold text-gray-500 uppercase">Status</label>
                             <p class="mt-1 text-sm text-gray-900">
-                                <span class="px-2 py-1 text-xs font-semibold rounded-full ${
+                                <span class="px-3 py-1 text-xs font-semibold rounded-full ${
                                     complaint.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' :
                                     complaint.status === 'In Progress' ? 'bg-blue-100 text-blue-800' :
                                     'bg-green-100 text-green-800'
@@ -1303,34 +1423,35 @@
                     </div>
                     
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">Description</label>
-                        <p class="mt-1 text-sm text-gray-900 bg-gray-50 p-3 rounded-lg">${complaint.description}</p>
+                        <label class="block text-xs font-bold text-gray-500 uppercase">Description</label>
+                        <p class="mt-1 text-sm text-gray-900 bg-white p-4 rounded-lg shadow-inner border border-gray-200">${complaint.description}</p>
                     </div>
                     
                     <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">Submitted On</label>
+                            <label class="block text-xs font-bold text-gray-500 uppercase">Submitted On</label>
                             <p class="mt-1 text-sm text-gray-900">${formattedDate}</p>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">Resolved On</label>
+                            <label class="block text-xs font-bold text-gray-500 uppercase">Resolved On</label>
                             <p class="mt-1 text-sm text-gray-900">${resolvedDate}</p>
                         </div>
                     </div>
                     
                     ${complaint.adminNotes ? `
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">Admin Notes</label>
-                            <p class="mt-1 text-sm text-gray-900 bg-blue-50 p-3 rounded-lg">${complaint.adminNotes}</p>
+                            <label class="block text-xs font-bold text-gray-500 uppercase">Admin Notes</label>
+                            <p class="mt-1 text-sm text-gray-900 bg-indigo-50 p-3 rounded-lg border border-indigo-200">${complaint.adminNotes}</p>
                         </div>
                     ` : ''}
                     
                     ${responsesHTML}
                     
-                    <div class="mt-6">
-                        <label for="complaint-response" class="block text-sm font-medium text-gray-700">Add Response</label>
-                        <textarea id="complaint-response" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="Enter your response to the student..."></textarea>
-                        <button id="submit-complaint-response" data-complaint-id="${complaint._id}" class="mt-2 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md shadow-sm hover:bg-blue-700">
+                    <div class="mt-6 border-t pt-4 border-gray-100">
+                        <label for="complaint-response" class="block text-sm font-semibold text-gray-700">Add New Response</label>
+                        <textarea id="complaint-response" rows="3" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="Enter your response to the student..."></textarea>
+                        <button id="submit-complaint-response" data-complaint-id="${complaint._id}" class="mt-3 px-4 py-2 bg-indigo-600 text-white text-sm font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition duration-150 flex items-center">
+                            <hero-icon-solid name="paper-airplane" class="h-5 w-5 mr-1"></hero-icon-solid>
                             Send Response
                         </button>
                     </div>
@@ -1374,7 +1495,7 @@
                 }
             } catch (error) {
                 console.error('❌ Failed to load hostel data:', error);
-                hostelBlockContainer.innerHTML = `<p class="text-red-500 col-span-full">Error: Could not load data from server. ${error.message}</p>`;
+                hostelBlockContainer.innerHTML = `<p class="text-red-500 col-span-full"><hero-icon-solid name="exclamation-circle" class="h-5 w-5 inline-block mr-1"></hero-icon-solid> Error: Could not load data from server. ${error.message}</p>`;
             }
         }
 
@@ -1391,7 +1512,7 @@
                 }
             } catch (error) {
                 console.error('❌ Failed to load club activities:', error);
-                clubActivityContainer.innerHTML = `<p class="text-red-500 col-span-full">Error: Could not load activities. ${error.message}</p>`;
+                clubActivityContainer.innerHTML = `<p class="text-red-500 col-span-full"><hero-icon-solid name="exclamation-circle" class="h-5 w-5 inline-block mr-1"></hero-icon-solid> Error: Could not load activities. ${error.message}</p>`;
             }
         }
 
@@ -1409,7 +1530,7 @@
                 }
             } catch (error) {
                 console.error('❌ Failed to load asset data:', error);
-                assetInventoryContainer.innerHTML = `<p class="text-red-500 col-span-full">Error: Could not load assets. ${error.message}</p>`;
+                assetInventoryContainer.innerHTML = `<p class="text-red-500 col-span-full"><hero-icon-solid name="exclamation-circle" class="h-5 w-5 inline-block mr-1"></hero-icon-solid> Error: Could not load assets. ${error.message}</p>`;
             }
         }
 
@@ -1420,7 +1541,7 @@
             let totalPendingFees = 0;
 
             if (!appState.blocks || appState.blocks.length === 0) {
-                 hostelBlockContainer.innerHTML = `<p class="text-gray-500 col-span-full">🏘️ No hostel blocks found. Add one to get started!</p>`;
+                 hostelBlockContainer.innerHTML = `<p class="text-gray-500 col-span-full flex items-center"><hero-icon-solid name="building-office-2" class="h-5 w-5 mr-2 text-gray-400"></hero-icon-solid> No hostel blocks found. Add one to get started!</p>`;
             }
 
             for (const block of appState.blocks) {
@@ -1451,22 +1572,20 @@
                 grandTotalStudents += currentStudents;
 
                 const blockHTML = `
-                    <div class="bg-white rounded-lg shadow-md overflow-hidden border-l-8 ${theme.border} relative transition-all duration-300 hover:shadow-xl hover:scale-105">
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden border-l-8 ${theme.border} relative transition-all duration-300 hover:shadow-lg hover:scale-[1.02]">
                         <button class="remove-block-btn absolute top-3 right-3 p-1 text-red-500 hover:bg-red-100 rounded-full transition-colors duration-200 z-10" data-block-id="${block._id}" data-block-name="${block.blockName}" title="Delete Block">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
+                            <hero-icon-outline name="trash" class="h-5 w-5"></hero-icon-outline>
                         </button>
-                        <a href="#" class="block-link block hover:bg-gray-50 p-6" data-hostel-key="${block.blockKey}">
+                        <a href="#" class="block-link block p-6" data-hostel-key="${block.blockKey}">
                             <div class="flex items-center mb-4">
-                                <div class="p-3 ${theme.bg} rounded-lg"><hero-icon-solid name="${theme.icon}" class="h-6 w-6 ${theme.text}"></hero-icon-solid></div>
+                                <div class="p-3 ${theme.bg} rounded-xl"><hero-icon-solid name="${theme.icon}" class="h-6 w-6 ${theme.text}"></hero-icon-solid></div>
                                 <h3 class="text-2xl font-bold text-gray-900 ml-4">${block.blockName}</h3>
                             </div>
                             <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
-                                <div><span class="text-gray-500">🏢 Total Rooms</span><p class="text-lg font-semibold text-gray-900">${totalRooms}</p></div>
-                                <div><span class="text-gray-500">👥 Occupied Rooms</span><p class="text-lg font-semibold text-gray-900">${occupiedRooms}</p></div>
-                                <div><span class="text-gray-500">👨‍🎓 Current Students</span><p class="text-lg font-semibold text-gray-900">${currentStudents}</p></div>
-                                <div><span class="text-gray-500">🏢 Total Capacity</span><p class="text-lg font-semibold text-gray-900">${totalCapacity}</p></div>
+                                <div><span class="text-gray-500 font-medium">Rooms</span><p class="text-lg font-semibold text-gray-900">${totalRooms}</p></div>
+                                <div><span class="text-gray-500 font-medium">Occupied</span><p class="text-lg font-semibold text-gray-900">${occupiedRooms}</p></div>
+                                <div><span class="text-gray-500 font-medium">Students</span><p class="text-lg font-semibold text-gray-900">${currentStudents}</p></div>
+                                <div><span class="text-gray-500 font-medium">Capacity</span><p class="text-lg font-semibold text-gray-900">${totalCapacity}</p></div>
                             </div>
                         </a>
                     </div>
@@ -1491,7 +1610,8 @@
              if (!block) { alert('Error: Could not find block data.'); backToDashboardBtn.click(); return; }
              detailView.dataset.currentHostelKey = block.blockKey;
              const theme = themes[block.blockTheme] || themes.blue;
-             detailHostelName.innerHTML = `<span class="p-2 ${theme.bg} ${theme.text} rounded-lg mr-2"><hero-icon-solid name="${theme.icon}" class="h-6 w-6 inline-block"></hero-icon-solid></span> ${block.blockName}`;
+             // Reworked title to use an icon
+             detailHostelName.innerHTML = `<hero-icon-solid name="${theme.icon}" class="h-7 w-7 inline-block ${theme.text} mr-2"></hero-icon-solid> ${block.blockName}`;
              let hostelCapacity = 0, hostelOccupancy = 0;
              roomListContainer.innerHTML = '';
              studentRoomSelect.innerHTML = '<option value="" disabled selected>-- Select an available room --</option>';
@@ -1503,28 +1623,30 @@
                  const max = room.capacity; hostelCapacity += max; hostelOccupancy += current;
                  const status = getStatus(current, max); const percent = max > 0 ? (current / max) * 100 : 0;
                  const studentNames = (room.students && room.students.length > 0) ? room.students.map(s => s.name).join(', ') : 'None';
-                 const imageUrl = room.imageUrl || `https://via.placeholder.com/300x150/e0e0e0/909090?text=${room.roomNumber}`;
+                 const imageUrl = room.imageUrl || `https://via.placeholder.com/300x150/e0e0e0/909090?text=${room.roomNumber.replace('-', '+')}`;
                  const roomHTML = `
-                     <div class="room-card bg-white rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl hover:scale-105 cursor-pointer" data-room-id="${room.roomNumber}" data-room-status="${status.text}">
-                         <img src="${imageUrl}" alt="Room ${room.roomNumber}" class="activity-card-image">
-                         <div class="p-5">
-                             <div class="flex justify-between items-center mb-2">
-                                 <h3 class="text-xl font-bold text-gray-800">${room.roomNumber}</h3>
-                                 <span class="text-xs font-bold px-3 py-1 rounded-full ${status.classes}">${status.text}</span>
-                             </div>
-                             <p class="text-sm text-gray-500 mb-4">${room.floor}</p>
-                             <div class="progress-bar mb-2">
-                                 <div class="progress-bar-inner ${status.progress}" style="width: ${percent}%;"></div>
-                             </div>
-                             <p class="text-sm text-gray-700 font-medium">📊 Occupancy: <span class="font-normal">${current}/${max}</span></p>
-                             <p class="text-sm text-gray-700 font-medium truncate">👨‍🎓 Students: <span class="font-normal">${studentNames}</span></p>
-                         </div>
+                     <div class="room-card bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:translate-y-[-2px] cursor-pointer border border-gray-100" data-room-id="${room.roomNumber}" data-room-status="${status.text}">
+                          <img src="${imageUrl}" alt="Room ${room.roomNumber}" class="activity-card-image">
+                          <div class="p-5">
+                              <div class="flex justify-between items-center mb-2">
+                                   <h3 class="text-2xl font-bold text-gray-800">${room.roomNumber}</h3>
+                                   <span class="text-xs font-bold px-3 py-1 rounded-full ${status.classes}">${status.text}</span>
+                              </div>
+                              <p class="text-sm text-gray-500 mb-4 flex items-center">
+                                  <hero-icon-outline name="map-pin" class="h-4 w-4 mr-1"></hero-icon-outline> ${room.floor}
+                              </p>
+                              <div class="progress-bar mb-3">
+                                   <div class="progress-bar-inner ${status.progress}" style="width: ${percent}%;"></div>
+                              </div>
+                              <p class="text-sm text-gray-700 font-semibold mb-1">Occupancy: <span class="font-normal text-gray-900">${current}/${max}</span></p>
+                              <p class="text-sm text-gray-700 font-semibold truncate">Students: <span class="font-normal text-gray-900">${studentNames}</span></p>
+                          </div>
                      </div>
-                 `;
+                   `;
                  roomListContainer.innerHTML += roomHTML;
-                 if (status.text === '✅ Available') { studentRoomSelect.innerHTML += `<option value="${room._id}">${room.roomNumber} (${current}/${max})</option>`; }
+                 if (status.text === 'Available') { studentRoomSelect.innerHTML += `<option value="${room._id}">${room.roomNumber} (${current}/${max})</option>`; }
              });
-             if (rooms.length === 0) { roomListContainer.innerHTML = '<p class="text-gray-500 text-center col-span-full">🏢 No rooms added to this block yet.</p>'; }
+             if (rooms.length === 0) { roomListContainer.innerHTML = '<p class="text-gray-500 text-center col-span-full"><hero-icon-solid name="building-office" class="h-5 w-5 inline-block mr-1 text-gray-400"></hero-icon-solid> No rooms added to this block yet.</p>'; }
              detailStatCapacity.textContent = hostelCapacity; detailStatOccupancy.textContent = hostelOccupancy; detailStatAvailable.textContent = hostelCapacity - hostelOccupancy;
              roomSearchInput.value = ''; roomFilterSelect.value = 'All';
         }
@@ -1540,7 +1662,7 @@
             modalOccupantTitle.textContent = `Current Occupants (${occupancy})`;
             modalOccupantContainer.innerHTML = '';
             if (occupancy === 0) {
-                modalOccupantContainer.innerHTML = '<p class="text-gray-500 md:col-span-2">This room is empty.</p>';
+                modalOccupantContainer.innerHTML = '<p class="text-gray-500 md:col-span-2 flex items-center"><hero-icon-outline name="user-slash" class="h-5 w-5 mr-1"></hero-icon-outline> This room is currently vacant.</p>';
             } else {
                 room.students.forEach(student => {
                     const feeStatus = student.feeStatus || 'Pending';
@@ -1550,21 +1672,21 @@
                     if (student.year && student.year.toLowerCase().includes('2')) yearColor = 'bg-yellow-100 text-yellow-700';
                     if (student.year && student.year.toLowerCase().includes('1')) yearColor = 'bg-blue-100 text-blue-700'; 
                     
-                    const studentHTML = `<div class="bg-white border rounded-lg p-4 shadow-sm relative"><button class="remove-student-btn absolute top-2 right-2 p-1 text-red-500 hover:bg-red-100 rounded-full transition-colors duration-200 z-10" data-student-id="${student._id}" title="Remove Student"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></button><span class="absolute top-3 left-3 text-xs font-semibold px-2 py-0.5 ${yearColor} rounded">${student.year || 'N/A'}</span><div class="flex items-center gap-4 mt-8"><img src="${student.profileImageUrl || './default-avatar.png'}" alt="${student.name}" class="flex-shrink-0 h-12 w-12 rounded-full bg-indigo-100 object-cover"><div class="overflow-hidden"><h4 class="font-bold text-gray-800 truncate">${student.name}</h4><p class="text-sm text-blue-600 truncate">${student.rollNumber || ''}</p></div></div><div class="mt-4 space-y-2 text-sm text-gray-600"><p class="truncate"><strong>📧 Email:</strong> ${student.email || 'N/A'}</p><p><strong>📞 Phone:</strong> ${student.phone || 'N/A'}</p><p><strong>📅 Joined:</strong> ${student.joiningDate ? new Date(student.joiningDate).toLocaleDateString() : 'N/A'}</p></div><div class="flex justify-between items-center mt-4 pt-3 border-t"><div><span class="text-xs font-medium">💰 Fee Status:</span><span class="text-sm font-bold px-3 py-1 rounded ${statusColor}">${feeStatus === 'Pending' ? '⏳ Due' : feeStatus}</span></div><a href="/student-profile.html?id=${student._id}" target="_blank" class="view-student-details text-sm font-medium text-blue-600 hover:underline" data-student-id="${student._id}">👀 View Full Details</a></div></div>`;
+                    const studentHTML = `<div class="bg-white border border-gray-200 rounded-xl p-4 shadow-lg relative"><button class="remove-student-btn absolute top-3 right-3 p-1 text-red-500 hover:bg-red-100 rounded-full transition-colors duration-200 z-10" data-student-id="${student._id}" title="Remove Student"><hero-icon-outline name="user-minus" class="h-5 w-5"></hero-icon-outline></button><span class="absolute top-3 left-3 text-xs font-bold px-2 py-0.5 ${yearColor} rounded">${student.year || 'N/A'}</span><div class="flex items-center gap-4 mt-8"><img src="${student.profileImageUrl || './default-avatar.png'}" alt="${student.name}" class="flex-shrink-0 h-12 w-12 rounded-full bg-indigo-100 object-cover border-2 border-white shadow-sm"><div class="overflow-hidden"><h4 class="font-bold text-gray-800 truncate">${student.name}</h4><p class="text-sm text-blue-600 truncate">${student.rollNumber || ''}</p></div></div><div class="mt-4 space-y-2 text-sm text-gray-600"><p class="truncate flex items-center"><strong><hero-icon-outline name="envelope" class="h-4 w-4 mr-1"></hero-icon-outline> Email:</strong> ${student.email || 'N/A'}</p><p class="flex items-center"><strong><hero-icon-outline name="phone" class="h-4 w-4 mr-1"></hero-icon-outline> Phone:</strong> ${student.phone || 'N/A'}</p><p class="flex items-center"><strong><hero-icon-outline name="calendar-days" class="h-4 w-4 mr-1"></hero-icon-outline> Joined:</strong> ${student.joiningDate ? new Date(student.joiningDate).toLocaleDateString() : 'N/A'}</p></div><div class="flex justify-between items-center mt-4 pt-3 border-t"><div><span class="text-xs font-semibold uppercase text-gray-500 block mb-1">Fee Status:</span><span class="text-sm font-bold px-3 py-1 rounded ${statusColor}">${feeStatus === 'Pending' ? 'Due' : feeStatus}</span></div><a href="/student-profile.html?id=${student._id}" target="_blank" class="view-student-details text-sm font-semibold text-indigo-600 hover:text-indigo-800 hover:underline transition duration-150" data-student-id="${student._id}">Details <hero-icon-outline name="arrow-right" class="h-4 w-4 inline-block ml-1"></hero-icon-outline></a></div></div>`;
                     
                     modalOccupantContainer.innerHTML += studentHTML;
                 });
             }
             modalIssuesContainer.innerHTML = '';
             const complaints = room.complaints || []; 
-            if (complaints.length === 0 && room.roomNumber === 'A-101') { complaints.push({ title: '❄️ Broken AC/Leakage', status: 'Critical', _id: 'fake123' }); }
+            if (complaints.length === 0 && room.roomNumber === 'A-101') { complaints.push({ title: 'Broken AC/Leakage', status: 'Critical', _id: 'fake123' }); }
             if (complaints.length === 0) {
-                modalIssuesContainer.innerHTML = '<p class="text-gray-500">✅ No open issues reported for this room.</p>';
+                modalIssuesContainer.innerHTML = '<p class="text-gray-500 flex items-center"><hero-icon-solid name="check-circle" class="h-5 w-5 mr-1 text-green-500"></hero-icon-solid> No open issues reported for this room.</p>';
                 modalRoomComplaintsBadge.classList.add('hidden');
             } else {
                 complaints.forEach(complaint => {
                     const statusColor = complaint.status.toLowerCase() === 'critical' ? 'bg-red-500 text-white' : 'bg-yellow-500 text-white';
-                    const issueHTML = `<div class="flex justify-between items-center bg-white p-3 rounded-lg shadow-sm border"><p class="font-medium text-gray-700">${complaint.title}</p><span class="text-xs font-bold px-3 py-1 rounded-full ${statusColor}">${complaint.status}</span></div>`;
+                    const issueHTML = `<div class="flex justify-between items-center bg-white p-3 rounded-lg shadow-sm border border-gray-200"><p class="font-medium text-gray-700">${complaint.title}</p><span class="text-xs font-bold px-3 py-1 rounded-full ${statusColor}">${complaint.status}</span></div>`;
                     modalIssuesContainer.innerHTML += issueHTML;
                 });
                 modalRoomComplaintsCount.textContent = complaints.length;
@@ -1575,12 +1697,28 @@
         function renderEvents() {
              eventListContainer.innerHTML = '';
             if (eventData.length === 0) {
-                eventListContainer.innerHTML = `<p class="text-gray-500 col-span-full">📅 No events or announcements posted yet.</p>`; return;
+                eventListContainer.innerHTML = `<p class="text-gray-500 col-span-full flex items-center"><hero-icon-solid name="calendar-days" class="h-5 w-5 mr-2 text-gray-400"></hero-icon-solid> No events or announcements posted yet.</p>`; return;
             }
             eventData.slice().reverse().forEach(event => {
                 const theme = eventThemes[event.type] || eventThemes.General;
                 const formattedDate = new Date(event.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-                const eventHTML = `<div class="bg-white rounded-lg shadow-md overflow-hidden border-l-8 ${theme.border} transition-all duration-300 hover:shadow-xl hover:scale-105"><div class="p-5"><div class="flex justify-between items-center mb-2"><h3 class="text-xl font-bold text-gray-800">${event.title}</h3><span class="text-xs font-bold px-3 py-1 rounded-full ${theme.bg} ${theme.text}">${event.type}</span></div><p class="text-sm font-medium text-gray-600 mb-3">📅 ${formattedDate}</p><p class="text-sm text-gray-700">${event.description}</p></div></div>`;
+                // Mapping Event type to Heroicons (approximation for professional look)
+                const eventIcon = event.type === 'Sports' ? 'trophy' : event.type === 'Announcement' ? 'megaphone' : event.type === 'Club Activity' ? 'users' : 'document-text';
+
+                const eventHTML = `
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden border-l-8 ${theme.border} transition-all duration-300 hover:shadow-xl hover:scale-[1.02]">
+                        <div class="p-5">
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="text-xl font-bold text-gray-900">${event.title}</h3>
+                                <span class="text-xs font-bold px-3 py-1 rounded-full ${theme.bg} ${theme.text} flex-shrink-0 ml-2">${event.type}</span>
+                            </div>
+                            <p class="text-sm font-semibold text-gray-600 mb-3 flex items-center">
+                                <hero-icon-outline name="calendar" class="h-4 w-4 mr-1"></hero-icon-outline> ${formattedDate}
+                            </p>
+                            <p class="text-sm text-gray-700">${event.description}</p>
+                        </div>
+                    </div>
+                `;
                 eventListContainer.innerHTML += eventHTML;
             });
         }
@@ -1588,28 +1726,28 @@
         function renderClubActivities(activities) { 
             clubActivityContainer.innerHTML = '';
             if (!activities || activities.length === 0) {
-                clubActivityContainer.innerHTML = `<p class="text-gray-500 col-span-full">🎭 No club activities posted yet.</p>`;
+                clubActivityContainer.innerHTML = `<p class="text-gray-500 col-span-full flex items-center"><hero-icon-solid name="puzzle-piece" class="h-5 w-5 mr-2 text-gray-400"></hero-icon-solid> No club activities posted yet.</p>`;
                 return;
             }
             activities.forEach(activity => {
                 const theme = clubActivityThemes[activity.type] || clubActivityThemes.General;
                 const formattedDate = new Date(activity.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-                const imageUrl = activity.imageUrl || `https://via.placeholder.com/300x150/${theme.bg.split('-')[1]}00/FFFFFF?text=${activity.type}`; 
+                const imageUrl = activity.imageUrl || `https://via.placeholder.com/300x150/${theme.bg.split('-')[1].slice(0, 2)}00/FFFFFF?text=${activity.type.replace(' ', '+')}`; 
                 
                 const activityHTML = `
-                    <div class="bg-white rounded-lg shadow-md overflow-hidden border-l-8 ${theme.border} transition-all duration-300 hover:shadow-xl hover:scale-105 flex flex-col relative">
-                        <button class="remove-activity-btn absolute top-3 right-3 p-1 text-red-500 hover:bg-red-100 rounded-full transition-colors duration-200 z-10" data-activity-id="${activity._id}" data-activity-title="${activity.title}" title="Delete Activity">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden border-l-8 ${theme.border} transition-all duration-300 hover:shadow-xl hover:scale-[1.02] flex flex-col relative">
+                        <button class="remove-activity-btn absolute top-3 right-3 p-1 text-red-500 bg-white rounded-full transition-colors duration-200 z-10 hover:bg-red-100 shadow-md" data-activity-id="${activity._id}" data-activity-title="${activity.title}" title="Delete Activity">
+                            <hero-icon-outline name="trash" class="h-5 w-5"></hero-icon-outline>
                         </button>
                         <img src="${imageUrl}" alt="${activity.title}" class="activity-card-image">
                         <div class="p-5 flex flex-col flex-grow">
                             <div class="flex justify-between items-start mb-2">
-                                <h3 class="text-lg font-bold text-gray-800">${activity.title}</h3>
+                                <h3 class="text-lg font-bold text-gray-900">${activity.title}</h3>
                                 <span class="text-xs font-bold px-3 py-1 rounded-full ${theme.bg} ${theme.text} flex-shrink-0 ml-2">${activity.type}</span>
                             </div>
-                            <p class="text-sm font-medium text-gray-600 mb-3">📅 ${formattedDate}</p>
+                            <p class="text-sm font-semibold text-gray-600 mb-3 flex items-center">
+                                <hero-icon-outline name="calendar" class="h-4 w-4 mr-1"></hero-icon-outline> ${formattedDate}
+                            </p>
                             <p class="text-sm text-gray-700 flex-grow">${activity.description || ''}</p>
                             </div>
                     </div>
@@ -1621,7 +1759,7 @@
         function renderAssets(assets) {
             assetInventoryContainer.innerHTML = '';
             if (!assets || assets.length === 0) {
-                assetInventoryContainer.innerHTML = `<p class="text-gray-500 col-span-full">📦 No assets found in inventory.</p>`;
+                assetInventoryContainer.innerHTML = `<p class="text-gray-500 col-span-full flex items-center"><hero-icon-solid name="archive-box" class="h-5 w-5 mr-2 text-gray-400"></hero-icon-solid> No assets found in inventory.</p>`;
                 return;
             }
             
@@ -1629,24 +1767,25 @@
                 const assetName = asset.name;
                 const imageUrl = asset.imageUrl || `https://via.placeholder.com/300x150/e0e0e0/909090?text=${assetName.replace(' ', '+')}`;
                 
+                // Mapping types to Heroicons for professional look in the card
                 const assetIcons = {
-                    'Table': '🪑', 'Chair': '🪑', 'Bed': '🛏️', 'Mattress': '🛏️',
-                    'Cupboard': '🚪', 'Fan': '💨', 'Light': '💡', 'System': '💻', 'Other': '📝'
+                    'Table': 'table-cells', 'Chair': 'chair', 'Bed': 'cube', 'Mattress': 'cube',
+                    'Cupboard': 'archive-box', 'Fan': 'wind', 'Light': 'light-bulb', 'System': 'computer-desktop', 'Other': 'document-text'
                 };
-                const icon = assetIcons[asset.type] || '📝';
+                const iconName = assetIcons[asset.type] || 'document-text';
 
                 const assetHTML = `
-                    <div class="bg-white rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl hover:scale-105 flex flex-col relative">
-                        <button class="remove-asset-btn absolute top-3 right-3 p-1 text-red-500 hover:bg-red-100 rounded-full transition-colors duration-200 z-10" data-asset-id="${asset._id}" data-asset-name="${assetName}" title="Delete Asset">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:scale-[1.02] flex flex-col relative border border-gray-100">
+                        <button class="remove-asset-btn absolute top-3 right-3 p-1 text-red-500 bg-white rounded-full transition-colors duration-200 z-10 hover:bg-red-100 shadow-md" data-asset-id="${asset._id}" data-asset-name="${assetName}" title="Delete Asset">
+                            <hero-icon-outline name="trash" class="h-5 w-5"></hero-icon-outline>
                         </button>
                         <img src="${imageUrl}" alt="${assetName}" class="activity-card-image">
                         <div class="p-5 flex flex-col flex-grow">
                             <div class="flex justify-between items-start mb-2">
-                                <h3 class="text-lg font-bold text-gray-800">${icon} ${assetName}</h3>
-                                <span class="text-lg font-bold text-blue-600">x ${asset.quantity}</span>
+                                <h3 class="text-lg font-bold text-gray-900 flex items-center">
+                                    <hero-icon-solid name="${iconName}" class="h-5 w-5 mr-2 text-indigo-500"></hero-icon-solid> ${assetName}
+                                </h3>
+                                <span class="text-2xl font-extrabold text-indigo-600">x ${asset.quantity}</span>
                             </div>
                             <p class="text-sm text-gray-700 flex-grow">${asset.description || 'No description provided.'}</p>
                         </div>
@@ -1674,12 +1813,12 @@
             const filteredStudents = allStudents.filter(student => {
                 const statusMatch = (statusFilter === 'All') || (student.feeStatus === statusFilter);
                 const searchMatch = (student.name.toLowerCase().includes(searchTerm)) || 
-                                    (student.rollNumber.toLowerCase().includes(searchTerm));
+                                     (student.rollNumber.toLowerCase().includes(searchTerm));
                 return statusMatch && searchMatch;
             });
 
             if (filteredStudents.length === 0) {
-                feesStudentListContainer.innerHTML = `<tr><td colspan="5" class="text-center text-gray-500 py-6">No students match the criteria.</td></tr>`;
+                feesStudentListContainer.innerHTML = `<tr><td colspan="5" class="text-center text-gray-500 py-6"><hero-icon-solid name="user-circle" class="h-5 w-5 inline-block mr-1 text-gray-400"></hero-icon-solid> No students match the criteria.</td></tr>`;
                 return;
             }
             
@@ -1695,20 +1834,20 @@
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="flex items-center">
                                 <div class="flex-shrink-0 h-10 w-10">
-                                    <img class="h-10 w-10 rounded-full object-cover" src="${student.profileImageUrl || './default-avatar.png'}" alt="${student.name}">
+                                    <img class="h-10 w-10 rounded-full object-cover border border-gray-200" src="${student.profileImageUrl || './default-avatar.png'}" alt="${student.name}">
                                 </div>
                                 <div class="ml-4">
-                                    <div class="text-sm font-medium text-gray-900">${student.name}</div>
-                                    <div class="text-sm text-gray-500">${student.email || 'N/A'}</div>
+                                    <div class="text-sm font-semibold text-gray-900">${student.name}</div>
+                                    <div class="text-xs text-gray-500">${student.email || 'N/A'}</div>
                                 </div>
                             </div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900">${student.rollNumber}</div>
-                            <div class="text-sm text-gray-500">${student.department || 'N/A'}</div>
+                            <div class="text-sm font-medium text-gray-900">${student.rollNumber}</div>
+                            <div class="text-xs text-gray-500">${student.department || 'N/A'}</div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                            ${student.blockName} / <strong>${student.roomNumber}</strong>
+                            ${student.blockName} / <strong class="text-indigo-600">${student.roomNumber}</strong>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${statusClass}">
@@ -1716,7 +1855,7 @@
                             </span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
-                            <button class="toggle-fee-status-btn px-3 py-2 text-white text-xs font-medium rounded-md shadow-sm ${buttonClass} flex items-center justify-center" data-student-id="${student._id}">
+                            <button class="toggle-fee-status-btn px-3 py-2 text-white text-xs font-semibold rounded-lg shadow-md ${buttonClass} flex items-center justify-center mx-auto transition duration-150" data-student-id="${student._id}">
                                 <hero-icon-solid name="${buttonIcon}" class="h-4 w-4 mr-1"></hero-icon-solid>
                                 ${buttonText}
                             </button>
@@ -1734,25 +1873,25 @@
             
             const filteredLogs = visitorLogData.filter(log => {
                 const searchMatch = (log.visitorName.toLowerCase().includes(searchTerm)) ||
-                                    (log.studentName.toLowerCase().includes(searchTerm));
+                                     (log.studentName.toLowerCase().includes(searchTerm));
                 const dateMatch = (!dateFilter) || (log.date === dateFilter);
                 return searchMatch && dateMatch;
             });
             
             if (filteredLogs.length === 0) {
-                visitorLogContainer.innerHTML = `<tr><td colspan="6" class="text-center text-gray-500 py-6">No visitor logs match the criteria.</td></tr>`;
+                visitorLogContainer.innerHTML = `<tr><td colspan="6" class="text-center text-gray-500 py-6"><hero-icon-solid name="document-text" class="h-5 w-5 inline-block mr-1 text-gray-400"></hero-icon-solid> No visitor logs match the criteria.</td></tr>`;
                 return;
             }
 
             filteredLogs.slice().reverse().forEach(log => {
                 const rowHTML = `
                     <tr class="hover:bg-gray-50">
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${log.visitorName}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">${log.visitorName}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${log.studentName}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${log.roomNumber}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-indigo-600 font-medium">${log.roomNumber}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${log.date}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${log.timeIn}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${log.timeOut}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600 font-medium">${log.timeIn}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-medium">${log.timeOut || 'N/A'}</td>
                     </tr>
                 `;
                 visitorLogContainer.innerHTML += rowHTML;
@@ -1834,27 +1973,27 @@
 
             if (assetOptions.includes("No assets")) {
                 if (!container.querySelector('.asset-assignment-row')) {
-                     container.innerHTML = '<p class="text-sm text-gray-500 no-assets-msg">No assets in stock to assign.</p>';
+                     container.innerHTML = '<p class="text-sm text-gray-500 no-assets-msg flex items-center"><hero-icon-outline name="archive-box-x-mark" class="h-4 w-4 mr-1"></hero-icon-outline> No assets in stock to assign.</p>';
                 }
                 return;
             }
             
             const row = document.createElement('div');
-            row.className = 'asset-assignment-row grid grid-cols-3 gap-2 items-center';
+            row.className = 'asset-assignment-row grid grid-cols-4 gap-3 items-center'; // Adjusted grid for better layout
             row.innerHTML = `
-                <select name="assignedAssetName" class="asset-select col-span-2 block w-full rounded-md border-gray-300 shadow-sm text-sm">
+                <select name="assignedAssetName" class="asset-select col-span-2 block w-full rounded-lg border-gray-300 shadow-sm text-sm focus:border-indigo-500 focus:ring-indigo-500">
                     ${assetOptions}
                 </select>
-                <input type="number" name="assignedAssetQty" value="1" min="1" class="asset-qty block w-full rounded-md border-gray-300 shadow-sm text-sm" placeholder="Qty">
-                <button type="button" class="remove-asset-row-btn text-red-500 hover:text-red-700">
-                    <hero-icon-solid name="x-circle" class="h-5 w-5"></hero-icon-solid>
+                <input type="number" name="assignedAssetQty" value="1" min="1" class="asset-qty block w-full rounded-lg border-gray-300 shadow-sm text-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="Qty">
+                <button type="button" class="remove-asset-row-btn text-red-500 hover:text-red-700 p-1 rounded-full hover:bg-red-50 transition duration-150">
+                    <hero-icon-solid name="minus-circle" class="h-5 w-5"></hero-icon-solid>
                 </button>
             `;
             
             row.querySelector('.remove-asset-row-btn').addEventListener('click', () => {
                 row.remove();
                 if (!container.querySelector('.asset-assignment-row') && assetOptions.includes("No assets")) {
-                    container.innerHTML = '<p class="text-sm text-gray-500 no-assets-msg">No assets in stock to assign.</p>';
+                     container.innerHTML = '<p class="text-sm text-gray-500 no-assets-msg flex items-center"><hero-icon-outline name="archive-box-x-mark" class="h-4 w-4 mr-1"></hero-icon-outline> No assets in stock to assign.</p>';
                 }
             });
             
@@ -1870,8 +2009,11 @@
             const tempStockCheck = {}; 
 
             for (const row of assignmentRows) {
-                const assetName = row.querySelector('.asset-select').value;
-                const quantity = parseInt(row.querySelector('.asset-qty').value, 10);
+                const assetSelect = row.querySelector('.asset-select');
+                const assetQtyInput = row.querySelector('.asset-qty');
+
+                const assetName = assetSelect.value;
+                const quantity = parseInt(assetQtyInput.value, 10);
                 
                 if (!assetName || !quantity || quantity <= 0) {
                     continue; 
@@ -1887,7 +2029,7 @@
                 const alreadyAssigned = tempStockCheck[assetName] || 0;
                 
                 if (quantity > (currentStock - alreadyAssigned)) {
-                    alert(`Error: Not enough "${assetName}" in stock. Available: ${currentStock}, Requested: ${quantity + alreadyAssigned}`);
+                    alert(`Error: Not enough "${assetName}" in stock. Available: ${currentStock - alreadyAssigned}, Requested: ${quantity}`);
                     return null; 
                 }
 
@@ -1962,7 +2104,7 @@
                 });
 
                 submitBtn.disabled = false;
-                submitBtn.textContent = '➕ Add Room';
+                submitBtn.textContent = 'Add Room';
 
                 const data = await res.json();
                 if (data.success) {
@@ -1976,7 +2118,7 @@
                 }
             } catch (error) {
                 submitBtn.disabled = false;
-                submitBtn.textContent = '➕ Add Room';
+                submitBtn.textContent = 'Add Room';
                 alert(`Error adding room: ${error.message}`);
             }
         });
@@ -2005,7 +2147,7 @@
                 });
 
                 submitBtn.disabled = false;
-                submitBtn.textContent = '➕ Add Student';
+                submitBtn.textContent = 'Add Student';
 
                 const data = await res.json();
                 if (data.success) {
@@ -2021,7 +2163,7 @@
                 alert(`Error adding student: ${error.message}`);
                 const submitBtn = addStudentForm.querySelector('button[type="submit"]');
                 submitBtn.disabled = false;
-                submitBtn.textContent = '➕ Add Student';
+                submitBtn.textContent = 'Add Student';
             }
         });
 
@@ -2055,7 +2197,7 @@
                 });
 
                 submitBtn.disabled = false;
-                submitBtn.textContent = '📝 Post Activity';
+                submitBtn.textContent = 'Post Activity';
 
                 const data = await res.json();
                 if (data.success) {
@@ -2069,7 +2211,7 @@
                 alert(`Error adding activity: ${error.message}`);
                 const submitBtn = addClubActivityForm.querySelector('button[type="submit"]');
                 submitBtn.disabled = false;
-                submitBtn.textContent = '📝 Post Activity';
+                submitBtn.textContent = 'Post Activity';
             }
         });
         
@@ -2098,7 +2240,7 @@
                 });
 
                 submitBtn.disabled = false;
-                submitBtn.textContent = '💾 Save Asset';
+                submitBtn.textContent = 'Save Asset';
 
                 const data = await res.json();
                 if (data.success) {
@@ -2111,7 +2253,7 @@
                 }
             } catch (error) {
                 submitBtn.disabled = false;
-                submitBtn.textContent = '💾 Save Asset';
+                submitBtn.textContent = 'Save Asset';
                 alert(`Error adding asset: ${error.message}`);
             }
         });
@@ -2134,7 +2276,7 @@
                 const roomId = card.dataset.roomId.toLowerCase();
                 const roomStatus = card.dataset.roomStatus;
                 const searchMatch = roomId.includes(searchTerm);
-                const filterMatch = (filterTerm === 'All') || (filterTerm === 'Full' && roomStatus === '🚫 Full') || (filterTerm === 'Available' && roomStatus === '✅ Available');
+                const filterMatch = (filterTerm === 'All') || (filterTerm === 'Full' && roomStatus === 'Full') || (filterTerm === 'Available' && roomStatus === 'Available');
                 card.style.display = (searchMatch && filterMatch) ? 'block' : 'none';
             });
         }
