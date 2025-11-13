@@ -1857,11 +1857,10 @@
             }
         });
 
-        // FIX: Ensure all 'Back to Dashboard' buttons use the centralized logic.
-        // detail-view -> backToDashboardBtn is already correct.
-        // fees-view -> backToDashboardFromFeesBtn is already correct.
-        // visitors-view -> backToDashboardFromVisitorsBtn is already correct.
-        // complaints-view -> backToDashboardFromComplaintsBtn is already correct.
+        // ==========================================================
+        // FIX: Ensure all 'Back to Dashboard' buttons execute the core logic
+        //      (hide views + show dashboard + reload dashboard data)
+        // ==========================================================
 
         backToDashboardBtn.addEventListener('click', () => {
             hideAllViews();
@@ -1870,6 +1869,31 @@
             currentRoomData = null;
             loadHostelData();
         });
+
+        // Fees View Back Button
+        backToDashboardFromFeesBtn.addEventListener('click', () => {
+            hideAllViews();
+            dashboardView.classList.remove('hidden');
+            loadHostelData(); // Added to refresh dashboard data
+        });
+
+        // Visitors View Back Button
+        backToDashboardFromVisitorsBtn.addEventListener('click', () => {
+            hideAllViews();
+            dashboardView.classList.remove('hidden');
+            loadHostelData(); // Added to refresh dashboard data
+        });
+
+        // Complaints View Back Button
+        backToDashboardFromComplaintsBtn.addEventListener('click', () => {
+            hideAllViews();
+            dashboardView.classList.remove('hidden');
+            loadHostelData(); // Added to refresh dashboard data
+        });
+
+        // ==========================================================
+        // END FIX
+        // ==========================================================
 
         hostelBlockContainer.addEventListener('click', (e) => {
             const link = e.target.closest('.block-link');
@@ -2311,12 +2335,6 @@
             renderFeesView();
         });
         
-        backToDashboardFromFeesBtn.addEventListener('click', () => {
-            hideAllViews();
-            dashboardView.classList.remove('hidden');
-            renderDashboard();
-        });
-        
         showVisitorsViewBtn.addEventListener('click', () => {
             hideAllViews();
             visitorsView.classList.remove('hidden');
@@ -2324,25 +2342,12 @@
             renderVisitorsView();
         });
         
-        backToDashboardFromVisitorsBtn.addEventListener('click', () => {
-            hideAllViews();
-            dashboardView.classList.remove('hidden');
-            renderDashboard(); // FIX: Re-render dashboard for stat consistency
-        });
-
-        // Complaints View Listeners (Logic maintained)
         showComplaintsViewBtn.addEventListener('click', () => {
             hideAllViews();
             complaintsView.classList.remove('hidden');
             loadComplaintsData();
         });
         
-        backToDashboardFromComplaintsBtn.addEventListener('click', () => {
-            hideAllViews();
-            dashboardView.classList.remove('hidden');
-            renderDashboard(); // FIX: Re-render dashboard for stat consistency
-        });
-
         // Complaints filtering and search (Logic maintained)
         complaintSearchInput.addEventListener('input', renderComplaintsView);
         complaintStatusFilter.addEventListener('change', renderComplaintsView);
