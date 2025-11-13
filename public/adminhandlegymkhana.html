@@ -11,8 +11,6 @@
         body { font-family: 'Inter', sans-serif; }
         .page-content { display: none; }
         .page-content.active { display: block; }
-        .election-content { display: none; }
-        .election-content.active { display: block; }
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #f1f1f1; }
         ::-webkit-scrollbar-thumb { background: #888; border-radius: 4px; }
@@ -254,147 +252,128 @@
 
                 <!-- FIXED ELECTIONS SECTION -->
                 <div id="page-content-elections" class="page-content">
-                    <!-- Election Tabs Navigation -->
-                    <div class="border-b border-gray-200 mb-6">
-                        <nav class="-mb-px flex space-x-8">
-                            <button id="tab-candidates" onclick="showElectionTab('candidates')" 
-                                    class="election-tab border-indigo-500 text-indigo-600 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
-                                Candidates Management
-                            </button>
-                            <button id="tab-results" onclick="showElectionTab('results')" 
-                                    class="election-tab border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
-                                Election Results
-                            </button>
-                        </nav>
-                    </div>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <div class="lg:col-span-1 space-y-8">
 
-                    <!-- Candidates Tab Content -->
-                    <div id="election-content-candidates" class="election-content active">
-                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                            <div class="lg:col-span-1 space-y-8">
-
-                                <form id="add-election-detail-form" class="bg-indigo-50 p-6 rounded-lg shadow-lg space-y-4 sticky top-28">
-                                    <h2 class="text-xl font-bold text-gray-900 flex items-center">
-                                        <i class="fas fa-calendar-alt mr-2 text-indigo-600"></i>1. Election Details Setup
-                                    </h2>
-                                    <p class="text-sm text-gray-500">Define the posts open for elections.</p>
-                                    
-                                    <div>
-                                        <label for="election-position" class="block text-sm font-medium text-gray-700">New Position/Post Name</label>
-                                        <input type="text" id="election-position" name="position" placeholder="e.g., General Secretary, Cultural" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                                    </div>
-                                    <div>
-                                        <label for="election-nomination-date" class="block text-sm font-medium text-gray-700">Nomination Last Date</label>
-                                        <input type="date" id="election-nomination-date" name="nominationDate" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                                    </div>
-                                    <button type="submit" class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md font-semibold hover:bg-indigo-700 flex items-center justify-center transition-colors duration-200">
-                                        <i class="fas fa-plus mr-2"></i>Add Position Detail
-                                    </button>
-                                </form>
-
-                                <form id="add-candidate-form" class="bg-white p-6 rounded-lg shadow-lg space-y-4">
-                                    <h2 class="text-xl font-bold text-gray-900 flex items-center">
-                                        <i class="fas fa-user-plus mr-2 text-indigo-600"></i>2. Add Electoral Candidate
-                                    </h2>
-                                    <p class="text-sm text-gray-500">Select the post this candidate is standing for.</p>
-                                    
-                                    <div>
-                                        <label for="candidate-post" class="block text-sm font-medium text-gray-700">Running For Post</label>
-                                        <select id="candidate-post" name="post" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                                            <option value="">-- Select Election Post --</option>
-                                        </select>
-                                        <p id="post-selection-note" class="text-xs text-red-500 mt-1" style="display:none;">Add positions in the 'Election Details' form first.</p>
-                                    </div>
-
-                                    <div>
-                                        <label for="candidate-name" class="block text-sm font-medium text-gray-700">Candidate Name</label>
-                                        <input type="text" id="candidate-name" name="name" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                                    </div>
-
-                                    <div>
-                                        <label for="candidate-roll-no" class="block text-sm font-medium text-gray-700">Roll No. / Student ID</label>
-                                        <input type="text" id="candidate-roll-no" name="rollno" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                                    </div>
-                                    
-                                    <div>
-                                        <label for="candidate-manifesto" class="block text-sm font-medium text-gray-700">Manifesto URL/Description</label>
-                                        <input type="text" id="candidate-manifesto" name="manifesto" placeholder="e.g., 3rd Year, B.Tech CSE" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                                    </div>
-                                    
-                                    <div>
-                                        <label for="candidate-image" class="block text-sm font-medium text-gray-700">Candidate Image</label>
-                                        <input type="file" id="candidate-image" name="imageUrl" required class="mt-1 block w-full file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
-                                    </div>
-                                    <button type="submit" class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md font-semibold hover:bg-indigo-700 flex items-center justify-center transition-colors duration-200">
-                                        <i class="fas fa-plus mr-2"></i>Finalize Candidate
-                                    </button>
-                                </form>
-
-                                <form id="add-announcement-form" class="bg-yellow-50 p-6 rounded-lg shadow-lg space-y-4">
-                                    <h2 class="text-xl font-bold text-gray-900 flex items-center">
-                                        <i class="fas fa-bullhorn mr-2 text-yellow-600"></i>3. New Announcement
-                                    </h2>
-                                    <div>
-                                        <label for="announcement-title" class="block text-sm font-medium text-gray-700">Announcement Title</label>
-                                        <input type="text" id="announcement-title" name="title" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                                    </div>
-                                    <div>
-                                        <label for="announcement-content" class="block text-sm font-medium text-gray-700">Content/Details</label>
-                                        <textarea id="announcement-content" name="content" rows="3" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"></textarea>
-                                    </div>
-                                    <div>
-                                        <label for="announcement-image" class="block text-sm font-medium text-gray-700">Related Image (Optional)</label>
-                                        <input type="file" id="announcement-image" name="imageUrl" class="mt-1 block w-full file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-yellow-100 file:text-yellow-700 hover:file:bg-yellow-200">
-                                    </div>
-                                    <button type="submit" class="w-full bg-yellow-600 text-white py-2 px-4 rounded-md font-semibold hover:bg-yellow-700 flex items-center justify-center transition-colors duration-200">
-                                        <i class="fas fa-upload mr-2"></i>Publish Announcement
-                                    </button>
-                                </form>
-
-                            </div>
-
-                            <div class="lg:col-span-2 space-y-8">
+                            <form id="add-election-detail-form" class="bg-indigo-50 p-6 rounded-lg shadow-lg space-y-4 sticky top-28">
+                                <h2 class="text-xl font-bold text-gray-900 flex items-center">
+                                    <i class="fas fa-calendar-alt mr-2 text-indigo-600"></i>1. Election Details Setup
+                                </h2>
+                                <p class="text-sm text-gray-500">Define the posts open for elections.</p>
                                 
                                 <div>
-                                    <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center">
-                                        <i class="fas fa-list-check mr-2"></i>Current Election Posts
-                                    </h2>
-                                    <div id="election-details-list" class="bg-white p-4 rounded-lg shadow-md space-y-3">
-                                        <p class="text-gray-500" id="no-positions-msg">No positions added yet. Use the form on the left.</p>
-                                    </div>
+                                    <label for="election-position" class="block text-sm font-medium text-gray-700">Position/Post Name</label>
+                                    <input type="text" id="election-position" name="position" placeholder="e.g., General Secretary, Cultural" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                                 </div>
-
-                                <hr>
 
                                 <div>
-                                    <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center">
-                                        <i class="fas fa-users mr-2"></i>Current Electoral Candidates
-                                    </h2>
-                                    <div id="candidates-list" class="bg-white p-4 rounded-lg shadow-md space-y-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <p class="col-span-full text-gray-500">Candidates will appear here after they are added.</p>
-                                    </div>
+                                    <label for="election-block" class="block text-sm font-medium text-gray-700">Block/Place</label>
+                                    <input type="text" id="election-block" name="block" placeholder="e.g., A-Block, Main Campus" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                                 </div>
-
-                                <hr>
 
                                 <div>
-                                    <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center">
-                                        <i class="fas fa-newspaper mr-2"></i>Recent Announcements
-                                    </h2>
-                                    <div id="announcements-list" class="bg-white p-4 rounded-lg shadow-md space-y-4">
-                                        <p class="text-gray-500">Announcements will appear here.</p>
-                                    </div>
+                                    <label for="election-nomination-date" class="block text-sm font-medium text-gray-700">Nomination Last Date</label>
+                                    <input type="date" id="election-nomination-date" name="nominationDate" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                </div>
+                                <button type="submit" class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md font-semibold hover:bg-indigo-700 flex items-center justify-center transition-colors duration-200">
+                                    <i class="fas fa-plus mr-2"></i>Add Position Detail
+                                </button>
+                            </form>
+
+                            <form id="add-candidate-form" class="bg-white p-6 rounded-lg shadow-lg space-y-4">
+                                <h2 class="text-xl font-bold text-gray-900 flex items-center">
+                                    <i class="fas fa-user-plus mr-2 text-indigo-600"></i>2. Add Electoral Candidate
+                                </h2>
+                                <p class="text-sm text-gray-500">Select the post this candidate is standing for.</p>
+                                
+                                <div>
+                                    <label for="candidate-post" class="block text-sm font-medium text-gray-700">Running For Post</label>
+                                    <select id="candidate-post" name="post" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                        <option value="">-- Select Election Post --</option>
+                                    </select>
+                                    <p id="post-selection-note" class="text-xs text-red-500 mt-1" style="display:none;">Add positions in the 'Election Details' form first.</p>
                                 </div>
 
-                            </div>
+                                <div>
+                                    <label for="candidate-name" class="block text-sm font-medium text-gray-700">Candidate Name</label>
+                                    <input type="text" id="candidate-name" name="name" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                </div>
+
+                                <div>
+                                    <label for="candidate-roll-no" class="block text-sm font-medium text-gray-700">Roll No. / Student ID</label>
+                                    <input type="text" id="candidate-roll-no" name="rollno" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                </div>
+                                
+                                <div>
+                                    <label for="candidate-manifesto" class="block text-sm font-medium text-gray-700">Manifesto URL/Description</label>
+                                    <input type="text" id="candidate-manifesto" name="manifesto" placeholder="e.g., 3rd Year, B.Tech CSE" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                </div>
+                                
+                                <div>
+                                    <label for="candidate-image" class="block text-sm font-medium text-gray-700">Candidate Image</label>
+                                    <input type="file" id="candidate-image" name="imageUrl" required class="mt-1 block w-full file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                                </div>
+                                <button type="submit" class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md font-semibold hover:bg-indigo-700 flex items-center justify-center transition-colors duration-200">
+                                    <i class="fas fa-plus mr-2"></i>Finalize Candidate
+                                </button>
+                            </form>
+
+                            <form id="add-announcement-form" class="bg-yellow-50 p-6 rounded-lg shadow-lg space-y-4">
+                                <h2 class="text-xl font-bold text-gray-900 flex items-center">
+                                    <i class="fas fa-bullhorn mr-2 text-yellow-600"></i>3. New Announcement
+                                </h2>
+                                <div>
+                                    <label for="announcement-title" class="block text-sm font-medium text-gray-700">Announcement Title</label>
+                                    <input type="text" id="announcement-title" name="title" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                </div>
+                                <div>
+                                    <label for="announcement-content" class="block text-sm font-medium text-gray-700">Content/Details</label>
+                                    <textarea id="announcement-content" name="content" rows="3" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"></textarea>
+                                </div>
+                                <div>
+                                    <label for="announcement-image" class="block text-sm font-medium text-gray-700">Related Image (Optional)</label>
+                                    <input type="file" id="announcement-image" name="imageUrl" class="mt-1 block w-full file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-yellow-100 file:text-yellow-700 hover:file:bg-yellow-200">
+                                </div>
+                                <button type="submit" class="w-full bg-yellow-600 text-white py-2 px-4 rounded-md font-semibold hover:bg-yellow-700 flex items-center justify-center transition-colors duration-200">
+                                    <i class="fas fa-upload mr-2"></i>Publish Announcement
+                                </button>
+                            </form>
+
                         </div>
-                    </div>
 
-                    <!-- Results Tab Content -->
-                    <div id="election-content-results" class="election-content">
-                        <div class="bg-white p-6 rounded-lg shadow-lg">
-                            <h2 class="text-xl font-bold text-gray-900 mb-4">Election Results</h2>
-                            <p class="text-gray-500">Election results will be displayed here once available.</p>
+                        <div class="lg:col-span-2 space-y-8">
+                            
+                            <div>
+                                <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                                    <i class="fas fa-list-check mr-2"></i>Current Election Posts
+                                </h2>
+                                <div id="election-details-list" class="bg-white p-4 rounded-lg shadow-md space-y-3">
+                                    <p class="text-gray-500" id="no-positions-msg">No positions added yet. Use the form on the left.</p>
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <div>
+                                <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                                    <i class="fas fa-users mr-2"></i>Current Electoral Candidates
+                                </h2>
+                                <div id="candidates-list" class="bg-white p-4 rounded-lg shadow-md space-y-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <p class="col-span-full text-gray-500">Candidates will appear here after they are added.</p>
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <div>
+                                <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                                    <i class="fas fa-newspaper mr-2"></i>Recent Announcements
+                                </h2>
+                                <div id="announcements-list" class="bg-white p-4 rounded-lg shadow-md space-y-4">
+                                    <p class="text-gray-500">Announcements will appear here.</p>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -473,38 +452,10 @@
             elections: 'Manage Elections',
             settings: 'Site Settings'
         };
-        
         const pageTitle = document.getElementById('page-title');
 
-        // Function to handle switching between Candidate and Results tabs
-        window.showElectionTab = (tabName) => {
-            // Hide all election content tabs
-            document.querySelectorAll('.election-content').forEach(el => {
-                el.classList.remove('active');
-            });
-            
-            // Show the selected election content tab
-            const activeContent = document.getElementById(`election-content-${tabName}`);
-            if (activeContent) {
-                activeContent.classList.add('active');
-            }
-            
-            // Update the tab buttons
-            document.querySelectorAll('.election-tab').forEach(btn => {
-                btn.classList.remove('border-indigo-500', 'text-indigo-600');
-                btn.classList.add('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
-            });
-            
-            const activeBtn = document.getElementById(`tab-${tabName}`);
-            if (activeBtn) {
-                activeBtn.classList.add('border-indigo-500', 'text-indigo-600');
-                activeBtn.classList.remove('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
-            }
-        }
-
-        // Initialize election functionality when DOM is loaded
         document.addEventListener('DOMContentLoaded', () => {
-            // 1. Initialize data storage for election positions
+            // 1. Initialize data storage (in a real app, this would be backend/database)
             let electionPositions = [];
 
             const electionDetailForm = document.getElementById('add-election-detail-form');
@@ -534,6 +485,7 @@
                     li.innerHTML = `
                         <div>
                             <p class="font-semibold text-gray-800">${pos.position}</p>
+                            <p class="text-xs text-gray-600">Block: ${pos.block}</p>
                             <p class="text-xs text-gray-600">Nomination Due: ${pos.nominationDate}</p>
                         </div>
                         <i class="fas fa-circle-check text-green-500"></i>
@@ -549,111 +501,105 @@
             };
 
             // 2. Handle ELECTION DETAILS FORM Submission
-            if (electionDetailForm) {
-                electionDetailForm.addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    
-                    const position = document.getElementById('election-position').value;
-                    const date = document.getElementById('election-nomination-date').value;
+            electionDetailForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                const position = document.getElementById('election-position').value;
+                const block = document.getElementById('election-block').value;
+                const date = document.getElementById('election-nomination-date').value;
 
-                    // Check for duplicates before adding
-                    if (electionPositions.some(p => p.position === position)) {
-                         alert(`The position "${position}" has already been added.`);
-                         return;
-                    }
+                // Check for duplicates before adding
+                if (electionPositions.some(p => p.position === position)) {
+                     alert(`The position "${position}" has already been added.`);
+                     return;
+                }
 
-                    const newPosition = { position: position, nominationDate: date };
-                    electionPositions.push(newPosition);
+                const newPosition = { position: position, block: block, nominationDate: date };
+                electionPositions.push(newPosition);
 
-                    renderPositions();
-                    
-                    // Clear form fields
-                    electionDetailForm.reset();
-                    alert(`Election post "${position}" added successfully!`);
-                });
-            }
+                renderPositions();
+                
+                // Clear form fields
+                electionDetailForm.reset();
+                alert(`Election post "${position}" added successfully!`);
+            });
             
-            // 3. Handle CANDIDATE FORM Submission
+            // 3. Handle CANDIDATE FORM Submission (Example Log)
             const candidateForm = document.getElementById('add-candidate-form');
             const candidatesList = document.getElementById('candidates-list');
             
-            if (candidateForm) {
-                candidateForm.addEventListener('submit', (e) => {
-                    e.preventDefault();
+            candidateForm.addEventListener('submit', (e) => {
+                e.preventDefault();
 
-                    const post = document.getElementById('candidate-post').value;
-                    const name = document.getElementById('candidate-name').value;
-                    const rollno = document.getElementById('candidate-roll-no').value;
-                    
-                    if (!post) {
-                        alert("Please select a valid Running For Post.");
-                        return;
-                    }
+                const post = document.getElementById('candidate-post').value;
+                const name = document.getElementById('candidate-name').value;
+                const rollno = document.getElementById('candidate-roll-no').value;
+                
+                if (!post) {
+                    alert("Please select a valid Running For Post.");
+                    return;
+                }
 
-                    // Display the candidate card
-                    const candidateCard = document.createElement('div');
-                    candidateCard.className = 'bg-white border border-indigo-200 p-4 rounded-lg shadow-sm';
-                    candidateCard.innerHTML = `
-                        <div class="flex items-center space-x-3">
-                            <i class="fas fa-user-circle fa-2x text-indigo-500"></i>
-                            <div>
-                                <p class="font-bold text-gray-900">${name}</p>
-                                <p class="text-xs text-gray-500">ID: ${rollno}</p>
-                            </div>
+                // Example: Display the candidate card
+                const candidateCard = document.createElement('div');
+                candidateCard.className = 'bg-white border border-indigo-200 p-4 rounded-lg shadow-sm';
+                candidateCard.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <i class="fas fa-user-circle fa-2x text-indigo-500"></i>
+                        <div>
+                            <p class="font-bold text-gray-900">${name}</p>
+                            <p class="text-xs text-gray-500">ID: ${rollno}</p>
                         </div>
-                        <p class="mt-2 text-sm font-semibold text-indigo-600">${post}</p>
-                        <p class="text-xs text-gray-700">${document.getElementById('candidate-manifesto').value}</p>
-                        <p class="text-xs text-green-500 mt-2">Candidate data ready for election DB.</p>
-                    `;
-                    
-                    // Remove placeholder if present
-                    if (candidatesList.querySelector('p.col-span-full')) {
-                        candidatesList.innerHTML = '';
-                    }
-                    candidatesList.appendChild(candidateCard);
-                    
-                    candidateForm.reset();
-                    alert(`Candidate ${name} for ${post} successfully added!`);
-                });
-            }
+                    </div>
+                    <p class="mt-2 text-sm font-semibold text-indigo-600">${post}</p>
+                    <p class="text-xs text-gray-700">${document.getElementById('candidate-manifesto').value}</p>
+                    <p class="text-xs text-green-500 mt-2">Candidate data ready for election DB.</p>
+                `;
+                
+                // Remove placeholder if present
+                if (candidatesList.querySelector('p.col-span-full')) {
+                    candidatesList.innerHTML = '';
+                }
+                candidatesList.appendChild(candidateCard);
+                
+                candidateForm.reset();
+                alert(`Candidate ${name} for ${post} successfully added!`);
+            });
 
-            // 4. Handle ANNOUNCEMENT FORM Submission
+            // 4. Handle ANNOUNCEMENT FORM Submission (Example Log)
             const announcementForm = document.getElementById('add-announcement-form');
             const announcementsList = document.getElementById('announcements-list');
 
-            if (announcementForm) {
-                announcementForm.addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    
-                    const title = document.getElementById('announcement-title').value;
-                    const content = document.getElementById('announcement-content').value;
-                    
-                    // Create an announcement card
-                    const announcementCard = document.createElement('div');
-                    announcementCard.className = 'bg-yellow-100 p-3 rounded-md border-l-4 border-yellow-600';
-                    announcementCard.innerHTML = `
-                        <p class="font-bold text-gray-800">${title}</p>
-                        <p class="text-sm text-gray-700">${content}</p>
-                        <p class="text-xs text-gray-500 mt-1">Published: ${new Date().toLocaleTimeString()} ${new Date().toLocaleDateString()}</p>
-                    `;
-                    
-                    // Remove placeholder if present
-                    if (announcementsList.querySelector('p.text-gray-500')) {
-                        announcementsList.innerHTML = '';
-                    }
+            announcementForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                const title = document.getElementById('announcement-title').value;
+                const content = document.getElementById('announcement-content').value;
+                
+                // Create an announcement card
+                const announcementCard = document.createElement('div');
+                announcementCard.className = 'bg-yellow-100 p-3 rounded-md border-l-4 border-yellow-600';
+                announcementCard.innerHTML = `
+                    <p class="font-bold text-gray-800">${title}</p>
+                    <p class="text-sm text-gray-700">${content}</p>
+                    <p class="text-xs text-gray-500 mt-1">Published: ${new Date().toLocaleTimeString()} ${new Date().toLocaleDateString()}</p>
+                `;
+                
+                // Remove placeholder if present
+                if (announcementsList.querySelector('p.text-gray-500')) {
+                    announcementsList.innerHTML = '';
+                }
 
-                    announcementsList.prepend(announcementCard); // Prepend to show newest first
-                    
-                    announcementForm.reset();
-                    alert(`Announcement "${title}" published!`);
-                });
-            }
+                announcementsList.prepend(announcementCard); // Prepend to show newest first
+                
+                announcementForm.reset();
+                alert(`Announcement "${title}" published!`);
+            });
             
             // Initial render call
             renderPositions();
         });
 
-        // Main page navigation function
         window.showPage = (pageName) => {
             // Hide all pages
             document.querySelectorAll('.page-content').forEach(el => el.classList.remove('active'));
@@ -672,11 +618,6 @@
             if (activeBtn) {
                 activeBtn.classList.add('bg-gray-700', 'text-white');
                 activeBtn.classList.remove('text-gray-300', 'hover:bg-gray-700', 'hover:text-white');
-            }
-
-            // Initialize election tabs when elections page is shown
-            if (pageName === 'elections') {
-                showElectionTab('candidates');
             }
         }
         
