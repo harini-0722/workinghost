@@ -249,396 +249,150 @@
                         </div>
                     </div>
                 </div>
-<div id="page-content-elections" class="page-content">
-    <!-- Main Election Header -->
-    <div class="mb-8">
-        <div class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 text-white">
-            <div class="flex justify-between items-center">
+
+               <div id="page-content-elections" class="page-content">
+    
+    <div class="mb-6 border-b border-gray-200">
+        <nav class="-mb-px flex space-x-8" aria-label="Tabs">
+            <button id="tab-candidates" onclick="showElectionTab('candidates')" class="election-tab whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm border-indigo-500 text-indigo-600 focus:outline-none">
+                Manage Candidates
+            </button>
+            <button id="tab-results" onclick="showElectionTab('results')" class="election-tab whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none">
+                View/Enter Results
+            </button>
+        </nav>
+    </div>
+
+    <div id="election-content-candidates" class="election-content active">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="lg:col-span-1">
+                <form id="add-candidate-form" class="bg-white p-6 rounded-lg shadow-lg space-y-4 sticky top-28">
+                    <h2 class="text-xl font-bold text-gray-900">Add Electoral Candidate</h2>
+                    <p class="text-sm text-gray-500">Manual Entry for the current election cycle.</p>
+                    
+                    <div>
+                        <label for="candidate-post" class="block text-sm font-medium text-gray-700">Election Post (e.g., General Secretary)</label>
+                        <select id="candidate-post" name="post" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                            <option value="">-- Select Post --</option>
+                            <option value="President">President, Student Gymkhana</option>
+                            <option value="gsec_scitech">General Secretary, SciTech Council</option>
+                            <option value="gsec_cultural">General Secretary, Cultural Council</option>
+                            <option value="gsec_sports">General Secretary, Sports Council</option>
+                            <option value="treasurer">Treasurer</option>
+                            <option value="hall_sec_cvr">Hall Secretary, CVR Hall</option>
+                            <option value="hall_sec_da">Hall Secretary, DA Hall</option>
+                            </select>
+                    </div>
+
+                    <div>
+                        <label for="candidate-name" class="block text-sm font-medium text-gray-700">Candidate Name</label>
+                        <input type="text" id="candidate-name" name="name" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    </div>
+
+                    <div>
+                        <label for="candidate-roll-no" class="block text-sm font-medium text-gray-700">Roll No. / Student ID</label>
+                        <input type="text" id="candidate-roll-no" name="rollno" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    </div>
+                    
+                    <div>
+                        <label for="candidate-manifesto" class="block text-sm font-medium text-gray-700">Manifesto URL/Key Points</label>
+                        <input type="text" id="candidate-manifesto" name="manifesto" placeholder="e.g., Link to PDF or 3rd Year, B.Tech CSE" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    </div>
+                    
+                    <div>
+                        <label for="candidate-image" class="block text-sm font-medium text-gray-700">Candidate Image</label>
+                        <input type="file" id="candidate-image" name="imageUrl" required class="mt-1 block w-full file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                    </div>
+                    <button type="submit" class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md font-semibold hover:bg-indigo-700 flex items-center justify-center transition-colors duration-200">
+                        <i class="fas fa-user-plus mr-2"></i>Add Candidate
+                    </button>
+                </form>
+            </div>
+            <div class="lg:col-span-2">
+                <h2 class="text-xl font-bold text-gray-900 mb-4">Current Electoral Candidates</h2>
+                <div id="candidates-list" class="space-y-4">
+                    <p class="text-gray-500">Candidates will appear here after they are added.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="election-content-results" class="election-content" style="display: none;">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">Live Election Results & Vote Count</h2>
+        <div class="bg-white p-6 rounded-lg shadow-lg mb-6">
+            <p class="text-sm font-medium text-gray-500">Overall Statistics (Data from your image)</p>
+            <div class="grid grid-cols-3 gap-4 mt-2 font-mono">
+                <p><strong>Total Voters:</strong> <span class="text-indigo-600">2891</span></p>
+                <p><strong>Total Votes Casted:</strong> <span class="text-indigo-600">1437</span></p>
+                <p><strong>Voting Percent:</strong> <span class="text-indigo-600">49.71%</span></p>
+            </div>
+            <p class="mt-4 text-sm text-red-600">
+                <i class="fas fa-exclamation-triangle mr-1"></i> Note: The votes displayed below are static examples based on the provided image and must be updated via database integration or a manual entry form (to be built).
+            </p>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow-lg mb-6">
+            <h3 class="text-xl font-bold text-gray-900 mb-4">Manual Result Update (Mock)</h3>
+            <form id="update-results-form" class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                    <h2 class="text-3xl font-bold mb-2">Admin Panel for HORC Election-2025, IIT Indore</h2>
-                    <p class="text-lg opacity-90">Complete Election Management System</p>
+                    <label for="result-post" class="block text-sm font-medium text-gray-700">Select Post to Update</label>
+                    <select id="result-post" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        <option>CVR: Hall Secretary</option>
+                        <option>CVR: Dining Secretary</option>
+                        <option>DA: Hall Secretary</option>
+                        </select>
                 </div>
-                <div class="text-right">
-                    <div class="text-2xl font-bold">Total Vote Casted: <span id="total-votes-count">1437</span></div>
-                    <div class="text-sm opacity-90">Young Percent: 49.71%</div>
+                <div>
+                    <label for="result-candidate" class="block text-sm font-medium text-gray-700">Candidate Name</label>
+                    <input type="text" id="result-candidate" placeholder="Name or NOTA" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Quick Stats -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <div class="bg-white p-6 rounded-lg shadow-lg text-center">
-            <div class="text-2xl font-bold text-gray-900">2891</div>
-            <div class="text-sm text-gray-600 mt-1">Total Voters</div>
-        </div>
-        <div class="bg-white p-6 rounded-lg shadow-lg text-center">
-            <div class="text-2xl font-bold text-gray-900">1437</div>
-            <div class="text-sm text-gray-600 mt-1">Votes Casted</div>
-        </div>
-        <div class="bg-white p-6 rounded-lg shadow-lg text-center">
-            <div class="text-2xl font-bold text-gray-900">49.71%</div>
-            <div class="text-sm text-gray-600 mt-1">Voting %</div>
-        </div>
-        <div class="bg-white p-6 rounded-lg shadow-lg text-center">
-            <div class="text-2xl font-bold text-green-600">ACTIVE</div>
-            <div class="text-sm text-gray-600 mt-1">Election Status</div>
-        </div>
-    </div>
-
-    <!-- Election Management Tabs -->
-    <div class="bg-white rounded-2xl shadow-lg mb-8">
-        <div class="border-b border-gray-200">
-            <nav class="flex flex-wrap -mb-px">
-                <button id="tab-election-details" class="tab-btn py-4 px-6 text-lg font-medium border-b-2 border-blue-600 text-blue-600 transition-all duration-200 active" data-tab="election-details">
-                    <i class="fas fa-info-circle mr-2"></i>Election Details
+                <div>
+                    <label for="result-votes" class="block text-sm font-medium text-gray-700">Votes</label>
+                    <input type="number" id="result-votes" placeholder="Enter vote count" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                </div>
+                <button type="submit" class="col-span-full bg-green-600 text-white py-2 px-4 rounded-md font-semibold hover:bg-green-700 transition-colors duration-200">
+                    Update Result
                 </button>
-                <button id="tab-candidate-management" class="tab-btn py-4 px-6 text-lg font-medium border-b-2 border-transparent hover:text-blue-600 hover:border-blue-300 transition-all duration-200" data-tab="candidate-management">
-                    <i class="fas fa-user-plus mr-2"></i>Candidate Management
-                </button>
-                <button id="tab-results" class="tab-btn py-4 px-6 text-lg font-medium border-b-2 border-transparent hover:text-blue-600 hover:border-blue-300 transition-all duration-200" data-tab="results">
-                    <i class="fas fa-chart-bar mr-2"></i>Results & Analytics
-                </button>
-                <button id="tab-announcements" class="tab-btn py-4 px-6 text-lg font-medium border-b-2 border-transparent hover:text-blue-600 hover:border-blue-300 transition-all duration-200" data-tab="announcements">
-                    <i class="fas fa-bullhorn mr-2"></i>Announcements
-                </button>
-            </nav>
+            </form>
         </div>
 
-        <!-- Tab Contents -->
-        <div class="p-6">
-            <!-- Tab 1: Election Details Form -->
-            <div id="tab-content-election-details" class="tab-content active">
-                <div class="max-w-4xl mx-auto">
-                    <form id="election-details-form" class="bg-gray-50 p-8 rounded-lg space-y-6">
-                        <h3 class="text-2xl font-bold text-gray-900 mb-6 text-center">Election Configuration</h3>
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label for="election-title" class="block text-sm font-medium text-gray-700 mb-2">Election Title *</label>
-                                <input type="text" id="election-title" name="title" value="HORC Election-2025" required 
-                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                            </div>
-                            <div>
-                                <label for="election-year" class="block text-sm font-medium text-gray-700 mb-2">Academic Year *</label>
-                                <input type="text" id="election-year" name="year" value="2025" required 
-                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label for="election-start" class="block text-sm font-medium text-gray-700 mb-2">Start Date & Time *</label>
-                                <input type="datetime-local" id="election-start" name="startDate" required 
-                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                            </div>
-                            <div>
-                                <label for="election-end" class="block text-sm font-medium text-gray-700 mb-2">End Date & Time *</label>
-                                <input type="datetime-local" id="election-end" name="endDate" required 
-                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                            </div>
-                        </div>
-
-                        <div>
-                            <label for="total-voters-input" class="block text-sm font-medium text-gray-700 mb-2">Total Eligible Voters *</label>
-                            <input type="number" id="total-voters-input" name="totalVoters" value="2891" required 
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                        </div>
-
-                        <div class="flex space-x-4 justify-center pt-4">
-                            <button type="submit" class="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors duration-200 flex items-center">
-                                <i class="fas fa-save mr-2"></i>Save Election Details
-                            </button>
-                            <button type="button" id="reset-election" class="bg-gray-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-gray-700 transition-colors duration-200 flex items-center">
-                                <i class="fas fa-redo mr-2"></i>Reset Election
-                            </button>
-                        </div>
-                    </form>
-                </div>
+        <h3 class="text-xl font-bold text-gray-900 mb-4">Detailed Results per Post</h3>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6" id="results-display-area">
+            <div class="bg-red-50 p-4 rounded-lg shadow-md border-t-4 border-red-500">
+                <h4 class="text-lg font-semibold text-gray-800 mb-2">CVR: Hall Secretary</h4>
+                <ul class="space-y-1 text-sm">
+                    <li class="flex justify-between"><span>Jatin Boyat <i class="fas fa-crown text-yellow-500 ml-1"></i></span><span class="font-bold text-red-700">198</span></li>
+                    <li class="flex justify-between"><span>NITISH KUMAR</span><span>110</span></li>
+                    <li class="flex justify-between"><span>Aryan Arya</span><span>67</span></li>
+                    <li class="flex justify-between"><span>Rohit Jhajhra</span><span>49</span></li>
+                    <li class="flex justify-between"><span>Abhishek Bairwa</span><span>34</span></li>
+                    <li class="flex justify-between"><span>Hitendra Kumar Singh</span><span>14</span></li>
+                    <li class="flex justify-between border-t mt-2 pt-2"><span>**NOTA**</span><span class="font-bold text-gray-600">18</span></li>
+                </ul>
+            </div>
+            
+            <div class="bg-red-50 p-4 rounded-lg shadow-md border-t-4 border-red-500">
+                <h4 class="text-lg font-semibold text-gray-800 mb-2">CVR: Dining Secretary</h4>
+                <ul class="space-y-1 text-sm">
+                    <li class="flex justify-between"><span>Atul Yadav <i class="fas fa-crown text-yellow-500 ml-1"></i></span><span class="font-bold text-red-700">241</span></li>
+                    <li class="flex justify-between"><span>Om Patel</span><span>82</span></li>
+                    <li class="flex justify-between"><span>Sonu Kumar Teli</span><span>39</span></li>
+                    <li class="flex justify-between"><span>Suyash</span><span>33</span></li>
+                    <li class="flex justify-between"><span>Tharun</span><span>15</span></li>
+                    <li class="flex justify-between border-t mt-2 pt-2"><span>**NOTA**</span><span class="font-bold text-gray-600">80</span></li>
+                </ul>
             </div>
 
-            <!-- Tab 2: Candidate Management -->
-            <div id="tab-content-candidate-management" class="tab-content">
-                <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
-                    <!-- Add Candidate Form -->
-                    <div class="lg:col-span-1">
-                        <form id="add-candidate-form" class="bg-white p-6 rounded-lg shadow-lg border border-gray-200 space-y-4 sticky top-28">
-                            <h3 class="text-xl font-bold text-gray-900 mb-4">Add Candidate</h3>
-                            
-                            <div>
-                                <label for="candidate-name" class="block text-sm font-medium text-gray-700 mb-1">Candidate Name *</label>
-                                <input type="text" id="candidate-name" name="name" required 
-                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
-                                       placeholder="Enter full name">
-                            </div>
-
-                            <div>
-                                <label for="candidate-hostel" class="block text-sm font-medium text-gray-700 mb-1">Hostel *</label>
-                                <select id="candidate-hostel" name="hostel" required 
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                    <option value="">Select Hostel</option>
-                                    <option value="CVR">CVR Hostel</option>
-                                    <option value="DA">DA Hostel</option>
-                                    <option value="PM AJAY">PM AJAY Hostel</option>
-                                    <option value="APJ">APJ Hostel</option>
-                                    <option value="HJB">HJB Hostel</option>
-                                    <option value="VSB">VSB Hostel</option>
-                                </select>
-                            </div>
-
-                            <div>
-                                <label for="candidate-position" class="block text-sm font-medium text-gray-700 mb-1">Position *</label>
-                                <select id="candidate-position" name="position" required 
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                    <option value="">Select Position</option>
-                                    <option value="Hall Secretary">Hall Secretary</option>
-                                    <option value="Dining Secretary">Dining Secretary</option>
-                                    <option value="Sports Secretary">Sports Secretary</option>
-                                    <option value="Cultural Secretary">Cultural Secretary</option>
-                                    <option value="SsrT Secretary">SsrT Secretary</option>
-                                </select>
-                            </div>
-
-                            <div>
-                                <label for="candidate-year" class="block text-sm font-medium text-gray-700 mb-1">Academic Year</label>
-                                <select id="candidate-year" name="year" 
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                    <option value="">Select Year</option>
-                                    <option value="1st Year">1st Year</option>
-                                    <option value="2nd Year">2nd Year</option>
-                                    <option value="3rd Year">3rd Year</option>
-                                    <option value="4th Year">4th Year</option>
-                                    <option value="5th Year">5th Year</option>
-                                </select>
-                            </div>
-
-                            <div>
-                                <label for="candidate-department" class="block text-sm font-medium text-gray-700 mb-1">Department</label>
-                                <input type="text" id="candidate-department" name="department" 
-                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
-                                       placeholder="e.g., Computer Science">
-                            </div>
-
-                            <div>
-                                <label for="initial-votes" class="block text-sm font-medium text-gray-700 mb-1">Initial Votes</label>
-                                <input type="number" id="initial-votes" name="initialVotes" value="0" 
-                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                            </div>
-
-                            <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center">
-                                <i class="fas fa-user-plus mr-2"></i>Add Candidate
-                            </button>
-
-                            <!-- Quick Add NOTA -->
-                            <div class="pt-4 border-t border-gray-200">
-                                <button type="button" id="add-nota-btn" class="w-full bg-gray-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-gray-700 transition-colors duration-200 flex items-center justify-center">
-                                    <i class="fas fa-user-slash mr-2"></i>Add NOTA for Position
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-
-                    <!-- Candidates List -->
-                    <div class="lg:col-span-3">
-                        <div class="bg-white rounded-lg shadow-lg border border-gray-200">
-                            <div class="p-6 border-b border-gray-200">
-                                <div class="flex justify-between items-center">
-                                    <h3 class="text-2xl font-bold text-gray-900">Candidate Database</h3>
-                                    <div class="flex space-x-3">
-                                        <select id="filter-hostel" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                            <option value="">All Hostels</option>
-                                            <option value="CVR">CVR</option>
-                                            <option value="DA">DA</option>
-                                            <option value="PM AJAY">PM AJAY</option>
-                                            <option value="APJ">APJ</option>
-                                            <option value="HJB">HJB</option>
-                                            <option value="VSB">VSB</option>
-                                        </select>
-                                        <select id="filter-position" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                            <option value="">All Positions</option>
-                                            <option value="Hall Secretary">Hall Secretary</option>
-                                            <option value="Dining Secretary">Dining Secretary</option>
-                                            <option value="Sports Secretary">Sports Secretary</option>
-                                            <option value="Cultural Secretary">Cultural Secretary</option>
-                                            <option value="SsrT Secretary">SsrT Secretary</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Candidates by Hostel and Position -->
-                            <div id="candidates-display" class="p-6">
-                                <!-- Dynamic content will be loaded here -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div class="bg-green-50 p-4 rounded-lg shadow-md border-t-4 border-green-500">
+                <h4 class="text-lg font-semibold text-gray-800 mb-2">DA: Hall Secretary</h4>
+                <ul class="space-y-1 text-sm">
+                    <li class="flex justify-between"><span>Isha Sharma <i class="fas fa-crown text-yellow-500 ml-1"></i></span><span class="font-bold text-green-700">156</span></li>
+                    <li class="flex justify-between border-t mt-2 pt-2"><span>**NOTA**</span><span class="font-bold text-gray-600">39</span></li>
+                </ul>
             </div>
-
-            <!-- Tab 3: Results & Analytics -->
-            <div id="tab-content-results" class="tab-content">
-                <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
-                    <div class="lg:col-span-1">
-                        <div class="bg-white p-6 rounded-lg shadow-lg border border-gray-200 space-y-6 sticky top-28">
-                            <h3 class="text-xl font-bold text-gray-900">Results Controls</h3>
-                            
-                            <div>
-                                <label for="results-hostel-filter" class="block text-sm font-medium text-gray-700 mb-2">Filter by Hostel</label>
-                                <select id="results-hostel-filter" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                    <option value="">All Hostels</option>
-                                    <option value="CVR">CVR</option>
-                                    <option value="DA">DA</option>
-                                    <option value="PM AJAY">PM AJAY</option>
-                                    <option value="APJ">APJ</option>
-                                    <option value="HJB">HJB</option>
-                                    <option value="VSB">VSB</option>
-                                </select>
-                            </div>
-
-                            <div>
-                                <label for="results-position-filter" class="block text-sm font-medium text-gray-700 mb-2">Filter by Position</label>
-                                <select id="results-position-filter" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                    <option value="">All Positions</option>
-                                    <option value="Hall Secretary">Hall Secretary</option>
-                                    <option value="Dining Secretary">Dining Secretary</option>
-                                    <option value="Sports Secretary">Sports Secretary</option>
-                                    <option value="Cultural Secretary">Cultural Secretary</option>
-                                    <option value="SsrT Secretary">SsrT Secretary</option>
-                                </select>
-                            </div>
-
-                            <div class="space-y-3">
-                                <button id="refresh-results" class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center">
-                                    <i class="fas fa-sync-alt mr-2"></i>Refresh Results
-                                </button>
-                                <button id="export-results" class="w-full bg-green-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-green-700 transition-colors duration-200 flex items-center justify-center">
-                                    <i class="fas fa-file-export mr-2"></i>Export to Excel
-                                </button>
-                                <button id="declare-winners" class="w-full bg-red-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-red-700 transition-colors duration-200 flex items-center justify-center">
-                                    <i class="fas fa-trophy mr-2"></i>Declare Winners
-                                </button>
-                            </div>
-
-                            <div class="pt-4 border-t border-gray-200">
-                                <h4 class="text-lg font-bold text-gray-900 mb-3">Statistics</h4>
-                                <div class="space-y-2 text-sm">
-                                    <div class="flex justify-between">
-                                        <span class="text-gray-600">Total Candidates:</span>
-                                        <span class="font-semibold" id="stat-total-candidates">0</span>
-                                    </div>
-                                    <div class="flex justify-between">
-                                        <span class="text-gray-600">Positions:</span>
-                                        <span class="font-semibold" id="stat-total-positions">0</span>
-                                    </div>
-                                    <div class="flex justify-between">
-                                        <span class="text-gray-600">Voting Completed:</span>
-                                        <span class="font-semibold" id="stat-voting-completed">0%</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="lg:col-span-3">
-                        <!-- Results Overview -->
-                        <div class="bg-white rounded-lg shadow-lg border border-gray-200 p-6 mb-6">
-                            <div class="flex justify-between items-center mb-6">
-                                <h3 class="text-2xl font-bold text-gray-900">Live Election Results</h3>
-                                <div class="text-sm text-gray-600">Last Updated: <span id="last-updated-time">Just now</span></div>
-                            </div>
-
-                            <!-- Results Grid Matching Image Format -->
-                            <div id="results-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                <!-- Results will be populated here in card format -->
-                            </div>
-                        </div>
-
-                        <!-- Detailed Results Table -->
-                        <div class="bg-white rounded-lg shadow-lg border border-gray-200 p-6">
-                            <h3 class="text-2xl font-bold text-gray-900 mb-4">Detailed Results</h3>
-                            <div class="overflow-x-auto">
-                                <table class="min-w-full bg-white border border-gray-300">
-                                    <thead class="bg-gray-50">
-                                        <tr>
-                                            <th class="px-4 py-3 text-left text-sm font-medium text-gray-700 uppercase">Hostel</th>
-                                            <th class="px-4 py-3 text-left text-sm font-medium text-gray-700 uppercase">Position</th>
-                                            <th class="px-4 py-3 text-left text-sm font-medium text-gray-700 uppercase">Candidate</th>
-                                            <th class="px-4 py-3 text-center text-sm font-medium text-gray-700 uppercase">Votes</th>
-                                            <th class="px-4 py-3 text-center text-sm font-medium text-gray-700 uppercase">%</th>
-                                            <th class="px-4 py-3 text-center text-sm font-medium text-gray-700 uppercase">Status</th>
-                                            <th class="px-4 py-3 text-center text-sm font-medium text-gray-700 uppercase">Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="detailed-results-body">
-                                        <!-- Detailed results will be populated here -->
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
-
-            <!-- Tab 4: Announcements -->
-            <div id="tab-content-announcements" class="tab-content">
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    <div class="lg:col-span-1">
-                        <form id="announcement-form" class="bg-white p-6 rounded-lg shadow-lg border border-gray-200 space-y-4 sticky top-28">
-                            <h3 class="text-xl font-bold text-gray-900">Create Announcement</h3>
-                            
-                            <div>
-                                <label for="announcement-title" class="block text-sm font-medium text-gray-700 mb-1">Title *</label>
-                                <input type="text" id="announcement-title" name="title" required 
-                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
-                                       placeholder="Enter announcement title">
-                            </div>
-
-                            <div>
-                                <label for="announcement-type" class="block text-sm font-medium text-gray-700 mb-1">Type *</label>
-                                <select id="announcement-type" name="type" required 
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                    <option value="general">General</option>
-                                    <option value="important">Important</option>
-                                    <option value="urgent">Urgent</option>
-                                    <option value="result">Result Declaration</option>
-                                    <option value="schedule">Schedule Update</option>
-                                </select>
-                            </div>
-
-                            <div>
-                                <label for="announcement-message" class="block text-sm font-medium text-gray-700 mb-1">Message *</label>
-                                <textarea id="announcement-message" name="message" rows="5" required 
-                                          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
-                                          placeholder="Enter detailed announcement message..."></textarea>
-                            </div>
-
-                            <div class="flex items-center">
-                                <input type="checkbox" id="announcement-pinned" name="pinned" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
-                                <label for="announcement-pinned" class="ml-2 block text-sm text-gray-700">Pin this announcement</label>
-                            </div>
-
-                            <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center">
-                                <i class="fas fa-bullhorn mr-2"></i>Publish Announcement
-                            </button>
-                        </form>
-                    </div>
-
-                    <div class="lg:col-span-2">
-                        <div class="bg-white rounded-lg shadow-lg border border-gray-200">
-                            <div class="p-6 border-b border-gray-200">
-                                <h3 class="text-2xl font-bold text-gray-900">Election Announcements</h3>
-                            </div>
-                            <div id="announcements-list" class="divide-y divide-gray-200">
-                                <!-- Announcements will be populated here -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
-                
                 <div id="page-content-settings" class="page-content">
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                         <div class="bg-white p-6 rounded-lg shadow-lg">
