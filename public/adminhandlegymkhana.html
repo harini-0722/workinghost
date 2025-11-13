@@ -250,149 +250,131 @@
                     </div>
                 </div>
 
-               <div id="page-content-elections" class="page-content">
-    
-    <div class="mb-6 border-b border-gray-200">
-        <nav class="-mb-px flex space-x-8" aria-label="Tabs">
-            <button id="tab-candidates" onclick="showElectionTab('candidates')" class="election-tab whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm border-indigo-500 text-indigo-600 focus:outline-none">
-                Manage Candidates
-            </button>
-            <button id="tab-results" onclick="showElectionTab('results')" class="election-tab whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none">
-                View/Enter Results
-            </button>
-        </nav>
-    </div>
+               <div id="election-content-candidates" class="election-content active">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div class="lg:col-span-1 space-y-8">
 
-    <div id="election-content-candidates" class="election-content active">
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div class="lg:col-span-1">
-                <form id="add-candidate-form" class="bg-white p-6 rounded-lg shadow-lg space-y-4 sticky top-28">
-                    <h2 class="text-xl font-bold text-gray-900">Add Electoral Candidate</h2>
-                    <p class="text-sm text-gray-500">Manual Entry for the current election cycle.</p>
-                    
-                    <div>
-                        <label for="candidate-post" class="block text-sm font-medium text-gray-700">Election Post (e.g., General Secretary)</label>
-                        <select id="candidate-post" name="post" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                            <option value="">-- Select Post --</option>
-                            <option value="President">President, Student Gymkhana</option>
-                            <option value="gsec_scitech">General Secretary, SciTech Council</option>
-                            <option value="gsec_cultural">General Secretary, Cultural Council</option>
-                            <option value="gsec_sports">General Secretary, Sports Council</option>
-                            <option value="treasurer">Treasurer</option>
-                            <option value="hall_sec_cvr">Hall Secretary, CVR Hall</option>
-                            <option value="hall_sec_da">Hall Secretary, DA Hall</option>
-                            </select>
-                    </div>
-
-                    <div>
-                        <label for="candidate-name" class="block text-sm font-medium text-gray-700">Candidate Name</label>
-                        <input type="text" id="candidate-name" name="name" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                    </div>
-
-                    <div>
-                        <label for="candidate-roll-no" class="block text-sm font-medium text-gray-700">Roll No. / Student ID</label>
-                        <input type="text" id="candidate-roll-no" name="rollno" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                    </div>
-                    
-                    <div>
-                        <label for="candidate-manifesto" class="block text-sm font-medium text-gray-700">Manifesto URL/Key Points</label>
-                        <input type="text" id="candidate-manifesto" name="manifesto" placeholder="e.g., Link to PDF or 3rd Year, B.Tech CSE" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                    </div>
-                    
-                    <div>
-                        <label for="candidate-image" class="block text-sm font-medium text-gray-700">Candidate Image</label>
-                        <input type="file" id="candidate-image" name="imageUrl" required class="mt-1 block w-full file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
-                    </div>
-                    <button type="submit" class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md font-semibold hover:bg-indigo-700 flex items-center justify-center transition-colors duration-200">
-                        <i class="fas fa-user-plus mr-2"></i>Add Candidate
-                    </button>
-                </form>
-            </div>
-            <div class="lg:col-span-2">
-                <h2 class="text-xl font-bold text-gray-900 mb-4">Current Electoral Candidates</h2>
-                <div id="candidates-list" class="space-y-4">
-                    <p class="text-gray-500">Candidates will appear here after they are added.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <div id="election-content-results" class="election-content" style="display: none;">
-        <h2 class="text-2xl font-bold text-gray-900 mb-6">Live Election Results & Vote Count</h2>
-        <div class="bg-white p-6 rounded-lg shadow-lg mb-6">
-            <p class="text-sm font-medium text-gray-500">Overall Statistics (Data from your image)</p>
-            <div class="grid grid-cols-3 gap-4 mt-2 font-mono">
-                <p><strong>Total Voters:</strong> <span class="text-indigo-600">2891</span></p>
-                <p><strong>Total Votes Casted:</strong> <span class="text-indigo-600">1437</span></p>
-                <p><strong>Voting Percent:</strong> <span class="text-indigo-600">49.71%</span></p>
-            </div>
-            <p class="mt-4 text-sm text-red-600">
-                <i class="fas fa-exclamation-triangle mr-1"></i> Note: The votes displayed below are static examples based on the provided image and must be updated via database integration or a manual entry form (to be built).
-            </p>
-        </div>
-
-        <div class="bg-white p-6 rounded-lg shadow-lg mb-6">
-            <h3 class="text-xl font-bold text-gray-900 mb-4">Manual Result Update (Mock)</h3>
-            <form id="update-results-form" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <form id="add-election-detail-form" class="bg-indigo-50 p-6 rounded-lg shadow-lg space-y-4 sticky top-28">
+                <h2 class="text-xl font-bold text-gray-900 flex items-center">
+                    <i class="fas fa-calendar-alt mr-2 text-indigo-600"></i>1. Election Details Setup
+                </h2>
+                <p class="text-sm text-gray-500">Define the posts open for elections.</p>
+                
                 <div>
-                    <label for="result-post" class="block text-sm font-medium text-gray-700">Select Post to Update</label>
-                    <select id="result-post" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                        <option>CVR: Hall Secretary</option>
-                        <option>CVR: Dining Secretary</option>
-                        <option>DA: Hall Secretary</option>
-                        </select>
+                    <label for="election-position" class="block text-sm font-medium text-gray-700">New Position/Post Name</label>
+                    <input type="text" id="election-position" name="position" placeholder="e.g., General Secretary, Cultural" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                 </div>
                 <div>
-                    <label for="result-candidate" class="block text-sm font-medium text-gray-700">Candidate Name</label>
-                    <input type="text" id="result-candidate" placeholder="Name or NOTA" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    <label for="election-nomination-date" class="block text-sm font-medium text-gray-700">Nomination Last Date</label>
+                    <input type="date" id="election-nomination-date" name="nominationDate" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                 </div>
-                <div>
-                    <label for="result-votes" class="block text-sm font-medium text-gray-700">Votes</label>
-                    <input type="number" id="result-votes" placeholder="Enter vote count" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                </div>
-                <button type="submit" class="col-span-full bg-green-600 text-white py-2 px-4 rounded-md font-semibold hover:bg-green-700 transition-colors duration-200">
-                    Update Result
+                <button type="submit" class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md font-semibold hover:bg-indigo-700 flex items-center justify-center transition-colors duration-200">
+                    <i class="fas fa-plus mr-2"></i>Add Position Detail
                 </button>
             </form>
+
+            <form id="add-candidate-form" class="bg-white p-6 rounded-lg shadow-lg space-y-4">
+                <h2 class="text-xl font-bold text-gray-900 flex items-center">
+                    <i class="fas fa-user-plus mr-2 text-indigo-600"></i>2. Add Electoral Candidate
+                </h2>
+                <p class="text-sm text-gray-500">Select the post this candidate is standing for.</p>
+                
+                <div>
+                    <label for="candidate-post" class="block text-sm font-medium text-gray-700">Running For Post</label>
+                    <select id="candidate-post" name="post" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        <option value="">-- Select Election Post --</option>
+                    </select>
+                    <p id="post-selection-note" class="text-xs text-red-500 mt-1" style="display:none;">Add positions in the 'Election Details' form first.</p>
+                </div>
+
+                <div>
+                    <label for="candidate-name" class="block text-sm font-medium text-gray-700">Candidate Name</label>
+                    <input type="text" id="candidate-name" name="name" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                </div>
+
+                <div>
+                    <label for="candidate-roll-no" class="block text-sm font-medium text-gray-700">Roll No. / Student ID</label>
+                    <input type="text" id="candidate-roll-no" name="rollno" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                </div>
+                
+                <div>
+                    <label for="candidate-manifesto" class="block text-sm font-medium text-gray-700">Manifesto URL/Description</label>
+                    <input type="text" id="candidate-manifesto" name="manifesto" placeholder="e.g., 3rd Year, B.Tech CSE" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                </div>
+                
+                <div>
+                    <label for="candidate-image" class="block text-sm font-medium text-gray-700">Candidate Image</label>
+                    <input type="file" id="candidate-image" name="imageUrl" required class="mt-1 block w-full file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                </div>
+                <button type="submit" class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md font-semibold hover:bg-indigo-700 flex items-center justify-center transition-colors duration-200">
+                    <i class="fas fa-plus mr-2"></i>Finalize Candidate
+                </button>
+            </form>
+
+            <form id="add-announcement-form" class="bg-yellow-50 p-6 rounded-lg shadow-lg space-y-4">
+                <h2 class="text-xl font-bold text-gray-900 flex items-center">
+                    <i class="fas fa-bullhorn mr-2 text-yellow-600"></i>3. New Announcement
+                </h2>
+                <div>
+                    <label for="announcement-title" class="block text-sm font-medium text-gray-700">Announcement Title</label>
+                    <input type="text" id="announcement-title" name="title" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                </div>
+                <div>
+                    <label for="announcement-content" class="block text-sm font-medium text-gray-700">Content/Details</label>
+                    <textarea id="announcement-content" name="content" rows="3" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"></textarea>
+                </div>
+                <div>
+                    <label for="announcement-image" class="block text-sm font-medium text-gray-700">Related Image (Optional)</label>
+                    <input type="file" id="announcement-image" name="imageUrl" class="mt-1 block w-full file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-yellow-100 file:text-yellow-700 hover:file:bg-yellow-200">
+                </div>
+                <button type="submit" class="w-full bg-yellow-600 text-white py-2 px-4 rounded-md font-semibold hover:bg-yellow-700 flex items-center justify-center transition-colors duration-200">
+                    <i class="fas fa-upload mr-2"></i>Publish Announcement
+                </button>
+            </form>
+
         </div>
 
-        <h3 class="text-xl font-bold text-gray-900 mb-4">Detailed Results per Post</h3>
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6" id="results-display-area">
-            <div class="bg-red-50 p-4 rounded-lg shadow-md border-t-4 border-red-500">
-                <h4 class="text-lg font-semibold text-gray-800 mb-2">CVR: Hall Secretary</h4>
-                <ul class="space-y-1 text-sm">
-                    <li class="flex justify-between"><span>Jatin Boyat <i class="fas fa-crown text-yellow-500 ml-1"></i></span><span class="font-bold text-red-700">198</span></li>
-                    <li class="flex justify-between"><span>NITISH KUMAR</span><span>110</span></li>
-                    <li class="flex justify-between"><span>Aryan Arya</span><span>67</span></li>
-                    <li class="flex justify-between"><span>Rohit Jhajhra</span><span>49</span></li>
-                    <li class="flex justify-between"><span>Abhishek Bairwa</span><span>34</span></li>
-                    <li class="flex justify-between"><span>Hitendra Kumar Singh</span><span>14</span></li>
-                    <li class="flex justify-between border-t mt-2 pt-2"><span>**NOTA**</span><span class="font-bold text-gray-600">18</span></li>
-                </ul>
-            </div>
+        <div class="lg:col-span-2 space-y-8">
             
-            <div class="bg-red-50 p-4 rounded-lg shadow-md border-t-4 border-red-500">
-                <h4 class="text-lg font-semibold text-gray-800 mb-2">CVR: Dining Secretary</h4>
-                <ul class="space-y-1 text-sm">
-                    <li class="flex justify-between"><span>Atul Yadav <i class="fas fa-crown text-yellow-500 ml-1"></i></span><span class="font-bold text-red-700">241</span></li>
-                    <li class="flex justify-between"><span>Om Patel</span><span>82</span></li>
-                    <li class="flex justify-between"><span>Sonu Kumar Teli</span><span>39</span></li>
-                    <li class="flex justify-between"><span>Suyash</span><span>33</span></li>
-                    <li class="flex justify-between"><span>Tharun</span><span>15</span></li>
-                    <li class="flex justify-between border-t mt-2 pt-2"><span>**NOTA**</span><span class="font-bold text-gray-600">80</span></li>
-                </ul>
+            <div>
+                <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                    <i class="fas fa-list-check mr-2"></i>Current Election Posts
+                </h2>
+                <div id="election-details-list" class="bg-white p-4 rounded-lg shadow-md space-y-3">
+                    <p class="text-gray-500" id="no-positions-msg">No positions added yet. Use the form on the left.</p>
+                </div>
             </div>
 
-            <div class="bg-green-50 p-4 rounded-lg shadow-md border-t-4 border-green-500">
-                <h4 class="text-lg font-semibold text-gray-800 mb-2">DA: Hall Secretary</h4>
-                <ul class="space-y-1 text-sm">
-                    <li class="flex justify-between"><span>Isha Sharma <i class="fas fa-crown text-yellow-500 ml-1"></i></span><span class="font-bold text-green-700">156</span></li>
-                    <li class="flex justify-between border-t mt-2 pt-2"><span>**NOTA**</span><span class="font-bold text-gray-600">39</span></li>
-                </ul>
+            <hr>
+
+            <div>
+                <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                    <i class="fas fa-users mr-2"></i>Current Electoral Candidates
+                </h2>
+                <div id="candidates-list" class="bg-white p-4 rounded-lg shadow-md space-y-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <p class="col-span-full text-gray-500">Candidates will appear here after they are added.</p>
+                </div>
             </div>
+
+            <hr>
+
+            <div>
+                <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                    <i class="fas fa-newspaper mr-2"></i>Recent Announcements
+                </h2>
+                <div id="announcements-list" class="bg-white p-4 rounded-lg shadow-md space-y-4">
+                    <p class="text-gray-500">Announcements will appear here.</p>
+                </div>
             </div>
+
+        </div>
     </div>
 </div>
+    
+    
+
+   
+
                 <div id="page-content-settings" class="page-content">
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                         <div class="bg-white p-6 rounded-lg shadow-lg">
@@ -491,6 +473,149 @@ window.showElectionTab = (tabName) => {
         activeBtn.classList.remove('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
     }
 }
+document.addEventListener('DOMContentLoaded', () => {
+    // 1. Initialize data storage (in a real app, this would be backend/database)
+    let electionPositions = [];
+
+    const electionDetailForm = document.getElementById('add-election-detail-form');
+    const positionSelect = document.getElementById('candidate-post');
+    const positionsList = document.getElementById('election-details-list');
+    const noPositionsMsg = document.getElementById('no-positions-msg');
+    const postSelectionNote = document.getElementById('post-selection-note');
+    
+    // Function to render the position list and update the dropdown
+    const renderPositions = () => {
+        // Clear previous entries
+        positionsList.innerHTML = '';
+        positionSelect.innerHTML = '<option value="">-- Select Election Post --</option>';
+
+        if (electionPositions.length === 0) {
+            positionsList.innerHTML = `<p class="text-gray-500" id="no-positions-msg">No positions added yet. Use the form above.</p>`;
+            postSelectionNote.style.display = 'block';
+            return;
+        }
+
+        postSelectionNote.style.display = 'none';
+
+        electionPositions.forEach(pos => {
+            // Add to the Position List View
+            const li = document.createElement('div');
+            li.className = 'flex justify-between items-center bg-indigo-100 p-3 rounded-md border-l-4 border-indigo-600';
+            li.innerHTML = `
+                <div>
+                    <p class="font-semibold text-gray-800">${pos.position}</p>
+                    <p class="text-xs text-gray-600">Nomination Due: ${pos.nominationDate}</p>
+                </div>
+                <i class="fas fa-circle-check text-green-500"></i>
+            `;
+            positionsList.appendChild(li);
+
+            // Add to the Candidate Dropdown
+            const option = document.createElement('option');
+            option.value = pos.position;
+            option.textContent = pos.position;
+            positionSelect.appendChild(option);
+        });
+    };
+
+    // 2. Handle ELECTION DETAILS FORM Submission
+    electionDetailForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        const position = document.getElementById('election-position').value;
+        const date = document.getElementById('election-nomination-date').value;
+
+        // Check for duplicates before adding
+        if (electionPositions.some(p => p.position === position)) {
+             alert(`The position "${position}" has already been added.`);
+             return;
+        }
+
+        const newPosition = { position: position, nominationDate: date };
+        electionPositions.push(newPosition);
+
+        renderPositions();
+        
+        // Clear form fields
+        electionDetailForm.reset();
+        alert(`Election post "${position}" added successfully!`);
+    });
+    
+    // 3. Handle CANDIDATE FORM Submission (Example Log)
+    const candidateForm = document.getElementById('add-candidate-form');
+    const candidatesList = document.getElementById('candidates-list');
+    
+    candidateForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const post = document.getElementById('candidate-post').value;
+        const name = document.getElementById('candidate-name').value;
+        const rollno = document.getElementById('candidate-roll-no').value;
+        
+        if (!post) {
+            alert("Please select a valid Running For Post.");
+            return;
+        }
+
+        // Example: Display the candidate card
+        const candidateCard = document.createElement('div');
+        candidateCard.className = 'bg-white border border-indigo-200 p-4 rounded-lg shadow-sm';
+        candidateCard.innerHTML = `
+            <div class="flex items-center space-x-3">
+                <i class="fas fa-user-circle fa-2x text-indigo-500"></i>
+                <div>
+                    <p class="font-bold text-gray-900">${name}</p>
+                    <p class="text-xs text-gray-500">ID: ${rollno}</p>
+                </div>
+            </div>
+            <p class="mt-2 text-sm font-semibold text-indigo-600">${post}</p>
+            <p class="text-xs text-gray-700">${document.getElementById('candidate-manifesto').value}</p>
+            <p class="text-xs text-green-500 mt-2">Candidate data ready for election DB.</p>
+        `;
+        
+        // Remove placeholder if present
+        if (candidatesList.querySelector('p.col-span-full')) {
+            candidatesList.innerHTML = '';
+        }
+        candidatesList.appendChild(candidateCard);
+        
+        candidateForm.reset();
+        alert(`Candidate ${name} for ${post} successfully added!`);
+    });
+
+    // 4. Handle ANNOUNCEMENT FORM Submission (Example Log)
+    const announcementForm = document.getElementById('add-announcement-form');
+    const announcementsList = document.getElementById('announcements-list');
+
+    announcementForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        const title = document.getElementById('announcement-title').value;
+        const content = document.getElementById('announcement-content').value;
+        
+        // Create an announcement card
+        const announcementCard = document.createElement('div');
+        announcementCard.className = 'bg-yellow-100 p-3 rounded-md border-l-4 border-yellow-600';
+        announcementCard.innerHTML = `
+            <p class="font-bold text-gray-800">${title}</p>
+            <p class="text-sm text-gray-700">${content}</p>
+            <p class="text-xs text-gray-500 mt-1">Published: ${new Date().toLocaleTimeString()} ${new Date().toLocaleDateString()}</p>
+        `;
+        
+        // Remove placeholder if present
+        if (announcementsList.querySelector('p.text-gray-500')) {
+            announcementsList.innerHTML = '';
+        }
+
+        announcementsList.prepend(announcementCard); // Prepend to show newest first
+        
+        announcementForm.reset();
+        alert(`Announcement "${title}" published!`);
+    });
+    
+    // Initial render call
+    renderPositions();
+});
 
 // Add an event listener to call this when the Elections page is opened
 // You should update your existing showPage function logic or call this when 'elections' is selected.
