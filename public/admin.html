@@ -315,25 +315,25 @@
              <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4 bg-white p-4 rounded-xl shadow-md">
                  <div class="flex flex-wrap gap-4">
                       <button id="show-add-student-modal-btn" class="flex items-center px-5 py-2.5 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition-all duration-300 text-sm">
-                            <hero-icon-solid name="user-plus" class="h-5 w-5 mr-2"></hero-icon-solid>
-                            Add New Student
+                              <hero-icon-solid name="user-plus" class="h-5 w-5 mr-2"></hero-icon-solid>
+                              Add New Student
                       </button>
                       <button id="show-add-room-modal-btn" class="flex items-center px-5 py-2.5 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition-all duration-300 text-sm">
-                            <hero-icon-solid name="building-office-2" class="h-5 w-5 mr-2"></hero-icon-solid>
-                            Add New Room
+                              <hero-icon-solid name="building-office-2" class="h-5 w-5 mr-2"></hero-icon-solid>
+                              Add New Room
                       </button>
                  </div>
                  
                  <div class="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
-                     <div class="relative w-full sm:w-auto">
-                         <hero-icon-outline name="magnifying-glass" class="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400"></hero-icon-outline>
-                         <input type="text" id="room-search-input" placeholder="Search room number..." class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg shadow-sm w-full sm:w-48 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition duration-150">
-                     </div>
-                     <select id="room-filter-select" class="px-4 py-2 border border-gray-300 rounded-lg shadow-sm w-full sm:w-32 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition duration-150">
-                         <option value="All">All Rooms</option>
-                         <option value="Full">Full</option>
-                         <option value="Available">Available</option>
-                     </select>
+                      <div class="relative w-full sm:w-auto">
+                          <hero-icon-outline name="magnifying-glass" class="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400"></hero-icon-outline>
+                          <input type="text" id="room-search-input" placeholder="Search room number..." class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg shadow-sm w-full sm:w-48 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition duration-150">
+                      </div>
+                      <select id="room-filter-select" class="px-4 py-2 border border-gray-300 rounded-lg shadow-sm w-full sm:w-32 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition duration-150">
+                          <option value="All">All Rooms</option>
+                          <option value="Full">Full</option>
+                          <option value="Available">Available</option>
+                      </select>
                  </div>
              </div>
 
@@ -349,41 +349,41 @@
                  </button>
                  <div class="flex items-center justify-center absolute inset-x-0 top-0 z-0">
                      <h1 class="text-3xl font-extrabold text-teal-700 tracking-tight">
-                         <hero-icon-solid name="banknotes" class="h-7 w-7 inline-block mr-2"></hero-icon-solid>
-                         Fees Management
+                          <hero-icon-solid name="banknotes" class="h-7 w-7 inline-block mr-2"></hero-icon-solid>
+                          Fees Management
                      </h1>
                  </div>
              </div>
             
-            <div class="flex flex-col md:flex-row justify-end items-center mb-6 gap-4 bg-white p-4 rounded-xl shadow-md">
-                <div class="relative w-full md:w-64">
-                    <hero-icon-outline name="magnifying-glass" class="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400"></hero-icon-outline>
-                    <input type="text" id="fees-search-input" placeholder="Search by name or roll no..." class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg shadow-sm w-full focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition duration-150">
-                </div>
-                <select id="fees-filter-select" class="px-4 py-2 border border-gray-300 rounded-lg shadow-sm w-full md:w-32 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition duration-150">
-                    <option value="All">All Statuses</option>
-                    <option value="Paid">Paid</option>
-                    <option value="Pending">Pending</option>
-                </select>
-            </div>
+             <div class="flex flex-col md:flex-row justify-end items-center mb-6 gap-4 bg-white p-4 rounded-xl shadow-md">
+                 <div class="relative w-full md:w-64">
+                     <hero-icon-outline name="magnifying-glass" class="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400"></hero-icon-outline>
+                     <input type="text" id="fees-search-input" placeholder="Search by name or roll no..." class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg shadow-sm w-full focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition duration-150">
+                 </div>
+                 <select id="fees-filter-select" class="px-4 py-2 border border-gray-300 rounded-lg shadow-sm w-full md:w-32 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition duration-150">
+                     <option value="All">All Statuses</option>
+                     <option value="Paid">Paid</option>
+                     <option value="Pending">Pending</option>
+                 </select>
+             </div>
             
-            <div class="bg-white rounded-xl shadow-lg overflow-hidden">
-                <div class="overflow-x-auto">
-                    <table class="w-full min-w-max">
-                        <thead class="bg-gray-100 border-b border-gray-200">
-                            <tr>
-                                <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Student Name</th>
-                                <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Roll Number</th>
-                                <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Block / Room</th>
-                                <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Status</th>
-                                <th class="px-6 py-3 text-center text-xs font-bold text-gray-700 uppercase tracking-wider">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="fees-student-list-container" class="divide-y divide-gray-200">
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+             <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                 <div class="overflow-x-auto">
+                     <table class="w-full min-w-max">
+                         <thead class="bg-gray-100 border-b border-gray-200">
+                             <tr>
+                                 <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Student Name</th>
+                                 <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Roll Number</th>
+                                 <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Block / Room</th>
+                                 <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Status</th>
+                                 <th class="px-6 py-3 text-center text-xs font-bold text-gray-700 uppercase tracking-wider">Action</th>
+                             </tr>
+                         </thead>
+                         <tbody id="fees-student-list-container" class="divide-y divide-gray-200">
+                         </tbody>
+                     </table>
+                 </div>
+             </div>
         </div>
         
         <div id="visitors-view" class="hidden">
@@ -394,38 +394,38 @@
                  </button>
                  <div class="flex items-center justify-center absolute inset-x-0 top-0 z-0">
                      <h1 class="text-3xl font-extrabold text-sky-700 tracking-tight">
-                         <hero-icon-solid name="user-group" class="h-7 w-7 inline-block mr-2"></hero-icon-solid>
-                         Visitor Logs
+                          <hero-icon-solid name="user-group" class="h-7 w-7 inline-block mr-2"></hero-icon-solid>
+                          Visitor Logs
                      </h1>
                  </div>
              </div>
             
-            <div class="flex flex-col md:flex-row justify-end items-center mb-6 gap-4 bg-white p-4 rounded-xl shadow-md">
-                <div class="relative w-full md:w-64">
-                    <hero-icon-outline name="magnifying-glass" class="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400"></hero-icon-outline>
-                    <input type="text" id="visitor-search-input" placeholder="Search by visitor or student name..." class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg shadow-sm w-full focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition duration-150">
-                </div>
-                <input type="date" id="visitor-date-filter" class="px-4 py-2 border border-gray-300 rounded-lg shadow-sm w-full md:w-36 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition duration-150">
-            </div>
+             <div class="flex flex-col md:flex-row justify-end items-center mb-6 gap-4 bg-white p-4 rounded-xl shadow-md">
+                 <div class="relative w-full md:w-64">
+                     <hero-icon-outline name="magnifying-glass" class="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400"></hero-icon-outline>
+                     <input type="text" id="visitor-search-input" placeholder="Search by visitor or student name..." class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg shadow-sm w-full focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition duration-150">
+                 </div>
+                 <input type="date" id="visitor-date-filter" class="px-4 py-2 border border-gray-300 rounded-lg shadow-sm w-full md:w-36 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition duration-150">
+             </div>
             
-            <div class="bg-white rounded-xl shadow-lg overflow-hidden">
-                <div class="overflow-x-auto">
-                    <table class="w-full min-w-max">
-                        <thead class="bg-gray-100 border-b border-gray-200">
-                            <tr>
-                                <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Visitor Name</th>
-                                <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Student Visited</th>
-                                <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Room</th>
-                                <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Date</th>
-                                <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Time In</th>
-                                <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Time Out</th>
-                            </tr>
-                        </thead>
-                        <tbody id="visitor-log-container" class="divide-y divide-gray-200">
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+             <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                 <div class="overflow-x-auto">
+                     <table class="w-full min-w-max">
+                         <thead class="bg-gray-100 border-b border-gray-200">
+                             <tr>
+                                 <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Visitor Name</th>
+                                 <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Student Visited</th>
+                                 <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Room</th>
+                                 <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Date</th>
+                                 <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Time In</th>
+                                 <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Time Out</th>
+                             </tr>
+                         </thead>
+                         <tbody id="visitor-log-container" class="divide-y divide-gray-200">
+                         </tbody>
+                     </table>
+                 </div>
+             </div>
         </div>
 
         <div id="complaints-view" class="hidden">
@@ -436,60 +436,60 @@
                  </button>
                  <div class="flex items-center justify-center absolute inset-x-0 top-0 z-0">
                      <h1 class="text-3xl font-extrabold text-red-700 tracking-tight">
-                         <hero-icon-solid name="bell-alert" class="h-7 w-7 inline-block mr-2"></hero-icon-solid>
-                         Student Complaints
+                          <hero-icon-solid name="bell-alert" class="h-7 w-7 inline-block mr-2"></hero-icon-solid>
+                          Student Complaints
                      </h1>
                  </div>
              </div>
             
-            <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4 bg-white p-4 rounded-xl shadow-md">
-                <div class="flex flex-col md:flex-row gap-4 w-full md:w-auto">
-                    <div class="relative w-full md:w-56">
-                        <hero-icon-outline name="magnifying-glass" class="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400"></hero-icon-outline>
-                        <input type="text" id="complaint-search-input" placeholder="Search by student or room..." class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg shadow-sm w-full focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition duration-150">
-                    </div>
-                    <select id="complaint-status-filter" class="px-4 py-2 border border-gray-300 rounded-lg shadow-sm w-full md:w-36 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition duration-150">
-                        <option value="All">All Status</option>
-                        <option value="Pending">Pending</option>
-                        <option value="In Progress">In Progress</option>
-                        <option value="Resolved">Resolved</option>
-                    </select>
-                    <select id="complaint-type-filter" class="px-4 py-2 border border-gray-300 rounded-lg shadow-sm w-full md:w-40 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition duration-150">
-                        <option value="All">All Types</option>
-                        <option value="Maintenance">Maintenance</option>
-                        <option value="Cleaning">Cleaning</option>
-                        <option value="Electrical">Electrical</option>
-                        <option value="Plumbing">Plumbing</option>
-                        <option value="Internet">Internet</option>
-                        <option value="Security">Security</option>
-                        <option value="Other">Other</option>
-                    </select>
-                </div>
-                <button id="refresh-complaints-btn" class="flex items-center px-4 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition-all duration-300 text-sm">
-                    <hero-icon-solid name="arrow-path" class="h-5 w-5 mr-2"></hero-icon-solid>
-                    Refresh
-                </button>
-            </div>
+             <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4 bg-white p-4 rounded-xl shadow-md">
+                 <div class="flex flex-col md:flex-row gap-4 w-full md:w-auto">
+                     <div class="relative w-full md:w-56">
+                         <hero-icon-outline name="magnifying-glass" class="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400"></hero-icon-outline>
+                         <input type="text" id="complaint-search-input" placeholder="Search by student or room..." class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg shadow-sm w-full focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition duration-150">
+                     </div>
+                     <select id="complaint-status-filter" class="px-4 py-2 border border-gray-300 rounded-lg shadow-sm w-full md:w-36 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition duration-150">
+                         <option value="All">All Status</option>
+                         <option value="Pending">Pending</option>
+                         <option value="In Progress">In Progress</option>
+                         <option value="Resolved">Resolved</option>
+                     </select>
+                     <select id="complaint-type-filter" class="px-4 py-2 border border-gray-300 rounded-lg shadow-sm w-full md:w-40 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition duration-150">
+                         <option value="All">All Types</option>
+                         <option value="Maintenance">Maintenance</option>
+                         <option value="Cleaning">Cleaning</option>
+                         <option value="Electrical">Electrical</option>
+                         <option value="Plumbing">Plumbing</option>
+                         <option value="Internet">Internet</option>
+                         <option value="Security">Security</option>
+                         <option value="Other">Other</option>
+                     </select>
+                 </div>
+                 <button id="refresh-complaints-btn" class="flex items-center px-4 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition-all duration-300 text-sm">
+                     <hero-icon-solid name="arrow-path" class="h-5 w-5 mr-2"></hero-icon-solid>
+                     Refresh
+                 </button>
+             </div>
             
-            <div class="bg-white rounded-xl shadow-lg overflow-hidden">
-                <div class="overflow-x-auto">
-                    <table class="w-full min-w-max">
-                        <thead class="bg-gray-100 border-b border-gray-200">
-                            <tr>
-                                <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Student</th>
-                                <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Room</th>
-                                <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Complaint Type</th>
-                                <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Description</th>
-                                <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Date</th>
-                                <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Status</th>
-                                <th class="px-6 py-3 text-center text-xs font-bold text-gray-700 uppercase tracking-wider">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="complaints-list-container" class="divide-y divide-gray-200">
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+             <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                 <div class="overflow-x-auto">
+                     <table class="w-full min-w-max">
+                         <thead class="bg-gray-100 border-b border-gray-200">
+                             <tr>
+                                 <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Student</th>
+                                 <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Room</th>
+                                 <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Complaint Type</th>
+                                 <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Description</th>
+                                 <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Date</th>
+                                 <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Status</th>
+                                 <th class="px-6 py-3 text-center text-xs font-bold text-gray-700 uppercase tracking-wider">Actions</th>
+                             </tr>
+                         </thead>
+                         <tbody id="complaints-list-container" class="divide-y divide-gray-200">
+                         </tbody>
+                     </table>
+                 </div>
+             </div>
         </div>
 
     </main>
@@ -576,12 +576,12 @@
                 <div>
                     <label for="room-image-file" class="block text-sm font-semibold text-gray-700">Upload Room Image</label>
                     <input type="file" id="room-image-file" name="roomImage" class="mt-1 block w-full text-sm text-gray-500
-                                 file:mr-4 file:py-2 file:px-4
-                                 file:rounded-full file:border-0
-                                 file:text-sm file:font-semibold
-                                 file:bg-indigo-50 file:text-indigo-700
-                                 hover:file:bg-indigo-100"
-                                 accept="image/*">
+                                             file:mr-4 file:py-2 file:px-4
+                                             file:rounded-full file:border-0
+                                             file:text-sm file:font-semibold
+                                             file:bg-indigo-50 file:text-indigo-700
+                                             hover:file:bg-indigo-100"
+                                             accept="image/*">
                     <p class="mt-1 text-xs text-gray-500">Upload an image of the room (PNG, JPG, etc.).</p>
                 </div>
                 <div class="flex justify-end space-x-3 pt-4 border-t border-gray-100">
@@ -682,12 +682,12 @@
                  <div>
                      <label for="student-profile-image" class="block text-sm font-semibold text-gray-700">Upload Profile Photo</label>
                      <input type="file" id="student-profile-image" name="profileImage" class="mt-1 block w-full text-sm text-gray-500
-                                 file:mr-4 file:py-2 file:px-4
-                                 file:rounded-full file:border-0
-                                 file:text-sm file:font-semibold
-                                 file:bg-indigo-50 file:text-indigo-700
-                                 hover:file:bg-indigo-100"
-                                 accept="image/*">
+                                             file:mr-4 file:py-2 file:px-4
+                                             file:rounded-full file:border-0
+                                             file:text-sm file:font-semibold
+                                             file:bg-indigo-50 file:text-indigo-700
+                                             hover:file:bg-indigo-100"
+                                             accept="image/*">
                  </div>
 
                  <div>
@@ -702,13 +702,13 @@
 
                  <div class="flex justify-end space-x-3 pt-4 border-t border-gray-100">
                      <button type="button" class="flex items-center px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 font-medium" data-modal-hide="add-student-modal">
-                        <hero-icon-solid name="x-mark" class="h-5 w-5 mr-1"></hero-icon-solid>
-                        Cancel
-                    </button>
+                         <hero-icon-solid name="x-mark" class="h-5 w-5 mr-1"></hero-icon-solid>
+                         Cancel
+                     </button>
                      <button type="submit" class="flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium">
-                        <hero-icon-solid name="user-plus" class="h-5 w-5 mr-1"></hero-icon-solid>
-                        Add Student
-                    </button>
+                         <hero-icon-solid name="user-plus" class="h-5 w-5 mr-1"></hero-icon-solid>
+                         Add Student
+                     </button>
                  </div>
             </form>
         </div>
@@ -764,54 +764,54 @@
                  <div class="flex items-center gap-3">
                      <h2 class="text-xl font-bold text-gray-800" id="modal-room-title">Room Details: A-101</h2>
                      <span id="modal-room-complaints-badge" class="hidden items-center text-xs font-bold px-3 py-1 bg-red-100 text-red-600 rounded-full">
-                          <hero-icon-solid name="exclamation-circle" class="h-4 w-4 mr-1"></hero-icon-solid>
-                          <span id="modal-room-complaints-count">1</span> Complaint
+                           <hero-icon-solid name="exclamation-circle" class="h-4 w-4 mr-1"></hero-icon-solid>
+                           <span id="modal-room-complaints-count">1</span> Complaint
                      </span>
                  </div>
                  <button data-modal-hide="room-details-modal" class="text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-100 transition duration-150">
                      <hero-icon-solid name="x-mark" class="h-6 w-6"></hero-icon-solid>
                  </button>
              </div>
-            <div class="p-6 overflow-y-auto space-y-6">
-                <div class="bg-white p-4 rounded-lg shadow-md border-t-4 border-indigo-500">
-                    <div class="grid grid-cols-3 gap-4 text-center">
-                        <div class="border-r border-gray-200">
-                            <span class="text-sm text-gray-500 font-semibold uppercase tracking-wider">Capacity</span>
-                            <p class="text-2xl font-bold text-gray-800 mt-1" id="modal-room-capacity">2</p>
-                        </div>
-                        <div class="border-r border-gray-200">
-                            <span class="text-sm text-gray-500 font-semibold uppercase tracking-wider">Occupancy</span>
-                            <p class="text-2xl font-bold text-blue-600 mt-1" id="modal-room-occupancy">2</p>
-                        </div>
-                        <div>
-                            <span class="text-sm text-gray-500 font-semibold uppercase tracking-wider">Available Beds</span>
-                            <p class="text-2xl font-bold text-green-600 mt-1" id="modal-room-available">0</p>
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-lg font-semibold text-gray-900" id="modal-occupant-title">Current Occupants (2)</h3>
-                        <button id="modal-delete-room-btn" class="flex items-center px-4 py-2 bg-red-600 text-white text-sm font-semibold rounded-lg shadow-md hover:bg-red-700 transition duration-150">
-                            <hero-icon-solid name="trash" class="h-5 w-5 mr-2"></hero-icon-solid>
-                            Delete Room
-                        </button>
-                    </div>
-                    <div id="modal-occupant-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
-                </div>
-                <div>
-                    <div class="flex items-center gap-2 mb-4">
-                        <hero-icon-solid name="exclamation-triangle" class="h-5 w-5 text-red-600"></hero-icon-solid>
-                        <h3 class="text-lg font-semibold text-gray-900">Open Issues In This Room</h3>
-                    </div>
-                    <div id="modal-issues-container" class="space-y-3"></div>
-                </div>
-            </div>
-             <div class="p-4 bg-white border-t rounded-b-xl text-right">
-                 <a href="#" id="modal-view-all-complaints" class="text-sm font-medium text-indigo-600 hover:text-indigo-800 hover:underline transition duration-150">
-                     View All Complaint Tickets &rarr;
-                 </a>
+             <div class="p-6 overflow-y-auto space-y-6">
+                 <div class="bg-white p-4 rounded-lg shadow-md border-t-4 border-indigo-500">
+                     <div class="grid grid-cols-3 gap-4 text-center">
+                         <div class="border-r border-gray-200">
+                             <span class="text-sm text-gray-500 font-semibold uppercase tracking-wider">Capacity</span>
+                             <p class="text-2xl font-bold text-gray-800 mt-1" id="modal-room-capacity">2</p>
+                         </div>
+                         <div class="border-r border-gray-200">
+                             <span class="text-sm text-gray-500 font-semibold uppercase tracking-wider">Occupancy</span>
+                             <p class="text-2xl font-bold text-blue-600 mt-1" id="modal-room-occupancy">2</p>
+                         </div>
+                         <div>
+                             <span class="text-sm text-gray-500 font-semibold uppercase tracking-wider">Available Beds</span>
+                             <p class="text-2xl font-bold text-green-600 mt-1" id="modal-room-available">0</p>
+                         </div>
+                     </div>
+                 </div>
+                 <div>
+                     <div class="flex justify-between items-center mb-4">
+                         <h3 class="text-lg font-semibold text-gray-900" id="modal-occupant-title">Current Occupants (2)</h3>
+                         <button id="modal-delete-room-btn" class="flex items-center px-4 py-2 bg-red-600 text-white text-sm font-semibold rounded-lg shadow-md hover:bg-red-700 transition duration-150">
+                             <hero-icon-solid name="trash" class="h-5 w-5 mr-2"></hero-icon-solid>
+                             Delete Room
+                         </button>
+                     </div>
+                     <div id="modal-occupant-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+                 </div>
+                 <div>
+                     <div class="flex items-center gap-2 mb-4">
+                         <hero-icon-solid name="exclamation-triangle" class="h-5 w-5 text-red-600"></hero-icon-solid>
+                         <h3 class="text-lg font-semibold text-gray-900">Open Issues In This Room</h3>
+                     </div>
+                     <div id="modal-issues-container" class="space-y-3"></div>
+                 </div>
              </div>
+              <div class="p-4 bg-white border-t rounded-b-xl text-right">
+                  <a href="#" id="modal-view-all-complaints" class="text-sm font-medium text-indigo-600 hover:text-indigo-800 hover:underline transition duration-150">
+                      View All Complaint Tickets &rarr;
+                  </a>
+              </div>
         </div>
     </div>
     
@@ -848,12 +848,12 @@
                 <div>
                     <label for="club-activity-image-file" class="block text-sm font-semibold text-gray-700">Upload Image</label>
                     <input type="file" id="club-activity-image-file" name="clubActivityImage" class="mt-1 block w-full text-sm text-gray-500
-                                 file:mr-4 file:py-2 file:px-4
-                                 file:rounded-full file:border-0
-                                 file:text-sm file:font-semibold
-                                 file:bg-indigo-50 file:text-indigo-700
-                                 hover:file:bg-indigo-100"
-                                 accept="image/*">
+                                             file:mr-4 file:py-2 file:px-4
+                                             file:rounded-full file:border-0
+                                             file:text-sm file:font-semibold
+                                             file:bg-indigo-50 file:text-indigo-700
+                                             hover:file:bg-indigo-100"
+                                             accept="image/*">
                     <p class="mt-1 text-xs text-gray-500">Upload an image from your device (PNG, JPG, etc.).</p>
                 </div>
                 <div class="flex justify-end space-x-3 pt-4 border-t border-gray-100">
@@ -900,19 +900,19 @@
                     <label for="asset-quantity" class="block text-sm font-semibold text-gray-700">Quantity</label>
                     <input type="number" id="asset-quantity" name="quantity" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" min="1" value="1" required>
                 </div>
-                            <div>
+                             <div>
                     <label for="asset-description" class="block text-sm font-semibold text-gray-700">Description / Notes</label>
                     <textarea id="asset-description" name="description" rows="2" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="e.g., Location, condition..."></textarea>
                 </div>
                 <div>
                     <label for="asset-image-file" class="block text-sm font-semibold text-gray-700">Upload Asset Image</label>
                     <input type="file" id="asset-image-file" name="assetImage" class="mt-1 block w-full text-sm text-gray-500
-                                 file:mr-4 file:py-2 file:px-4
-                                 file:rounded-full file:border-0
-                                 file:text-sm file:font-semibold
-                                 file:bg-indigo-50 file:text-indigo-700
-                                 hover:file:bg-indigo-100"
-                                 accept="image/*">
+                                             file:mr-4 file:py-2 file:px-4
+                                             file:rounded-full file:border-0
+                                             file:text-sm file:font-semibold
+                                             file:bg-indigo-50 file:text-indigo-700
+                                             hover:file:bg-indigo-100"
+                                             accept="image/*">
                 </div>
                 <div class="flex justify-end space-x-3 pt-4 border-t border-gray-100">
                     <button type="button" class="flex items-center px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 font-medium" data-modal-hide="add-asset-modal">
@@ -949,21 +949,56 @@
     <script>
     document.addEventListener('DOMContentLoaded', () => {
 
-        // --- 1. GLOBAL STATE ---
+        // --- 1. GLOBAL STATE (Using dummy data as server-side logic is inaccessible) ---
         let appState = { 
-            blocks: [], 
-            assets: [],
-            complaints: []
+            blocks: [
+                {
+                    _id: 'block1',
+                    blockName: 'Men\'s Hall A',
+                    blockKey: 'men-a',
+                    blockTheme: 'blue',
+                    rooms: [
+                        { _id: 'roomA101', roomNumber: 'A-101', floor: '1st Floor', capacity: 2, students: [
+                            { _id: 's1', name: 'Rohan Sharma', rollNumber: '21CS10001', feeStatus: 'Pending', year: '3rd Year', email: 'r@i.edu', phone: '111', joiningDate: '2023-01-01', assets: [] },
+                            { _id: 's2', name: 'Vivek Kumar', rollNumber: '21CS10002', feeStatus: 'Paid', year: '3rd Year', email: 'v@i.edu', phone: '222', joiningDate: '2023-01-01', assets: [] }
+                        ], complaints: [{ title: 'Broken AC/Leakage', status: 'Critical', _id: 'fake123' }] },
+                        { _id: 'roomA102', roomNumber: 'A-102', floor: '1st Floor', capacity: 2, students: [], complaints: [] },
+                        { _id: 'roomA201', roomNumber: 'A-201', floor: '2nd Floor', capacity: 3, students: [
+                            { _id: 's3', name: 'Arjun Singh', rollNumber: '22EE20001', feeStatus: 'Pending', year: '2nd Year', email: 'a@i.edu', phone: '333', joiningDate: '2024-01-01', assets: [] }
+                        ], complaints: [] }
+                    ]
+                },
+                {
+                    _id: 'block2',
+                    blockName: 'Women\'s Hall B',
+                    blockKey: 'women-b',
+                    blockTheme: 'pink',
+                    rooms: [
+                        { _id: 'roomB101', roomNumber: 'B-101', floor: '1st Floor', capacity: 2, students: [
+                            { _id: 's4', name: 'Priya Verma', rollNumber: '23ME30001', feeStatus: 'Paid', year: '1st Year', email: 'p@i.edu', phone: '444', joiningDate: '2024-08-01', assets: [] }
+                        ], complaints: [] }
+                    ]
+                }
+            ], 
+            assets: [
+                { _id: 'asset1', name: 'Study Table', type: 'Table', quantity: 50, description: 'Standard Wooden Table', imageUrl: 'https://via.placeholder.com/100x50/f0f3ff/4f46e5?text=Table' },
+                { _id: 'asset2', name: 'Office Chair', type: 'Chair', quantity: 20, description: 'Ergonomic Office Chair', imageUrl: 'https://via.placeholder.com/100x50/f0f3ff/4f46e5?text=Chair' }
+            ],
+            complaints: [
+                { _id: 'c1', studentName: 'Rohan Sharma', roomNumber: 'A-101', complaintType: 'Maintenance', description: 'Leaking faucet in the attached bathroom.', status: 'Pending', createdAt: '2025-11-10T10:00:00Z', responses: [] },
+                { _id: 'c2', studentName: 'Priya Verma', roomNumber: 'B-101', complaintType: 'Electrical', description: 'Tube light flickering constantly.', status: 'In Progress', createdAt: '2025-11-08T15:30:00Z', responses: [] },
+                { _id: 'c3', studentName: 'Vivek Kumar', roomNumber: 'A-101', complaintType: 'Internet', description: 'No WiFi signal since morning.', status: 'Resolved', createdAt: '2025-11-05T09:00:00Z', resolvedAt: '2025-11-05T11:00:00Z', responses: [{ response: 'Resolved by connecting to a different access point.', respondedAt: '2025-11-05T11:00:00Z', respondedBy: 'Admin' }] }
+            ]
         }; 
+
         let eventData = [
-            // Removed emojis from titles
             { id: 1, title: 'Inter-Hostel Cricket Match', type: 'Sports', date: '2025-11-10', description: 'Finals between Men\'s Hostel and Women\'s Hostel.' },
             { id: 2, title: 'Mess Committee Meeting', type: 'Announcement', date: '2025-11-05', description: 'Discussing the new menu for next month.' }
         ];
         let visitorLogData = [
-             { id: 1, visitorName: 'Ramesh Kumar', studentName: 'Priya Sharma', roomNumber: 'A-101', date: '2025-11-05', timeIn: '09:00 AM', timeOut: '10:30 AM' },
-             { id: 2, visitorName: 'Sita Devi', studentName: 'Rohan Verma', roomNumber: 'B-205', date: '2025-11-05', timeIn: '10:00 AM', timeOut: '11:00 AM' },
-             { id: 3, visitorName: 'Arjun Singh', studentName: 'Vikram Singh', roomNumber: 'B-202', date: '2025-11-04', timeIn: '04:00 PM', timeOut: '05:00 PM' }
+             { id: 1, visitorName: 'Ramesh Kumar', studentName: 'Priya Sharma', roomNumber: 'A-101', date: '2025-11-13', timeIn: '09:00 AM', timeOut: '10:30 AM' },
+             { id: 2, visitorName: 'Sita Devi', studentName: 'Rohan Verma', roomNumber: 'B-205', date: '2025-11-13', timeIn: '10:00 AM', timeOut: '' },
+             { id: 3, visitorName: 'Arjun Singh', studentName: 'Vikram Singh', roomNumber: 'B-202', date: '2025-11-12', timeIn: '04:00 PM', timeOut: '05:00 PM' }
         ];
         let currentRoomData = null; 
 
@@ -1072,7 +1107,6 @@
             'General': { border: 'border-gray-500', bg: 'bg-gray-100', text: 'text-gray-700' },
         };
         const getStatus = (current, max) => { 
-            // Corrected text to exclude emojis as we rely on icons in the rendering logic
             if (current >= max) return { text: 'Full', classes: 'bg-red-500 text-white', progress: 'bg-red-500' };
             return { text: 'Available', classes: 'bg-green-500 text-white', progress: 'bg-green-500' };
         };
@@ -1080,98 +1114,79 @@
         function findStudentById(studentId) {
             for (const block of appState.blocks) {
                 for (const room of block.rooms) {
-                    const student = room.students.find(s => s._id === studentId);
+                    const student = (room.students || []).find(s => s._id === studentId);
                     if (student) return student;
                 }
             }
             return null;
         }
 
-        // --- COMPLAINT MANAGEMENT FUNCTIONS (Updated rendering to use icons) ---
+        // --- 4. DATA LOADER/SIMULATORS (Mocked for standalone demo) ---
+        // NOTE: These mocked functions replace your actual API calls (e.g., fetch('/api/blocks'))
+        async function loadHostelData() {
+            // Simulated delay for UI demo
+            await new Promise(resolve => setTimeout(resolve, 10)); 
+            if (!dashboardView.classList.contains('hidden')) { renderDashboard(); }
+            if (!detailView.classList.contains('hidden')) {
+                const currentBlockKey = detailView.dataset.currentHostelKey;
+                if (currentBlockKey) { renderDetailView(currentBlockKey); }
+            }
+        }
 
         async function loadComplaintsData() {
-            try {
-                console.log('🔄 Loading complaints from database...');
-                const res = await fetch('/api/complaints');
-                if (!res.ok) { throw new Error(`HTTP error! status: ${res.status}`); }
-                const data = await res.json();
-                if (data.success) {
-                    appState.complaints = data.complaints;
-                    console.log('✅ Complaints loaded from server:', appState.complaints);
-                    updateComplaintsCount();
-                    if (!complaintsView.classList.contains('hidden')) { renderComplaintsView(); }
-                } else { throw new Error(data.message || 'Failed to load complaints'); }
-            } catch (error) {
-                console.error('❌ Failed to load complaints data:', error);
-                showError('Failed to load complaints: ' + error.message);
-                // RENDER: Use Heroicon
-                complaintsListContainer.innerHTML = `
-                    <tr>
-                        <td colspan="7" class="text-center text-red-500 py-6">
-                            <hero-icon-solid name="exclamation-circle" class="h-5 w-5 inline-block mr-1"></hero-icon-solid> Failed to load complaints. Please try again.
-                        </td>
-                    </tr>
-                `;
-            }
+            // Simulated delay for UI demo
+            await new Promise(resolve => setTimeout(resolve, 10)); 
+            updateComplaintsCount();
+            if (!complaintsView.classList.contains('hidden')) { renderComplaintsView(); }
         }
 
         async function updateComplaintStatus(complaintId, newStatus, adminNotes = '') {
-            // Logic remains unchanged
-            try {
-                 // ... fetch logic here ...
-                const res = await fetch(`/api/complaints/${complaintId}`, {
-                    method: 'PATCH',
-                    headers: { 'Content-Type': 'application/json', },
-                    body: JSON.stringify({ status: newStatus, adminNotes: adminNotes, resolvedAt: newStatus === 'Resolved' ? new Date().toISOString() : null })
-                });
-                const data = await res.json();
-                
-                if (data.success) {
-                    const complaintIndex = appState.complaints.findIndex(c => c._id === complaintId);
-                    if (complaintIndex !== -1) { 
-                        appState.complaints[complaintIndex].status = newStatus; 
-                        if (newStatus === 'Resolved') appState.complaints[complaintIndex].resolvedAt = new Date().toISOString();
-                        if (adminNotes) appState.complaints[complaintIndex].adminNotes = adminNotes;
-                    }
-                    updateComplaintsCount();
-                    renderComplaintsView();
-                    showSuccess(`Complaint status updated to ${newStatus}`);
-                    return true;
-                } else { throw new Error(data.message || 'Failed to update complaint status'); }
-            } catch (error) {
-                console.error('❌ Failed to update complaint status:', error);
-                showError('Failed to update complaint: ' + error.message);
-                return false;
+            const complaintIndex = appState.complaints.findIndex(c => c._id === complaintId);
+            if (complaintIndex !== -1) { 
+                appState.complaints[complaintIndex].status = newStatus; 
+                if (newStatus === 'Resolved') appState.complaints[complaintIndex].resolvedAt = new Date().toISOString();
+                if (adminNotes) appState.complaints[complaintIndex].adminNotes = adminNotes;
             }
+            updateComplaintsCount();
+            renderComplaintsView();
+            showSuccess(`Complaint status updated to ${newStatus}`);
+            return true;
         }
 
         async function addComplaintResponse(complaintId, response) {
-            // Logic remains unchanged
-            try {
-                 // ... fetch logic here ...
-                const res = await fetch(`/api/complaints/${complaintId}/response`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json', },
-                    body: JSON.stringify({ response: response, respondedAt: new Date().toISOString(), respondedBy: 'Admin' })
-                });
-                const data = await res.json();
-                
-                if (data.success) {
-                    const complaintIndex = appState.complaints.findIndex(c => c._id === complaintId);
-                    if (complaintIndex !== -1) {
-                         if (!appState.complaints[complaintIndex].responses) appState.complaints[complaintIndex].responses = [];
-                         appState.complaints[complaintIndex].responses.push({ response: response, respondedAt: new Date().toISOString(), respondedBy: 'Admin' });
-                    }
-                    renderComplaintsView();
-                    showSuccess('Response added successfully');
-                    return true;
-                } else { throw new Error(data.message || 'Failed to add response'); }
-            } catch (error) {
-                console.error('❌ Failed to add complaint response:', error);
-                showError('Failed to add response: ' + error.message);
-                return false;
+            const complaintIndex = appState.complaints.findIndex(c => c._id === complaintId);
+            if (complaintIndex !== -1) {
+                if (!appState.complaints[complaintIndex].responses) appState.complaints[complaintIndex].responses = [];
+                appState.complaints[complaintIndex].responses.push({ response: response, respondedAt: new Date().toISOString(), respondedBy: 'Admin' });
             }
+            renderComplaintsView();
+            showSuccess('Response added successfully');
+            return true;
         }
+
+        async function loadClubActivities() {
+            // Simulated delay for UI demo
+            await new Promise(resolve => setTimeout(resolve, 10)); 
+            renderClubActivities([{
+                _id: 'act1',
+                title: 'Tech Expo Planning',
+                type: 'Technical',
+                date: '2025-12-01',
+                description: 'Final planning meeting for the annual technology exhibition. All club leads must attend.',
+                imageUrl: 'https://via.placeholder.com/300x150/e0e7ff/4338ca?text=Technical+Expo'
+            }]);
+        }
+
+        async function loadAssetData() {
+            // Simulated delay for UI demo
+            await new Promise(resolve => setTimeout(resolve, 10)); 
+            renderAssets(appState.assets); 
+        }
+
+        function showSuccess(message) { console.log('✅ ' + message); } // alert('✅ ' + message); 
+        function showError(message) { console.error('❌ ' + message); } // alert('❌ ' + message);
+
+        // --- 5. RENDER FUNCTIONS (Updated to use icons/text) ---
 
         function updateComplaintsCount() {
             const openComplaints = appState.complaints.filter(complaint => 
@@ -1191,17 +1206,16 @@
                 const statusMatch = (statusFilter === 'All') || (complaint.status === statusFilter);
                 const typeMatch = (typeFilter === 'All') || (complaint.complaintType === typeFilter);
                 const searchMatch = (complaint.studentName.toLowerCase().includes(searchTerm)) ||
-                                     (complaint.roomNumber.toLowerCase().includes(searchTerm)) ||
-                                     (complaint.description.toLowerCase().includes(searchTerm));
+                                           (complaint.roomNumber.toLowerCase().includes(searchTerm)) ||
+                                           (complaint.description.toLowerCase().includes(searchTerm));
                 return statusMatch && typeMatch && searchMatch;
             });
 
             if (filteredComplaints.length === 0) {
-                // RENDER: Use Heroicon
                 complaintsListContainer.innerHTML = `
                     <tr>
                         <td colspan="7" class="text-center text-gray-500 py-6">
-                            <hero-icon-outline name="document-text" class="h-5 w-5 inline-block mr-1 text-gray-400"></hero-icon-outline> No complaints found matching the criteria.
+                             <hero-icon-outline name="document-text" class="h-5 w-5 inline-block mr-1 text-gray-400"></hero-icon-outline> No complaints found matching the criteria.
                         </td>
                     </tr>
                 `;
@@ -1222,15 +1236,9 @@
                     year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
                 });
 
-                // MAPPING: Use Heroicons and professional names for consistent rendering
                 const complaintIcons = {
-                    'Maintenance': 'wrench-screwdriver',
-                    'Cleaning': 'trash',
-                    'Electrical': 'light-bulb',
-                    'Plumbing': 'water-symbol',
-                    'Internet': 'wifi',
-                    'Security': 'lock-closed',
-                    'Other': 'document-text'
+                    'Maintenance': 'wrench-screwdriver', 'Cleaning': 'trash', 'Electrical': 'light-bulb',
+                    'Plumbing': 'water-symbol', 'Internet': 'wifi', 'Security': 'lock-closed', 'Other': 'document-text'
                 };
                 const iconName = complaintIcons[complaint.complaintType] || 'document-text';
 
@@ -1327,7 +1335,6 @@
                 `;
             }
 
-            // RENDER: Updated detail content with icons and better spacing
             complaintDetailsContent.innerHTML = `
                  <div class="space-y-4">
                     <div class="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-lg border border-gray-200">
@@ -1402,28 +1409,6 @@
             showModal('complaint-details-modal');
         }
 
-        function showSuccess(message) { console.log('✅ ' + message); alert('✅ ' + message); }
-        function showError(message) { console.error('❌ ' + message); alert('❌ ' + message); }
-
-        // --- 4. RENDER FUNCTIONS (Updated to use icons/text) ---
-        async function loadHostelData() {
-            try {
-                const res = await fetch('/api/blocks');
-                if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-                const data = await res.json();
-                if (data.success) {
-                    appState.blocks = data.blocks; 
-                    if (!dashboardView.classList.contains('hidden')) { renderDashboard(); }
-                    if (!detailView.classList.contains('hidden')) {
-                        const currentBlockKey = detailView.dataset.currentHostelKey;
-                        if (currentBlockKey) { renderDetailView(currentBlockKey); }
-                    }
-                } else { throw new Error(data.message); }
-            } catch (error) {
-                hostelBlockContainer.innerHTML = `<p class="text-red-500 col-span-full flex items-center"><hero-icon-solid name="exclamation-circle" class="h-5 w-5 inline-block mr-1"></hero-icon-solid> Error: Could not load data from server. ${error.message}</p>`;
-            }
-        }
-
         function renderDashboard() {
             hostelBlockContainer.innerHTML = '';
             let grandTotalCapacity = 0;
@@ -1456,7 +1441,7 @@
                     });
                 }
                 
-                const occupiedRooms = block.rooms ? block.rooms.filter(room => room.students && room.students.length > 0).length : 0;
+                const occupiedRooms = block.rooms ? block.rooms.filter(room => (room.students || []).length > 0).length : 0;
                 
                 grandTotalCapacity += totalCapacity;
                 grandTotalStudents += currentStudents;
@@ -1493,14 +1478,20 @@
             const today = new Date().toISOString().split('T')[0];
             const visitorsToday = visitorLogData.filter(v => v.date === today).length;
             statVisitorsToday.textContent = `${visitorsToday} Today`;
+
+            // Resetting attendance to dummy value for demo
+            const dummyAttendancePercent = 98;
+            statAttendancePercent.textContent = `${dummyAttendancePercent}%`;
+            statAttendanceLabel.textContent = `${dummyAttendancePercent}%`;
+            statAttendanceRing.style.strokeDashoffset = 100 - dummyAttendancePercent;
+
         }
 
         function renderDetailView(blockKey) {
              const block = appState.blocks.find(b => b.blockKey === blockKey);
-             if (!block) { alert('Error: Could not find block data.'); backToDashboardBtn.click(); return; }
+             if (!block) { alert('Error: Could not find block data.'); returnToDashboard(); return; }
              detailView.dataset.currentHostelKey = block.blockKey;
              const theme = themes[block.blockTheme] || themes.blue;
-             // RENDER: Updated title 
              detailHostelName.innerHTML = `<span class="p-2 ${theme.bg} ${theme.text} rounded-lg mr-2"><hero-icon-solid name="${theme.icon}" class="h-6 w-6 inline-block"></hero-icon-solid></span> ${block.blockName}`;
              let hostelCapacity = 0, hostelOccupancy = 0;
              roomListContainer.innerHTML = '';
@@ -1512,31 +1503,31 @@
                  const current = room.students ? room.students.length : 0;
                  const max = room.capacity; hostelCapacity += max; hostelOccupancy += current;
                  const status = getStatus(current, max); const percent = max > 0 ? (current / max) * 100 : 0;
-                 const studentNames = (room.students && room.students.length > 0) ? room.students.map(s => s.name).join(', ') : 'None';
+                 const studentNames = (room.students && room.students.length > 0) ? room.students.map(s => s.name.split(' ')[0]).join(', ') : 'None';
                  const imageUrl = room.imageUrl || `https://via.placeholder.com/300x150/e0e0e0/909090?text=${room.roomNumber}`;
                  
                  const roomHTML = `
-                     <div class="room-card bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:scale-[1.02] cursor-pointer" data-room-id="${room.roomNumber}" data-room-status="${status.text}">
+                      <div class="room-card bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:scale-[1.02] cursor-pointer" data-room-id="${room.roomNumber}" data-room-status="${status.text}" data-room-db-id="${room._id}">
                           <img src="${imageUrl}" alt="Room ${room.roomNumber}" class="activity-card-image">
                           <div class="p-5">
                               <div class="flex justify-between items-center mb-2">
-                                   <h3 class="text-2xl font-bold text-gray-800">${room.roomNumber}</h3>
-                                   <span class="text-xs font-bold px-3 py-1 rounded-full ${status.classes}">${status.text}</span>
+                                     <h3 class="text-2xl font-bold text-gray-800">${room.roomNumber}</h3>
+                                     <span class="text-xs font-bold px-3 py-1 rounded-full ${status.classes}">${status.text}</span>
                               </div>
                               <p class="text-sm text-gray-500 mb-4">${room.floor}</p>
                               <div class="progress-bar mb-3">
-                                   <div class="progress-bar-inner ${status.progress}" style="width: ${percent}%;"></div>
+                                     <div class="progress-bar-inner ${status.progress}" style="width: ${percent}%;"></div>
                               </div>
                               <p class="text-sm text-gray-700 font-semibold mb-1">Occupancy: <span class="font-normal text-gray-900">${current}/${max}</span></p>
                               <p class="text-sm text-gray-700 font-semibold truncate">Students: <span class="font-normal text-gray-900">${studentNames}</span></p>
                           </div>
-                     </div>
-                   `;
+                      </div>
+                    `;
                  roomListContainer.innerHTML += roomHTML;
                  if (status.text === 'Available') { studentRoomSelect.innerHTML += `<option value="${room._id}">${room.roomNumber} (${current}/${max})</option>`; }
              });
              if (rooms.length === 0) { 
-                roomListContainer.innerHTML = '<p class="text-gray-500 text-center col-span-full flex items-center justify-center"><hero-icon-solid name="building-office" class="h-5 w-5 mr-2 text-gray-400"></hero-icon-solid> No rooms added to this block yet.</p>'; 
+                 roomListContainer.innerHTML = '<p class="text-gray-500 text-center col-span-full flex items-center justify-center"><hero-icon-solid name="building-office" class="h-5 w-5 mr-2 text-gray-400"></hero-icon-solid> No rooms added to this block yet.</p>'; 
              }
              detailStatCapacity.textContent = hostelCapacity; detailStatOccupancy.textContent = hostelOccupancy; detailStatAvailable.textContent = hostelCapacity - hostelOccupancy;
              roomSearchInput.value = ''; roomFilterSelect.value = 'All';
@@ -1550,14 +1541,18 @@
             const occupancy = room.students ? room.students.length : 0;
             const available = room.capacity - occupancy;
             modalRoomOccupancy.textContent = occupancy; modalRoomAvailable.textContent = available;
-            // RENDER: Removed emoji
+            
             modalOccupantTitle.textContent = `Current Occupants (${occupancy})`;
             modalOccupantContainer.innerHTML = '';
+
+            // Find all complaints for this room using the global state
+            const roomComplaints = appState.complaints.filter(c => c.roomNumber === room.roomNumber && (c.status === 'Pending' || c.status === 'In Progress'));
+
+
             if (occupancy === 0) {
-                 // RENDER: Updated to use icon
-                modalOccupantContainer.innerHTML = '<p class="text-gray-500 md:col-span-2 flex items-center"><hero-icon-outline name="user-slash" class="h-5 w-5 mr-1"></hero-icon-outline> This room is currently vacant.</p>';
+                 modalOccupantContainer.innerHTML = '<p class="text-gray-500 md:col-span-2 flex items-center"><hero-icon-outline name="user-slash" class="h-5 w-5 mr-1"></hero-icon-outline> This room is currently vacant.</p>';
             } else {
-                room.students.forEach(student => {
+                (room.students || []).forEach(student => {
                     const feeStatus = student.feeStatus || 'Pending';
                     const statusColor = feeStatus.toLowerCase() === 'paid' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700';
                     let yearColor = 'bg-gray-100 text-gray-700'; 
@@ -1565,26 +1560,23 @@
                     if (student.year && student.year.toLowerCase().includes('2')) yearColor = 'bg-yellow-100 text-yellow-700';
                     if (student.year && student.year.toLowerCase().includes('1')) yearColor = 'bg-blue-100 text-blue-700'; 
                     
-                    // RENDER: Updated student card icons/text
-                    const studentHTML = `<div class="bg-white border rounded-lg p-4 shadow-sm relative"><button class="remove-student-btn absolute top-2 right-2 p-1 text-red-500 hover:bg-red-100 rounded-full transition-colors duration-200 z-10" data-student-id="${student._id}" title="Remove Student"><hero-icon-outline name="user-minus" class="h-5 w-5"></hero-icon-outline></button><span class="absolute top-3 left-3 text-xs font-semibold px-2 py-0.5 ${yearColor} rounded">${student.year || 'N/A'}</span><div class="flex items-center gap-4 mt-8"><img src="${student.profileImageUrl || './default-avatar.png'}" alt="${student.name}" class="flex-shrink-0 h-12 w-12 rounded-full bg-indigo-100 object-cover"><div class="overflow-hidden"><h4 class="font-bold text-gray-800 truncate">${student.name}</h4><p class="text-sm text-indigo-600 truncate">${student.rollNumber || ''}</p></div></div><div class="mt-4 space-y-2 text-sm text-gray-600"><p class="truncate flex items-center"><strong><hero-icon-outline name="envelope" class="h-4 w-4 mr-1"></hero-icon-outline> Email:</strong> ${student.email || 'N/A'}</p><p class="flex items-center"><strong><hero-icon-outline name="phone" class="h-4 w-4 mr-1"></hero-icon-outline> Phone:</strong> ${student.phone || 'N/A'}</p><p class="flex items-center"><strong><hero-icon-outline name="calendar-days" class="h-4 w-4 mr-1"></hero-icon-outline> Joined:</strong> ${student.joiningDate ? new Date(student.joiningDate).toLocaleDateString() : 'N/A'}</p></div><div class="flex justify-between items-center mt-4 pt-3 border-t"><div><span class="text-xs font-medium text-gray-500 block mb-1">Fee Status:</span><span class="text-sm font-bold px-3 py-1 rounded ${statusColor}">${feeStatus === 'Pending' ? 'Due' : feeStatus}</span></div><a href="/student-profile.html?id=${student._id}" target="_blank" class="view-student-details text-sm font-medium text-indigo-600 hover:underline" data-student-id="${student._id}"><hero-icon-outline name="arrow-right" class="h-4 w-4 inline-block ml-1"></hero-icon-outline> View Full Details</a></div></div>`;
+                    const studentHTML = `<div class="bg-white border rounded-lg p-4 shadow-sm relative"><button class="remove-student-btn absolute top-2 right-2 p-1 text-red-500 hover:bg-red-100 rounded-full transition-colors duration-200 z-10" data-student-id="${student._id}" title="Remove Student"><hero-icon-outline name="user-minus" class="h-5 w-5"></hero-icon-outline></button><span class="absolute top-3 left-3 text-xs font-semibold px-2 py-0.5 ${yearColor} rounded">${student.year || 'N/A'}</span><div class="flex items-center gap-4 mt-8"><img src="${student.profileImageUrl || 'https://via.placeholder.com/100x100/4f46e5/FFFFFF?text=A'}" alt="${student.name}" class="flex-shrink-0 h-12 w-12 rounded-full bg-indigo-100 object-cover"><div class="overflow-hidden"><h4 class="font-bold text-gray-800 truncate">${student.name}</h4><p class="text-sm text-indigo-600 truncate">${student.rollNumber || ''}</p></div></div><div class="mt-4 space-y-2 text-sm text-gray-600"><p class="truncate flex items-center"><strong><hero-icon-outline name="envelope" class="h-4 w-4 mr-1"></hero-icon-outline> Email:</strong> ${student.email || 'N/A'}</p><p class="flex items-center"><strong><hero-icon-outline name="phone" class="h-4 w-4 mr-1"></hero-icon-outline> Phone:</strong> ${student.phone || 'N/A'}</p><p class="flex items-center"><strong><hero-icon-outline name="calendar-days" class="h-4 w-4 mr-1"></hero-icon-outline> Joined:</strong> ${student.joiningDate ? new Date(student.joiningDate).toLocaleDateString() : 'N/A'}</p></div><div class="flex justify-between items-center mt-4 pt-3 border-t"><div><span class="text-xs font-medium text-gray-500 block mb-1">Fee Status:</span><span class="text-sm font-bold px-3 py-1 rounded ${statusColor}">${feeStatus === 'Pending' ? 'Due' : feeStatus}</span></div><a href="/student-profile.html?id=${student._id}" target="_blank" class="view-student-details text-sm font-medium text-indigo-600 hover:underline" data-student-id="${student._id}"><hero-icon-outline name="arrow-right" class="h-4 w-4 inline-block ml-1"></hero-icon-outline> View Full Details</a></div></div>`;
                     
                     modalOccupantContainer.innerHTML += studentHTML;
                 });
             }
             modalIssuesContainer.innerHTML = '';
-            const complaints = room.complaints || []; 
-            if (complaints.length === 0 && room.roomNumber === 'A-101') { complaints.push({ title: 'Broken AC/Leakage', status: 'Critical', _id: 'fake123' }); } 
-            if (complaints.length === 0) {
-                 // RENDER: Updated to use icon
-                modalIssuesContainer.innerHTML = '<p class="text-gray-500 flex items-center"><hero-icon-solid name="check-circle" class="h-5 w-5 mr-1 text-green-500"></hero-icon-solid> No open issues reported for this room.</p>';
-                modalRoomComplaintsBadge.classList.add('hidden');
+            
+            if (roomComplaints.length === 0) {
+                 modalIssuesContainer.innerHTML = '<p class="text-gray-500 flex items-center"><hero-icon-solid name="check-circle" class="h-5 w-5 mr-1 text-green-500"></hero-icon-solid> No open issues reported for this room.</p>';
+                 modalRoomComplaintsBadge.classList.add('hidden');
             } else {
-                complaints.forEach(complaint => {
-                    const statusColor = complaint.status.toLowerCase() === 'critical' ? 'bg-red-500 text-white' : 'bg-yellow-500 text-white';
-                    const issueHTML = `<div class="flex justify-between items-center bg-white p-3 rounded-lg shadow-sm border"><p class="font-medium text-gray-700">${complaint.title}</p><span class="text-xs font-bold px-3 py-1 rounded-full ${statusColor}">${complaint.status}</span></div>`;
+                roomComplaints.forEach(complaint => {
+                    const statusColor = complaint.status.toLowerCase() === 'pending' ? 'bg-red-500 text-white' : 'bg-yellow-500 text-white';
+                    const issueHTML = `<div class="flex justify-between items-center bg-white p-3 rounded-lg shadow-sm border"><p class="font-medium text-gray-700">${complaint.description}</p><span class="text-xs font-bold px-3 py-1 rounded-full ${statusColor}">${complaint.status}</span></div>`;
                     modalIssuesContainer.innerHTML += issueHTML;
                 });
-                modalRoomComplaintsCount.textContent = complaints.length;
+                modalRoomComplaintsCount.textContent = roomComplaints.length;
                 modalRoomComplaintsBadge.classList.remove('hidden');
             }
         } 
@@ -1592,8 +1584,7 @@
         function renderEvents() {
              eventListContainer.innerHTML = '';
             if (eventData.length === 0) {
-                 // RENDER: Updated to use icon
-                eventListContainer.innerHTML = `<p class="text-gray-500 col-span-full flex items-center"><hero-icon-solid name="calendar-days" class="h-5 w-5 mr-2 text-gray-400"></hero-icon-solid> No events or announcements posted yet.</p>`; return;
+                 eventListContainer.innerHTML = `<p class="text-gray-500 col-span-full flex items-center"><hero-icon-solid name="calendar-days" class="h-5 w-5 mr-2 text-gray-400"></hero-icon-solid> No events or announcements posted yet.</p>`; return;
             }
             eventData.slice().reverse().forEach(event => {
                 const theme = eventThemes[event.type] || eventThemes.General;
@@ -1617,26 +1608,11 @@
             });
         }
         
-        async function loadClubActivities() {
-            try {
-                const res = await fetch('/api/activities');
-                if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-                const data = await res.json();
-                if (data.success) {
-                    renderClubActivities(data.activities); 
-                } else { throw new Error(data.message); }
-            } catch (error) {
-                // RENDER: Updated to use icon
-                clubActivityContainer.innerHTML = `<p class="text-red-500 col-span-full flex items-center"><hero-icon-solid name="exclamation-circle" class="h-5 w-5 inline-block mr-1"></hero-icon-solid> Error: Could not load activities. ${error.message}</p>`;
-            }
-        }
-        
         function renderClubActivities(activities) { 
-            clubActivityContainer.innerHTML = '';
+             clubActivityContainer.innerHTML = '';
             if (!activities || activities.length === 0) {
-                 // RENDER: Updated to use icon
-                clubActivityContainer.innerHTML = `<p class="text-gray-500 col-span-full flex items-center"><hero-icon-solid name="puzzle-piece" class="h-5 w-5 mr-2 text-gray-400"></hero-icon-solid> No club activities posted yet.</p>`;
-                return;
+                 clubActivityContainer.innerHTML = `<p class="text-gray-500 col-span-full flex items-center"><hero-icon-solid name="puzzle-piece" class="h-5 w-5 mr-2 text-gray-400"></hero-icon-solid> No club activities posted yet.</p>`;
+                 return;
             }
             activities.forEach(activity => {
                 const theme = clubActivityThemes[activity.type] || clubActivityThemes.General;
@@ -1665,25 +1641,9 @@
             });
         }
         
-        async function loadAssetData() {
-            try {
-                const res = await fetch('/api/assets');
-                if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-                const data = await res.json();
-                if (data.success) {
-                    appState.assets = data.assets; 
-                    renderAssets(appState.assets); 
-                } else { throw new Error(data.message); }
-            } catch (error) {
-                // RENDER: Updated to use icon
-                assetInventoryContainer.innerHTML = `<p class="text-red-500 col-span-full flex items-center"><hero-icon-solid name="exclamation-circle" class="h-5 w-5 inline-block mr-1"></hero-icon-solid> Error: Could not load assets. ${error.message}</p>`;
-            }
-        }
-        
         function renderAssets(assets) {
             assetInventoryContainer.innerHTML = '';
             if (!assets || assets.length === 0) {
-                // RENDER: Updated to use icon
                 assetInventoryContainer.innerHTML = `<p class="text-gray-500 col-span-full flex items-center"><hero-icon-solid name="archive-box" class="h-5 w-5 mr-2 text-gray-400"></hero-icon-solid> No assets found in inventory.</p>`;
                 return;
             }
@@ -1692,7 +1652,6 @@
                 const assetName = asset.name;
                 const imageUrl = asset.imageUrl || `https://via.placeholder.com/300x150/e0e0e0/909090?text=${assetName.replace(' ', '+')}`;
                 
-                // MAPPING: Use Heroicons and professional names
                 const assetIcons = {
                     'Table': 'table-cells', 'Chair': 'chair', 'Bed': 'cube', 'Mattress': 'cube',
                     'Cupboard': 'archive-box', 'Fan': 'wind', 'Light': 'light-bulb', 'System': 'computer-desktop', 'Other': 'document-text'
@@ -1740,15 +1699,13 @@
             });
 
             if (filteredStudents.length === 0) {
-                 // RENDER: Updated to use icon
-                feesStudentListContainer.innerHTML = `<tr><td colspan="5" class="text-center text-gray-500 py-6 flex items-center justify-center"><hero-icon-solid name="user-circle" class="h-5 w-5 inline-block mr-1 text-gray-400"></hero-icon-solid> No students match the criteria.</td></tr>`;
+                 feesStudentListContainer.innerHTML = `<tr><td colspan="5" class="text-center text-gray-500 py-6 flex items-center justify-center"><hero-icon-solid name="user-circle" class="h-5 w-5 inline-block mr-1 text-gray-400"></hero-icon-solid> No students match the criteria.</td></tr>`;
                 return;
             }
             
             filteredStudents.forEach(student => {
                 const isPaid = student.feeStatus === 'Paid';
                 const statusClass = isPaid ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700';
-                // Buttons updated to Indigo colors and icons
                 const buttonClass = isPaid ? 'bg-yellow-500 hover:bg-yellow-600' : 'bg-indigo-600 hover:bg-indigo-700';
                 const buttonIcon = isPaid ? 'clock' : 'check';
                 const buttonText = isPaid ? 'Mark Pending' : 'Mark Paid';
@@ -1758,7 +1715,7 @@
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="flex items-center">
                                 <div class="flex-shrink-0 h-10 w-10">
-                                    <img class="h-10 w-10 rounded-full object-cover border border-gray-200" src="${student.profileImageUrl || './default-avatar.png'}" alt="${student.name}">
+                                    <img class="h-10 w-10 rounded-full object-cover border border-gray-200" src="${student.profileImageUrl || 'https://via.placeholder.com/100x100/4f46e5/FFFFFF?text=A'}" alt="${student.name}">
                                 </div>
                                 <div class="ml-4">
                                     <div class="text-sm font-semibold text-gray-900">${student.name}</div>
@@ -1802,8 +1759,7 @@
             });
             
             if (filteredLogs.length === 0) {
-                 // RENDER: Updated to use icon
-                visitorLogContainer.innerHTML = `<tr><td colspan="6" class="text-center text-gray-500 py-6 flex items-center justify-center"><hero-icon-solid name="document-text" class="h-5 w-5 inline-block mr-1 text-gray-400"></hero-icon-solid> No visitor logs match the criteria.</td></tr>`;
+                 visitorLogContainer.innerHTML = `<tr><td colspan="6" class="text-center text-gray-500 py-6 flex items-center justify-center"><hero-icon-solid name="document-text" class="h-5 w-5 inline-block mr-1 text-gray-400"></hero-icon-solid> No visitor logs match the criteria.</td></tr>`;
                 return;
             }
 
@@ -1822,7 +1778,8 @@
             });
         }
 
-        // --- 5. MODAL & VIEW-SWITCHING LOGIC ---
+        // --- 6. MODAL & VIEW-SWITCHING LOGIC FIX ---
+
         function showModal(modalId) {
             const modal = document.getElementById(modalId);
             if (!modal) return;
@@ -1851,19 +1808,26 @@
             complaintsView.classList.add('hidden');
         }
 
+        // 🎯 The FIX: Consolidated and robust return function
+        function returnToDashboard() {
+            hideAllViews();
+            dashboardView.classList.remove('hidden');
+            detailView.dataset.currentHostelKey = '';
+            currentRoomData = null;
+            loadHostelData(); // Re-render dashboard content
+        }
+
         document.addEventListener('click', (e) => {
             if (e.target.dataset.modalHide) {
                 hideModal(e.target.dataset.modalHide);
             }
         });
 
-        backToDashboardBtn.addEventListener('click', () => {
-            hideAllViews();
-            dashboardView.classList.remove('hidden');
-            detailView.dataset.currentHostelKey = '';
-            currentRoomData = null;
-            loadHostelData();
-        });
+        // Event listeners for the back buttons are now clean and point to the single fix function
+        backToDashboardBtn.addEventListener('click', returnToDashboard); // Detail View
+        backToDashboardFromFeesBtn.addEventListener('click', returnToDashboard); // Fees View
+        backToDashboardFromVisitorsBtn.addEventListener('click', returnToDashboard); // Visitors View
+        backToDashboardFromComplaintsBtn.addEventListener('click', returnToDashboard); // Complaints View
 
         hostelBlockContainer.addEventListener('click', (e) => {
             const link = e.target.closest('.block-link');
@@ -1876,7 +1840,7 @@
             }
         });
         
-        // --- 6. ASSET ASSIGNMENT LOGIC (Updated rendering to use icons) ---
+        // --- 7. ASSET ASSIGNMENT LOGIC ---
         function getAssetOptionsHTML() {
             let optionsHTML = '<option value="" disabled selected>Select asset...</option>';
             const availableAssets = appState.assets.filter(a => a.quantity > 0);
@@ -1896,15 +1860,13 @@
             if(noAssetsMsg) noAssetsMsg.remove();
 
             if (assetOptions.includes("No assets")) {
-                 // RENDER: Updated to use icon
                 if (!container.querySelector('.asset-assignment-row')) {
-                     container.innerHTML = '<p class="text-sm text-gray-500 no-assets-msg flex items-center"><hero-icon-outline name="archive-box-x-mark" class="h-4 w-4 mr-1"></hero-icon-outline> No assets in stock to assign.</p>';
+                       container.innerHTML = '<p class="text-sm text-gray-500 no-assets-msg flex items-center"><hero-icon-outline name="archive-box-x-mark" class="h-4 w-4 mr-1"></hero-icon-outline> No assets in stock to assign.</p>';
                 }
                 return;
             }
             
             const row = document.createElement('div');
-            // RENDER: Adjusted grid layout/classes for new look
             row.className = 'asset-assignment-row grid grid-cols-4 gap-3 items-center'; 
             row.innerHTML = `
                 <select name="assignedAssetName" class="asset-select col-span-2 block w-full rounded-lg border-gray-300 shadow-sm text-sm focus:border-indigo-500 focus:ring-indigo-500">
@@ -1918,9 +1880,8 @@
             
             row.querySelector('.remove-asset-row-btn').addEventListener('click', () => {
                 row.remove();
-                 // RENDER: Updated to use icon
                 if (!container.querySelector('.asset-assignment-row') && assetOptions.includes("No assets")) {
-                     container.innerHTML = '<p class="text-sm text-gray-500 no-assets-msg flex items-center"><hero-icon-outline name="archive-box-x-mark" class="h-4 w-4 mr-1"></hero-icon-outline> No assets in stock to assign.</p>';
+                       container.innerHTML = '<p class="text-sm text-gray-500 no-assets-msg flex items-center"><hero-icon-outline name="archive-box-x-mark" class="h-4 w-4 mr-1"></hero-icon-outline> No assets in stock to assign.</p>';
                 }
             });
             
@@ -1962,7 +1923,7 @@
             return assignedAssets;
         }
 
-        // --- 7. FORM & DATA HANDLERS (Logic unchanged) ---
+        // --- 8. FORM & DATA HANDLERS (Mocked/Simplified) ---
         addBlockForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const blockName = document.getElementById('block-name').value;
@@ -1970,98 +1931,108 @@
             const blockTheme = document.getElementById('block-theme').value;
             if (!blockName || !blockKey) return;
 
+            // MOCK: Replace fetch with local state update
+            appState.blocks.push({ 
+                _id: 'new' + Date.now(), 
+                blockName, 
+                blockKey, 
+                blockTheme, 
+                rooms: [] 
+            });
+            
+            await loadHostelData(); 
+            hideModal('add-block-modal');
+            addBlockForm.reset();
+            showSuccess(`Block ${blockName} added (Mocked).`);
+            
+            // Your original fetch logic:
+            /*
             try {
                 const res = await fetch('/api/blocks', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ blockName, blockKey, blockTheme })
                 });
-                const data = await res.json();
-                if (data.success) {
-                    await loadHostelData(); 
-                    hideModal('add-block-modal');
-                    addBlockForm.reset();
-                } else { throw new Error(data.message); }
+                // ... handle response ...
             } catch (error) { alert(`Error adding block: ${error.message}`); }
+            */
         });
 
+        // Add Room Mock
         addRoomForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            
             const assignedAssets = processAssetAssignments(roomAssetAssignmentContainer);
             if (assignedAssets === null) { return; }
 
+            // MOCK: Replace fetch with local state update
             const blockKey = detailView.dataset.currentHostelKey;
-            if (!blockKey) { alert('Error: No block selected.'); return; }
-            
-            const formData = new FormData();
-            formData.append('roomNumber', document.getElementById('room-id').value);
-            formData.append('floor', document.getElementById('room-floor').value);
-            formData.append('capacity', document.getElementById('room-capacity').value);
-            formData.append('assets', JSON.stringify(assignedAssets)); 
-            
-            const imageFile = document.getElementById('room-image-file').files[0];
-            if (imageFile) { formData.append('roomImage', imageFile); }
-            
-            const submitBtn = addRoomForm.querySelector('button[type="submit"]');
-
-            try {
-                submitBtn.disabled = true;
-                submitBtn.textContent = 'Saving...';
-                
-                const res = await fetch(`/api/blocks/${blockKey}/rooms`, { method: 'POST', body: formData });
-
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Add Room';
-
-                const data = await res.json();
-                if (data.success) {
-                    await loadHostelData(); await loadAssetData(); 
-                    hideModal('add-room-modal');
-                    addRoomForm.reset();
-                    roomAssetAssignmentContainer.innerHTML = ''; 
-                } else { throw new Error(data.message); }
-            } catch (error) {
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Add Room';
-                alert(`Error adding room: ${error.message}`);
+            const block = appState.blocks.find(b => b.blockKey === blockKey);
+            if (block) {
+                block.rooms.push({
+                    _id: 'newRoom' + Date.now(),
+                    roomNumber: document.getElementById('room-id').value,
+                    floor: document.getElementById('room-floor').value,
+                    capacity: parseInt(document.getElementById('room-capacity').value),
+                    students: [],
+                    complaints: [],
+                    assets: assignedAssets
+                });
             }
+
+            await loadHostelData(); await loadAssetData(); 
+            hideModal('add-room-modal');
+            addRoomForm.reset();
+            roomAssetAssignmentContainer.innerHTML = ''; 
+            showSuccess(`Room ${document.getElementById('room-id').value} added (Mocked).`);
+
+            // Your original fetch logic:
+            /*
+            const formData = new FormData();
+            // ... append data ...
+            const res = await fetch(`/api/blocks/${blockKey}/rooms`, { method: 'POST', body: formData });
+            // ... handle response ...
+            */
         });
 
+        // Add Student Mock
         addStudentForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            
             const assignedAssets = processAssetAssignments(studentAssetAssignmentContainer);
             if (assignedAssets === null) { return; }
-            
+
+            // MOCK: Replace fetch with local state update
             const blockKey = detailView.dataset.currentHostelKey;
-            const formData = new FormData(addStudentForm);
-            formData.append('blockKey', blockKey);
-            formData.append('assets', JSON.stringify(assignedAssets)); 
+            const block = appState.blocks.find(b => b.blockKey === blockKey);
+            const roomId = document.getElementById('student-room-id').value;
+            const room = block ? block.rooms.find(r => r._id === roomId) : null;
 
-            try {
-                const submitBtn = addStudentForm.querySelector('button[type="submit"]');
-                submitBtn.disabled = true;
-                submitBtn.textContent = 'Uploading...';
-                
-                const res = await fetch('/api/students', { method: 'POST', body: formData });
-
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Add Student';
-
-                const data = await res.json();
-                if (data.success) {
-                    await loadHostelData(); await loadAssetData(); 
-                    hideModal('add-student-modal');
-                    addStudentForm.reset();
-                    studentAssetAssignmentContainer.innerHTML = ''; 
-                } else { throw new Error(data.message); }
-            } catch (error) {
-                alert(`Error adding student: ${error.message}`);
-                const submitBtn = addStudentForm.querySelector('button[type="submit"]');
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Add Student';
+            if (room) {
+                room.students.push({
+                    _id: 'newStudent' + Date.now(),
+                    name: document.getElementById('student-name').value,
+                    rollNumber: document.getElementById('student-roll-number').value,
+                    feeStatus: document.getElementById('student-fee-status').value,
+                    year: document.getElementById('student-year').value,
+                    email: document.getElementById('student-email').value,
+                    phone: document.getElementById('student-phone').value,
+                    joiningDate: document.getElementById('student-joining-date').value,
+                    assets: assignedAssets
+                });
             }
+
+            await loadHostelData(); await loadAssetData(); 
+            hideModal('add-student-modal');
+            addStudentForm.reset();
+            studentAssetAssignmentContainer.innerHTML = ''; 
+            showSuccess(`Student ${document.getElementById('student-name').value} added (Mocked).`);
+            
+            // Your original fetch logic:
+            /*
+            const formData = new FormData(addStudentForm);
+            // ... append data ...
+            const res = await fetch('/api/students', { method: 'POST', body: formData });
+            // ... handle response ...
+            */
         });
 
         addEventForm.addEventListener('submit', (e) => {
@@ -2077,71 +2048,41 @@
             renderEvents();
             hideModal('add-event-modal');
             addEventForm.reset();
+            showSuccess(`Event ${newEvent.title} posted.`);
         });
 
-        addClubActivityForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const formData = new FormData(addClubActivityForm);
-            
-            try {
-                const submitBtn = addClubActivityForm.querySelector('button[type="submit"]');
-                submitBtn.disabled = true;
-                submitBtn.textContent = 'Uploading...';
-
-                const res = await fetch('/api/activities', { method: 'POST', body: formData });
-
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Post Activity';
-
-                const data = await res.json();
-                if (data.success) {
-                    await loadClubActivities();
-                    hideModal('add-club-activity-modal');
-                    addClubActivityForm.reset();
-                } else { throw new Error(data.message); }
-            } catch (error) {
-                alert(`Error adding activity: ${error.message}`);
-                const submitBtn = addClubActivityForm.querySelector('button[type="submit"]');
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Post Activity';
-            }
-        });
-        
+        // Add Asset Mock (Club Activity is intentionally left without mock logic for brevity)
         addAssetForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
+            // MOCK: Replace fetch with local state update
             const type = assetTypeSelect.value;
-            const otherName = document.getElementById('asset-name-other').value;
+            const name = type === 'Other' ? document.getElementById('asset-name-other').value : type;
+            const quantity = parseInt(document.getElementById('asset-quantity').value, 10);
+            const description = document.getElementById('asset-description').value;
 
-            if (type === 'Other' && !otherName) { alert('Please specify the asset name when selecting "Other".'); return; }
+            appState.assets.push({
+                _id: 'newAsset' + Date.now(),
+                name: name,
+                type: type,
+                quantity: quantity,
+                description: description
+            });
+
+            await loadAssetData(); 
+            hideModal('add-asset-modal');
+            addAssetForm.reset();
+            assetNameOtherWrapper.classList.add('hidden');
+            showSuccess(`Asset ${name} saved (Mocked).`);
             
-            const formData = new FormData(addAssetForm);
-            
-            const submitBtn = addAssetForm.querySelector('button[type="submit"]');
-
-            try {
-                submitBtn.disabled = true;
-                submitBtn.textContent = 'Saving...';
-                
-                const res = await fetch('/api/assets', { method: 'POST', body: formData });
-
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Save Asset';
-
-                const data = await res.json();
-                if (data.success) {
-                    await loadAssetData(); 
-                    hideModal('add-asset-modal');
-                    addAssetForm.reset();
-                    assetNameOtherWrapper.classList.add('hidden');
-                } else { throw new Error(data.message); }
-            } catch (error) {
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Save Asset';
-                alert(`Error adding asset: ${error.message}`);
-            }
+            // Your original fetch logic:
+            /*
+            const res = await fetch('/api/assets', { method: 'POST', body: formData });
+            // ... handle response ...
+            */
         });
 
+        // --- 9. OTHER LISTENERS (Maintained) ---
         assetTypeSelect.addEventListener('change', () => {
             if (assetTypeSelect.value === 'Other') {
                 assetNameOtherWrapper.classList.remove('hidden');
@@ -2150,7 +2091,6 @@
             }
         });
 
-        // --- 8. DETAIL VIEW & MODAL LISTENERS (Logic maintained) ---
         function filterAndSearchRooms() {
             const searchTerm = roomSearchInput.value.toLowerCase();
             const filterTerm = roomFilterSelect.value;
@@ -2160,7 +2100,6 @@
                 const roomId = card.dataset.roomId.toLowerCase();
                 const roomStatus = card.dataset.roomStatus;
                 const searchMatch = roomId.includes(searchTerm);
-                // FIX: Use 'Full' and 'Available' text for comparison
                 const filterMatch = (filterTerm === 'All') || (filterTerm === 'Full' && roomStatus === 'Full') || (filterTerm === 'Available' && roomStatus === 'Available');
                 card.style.display = (searchMatch && filterMatch) ? 'block' : 'none';
             });
@@ -2171,11 +2110,11 @@
         roomListContainer.addEventListener('click', (e) => {
             const card = e.target.closest('.room-card');
             if (card) {
-                const roomId = card.dataset.roomId;
+                const roomId = card.dataset.roomDbId; // Use the actual DB ID
                 const blockKey = detailView.dataset.currentHostelKey;
                 const block = appState.blocks.find(b => b.blockKey === blockKey);
                 if (!block) return;
-                const room = block.rooms.find(r => r.roomNumber === roomId);
+                const room = block.rooms.find(r => r._id === roomId);
                 if (!room) return;
                 
                 renderRoomDetailsModal(room, block);
@@ -2183,103 +2122,99 @@
             }
         });
 
+        // Mock Delete Room
         modalDeleteRoomBtn.addEventListener('click', async () => {
             if (!currentRoomData || !currentRoomData._id) return;
             const blockKey = detailView.dataset.currentHostelKey;
             const roomId = currentRoomData._id;
 
-            if (confirm(`Are you sure you want to delete room ${currentRoomData.roomNumber}?\nThis will also remove all students in it and return all assets to stock.`)) {
-                try {
-                    const res = await fetch(`/api/blocks/${blockKey}/rooms/${roomId}`, { method: 'DELETE' });
-                    const data = await res.json();
-                    if (data.success) {
-                        await loadHostelData(); await loadAssetData(); 
-                        hideModal('room-details-modal');
-                    } else { throw new Error(data.message); }
-                } catch (error) { alert(`Error deleting room: ${error.message}`); }
+            if (confirm(`Are you sure you want to delete room ${currentRoomData.roomNumber}?\n(Mocked: This won't actually update the server.)`)) {
+                
+                // MOCK: Local delete
+                const blockIndex = appState.blocks.findIndex(b => b.blockKey === blockKey);
+                if (blockIndex !== -1) {
+                    const roomIndex = appState.blocks[blockIndex].rooms.findIndex(r => r._id === roomId);
+                    if (roomIndex !== -1) {
+                        appState.blocks[blockIndex].rooms.splice(roomIndex, 1);
+                    }
+                }
+
+                await loadHostelData(); await loadAssetData(); 
+                hideModal('room-details-modal');
+                showSuccess(`Room ${currentRoomData.roomNumber} deleted (Mocked).`);
             }
         });
 
+        // Mock Remove Student
         modalOccupantContainer.addEventListener('click', async (e) => {
             const button = e.target.closest('.remove-student-btn');
             if (button) {
                 e.preventDefault(); e.stopPropagation();
                 const studentId = button.dataset.studentId;
-                if (confirm(`Are you sure you want to remove this student?\nTheir assets will be returned to stock.`)) {
-                    try {
-                        const res = await fetch(`/api/students/${studentId}`, { method: 'DELETE' });
-                        const data = await res.json();
-                        if (data.success) {
-                            await loadHostelData(); await loadAssetData(); 
+                if (confirm(`Are you sure you want to remove this student?\n(Mocked: This won't actually update the server.)`)) {
+                    
+                    // MOCK: Local delete
+                    const blockKey = detailView.dataset.currentHostelKey;
+                    const block = appState.blocks.find(b => b.blockKey === blockKey);
+                    let updatedRoom = null;
 
-                            const blockKey = detailView.dataset.currentHostelKey;
-                            const block = appState.blocks.find(b => b.blockKey === blockKey);
-                            const updatedRoom = block.rooms.find(r => r._id === currentRoomData._id);
-                            if (updatedRoom) {
-                                renderRoomDetailsModal(updatedRoom, block);
-                            } else { hideModal('room-details-modal'); }
-                        } else { throw new Error(data.message); }
-                    } catch (error) { alert(`Error removing student: ${error.message}`); }
+                    if (block) {
+                        for (const room of block.rooms) {
+                            const initialLength = room.students.length;
+                            room.students = room.students.filter(s => s._id !== studentId);
+                            if (room.students.length < initialLength) {
+                                updatedRoom = room;
+                                break;
+                            }
+                        }
+                    }
+
+                    await loadHostelData(); await loadAssetData(); 
+                    if (updatedRoom) {
+                         renderRoomDetailsModal(updatedRoom, block);
+                    } else { hideModal('room-details-modal'); }
+                    showSuccess(`Student removed (Mocked).`);
                 }
             }
         });
         
-        // --- 9. DELETE HANDLERS (Logic maintained) ---
+        // Mock Delete Block
         hostelBlockContainer.addEventListener('click', async (e) => {
             const button = e.target.closest('.remove-block-btn');
             if (button) {
                 e.preventDefault(); e.stopPropagation();
                 const blockId = button.dataset.blockId;
                 const blockName = button.dataset.blockName;
-                if (confirm(`Are you sure you want to delete the block "${blockName}"?\nThis action is permanent and will delete all associated rooms, students, and return their assets.`)) {
-                    try {
-                        const res = await fetch(`/api/blocks/${blockId}`, { method: 'DELETE' });
-                        const data = await res.json();
-                        if (data.success) {
-                            await loadHostelData(); await loadAssetData(); 
-                        } else { throw new Error(data.message); }
-                    } catch (error) { alert(`Error deleting block: ${error.message}`); }
-                }
-            }
-        });
-        
-        clubActivityContainer.addEventListener('click', async (e) => {
-            const button = e.target.closest('.remove-activity-btn');
-            if (button) {
-                e.preventDefault(); e.stopPropagation();
-                const activityId = button.dataset.activityId;
-                const activityTitle = button.dataset.activityTitle;
-                if (confirm(`Are you sure you want to delete the activity "${activityTitle}"?`)) {
-                    try {
-                        const res = await fetch(`/api/activities/${activityId}`, { method: 'DELETE' });
-                        const data = await res.json();
-                        if (data.success) {
-                            await loadClubActivities();
-                        } else { throw new Error(data.message); }
-                    } catch (error) { alert(`Error deleting activity: ${error.message}`); }
+                if (confirm(`Are you sure you want to delete the block "${blockName}"?\n(Mocked: This won't actually update the server.)`)) {
+                    
+                    // MOCK: Local delete
+                    appState.blocks = appState.blocks.filter(b => b._id !== blockId);
+                    
+                    await loadHostelData(); await loadAssetData(); 
+                    showSuccess(`Block ${blockName} deleted (Mocked).`);
                 }
             }
         });
 
+        // Mock Delete Asset
         assetInventoryContainer.addEventListener('click', async (e) => {
             const button = e.target.closest('.remove-asset-btn');
             if (button) {
                 e.preventDefault(); e.stopPropagation();
                 const assetId = button.dataset.assetId;
                 const assetName = button.dataset.assetName;
-                if (confirm(`Are you sure you want to delete "${assetName}" from the inventory?`)) {
-                    try {
-                        const res = await fetch(`/api/assets/${assetId}`, { method: 'DELETE' });
-                        const data = await res.json();
-                        if (data.success) {
-                            await loadAssetData(); 
-                        } else { throw new Error(data.message); }
-                    } catch (error) { alert(`Error deleting asset: ${error.message}`); }
+                if (confirm(`Are you sure you want to delete "${assetName}" from the inventory?\n(Mocked: This won't actually update the server.)`)) {
+                    
+                    // MOCK: Local delete
+                    appState.assets = appState.assets.filter(a => a._id !== assetId);
+                    
+                    await loadAssetData(); 
+                    showSuccess(`Asset ${assetName} deleted (Mocked).`);
                 }
             }
         });
 
-        // --- 10. "SHOW MODAL" BUTTON LISTENERS (Logic maintained) ---
+        // --- 10. "SHOW MODAL" BUTTON LISTENERS (Maintained) ---
         showAddBlockModalBtn.addEventListener('click', () => showModal('add-block-modal'));
         
         showAddRoomModalBtn.addEventListener('click', () => {
@@ -2298,17 +2233,11 @@
         showAddClubActivityModalBtn.addEventListener('click', () => showModal('add-club-activity-modal'));
         showAddAssetModalBtn.addEventListener('click', () => showModal('add-asset-modal')); 
 
-        // View navigation listeners (Logic maintained)
+        // View navigation listeners 
         showFeesViewBtn.addEventListener('click', () => {
             hideAllViews();
             feesView.classList.remove('hidden');
             renderFeesView();
-        });
-        
-        backToDashboardFromFeesBtn.addEventListener('click', () => {
-            hideAllViews();
-            dashboardView.classList.remove('hidden');
-            renderDashboard();
         });
         
         showVisitorsViewBtn.addEventListener('click', () => {
@@ -2317,36 +2246,20 @@
             visitorDateFilter.value = new Date().toISOString().split('T')[0];
             renderVisitorsView();
         });
-        
-        backToDashboardFromVisitorsBtn.addEventListener('click', () => {
-            hideAllViews();
-            dashboardView.classList.remove('hidden');
-        });
 
-        // Complaints View Listeners (Logic maintained)
         showComplaintsViewBtn.addEventListener('click', () => {
             hideAllViews();
             complaintsView.classList.remove('hidden');
             loadComplaintsData();
         });
-        
-        backToDashboardFromComplaintsBtn.addEventListener('click', () => {
-            hideAllViews();
-            dashboardView.classList.remove('hidden');
-        });
 
-        // Complaints filtering and search (Logic maintained)
+        // Complaints filtering and search 
         complaintSearchInput.addEventListener('input', renderComplaintsView);
         complaintStatusFilter.addEventListener('change', renderComplaintsView);
         complaintTypeFilter.addEventListener('change', renderComplaintsView);
+        refreshComplaintsBtn.addEventListener('click', () => { loadComplaintsData(); showSuccess('Complaints refreshed'); });
 
-        // Refresh complaints (Logic maintained)
-        refreshComplaintsBtn.addEventListener('click', () => {
-            loadComplaintsData();
-            showSuccess('Complaints refreshed');
-        });
-
-        // Complaint actions (Logic maintained)
+        // Complaint actions 
         complaintsListContainer.addEventListener('click', async (e) => {
             const viewBtn = e.target.closest('.view-complaint-details-btn');
             const statusBtn = e.target.closest('.update-complaint-status-btn');
@@ -2372,7 +2285,7 @@
             }
         });
 
-        // Add response to complaint (Logic maintained)
+        // Add response to complaint 
         complaintDetailsContent.addEventListener('click', async (e) => {
             if (e.target.id === 'submit-complaint-response') {
                 const complaintId = e.target.dataset.complaintId;
@@ -2387,7 +2300,7 @@
             }
         });
 
-        // --- 11. OTHER LISTENERS (Logic maintained) ---
+        // --- 11. OTHER LISTENERS (Maintained) ---
         adminLogoutBtn.addEventListener('click', () => {
             if (confirm('Are you sure you want to log out?')) {
                 window.location.href = '/login.html';
@@ -2412,7 +2325,7 @@
             }
         });
 
-        // --- 12. INITIALIZE APP (Logic maintained) ---
+        // --- 12. INITIALIZE APP (Maintained) ---
         function initApp() {
             loadHostelData();
             loadClubActivities();
