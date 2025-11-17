@@ -235,7 +235,7 @@
                                     <input type="file" id="head-image" name="imageUrl" required class="mt-1 block w-full file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
                                 </div>
                                 <button type="submit" class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md font-semibold hover:bg-indigo-700 flex items-center justify-center transition-colors duration-200">
-                                    <i class="fas fa-plus mr-2"></i>Add Head
+                                    <i class="fas fa-user-tie mr-2"></i>Add Head
                                 </button>
                             </form>
                         </div>
@@ -393,20 +393,19 @@
                     </div>
 
                     <div id="election-tab-results" class="election-tab-content">
-                        <div class="bg-gradient-to-r from-indigo-600 to-purple-700 p-6 rounded-lg shadow-lg mb-6 text-white">
-                            <div class="flex justify-between items-center">
+                        <div class="bg-white p-4 rounded-lg shadow-md mb-6">
+                            <div class="flex justify-between items-start text-sm text-gray-600">
                                 <div>
-                                    <h1 class="text-3xl font-bold">Admin Panel for HORC Election-2025, IIT Indore</h1>
-                                    <p class="text-lg opacity-90 mt-2">Dashboard - All Students</p>
+                                    <p class="text-lg font-bold text-gray-900">HORC Election-2025, IIT Indore</p>
+                                    <p class="mt-1">Overall Election Dashboard</p>
                                 </div>
                                 <div class="text-right">
-                                    <p class="text-2xl font-bold">Total Voter: 2891</p>
-                                    <p class="text-lg">Total Vote Casted: 1437</p>
-                                    <p class="text-md">Voting Percentage: 49.71%</p>
+                                    <p class="font-semibold">Total Voters: <span class="text-gray-900">2891</span></p>
+                                    <p>Votes Casted: <span class="text-gray-900">1437</span></p>
+                                    <p>Voter Percentage: <span class="text-gray-900">49.71%</span></p>
                                 </div>
                             </div>
                         </div>
-
                         <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
                             <div class="bg-white p-4 rounded-lg shadow-lg text-center border-l-4 border-indigo-500">
                                 <p class="text-3xl font-bold text-indigo-600">2891</p>
@@ -900,8 +899,8 @@
 
                 // Check for duplicates before adding
                 if (electionPositions.some(p => p.position === position)) {
-                     alert(`The position "${position}" has already been added.`);
-                     return;
+                    alert(`The position "${position}" has already been added.`);
+                    return;
                 }
 
                 const newPosition = { position: position, block: block, nominationDate: date };
