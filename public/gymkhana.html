@@ -29,6 +29,29 @@
             display: block; /* Shown when active */
         }
 
+        /* Custom style for active admin buttons */
+        .admin-tab {
+            transition: all 0.2s;
+            border-radius: 0.5rem; /* rounded-lg */
+            border-width: 2px;
+            font-weight: 700; /* font-bold */
+            padding-top: 0.75rem; /* py-3 */
+            padding-bottom: 0.75rem; /* py-3 */
+            padding-left: 1.5rem; /* px-6 */
+            padding-right: 1.5rem; /* px-6 */
+        }
+        .admin-tab:not(.active) {
+            border-color: #D1D5DB; /* gray-300 */
+            color: #4B5563; /* gray-700 */
+            background-color: #FFFFFF; /* white */
+        }
+        .admin-tab.active {
+            background-color: #4F46E5; /* indigo-600 */
+            color: #FFFFFF;
+            border-color: #4F46E5;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
+        }
+
         /* Smooth scroll behavior */
         html {
             scroll-behavior: smooth;
@@ -55,6 +78,12 @@
             max-height: 80vh;
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
+        }
+        
+        /* Style for full-width view sections */
+        .full-page-view {
+            transition: opacity 0.3s ease-in-out;
+            min-height: 500px;
         }
     </style>
 </head>
@@ -366,8 +395,8 @@
                     <div class="flex flex-col md:flex-row items-center gap-16">
                         <div class="md:w-1/2">
                             <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1200&q=80" 
-                                    alt="Students" 
-                                    class="rounded-2xl shadow-xl w-full h-auto object-cover">
+                                        alt="Students" 
+                                        class="rounded-2xl shadow-xl w-full h-auto object-cover">
                         </div>
                         <div class="md:w-1/2">
                             <h2 class="text-base text-indigo-600 font-semibold tracking-wide uppercase">Who We Are</h2>
@@ -627,9 +656,9 @@
                     <div class="absolute inset-0 bg-gray-900 bg-opacity-70"></div>
                 </div>
                 <div class="relative z-10 p-4">
-                    <h1 class="text-6xl md:text-8xl font-extrabold tracking-tight">Gymkhana Elections</h1>
+                    <h1 class="text-6xl md:text-8xl font-extrabold tracking-tight">Gymkhana Elections & Results</h1>
                     <p class="mt-6 max-w-2xl text-xl md:text-2xl opacity-90">
-                        Your Voice, Your Vote. Electing the leaders of tomorrow.
+                        Administrative Center for Voting and Officer Data.
                     </p>
                 </div>
             </section>
@@ -637,53 +666,64 @@
             <section class="py-16 bg-white">
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+                    <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 mb-8">
+                        <button id="tab-info" onclick="switchView('info-view')" class="admin-tab w-full md:w-1/2 text-base font-bold text-indigo-700 bg-indigo-50 border-indigo-600 hover:bg-indigo-100 transition duration-300">
+                            <i class="fas fa-calendar-alt mr-2"></i> Election Information Hub
+                        </button>
+                        <button id="tab-grids" onclick="switchView('grids-view')" class="admin-tab w-full md:w-1/2 text-base font-bold text-gray-700 bg-white border-gray-400 hover:bg-gray-100 transition duration-300">
+                            <i class="fas fa-medal mr-2"></i> Elected Officers
+                        </button>
+                    </div>
+
+                    <div id="admin-content-container">
                         
-                        <div class="lg:col-span-1 space-y-10">
+                        <div id="info-view" class="space-y-8 full-page-view">
                             
-                            <div class="bg-indigo-50 p-6 rounded-xl shadow-lg">
-                                <h3 class="text-2xl font-bold text-indigo-800 flex items-center">
-                                    <i class="fas fa-calendar-check mr-3"></i> Election Schedule
-                                </h3>
-                                
-                                <ul id="election-schedule-list" class="mt-6 space-y-4">
-                                    <li class="text-gray-500">Loading schedule...</li>
-                                </ul>
-                                
-                                <a href="#candidates-section" class="mt-8 w-full block text-center bg-indigo-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-indigo-700 transition duration-300">
-                                    View Candidate Manifestos
-                                </a>
-                                
-                                <button id="vote-button" onclick="showVotingModal()" class="mt-3 w-full bg-green-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-green-700 transition duration-300 hidden" disabled>
-                                    <i class="fas fa-vote-yea mr-2"></i> VOTE NOW (Live)
-                                </button>
+                            <h2 class="text-3xl font-extrabold text-gray-900 border-b pb-2 flex items-center">
+                                <i class="fas fa-info-circle text-indigo-600 mr-2"></i> Election Schedule & Latest Announcements
+                            </h2>
 
-                                <p id="voting-status" class="mt-3 text-center text-sm text-red-600">Voting is currently **CLOSED**.</p>
-                            </div>
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                
+                                <div class="bg-indigo-50 p-6 rounded-xl shadow-md border-l-4 border-indigo-600">
+                                    <h3 class="text-2xl font-bold text-indigo-800 flex items-center mb-4">
+                                        <i class="fas fa-calendar-check mr-3"></i> Election Schedule
+                                    </h3>
+                                    <ul id="election-schedule-list" class="space-y-4">
+                                        <li class="text-gray-500">Loading schedule...</li>
+                                    </ul>
+                                </div>
 
-                            <div class="bg-yellow-50 p-6 rounded-xl shadow-lg">
-                                <h3 class="text-2xl font-bold text-yellow-800 flex items-center">
-                                    <i class="fas fa-bullhorn mr-3"></i> Latest Announcements
-                                </h3>
-                                <div id="election-announcements" class="mt-4 space-y-4">
-                                     <p class="text-gray-500">No announcements yet.</p>
+                                <div class="bg-yellow-50 p-6 rounded-xl shadow-md border-l-4 border-yellow-600">
+                                    <h3 class="text-2xl font-bold text-yellow-800 flex items-center mb-4">
+                                        <i class="fas fa-bullhorn mr-3"></i> Latest Announcements
+                                    </h3>
+                                    <div id="election-announcements" class="mt-4 space-y-4">
+                                        <p class="text-gray-500">No announcements yet.</p>
+                                    </div>
                                 </div>
                             </div>
-
-                        </div>
-                        
-                        <div class="lg:col-span-2" id="candidates-section">
                             
-                            <h2 class="text-4xl font-extrabold text-gray-900 mb-10 border-b pb-4">
-                                Meet Your Electoral Candidates
-                            </h2>
-                            
-                            <div id="positions-and-candidates-container" class="space-y-12">
-                                <p class="text-gray-500 text-lg">Positions and candidates loading...</p>
+                            <div class="mt-8 pt-4 border-t border-gray-200">
+                                <button id="vote-button" onclick="showVotingModal()" class="w-full bg-green-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-green-700 transition duration-300 hidden" disabled>
+                                    <i class="fas fa-vote-yea mr-2"></i> VOTE NOW (Live)
+                                </button>
+                                <p id="voting-status" class="mt-3 text-center text-sm text-red-600">Voting is currently **CLOSED**.</p>
                             </div>
                             
                         </div>
-                        
+
+                        <div id="grids-view" class="hidden space-y-16 full-page-view">
+                            
+                            <div id="results-section">
+                                <h2 class="text-3xl font-extrabold text-gray-900 border-b pb-2 flex items-center">
+                                    <i class="fas fa-medal text-yellow-500 mr-2"></i> Elected Office Bearers (2025-26 Results)
+                                </h2>
+                                
+                                <div id="elected-members-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-6 mt-6">
+                                    </div>
+                            </div>
+                            </div>
                     </div>
                     
                 </div>
@@ -963,6 +1003,7 @@
         // --- Data Mocking (Simulates DB/Backend Data Fetching) ---
         // NOTE: In your live system, replace these arrays with data retrieved via fetch()
         
+        // --- Schedule Data (Kept generic as no new data was provided) ---
         const MOCK_SCHEDULE_DATA = [
             { title: "Nomination Filing Starts", date: "2025-04-01", status: "completed" },
             { title: "Last Date for Nomination", date: "2025-04-05", status: "current" },
@@ -970,40 +1011,632 @@
             { title: "Voting Day", date: "2025-04-10", status: "live" }, // Mocked as LIVE for demonstration
             { title: "Results Announcement", date: "2025-04-10 (Evening)", status: "upcoming" },
         ];
-
+        
+        // --- Announcement Data (Kept generic as no new data was provided) ---
         const MOCK_ANNOUNCEMENT_DATA = [
             { title: "Mandatory Manifestos Submission", content: "All candidates must submit their manifestos to the Electoral Commission by 5 PM today.", date: "2025-04-04" },
-            { title: "Change in Debate Venue", content: "The Presidential debate venue is moved to LT-3, due to capacity concerns.", date: "2025-04-03" },
+            { title: "Change in Debate Venue", content: "The GS Cultural debate venue is moved to LT-3, due to capacity concerns.", date: "2025-04-03" },
         ];
 
-        const MOCK_POSITIONS_AND_CANDIDATES = [
-            {
-                position: "President, Student Gymkhana",
-                block: "Institute Wide",
-                candidates: [
-                    { id: 'pres1', name: "Arjun Mehta", roll: "B21CS001", manifesto: "Vision 2026: Campus Infrastructure & Digitalization.", image: "https://placehold.co/100x100/4F46E5/FFFFFF?text=AM" },
-                    { id: 'pres2', name: "Priya Sharma", roll: "M22ME005", manifesto: "Focus on student welfare, mental health, and research grants.", image: "https://placehold.co/100x100/D946EF/FFFFFF?text=PS" },
-                    { id: 'nota_pres', name: "None of the Above (NOTA)", roll: "NOTA", manifesto: "Registering dissent if no candidate is deemed suitable.", image: "" },
-                ]
-            },
-            {
-                position: "General Secretary, Cultural Council",
-                block: "Cultural Activities",
-                candidates: [
-                    { id: 'cult1', name: "Karan Singh", roll: "B22EE012", manifesto: "Bringing back 'Alankar' fest, better club funding.", image: "https://placehold.co/100x100/F43F5E/FFFFFF?text=KS" },
-                    { id: 'cult2', name: "Nisha Patel", roll: "B23CH007", manifesto: "Diversity in events, supporting traditional arts.", image: "https://placehold.co/100x100/F43F5E/FFFFFF?text=NP" },
-                    { id: 'nota_cult', name: "None of the Above (NOTA)", roll: "NOTA", manifesto: "Registering dissent if no candidate is deemed suitable.", image: "" },
-                ]
-            },
-            {
-                position: "Hall Secretary, CVR Hall",
-                block: "Hostel Affairs",
-                candidates: [
-                    { id: 'hall1', name: "Vivek Yadav", roll: "B23ME045", manifesto: "Better common rooms and mess quality improvement.", image: "https://placehold.co/100x100/16A34A/FFFFFF?text=VY" },
-                    { id: 'nota_hall', name: "None of the Above (NOTA)", roll: "NOTA", manifesto: "Registering dissent if no candidate is deemed suitable.", image: "" },
-                ]
-            }
+        // --- Result Data (Derived from CSV for the 'Results' section) ---
+        const MOCK_RESULTS_DATA = [
+            {"Name": "Naveen Sharma", "Position": "President, Students' Gymkhana", "Roll_No": "2203151001"},
+            {"Name": "Apoorv Singh", "Position": "General Secretary, Culturals", "Roll_No": "230021004"},
+            {"Name": "Prayag Lakhani", "Position": "General Secretary, Sports", "Roll_No": "230001045"},
+            {"Name": "Satyajeet Pani", "Position": "General Secretary, Science and Technology", "Roll_No": "230003069"},
+            {"Name": "Shubham Kumar", "Position": "General Secretary, Mess, Catering and Allied Services (MAC).", "Roll_No": "2402103049"},
+            {"Name": "Atharvakant Chandorikar", "Position": "General Secretary, Hostel", "Roll_No": "230002013"},
+            {"Name": "Khush Singla", "Position": "General Secretary, Academics (UG)", "Roll_No": "230004023"},
+            {"Name": "Saurabh Yadav", "Position": "General Secretary, Academics (PG)", "Roll_No": "2101191001"},
+            {"Name": "Nawed Ashraf", "Position": "General Secretary, Counselling, Alumni and Outreach (COA)", "Roll_No": "230005032"},
+            {"Name": "Paidi Nisanth", "Position": "Senior Senator ME", "Roll_No": "230003049"},
+            {"Name": "Daksh Chandel", "Position": "Senior Senator EE", "Roll_No": "230002019"},
+            {"Name": "Mahi Shah", "Position": "Senior Senator Chemical", "Roll_No": "230008030"},
+            {"Name": "Aryan", "Position": "Senior Senator CE", "Roll_No": "230004009"},
+            {"Name": "Nipun Samal", "Position": "Senior Senator CSE", "Roll_No": "230041025"},
+            {"Name": "Abhiraj Kumar", "Position": "Senior Senator M&C", "Roll_No": "230041001"},
+            {"Name": "Sajal Jain", "Position": "Senior Senator EP", "Roll_No": "230051016"},
+            {"Name": "Pranav Manurkar", "Position": "Senior Senator MEMS", "Roll_No": "230005026"},
+            {"Name": "Hari Balan K", "Position": "Senior Senator SSE", "Roll_No": "230021009"},
+            {"Name": "Dhruv Bhardwaj", "Position": "Junior Senator ME", "Roll_No": "240003026"},
+            {"Name": "Aditya Saboo", "Position": "Junior Senator EE", "Roll_No": "240002006"},
+            {"Name": "Kavyansh Raj Singh", "Position": "Junior Senator Chemical", "Roll_No": "240008014"},
+            {"Name": "Badal singh", "Position": "Junior Senator CE", "Roll_No": "240004011"},
+            {"Name": "Sarath Chandra", "Position": "Junior Senator CSE", "Roll_No": "240001039"},
+            {"Name": "Rudra", "Position": "Junior Senator M&C", "Roll_No": "240041031"},
+            {"Name": "V Hemal", "Position": "Junior Senator EP", "Roll_No": "240051020"},
+            {"Name": "Moksha Tyagi", "Position": "Junior Senator MEMS", "Roll_No": "240005031"},
+            {"Name": "Chakrapani", "Position": "Junior Senator SSE", "Roll_No": "240021005"},
+            {"Name": "Aniket Bharat Wagh", "Position": "Senator(PG)", "Roll_No": "2402103042"},
+            {"Name": "Samir Sethi", "Position": "Senator(PhD)", "Roll_No": "2401121003"}
         ];
+
+        // --- Candidate Data (For Voting/Manifestos section, kept from previous iteration) ---
+        const MOCK_POSITIONS_AND_CANDIDATES = [
+    {
+        "position": "General Secretary, Academics (PG)",
+        "block": "Academic Affairs",
+        "candidates": [
+            {
+                "id": "acad1",
+                "name": "Saurabh Yadav",
+                "roll": "2101191001",
+                "manifesto": "Candidate Saurabh Yadav focuses on improvements in Academic Affairs to fulfill the duties for the post of General Secretary, Academics (PG).",
+                "image": "https://placehold.co/100x100/D946EF/FFFFFF?text=SY"
+            },
+            {
+                "id": "nota_acad_1",
+                "name": "None of the Above (NOTA)",
+                "roll": "NOTA",
+                "manifesto": "Registering dissent if no candidate is deemed suitable.",
+                "image": ""
+            }
+        ]
+    },
+    {
+        "position": "General Secretary, Academics (UG)",
+        "block": "Academic Affairs",
+        "candidates": [
+            {
+                "id": "acad2",
+                "name": "Khush Singla",
+                "roll": "230004023",
+                "manifesto": "Candidate Khush Singla focuses on improvements in Academic Affairs to fulfill the duties for the post of General Secretary, Academics (UG).",
+                "image": "https://placehold.co/100x100/B45309/FFFFFF?text=KS"
+            },
+            {
+                "id": "nota_acad_1",
+                "name": "None of the Above (NOTA)",
+                "roll": "NOTA",
+                "manifesto": "Registering dissent if no candidate is deemed suitable.",
+                "image": ""
+            }
+        ]
+    },
+    {
+        "position": "General Secretary, Counselling, Alumni and Outreach (COA)",
+        "block": "Other",
+        "candidates": [
+            {
+                "id": "gen3",
+                "name": "Nawed Ashraf",
+                "roll": "230005032",
+                "manifesto": "Candidate Nawed Ashraf focuses on improvements in Other to fulfill the duties for the post of General Secretary, Counselling, Alumni and Outreach (COA).",
+                "image": "https://placehold.co/100x100/4F46E5/FFFFFF?text=NA"
+            },
+            {
+                "id": "nota_gen_1",
+                "name": "None of the Above (NOTA)",
+                "roll": "NOTA",
+                "manifesto": "Registering dissent if no candidate is deemed suitable.",
+                "image": ""
+            }
+        ]
+    },
+    {
+        "position": "General Secretary, Culturals",
+        "block": "Cultural Activities",
+        "candidates": [
+            {
+                "id": "cult4",
+                "name": "Apoorv Singh",
+                "roll": "230021004",
+                "manifesto": "Candidate Apoorv Singh focuses on improvements in Cultural Activities to fulfill the duties for the post of General Secretary, Culturals.",
+                "image": "https://placehold.co/100x100/F43F5E/FFFFFF?text=AS"
+            },
+            {
+                "id": "nota_cult_1",
+                "name": "None of the Above (NOTA)",
+                "roll": "NOTA",
+                "manifesto": "Registering dissent if no candidate is deemed suitable.",
+                "image": ""
+            }
+        ]
+    },
+    {
+        "position": "General Secretary, Hostel",
+        "block": "Hostel Affairs",
+        "candidates": [
+            {
+                "id": "hall5",
+                "name": "Atharvakant Chandorikar",
+                "roll": "230002013",
+                "manifesto": "Candidate Atharvakant Chandorikar focuses on improvements in Hostel Affairs to fulfill the duties for the post of General Secretary, Hostel.",
+                "image": "https://placehold.co/100x100/D946EF/FFFFFF?text=AC"
+            },
+            {
+                "id": "nota_hall_1",
+                "name": "None of the Above (NOTA)",
+                "roll": "NOTA",
+                "manifesto": "Registering dissent if no candidate is deemed suitable.",
+                "image": ""
+            }
+        ]
+    },
+    {
+        "position": "General Secretary, Mess, Catering and Allied Services (MAC).",
+        "block": "Welfare & Services",
+        "candidates": [
+            {
+                "id": "mac6",
+                "name": "Shubham Kumar",
+                "roll": "2402103049",
+                "manifesto": "Candidate Shubham Kumar focuses on improvements in Welfare & Services to fulfill the duties for the post of General Secretary, Mess, Catering and Allied Services (MAC)..",
+                "image": "https://placehold.co/100x100/4F46E5/FFFFFF?text=SK"
+            },
+            {
+                "id": "nota_mac_1",
+                "name": "None of the Above (NOTA)",
+                "roll": "NOTA",
+                "manifesto": "Registering dissent if no candidate is deemed suitable.",
+                "image": ""
+            }
+        ]
+    },
+    {
+        "position": "General Secretary, Science and Technology",
+        "block": "Technical Activities",
+        "candidates": [
+            {
+                "id": "tech7",
+                "name": "Satyajeet Pani",
+                "roll": "230003069",
+                "manifesto": "Candidate Satyajeet Pani focuses on improvements in Technical Activities to fulfill the duties for the post of General Secretary, Science and Technology.",
+                "image": "https://placehold.co/100x100/15803D/FFFFFF?text=SP"
+            },
+            {
+                "id": "nota_tech_1",
+                "name": "None of the Above (NOTA)",
+                "roll": "NOTA",
+                "manifesto": "Registering dissent if no candidate is deemed suitable.",
+                "image": ""
+            }
+        ]
+    },
+    {
+        "position": "General Secretary, Sports",
+        "block": "Sports Affairs",
+        "candidates": [
+            {
+                "id": "sports8",
+                "name": "Prayag Lakhani",
+                "roll": "230001045",
+                "manifesto": "Candidate Prayag Lakhani focuses on improvements in Sports Affairs to fulfill the duties for the post of General Secretary, Sports.",
+                "image": "https://placehold.co/100x100/4F46E5/FFFFFF?text=PL"
+            },
+            {
+                "id": "nota_sports_1",
+                "name": "None of the Above (NOTA)",
+                "roll": "NOTA",
+                "manifesto": "Registering dissent if no candidate is deemed suitable.",
+                "image": ""
+            }
+        ]
+    },
+    {
+        "position": "Junior Senator CE",
+        "block": "Other",
+        "candidates": [
+            {
+                "id": "gen9",
+                "name": "Badal singh",
+                "roll": "240004011",
+                "manifesto": "Candidate Badal singh focuses on improvements in Other to fulfill the duties for the post of Junior Senator CE.",
+                "image": "https://placehold.co/100x100/F43F5E/FFFFFF?text=Bs"
+            },
+            {
+                "id": "nota_gen_1",
+                "name": "None of the Above (NOTA)",
+                "roll": "NOTA",
+                "manifesto": "Registering dissent if no candidate is deemed suitable.",
+                "image": ""
+            }
+        ]
+    },
+    {
+        "position": "Junior Senator CSE",
+        "block": "Other",
+        "candidates": [
+            {
+                "id": "gen10",
+                "name": "Sarath Chandra",
+                "roll": "240001039",
+                "manifesto": "Candidate Sarath Chandra focuses on improvements in Other to fulfill the duties for the post of Junior Senator CSE.",
+                "image": "https://placehold.co/100x100/B45309/FFFFFF?text=SC"
+            },
+            {
+                "id": "nota_gen_1",
+                "name": "None of the Above (NOTA)",
+                "roll": "NOTA",
+                "manifesto": "Registering dissent if no candidate is deemed suitable.",
+                "image": ""
+            }
+        ]
+    },
+    {
+        "position": "Junior Senator Chemical",
+        "block": "Other",
+        "candidates": [
+            {
+                "id": "gen11",
+                "name": "Kavyansh Raj Singh",
+                "roll": "240008014",
+                "manifesto": "Candidate Kavyansh Raj Singh focuses on improvements in Other to fulfill the duties for the post of Junior Senator Chemical.",
+                "image": "https://placehold.co/100x100/B45309/FFFFFF?text=KS"
+            },
+            {
+                "id": "nota_gen_1",
+                "name": "None of the Above (NOTA)",
+                "roll": "NOTA",
+                "manifesto": "Registering dissent if no candidate is deemed suitable.",
+                "image": ""
+            }
+        ]
+    },
+    {
+        "position": "Junior Senator EE",
+        "block": "Other",
+        "candidates": [
+            {
+                "id": "gen12",
+                "name": "Aditya Saboo",
+                "roll": "240002006",
+                "manifesto": "Candidate Aditya Saboo focuses on improvements in Other to fulfill the duties for the post of Junior Senator EE.",
+                "image": "https://placehold.co/100x100/B45309/FFFFFF?text=AS"
+            },
+            {
+                "id": "nota_gen_1",
+                "name": "None of the Above (NOTA)",
+                "roll": "NOTA",
+                "manifesto": "Registering dissent if no candidate is deemed suitable.",
+                "image": ""
+            }
+        ]
+    },
+    {
+        "position": "Junior Senator EP",
+        "block": "Other",
+        "candidates": [
+            {
+                "id": "gen13",
+                "name": "V Hemal",
+                "roll": "240051020",
+                "manifesto": "Candidate V Hemal focuses on improvements in Other to fulfill the duties for the post of Junior Senator EP.",
+                "image": "https://placehold.co/100x100/B45309/FFFFFF?text=VH"
+            },
+            {
+                "id": "nota_gen_1",
+                "name": "None of the Above (NOTA)",
+                "roll": "NOTA",
+                "manifesto": "Registering dissent if no candidate is deemed suitable.",
+                "image": ""
+            }
+        ]
+    },
+    {
+        "position": "Junior Senator M&C",
+        "block": "Other",
+        "candidates": [
+            {
+                "id": "gen14",
+                "name": "Rudra",
+                "roll": "240041031",
+                "manifesto": "Candidate Rudra focuses on improvements in Other to fulfill the duties for the post of Junior Senator M&C.",
+                "image": "https://placehold.co/100x100/4F46E5/FFFFFF?text=R"
+            },
+            {
+                "id": "nota_gen_1",
+                "name": "None of the Above (NOTA)",
+                "roll": "NOTA",
+                "manifesto": "Registering dissent if no candidate is deemed suitable.",
+                "image": ""
+            }
+        ]
+    },
+    {
+        "position": "Junior Senator ME",
+        "block": "Other",
+        "candidates": [
+            {
+                "id": "gen15",
+                "name": "Dhruv Bhardwaj",
+                "roll": "240003026",
+                "manifesto": "Candidate Dhruv Bhardwaj focuses on improvements in Other to fulfill the duties for the post of Junior Senator ME.",
+                "image": "https://placehold.co/100x100/F43F5E/FFFFFF?text=DB"
+            },
+            {
+                "id": "nota_gen_1",
+                "name": "None of the Above (NOTA)",
+                "roll": "NOTA",
+                "manifesto": "Registering dissent if no candidate is deemed suitable.",
+                "image": ""
+            }
+        ]
+    },
+    {
+        "position": "Junior Senator MEMS",
+        "block": "Other",
+        "candidates": [
+            {
+                "id": "gen16",
+                "name": "Moksha Tyagi",
+                "roll": "240005031",
+                "manifesto": "Candidate Moksha Tyagi focuses on improvements in Other to fulfill the duties for the post of Junior Senator MEMS.",
+                "image": "https://placehold.co/100x100/4F46E5/FFFFFF?text=MT"
+            },
+            {
+                "id": "nota_gen_1",
+                "name": "None of the Above (NOTA)",
+                "roll": "NOTA",
+                "manifesto": "Registering dissent if no candidate is deemed suitable.",
+                "image": ""
+            }
+        ]
+    },
+    {
+        "position": "Junior Senator SSE",
+        "block": "Other",
+        "candidates": [
+            {
+                "id": "gen17",
+                "name": "Chakrapani",
+                "roll": "240021005",
+                "manifesto": "Candidate Chakrapani focuses on improvements in Other to fulfill the duties for the post of Junior Senator SSE.",
+                "image": "https://placehold.co/100x100/B45309/FFFFFF?text=C"
+            },
+            {
+                "id": "nota_gen_1",
+                "name": "None of the Above (NOTA)",
+                "roll": "NOTA",
+                "manifesto": "Registering dissent if no candidate is deemed suitable.",
+                "image": ""
+            }
+        ]
+    },
+    {
+        "position": "President, Students' Gymkhana",
+        "block": "Institute Wide",
+        "candidates": [
+            {
+                "id": "pres18",
+                "name": "Naveen Sharma",
+                "roll": "2203151001",
+                "manifesto": "Candidate Naveen Sharma focuses on improvements in Institute Wide to fulfill the duties for the post of President, Students' Gymkhana.",
+                "image": "https://placehold.co/100x100/4F46E5/FFFFFF?text=NS"
+            },
+            {
+                "id": "nota_pres_1",
+                "name": "None of the Above (NOTA)",
+                "roll": "NOTA",
+                "manifesto": "Registering dissent if no candidate is deemed suitable.",
+                "image": ""
+            }
+        ]
+    },
+    {
+        "position": "Senator(PG)",
+        "block": "Other",
+        "candidates": [
+            {
+                "id": "gen19",
+                "name": "Aniket Bharat Wagh",
+                "roll": "2402103042",
+                "manifesto": "Candidate Aniket Bharat Wagh focuses on improvements in Other to fulfill the duties for the post of Senator(PG).",
+                "image": "https://placehold.co/100x100/15803D/FFFFFF?text=AW"
+            },
+            {
+                "id": "nota_gen_1",
+                "name": "None of the Above (NOTA)",
+                "roll": "NOTA",
+                "manifesto": "Registering dissent if no candidate is deemed suitable.",
+                "image": ""
+            }
+        ]
+    },
+    {
+        "position": "Senator(PhD)",
+        "block": "Other",
+        "candidates": [
+            {
+                "id": "gen20",
+                "name": "Samir Sethi",
+                "roll": "2401121003",
+                "manifesto": "Candidate Samir Sethi focuses on improvements in Other to fulfill the duties for the post of Senator(PhD).",
+                "image": "https://placehold.co/100x100/B45309/FFFFFF?text=SS"
+            },
+            {
+                "id": "nota_gen_1",
+                "name": "None of the Above (NOTA)",
+                "roll": "NOTA",
+                "manifesto": "Registering dissent if no candidate is deemed suitable.",
+                "image": ""
+            }
+        ]
+    },
+    {
+        "position": "Senior Senator CE",
+        "block": "Other",
+        "candidates": [
+            {
+                "id": "gen21",
+                "name": "Aryan",
+                "roll": "230004009",
+                "manifesto": "Candidate Aryan focuses on improvements in Other to fulfill the duties for the post of Senior Senator CE.",
+                "image": "https://placehold.co/100x100/15803D/FFFFFF?text=A"
+            },
+            {
+                "id": "nota_gen_1",
+                "name": "None of the Above (NOTA)",
+                "roll": "NOTA",
+                "manifesto": "Registering dissent if no candidate is deemed suitable.",
+                "image": ""
+            }
+        ]
+    },
+    {
+        "position": "Senior Senator CSE",
+        "block": "Other",
+        "candidates": [
+            {
+                "id": "gen22",
+                "name": "Nipun Samal",
+                "roll": "230041025",
+                "manifesto": "Candidate Nipun Samal focuses on improvements in Other to fulfill the duties for the post of Senior Senator CSE.",
+                "image": "https://placehold.co/100x100/F43F5E/FFFFFF?text=NS"
+            },
+            {
+                "id": "nota_gen_1",
+                "name": "None of the Above (NOTA)",
+                "roll": "NOTA",
+                "manifesto": "Registering dissent if no candidate is deemed suitable.",
+                "image": ""
+            }
+        ]
+    },
+    {
+        "position": "Senior Senator Chemical",
+        "block": "Other",
+        "candidates": [
+            {
+                "id": "gen23",
+                "name": "Mahi Shah",
+                "roll": "230008030",
+                "manifesto": "Candidate Mahi Shah focuses on improvements in Other to fulfill the duties for the post of Senior Senator Chemical.",
+                "image": "https://placehold.co/100x100/D946EF/FFFFFF?text=MS"
+            },
+            {
+                "id": "nota_gen_1",
+                "name": "None of the Above (NOTA)",
+                "roll": "NOTA",
+                "manifesto": "Registering dissent if no candidate is deemed suitable.",
+                "image": ""
+            }
+        ]
+    },
+    {
+        "position": "Senior Senator EE",
+        "block": "Other",
+        "candidates": [
+            {
+                "id": "gen24",
+                "name": "Daksh Chandel",
+                "roll": "230002019",
+                "manifesto": "Candidate Daksh Chandel focuses on improvements in Other to fulfill the duties for the post of Senior Senator EE.",
+                "image": "https://placehold.co/100x100/F43F5E/FFFFFF?text=DC"
+            },
+            {
+                "id": "nota_gen_1",
+                "name": "None of the Above (NOTA)",
+                "roll": "NOTA",
+                "manifesto": "Registering dissent if no candidate is deemed suitable.",
+                "image": ""
+            }
+        ]
+    },
+    {
+        "position": "Senior Senator EP",
+        "block": "Other",
+        "candidates": [
+            {
+                "id": "gen25",
+                "name": "Sajal Jain",
+                "roll": "230051016",
+                "manifesto": "Candidate Sajal Jain focuses on improvements in Other to fulfill the duties for the post of Senior Senator EP.",
+                "image": "https://placehold.co/100x100/15803D/FFFFFF?text=SJ"
+            },
+            {
+                "id": "nota_gen_1",
+                "name": "None of the Above (NOTA)",
+                "roll": "NOTA",
+                "manifesto": "Registering dissent if no candidate is deemed suitable.",
+                "image": ""
+            }
+        ]
+    },
+    {
+        "position": "Senior Senator M&C",
+        "block": "Other",
+        "candidates": [
+            {
+                "id": "gen26",
+                "name": "Abhiraj Kumar",
+                "roll": "230041001",
+                "manifesto": "Candidate Abhiraj Kumar focuses on improvements in Other to fulfill the duties for the post of Senior Senator M&C.",
+                "image": "https://placehold.co/100x100/D946EF/FFFFFF?text=AK"
+            },
+            {
+                "id": "nota_gen_1",
+                "name": "None of the Above (NOTA)",
+                "roll": "NOTA",
+                "manifesto": "Registering dissent if no candidate is deemed suitable.",
+                "image": ""
+            }
+        ]
+    },
+    {
+        "position": "Senior Senator ME",
+        "block": "Other",
+        "candidates": [
+            {
+                "id": "gen27",
+                "name": "Paidi Nisanth",
+                "roll": "230003049",
+                "manifesto": "Candidate Paidi Nisanth focuses on improvements in Other to fulfill the duties for the post of Senior Senator ME.",
+                "image": "https://placehold.co/100x100/D946EF/FFFFFF?text=PN"
+            },
+            {
+                "id": "nota_gen_1",
+                "name": "None of the Above (NOTA)",
+                "roll": "NOTA",
+                "manifesto": "Registering dissent if no candidate is deemed suitable.",
+                "image": ""
+            }
+        ]
+    },
+    {
+        "position": "Senior Senator MEMS",
+        "block": "Other",
+        "candidates": [
+            {
+                "id": "gen28",
+                "name": "Pranav Manurkar",
+                "roll": "230005026",
+                "manifesto": "Candidate Pranav Manurkar focuses on improvements in Other to fulfill the duties for the post of Senior Senator MEMS.",
+                "image": "https://placehold.co/100x100/15803D/FFFFFF?text=PM"
+            },
+            {
+                "id": "nota_gen_1",
+                "name": "None of the Above (NOTA)",
+                "roll": "NOTA",
+                "manifesto": "Registering dissent if no candidate is deemed suitable.",
+                "image": ""
+            }
+        ]
+    },
+    {
+        "position": "Senior Senator SSE",
+        "block": "Other",
+        "candidates": [
+            {
+                "id": "gen29",
+                "name": "Hari Balan K",
+                "roll": "230021009",
+                "manifesto": "Candidate Hari Balan K focuses on improvements in Other to fulfill the duties for the post of Senior Senator SSE.",
+                "image": "https://placehold.co/100x100/F43F5E/FFFFFF?text=HK"
+            },
+            {
+                "id": "nota_gen_1",
+                "name": "None of the Above (NOTA)",
+                "roll": "NOTA",
+                "manifesto": "Registering dissent if no candidate is deemed suitable.",
+                "image": ""
+            }
+        ]
+    }
+];
+
+        // -----------------------------------------------------------------
+
 
         // --- Core Navigation and Utility Functions ---
 
@@ -1141,8 +1774,35 @@
                 messageEl.classList.add('hidden');
             }, 5000);
         }
+        
+        // --- ADMIN TAB SWITCHING FUNCTION ---
+        function switchView(viewId) {
+            // Hide all views
+            document.getElementById('info-view').classList.add('hidden');
+            document.getElementById('grids-view').classList.add('hidden');
+            
+            // Deactivate all buttons
+            document.getElementById('tab-info').classList.remove('active');
+            document.getElementById('tab-grids').classList.remove('active');
 
-        // --- Election Specific Functions ---
+            // Show the selected view and activate the correct button
+            const selectedView = document.getElementById(viewId);
+            const selectedButtonId = `tab-${viewId.split('-')[0]}`;
+            
+            if (selectedView) selectedView.classList.remove('hidden');
+            const selectedButton = document.getElementById(selectedButtonId);
+            if (selectedButton) selectedButton.classList.add('active');
+
+            // Conditionally call rendering functions
+            if (viewId === 'grids-view') {
+                 renderResults(); 
+                 // renderCandidates(); // Removed as per user request
+            } else if (viewId === 'info-view') {
+                 renderElectionSchedule();
+                 renderAnnouncements();
+            }
+        }
+        // ------------------------------------------
 
         function renderElectionSchedule() {
             const scheduleList = document.getElementById('election-schedule-list');
@@ -1175,19 +1835,18 @@
                 scheduleList.appendChild(listItem);
             });
 
-            // Update Voting Status UI
+            // Update Voting Status UI (Appears outside the Info Hub, but driven by schedule data)
             if (isVotingLive) {
                 votingStatusEl.textContent = "VOTING IS LIVE NOW! Click VOTE NOW.";
                 votingStatusEl.classList.remove('text-red-600');
                 votingStatusEl.classList.add('text-green-600', 'font-bold', 'text-lg');
-                voteButtonEl.classList.remove('hidden');
-                voteButtonEl.disabled = false;
-                voteButtonEl.textContent = "CLICK TO CAST YOUR VOTE (LIVE)";
+                document.getElementById('vote-button').classList.remove('hidden');
+                document.getElementById('vote-button').disabled = false;
             } else {
                 votingStatusEl.textContent = "Voting is currently CLOSED. Check schedule for date.";
                 votingStatusEl.classList.add('text-red-600');
-                voteButtonEl.classList.add('hidden');
-                voteButtonEl.disabled = true;
+                document.getElementById('vote-button').classList.add('hidden');
+                document.getElementById('vote-button').disabled = true;
             }
         }
 
@@ -1211,29 +1870,81 @@
                 announcementList.appendChild(card);
             });
         }
-
-        function renderCandidates() {
-            const container = document.getElementById('positions-and-candidates-container');
+        
+        // --- FUNCTION TO RENDER RESULTS (Elected Officers 2-Column Grid) ---
+        function renderResults() {
+            const container = document.getElementById('elected-members-container');
             container.innerHTML = '';
-
-            if (MOCK_POSITIONS_AND_CANDIDATES.length === 0) {
-                container.innerHTML = '<p class="text-gray-500 text-lg">No official positions have been announced for the current election cycle.</p>';
+            
+            if (MOCK_RESULTS_DATA.length === 0) {
+                container.innerHTML = '<p class="text-gray-500 text-lg col-span-2">No official results declared yet.</p>';
                 return;
             }
 
+            MOCK_RESULTS_DATA.forEach(member => {
+                // 1. Calculate initials for placeholder text
+                const nameParts = member.Name.split(' ');
+                const initials = nameParts[0][0] + (nameParts.length > 1 ? nameParts[nameParts.length - 1][0] : '');
+
+                // 2. Pure JavaScript Hashing Logic
+                let roll_sum = 0;
+                const rollString = String(member.Roll_No).trim();
+                for (let i = 0; i < rollString.length; i++) {
+                    const digit = parseInt(rollString[i]);
+                    if (!isNaN(digit)) {
+                        roll_sum += digit;
+                    }
+                }
+                const roll_hash = roll_sum % 5;
+                
+                // 3. Color Map and URL Construction
+                const color_map = ['4F46E5', 'D946EF', 'F43F5E', '15803D', 'B45309'];
+                const image_url = `https://placehold.co/100x100/${color_map[roll_hash]}/FFFFFF?text=${initials}`;
+
+
+                const resultCard = document.createElement('div');
+                resultCard.className = 'p-5 bg-white rounded-xl shadow-lg border-b-4 border-yellow-500 flex flex-col items-center text-center card-hover';
+                
+                resultCard.innerHTML = `
+                    <img class="h-20 w-20 rounded-full object-cover shadow-md border-2 border-yellow-500 mb-3" src="${image_url}" alt="${member.Name} Image">
+                    <p class="text-xl font-extrabold text-gray-900">${member.Name}</p>
+                    <p class="text-sm font-medium text-gray-500">${member.Roll_No}</p>
+                    <p class="mt-3 text-base font-bold text-indigo-700 border-t pt-3 border-gray-100">${member.Position}</p>
+                `;
+                container.appendChild(resultCard);
+            });
+        }
+
+
+        // --- CANDIDATE FUNCTION (Manifestos 1-Column Stack) ---
+        // NOTE: This function is kept to maintain backend integrity, but its output is no longer displayed.
+        function renderCandidates() {
+            const container = document.getElementById('positions-and-candidates-container');
+            container.innerHTML = '';
+            
+            if (MOCK_POSITIONS_AND_CANDIDATES.length === 0) {
+                container.innerHTML = '<p class="text-gray-500 text-lg">No official candidates announced for the current election yet.</p>';
+                return;
+            }
+
+            // Set the main container to a single column for better reading of manifestos
+            container.className = 'grid grid-cols-1 gap-6';
+            
             MOCK_POSITIONS_AND_CANDIDATES.forEach(positionData => {
-                const positionBlock = document.createElement('div');
-                positionBlock.className = 'border-2 border-indigo-200 bg-white p-6 rounded-xl shadow-md';
+                
+                // Outer Card for the entire Position
+                const positionCard = document.createElement('div');
+                positionCard.className = 'p-6 bg-white rounded-xl shadow-xl border-t-4 border-rose-600 space-y-4 card-hover';
                 
                 let candidatesHtml = '';
                 if (positionData.candidates.length > 0) {
                     candidatesHtml = positionData.candidates.map(candidate => `
-                        <div class="flex items-start p-4 bg-gray-50 rounded-lg border border-gray-200 transition-shadow hover:shadow-lg">
-                            <img class="h-16 w-16 rounded-full object-cover mr-4 shadow-md ${candidate.roll === 'NOTA' ? 'bg-gray-400' : ''}" src="${candidate.image || 'https://placehold.co/100x100/E5E7EB/6B7280?text=NOTA'}" alt="Candidate Image">
+                        <div class="flex items-start p-3 bg-gray-50 rounded-lg border border-gray-200">
+                            <img class="h-12 w-12 rounded-full object-cover mr-3 shadow-sm ${candidate.roll === 'NOTA' ? 'bg-gray-400' : ''}" src="${candidate.image || 'https://placehold.co/100x100/E5E7EB/6B7280?text=N/A'}" alt="Candidate Image">
                             <div class="flex-1">
-                                <p class="text-xl font-extrabold ${candidate.roll === 'NOTA' ? 'text-gray-600' : 'text-indigo-700'}">${candidate.name}</p>
-                                <p class="text-sm text-gray-500">Roll No: ${candidate.roll === 'NOTA' ? 'N/A' : candidate.roll}</p>
-                                <p class="mt-2 text-gray-700 italic border-l-2 pl-3 border-rose-500">Manifesto: ${candidate.manifesto}</p>
+                                <p class="text-base font-bold text-indigo-700">${candidate.name}</p>
+                                <p class="text-xs text-gray-500">Roll No: ${candidate.roll === 'NOTA' ? 'N/A' : candidate.roll}</p>
+                                <p class="mt-1 text-xs text-gray-600 italic border-l-2 pl-2 border-rose-500">${candidate.manifesto}</p>
                             </div>
                         </div>
                     `).join('');
@@ -1241,16 +1952,15 @@
                     candidatesHtml = '<p class="text-gray-500 p-4">No candidates finalized for this post yet.</p>';
                 }
 
-                positionBlock.innerHTML = `
-                    <h3 class="text-3xl font-extrabold text-gray-900 border-b pb-3 mb-6">
+                positionCard.innerHTML = `
+                    <h3 class="text-xl font-extrabold text-gray-900 border-b pb-2 mb-3">
                         ${positionData.position}
-                        <span class="text-base font-medium text-indigo-500 ml-3">(${positionData.block})</span>
                     </h3>
-                    <div class="space-y-4">
+                    <div class="space-y-3">
                         ${candidatesHtml}
                     </div>
                 `;
-                container.appendChild(positionBlock);
+                container.appendChild(positionCard);
             });
         }
         
@@ -1308,10 +2018,10 @@
             // Basic Validation Check (ensure all positions are voted)
             const unvotedPositions = Object.values(votes).filter(v => v === 'UNVOTED');
             if (unvotedPositions.length > 0) {
-                 messageEl.textContent = `ERROR: You must vote for all ${MOCK_POSITIONS_AND_CANDIDATES.length} positions. You missed ${unvotedPositions.length}.`;
-                 messageEl.classList.remove('hidden', 'bg-green-100', 'text-green-700');
-                 messageEl.classList.add('bg-red-100', 'text-red-700', 'block');
-                 return;
+                   messageEl.textContent = `ERROR: You must vote for all ${MOCK_POSITIONS_AND_CANDIDATES.length} positions. You missed ${unvotedPositions.length}.`;
+                   messageEl.classList.remove('hidden', 'bg-green-100', 'text-green-700');
+                   messageEl.classList.add('bg-red-100', 'text-red-700', 'block');
+                   return;
             }
 
             // Simulate server submission
@@ -1335,11 +2045,15 @@
 
 
         function initializeElectionsPage() {
+            // Render the initial content fragments
+            // NOTE: Only Schedule and Announcements are rendered on the default Info view
             renderElectionSchedule();
             renderAnnouncements();
-            renderCandidates();
+            
+            // Set the default view to 'Info Hub' and highlight the button on initialization
+            switchView('info-view');
         }
-
+        
         // --- DOMContentLoaded check and hook ---
         document.addEventListener('DOMContentLoaded', () => {
             
