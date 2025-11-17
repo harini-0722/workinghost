@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IIT Hostel Management - Login (Exact Match)</title>
+    <title>IIT Hostel Management - Login</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"> 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -74,6 +74,7 @@
             height: 42px; /* Slightly increased height */
             margin-bottom: 25px; 
             margin-top: 5px; /* Added slight top margin to push it down */
+            /* Using inline SVG data URL for the "IIT" look */
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 50'%3E%3C!-- Purple i --%3E%3Crect x='10' y='5' width='10' height='30' fill='%239B59B6'/%3E%3Ccircle cx='15' cy='0' r='5' fill='%239B59B6'/%3E%3C!-- Purple i --%3E%3Crect x='30' y='5' width='10' height='30' fill='%239B59B6'/%3E%3Ccircle cx='35' cy='0' r='5' fill='%239B59B6'/%3E%3C!-- Orange t --%3E%3Crect x='50' y='10' width='30' height='10' fill='%23FF884D'/%3E%3Crect x='60' y='5' width='10' height='40' fill='%23FF884D'/%3E%3C!-- Orange i --%3E%3Crect x='85' y='5' width='10' height='30' fill='%23FF884D'/%3E%3Ccircle cx='90' cy='0' r='5' fill='%23FF884D'/%3E%3C/svg%3E");
             background-size: contain; background-repeat: no-repeat; background-position: center;
         }
@@ -95,11 +96,11 @@
             color: var(--primary-blue); 
             font-size: 1.1em; 
             font-weight: 600; 
-            margin-bottom: 30px; /* Increased margin for spacing shown in screenshot */
+            margin-bottom: 30px; /* Increased margin for spacing */
         }
 
         /* Form Group - adjusted margin-bottom */
-        .form-group { margin-bottom: 20px; text-align: left; } /* Increased margin for exact vertical spacing */
+        .form-group { margin-bottom: 20px; text-align: left; } 
         
         /* Label - adjusted font size and margin-bottom */
         .form-group label { 
@@ -109,7 +110,7 @@
         }
 
         /* Input Fields - adjusted padding, border, background */
-        .form-group input {
+        .form-group input, .form-group select { /* Added select for role dropdown */
             width: 100%; 
             padding: 10px 12px; 
             border: 1px solid var(--input-border); 
@@ -123,7 +124,7 @@
             font-size: 0.95em;
         }
 
-        .form-group input:focus {
+        .form-group input:focus, .form-group select:focus {
             outline: none; 
             border-color: var(--primary-blue); 
             box-shadow: 0 0 0 2px rgba(45, 111, 255, 0.2); 
@@ -137,8 +138,8 @@
             font-size: 1em; font-weight: 600; cursor: pointer;
             transition: background-color 0.3s, box-shadow 0.3s;
             box-shadow: 0 4px 10px rgba(45, 111, 255, 0.4); 
-            margin-top: 25px; /* Exact spacing match */
-            margin-bottom: 12px; /* Exact spacing match */
+            margin-top: 25px; 
+            margin-bottom: 12px; 
             display: flex; justify-content: center; align-items: center;
         }
         .login-btn:hover { background-color: var(--dark-blue); }
@@ -148,13 +149,13 @@
         .google-btn {
             width: 100%; padding: 10px; 
             background-color: var(--card-bg);
-            color: var(--text-dark); border: 1px solid var(--google-btn-border); border-radius: 8px;
-            font-size: 0.9em; /* Match screenshot font size */
-            font-weight: 500; /* Match screenshot font weight (slightly lighter) */
+            color: var(--text-dark); border: 1px solid var(--input-border); border-radius: 8px; /* Used input-border for clarity */
+            font-size: 0.9em; 
+            font-weight: 500; 
             cursor: pointer;
             transition: box-shadow 0.3s, border-color 0.3s; 
             margin-top: 0; 
-            margin-bottom: 30px; /* Exact spacing match */
+            margin-bottom: 30px; 
             display: flex; justify-content: center; align-items: center;
         }
         .google-btn:hover { box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08); border-color: #c0c0c0; }
@@ -164,16 +165,28 @@
         .forgot-password { 
             display: block; 
             margin-top: 0; 
-            font-size: 0.85em; /* Match screenshot font size */
-            color: #5d5d5d; /* Slightly darker light-text color */
+            font-size: 0.85em; 
+            color: #5d5d5d; 
             text-decoration: none; 
             transition: color 0.3s; 
         }
         .forgot-password:hover { color: var(--primary-blue); }
 
-        /* Error Message Placeholder */
-        #msg { height: 1.4em; margin-bottom: 15px; font-size: 0.85em; } 
+        /* Error Message Placeholder - Integrated for logic */
+        #msg { 
+            height: 1.4em; 
+            margin-bottom: 15px; 
+            font-size: 0.85em; 
+            font-weight: 500;
+            color: red; /* Default for error */
+            visibility: hidden; /* Hide until content is present */
+        } 
 
+        /* Custom style for the role dropdown to be discrete */
+        #role-select-group {
+            margin-top: -10px; /* Adjust spacing to keep it close to password */
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
@@ -200,13 +213,23 @@
                 <label for="password">Password</label>
                 <input type="password" id="password" placeholder="Enter your password" required>
             </div>
-            
+
+            <div class="form-group" id="role-select-group">
+                <label for="role">Login As</label>
+                <select id="role">
+                    <option value="admin">Admin</option>
+                    <option value="student" selected>Student</option>
+                </select>
+            </div>
+
+            <p id="msg" class="text-sm text-red-600 font-medium"></p> 
+
             <button type="submit" id="loginButton" class="login-btn">
                 Login <i class="fas fa-arrow-right"></i>
             </button>
         </form>
 
-        <button class="google-btn">
+        <button class="google-btn" onclick="alert('Google login not implemented yet.')">
             <svg class="google-icon" viewBox="0 0 24 24">
                 <path fill="#4285F4" d="M22 12c0-.7-.06-1.37-.16-2.03H12v4.06h5.45c-.24 1.18-.84 2.17-1.74 2.91v2.81h3.62c2.1-1.93 3.33-4.75 3.33-8.79z"/>
                 <path fill="#34A853" d="M12 22c3.24 0 5.92-1.08 7.89-2.92l-3.62-2.81c-.96.65-2.2 1.03-4.27 1.03-3.29 0-6.07-2.22-7.07-5.18H1.32v2.89C3.18 20.39 7.23 22 12 22z"/>
@@ -221,56 +244,64 @@
     
     <script>
         async function login(event) {
-            event.preventDefault();
+            event.preventDefault(); // Prevent default form submission
 
             const username = document.getElementById("username").value;
             const password = document.getElementById("password").value;
-            
-            // NOTE: The "Login As" role selection was removed for the exact visual match.
-            // You will need to determine the default role or find another way to send this data
-            // to your API endpoint ("https://workinghost.onrender.com/login").
-            
-            // For now, we'll assume a default role of "student" for the API call.
-            const role = "student"; 
+            const role = document.getElementById("role").value; // Get role value
+            const msgEl = document.getElementById("msg");
 
-            // Find an appropriate element to display error messages if needed.
-            // Since the original #msg element was removed for spacing, you might need to add it back 
-            // or use an alert/console log for real-world application debugging.
-            
+            // Clear previous message and hide it
+            msgEl.innerText = "";
+            msgEl.style.visibility = "hidden";
+            msgEl.style.color = "red"; // Reset color
+
             try {
                 const res = await fetch("https://workinghost.onrender.com/login", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ username, password, role }), 
+                    body: JSON.stringify({ username, password, role }),
                 });
                 const data = await res.json();
 
                 if (res.ok) {
+                    // Handle studentId storage
                     if (data.studentId) {
                         localStorage.setItem('currentStudentId', data.studentId);
                     } else {
                         localStorage.removeItem('currentStudentId');
                     }
                     
-                    // console.log("Login successful! Redirecting to: " + data.redirect);
-                    window.location.href = data.redirect;
+                    // Show success message before redirecting
+                    msgEl.style.color = "green";
+                    msgEl.innerText = "Login successful! Redirecting...";
+                    msgEl.style.visibility = "visible";
                     
+                    setTimeout(() => {
+                        window.location.href = data.redirect;
+                    }, 1000); // Small delay so user sees the message
+
                 } else {
-                    alert("Login failed: " + (data.message || "Invalid credentials."));
+                    // Handle login failure
+                    msgEl.style.color = "red";
+                    msgEl.innerText = data.message || "Invalid credentials.";
+                    msgEl.style.visibility = "visible";
                 }
             } catch (error) {
                 console.error("Login error:", error);
-                alert("An error occurred. Please try again.");
+                msgEl.style.color = "red";
+                msgEl.innerText = "An error occurred. Please try again.";
+                msgEl.style.visibility = "visible";
             }
         }
 
         document.addEventListener('DOMContentLoaded', () => {
             const loginForm = document.getElementById('loginForm');
             if (loginForm) {
+                // Attach the login function to the form's submit event
                 loginForm.addEventListener('submit', login);
             }
         });
     </script>
-
 </body>
 </html>
