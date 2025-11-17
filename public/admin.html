@@ -1858,10 +1858,10 @@
         });
 
         // ==========================================================
-        // FIX: Added missing event listeners for back buttons
+        // FIX: Ensure all 'Back to Dashboard' buttons execute the core logic
+        //      (hide views + show dashboard + reload dashboard data)
         // ==========================================================
 
-        // Back to Dashboard from Detail View
         backToDashboardBtn.addEventListener('click', () => {
             hideAllViews();
             dashboardView.classList.remove('hidden');
@@ -1870,25 +1870,25 @@
             loadHostelData();
         });
 
-        // Back to Dashboard from Fees View
+        // Fees View Back Button
         backToDashboardFromFeesBtn.addEventListener('click', () => {
             hideAllViews();
             dashboardView.classList.remove('hidden');
-            loadHostelData();
+            loadHostelData(); // Added to refresh dashboard data
         });
 
-        // Back to Dashboard from Visitors View (FIXED)
+        // Visitors View Back Button
         backToDashboardFromVisitorsBtn.addEventListener('click', () => {
             hideAllViews();
             dashboardView.classList.remove('hidden');
-            loadHostelData();
+            loadHostelData(); // Added to refresh dashboard data
         });
 
-        // Back to Dashboard from Complaints View (FIXED)
+        // Complaints View Back Button
         backToDashboardFromComplaintsBtn.addEventListener('click', () => {
             hideAllViews();
             dashboardView.classList.remove('hidden');
-            loadHostelData();
+            loadHostelData(); // Added to refresh dashboard data
         });
 
         // ==========================================================
