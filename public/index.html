@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hostel Management System - IIT INDORE (Glassmorphism)</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"> 
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <style>
+        /* CSS STYLING STARTS HERE */
+
+        /* Base Styles and Variables */
+        :root {
+            --primary-blue: #2c72ff; /* Exact Blue for buttons/highlight */
+            --dark-blue: #0056b3;
+            --text-dark: #333;
+            --text-light: #555;
+            --glass-bg: rgba(255, 255, 255, 0.4); 
+            --shadow-subtle: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --background-color: #f7fafd; 
+            --card-default-bg: rgba(255, 255, 255, 0.85); /* Default white/light background for cards */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif, 'Segoe UI';
+        }
+
+        body {
+            background: linear-gradient(135deg, #e0f2ff, #f0f7ff, #e9f5ff);
+            min-height: 100vh;
+            color: var(--text-dark);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* --- Bubble Background (Blobs) --- */
+        .bg-sphere {
+            position: absolute;
+            width: 250px; 
+            height: 250px;
+            border-radius: 50%;
+            filter: blur(100px); 
+            opacity: 0.6;
+            z-index: 0;
+        }
+        .sphere-1 { background-color: #a4c9ff; top: 10%; left: 15%; }
+        .sphere-2 { background-color: #ffb7a4; bottom: 5%; right: 10%; }
+        .sphere-3 { background-color: #a4ffb4; top: 60%; left: 50%; }
+
+        /* Header / Navbar */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 5%;
+            background: rgba(255, 255, 255, 0.8); 
+            backdrop-filter: blur(5px); 
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .logo-container { display: flex; align-items: center; }
+
+        .iiti-logo { font-size: 2em; font-weight: 800; color: #AA00FF; margin-right: 5px; line-height: 0.8; }
+        .logo-text-box { border-left: 2px solid #555; padding-left: 10px; }
+        .logo-text { font-size: 1.1em; font-weight: 700; color: var(--text-dark); }
+        .logo-subtext { display: block; font-size: 0.8em; font-weight: 500; color: var(--primary-blue); }
+
+        .nav-links a { text-decoration: none; color: var(--text-light); margin-left: 30px; font-size: 0.95em; transition: color 0.3s; }
+        .nav-links a:hover { color: var(--primary-blue); }
+
+        .login-button {
+            background-color: var(--primary-blue);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 5px;
+            font-weight: 600;
+            margin-left: 30px;
+            transition: background-color 0.3s;
+        }
+        .login-button:hover { background-color: var(--dark-blue); }
+
+        /* --- Main Content & Hero --- */
+        .main-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 100px 5%;
+            gap: 60px;
+            max-width: 1300px;
+            margin: auto;
+            position: relative;
+            z-index: 10;
+        }
+
+        .hero-text { flex: 1; max-width: 50%; }
+
+        .hero-text h1 { font-size: 3.8em; font-weight: 800; margin-bottom: 15px; line-height: 1.1; color: #202020; }
+        .hero-text .highlight { color: var(--primary-blue); font-weight: 800; }
+        .hero-text p { font-size: 1.1em; color: var(--text-light); margin-bottom: 30px; max-width: 500px; }
+
+        .login-now-btn {
+            background-color: var(--primary-blue);
+            color: white;
+            padding: 14px 35px; 
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1em;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: background-color 0.3s, box-shadow 0.3s;
+            box-shadow: 0 8px 20px rgba(44, 114, 255, 0.4);
+        }
+        .login-now-btn:hover { background-color: var(--dark-blue); }
+
+
+        /* --- Dashboard Grid - Glassmorphism --- */
+        .dashboard-grid-container {
+            flex: 1;
+            padding: 30px; 
+            background: rgba(255, 255, 255, 0.9); 
+            border-radius: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+            backdrop-filter: blur(12px); 
+            -webkit-backdrop-filter: blur(12px);
+            max-width: 500px; 
+        }
+
+        .dashboard-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+
+        /* Card Styles */
+        .card {
+            /* Default background is now a mild color, not just white */
+            background-color: var(--card-default-bg);
+            border-radius: 15px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            height: 125px;
+            cursor: pointer;
+            position: relative; 
+            overflow: hidden; 
+            text-align: center;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Card Icon Styles */
+        .card i {
+            font-size: 2.2em;
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white; 
+            position: absolute; 
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            transition: all 0.3s ease; 
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow on the colored icon square */
+        }
+        
+        /* Default Text (Short label) */
+        .card::before {
+            content: attr(data-default);
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.85em;
+            font-weight: 600;
+            color: var(--text-dark);
+            transition: all 0.3s ease; 
+            width: 90%;
+            line-height: 1.2;
+        }
+
+        /* Hover Text (Long description) */
+        .card::after {
+            content: attr(data-hover);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, 150%); 
+            font-size: 0.85em;
+            font-weight: 500;
+            color: var(--text-dark); 
+            opacity: 0;
+            transition: all 0.3s ease; 
+            width: 90%;
+            line-height: 1.4;
+        }
+
+        /* --- HOVER EFFECT: SWAP CONTENT --- */
+        .card:hover i { opacity: 0; transform: translate(-50%, -100%); }
+        .card:hover::before { opacity: 0; transform: translate(-50%, 100%); }
+        .card:hover::after { opacity: 1; transform: translate(-50%, -50%); }
+
+
+        /* --- MILD CARD COLORS & ICON COLORS --- */
+        
+        /* 1. Room Management - Blue */
+        .card[data-default="Room Management"] { background-color: rgba(93, 156, 236, 0.1); }
+        .card[data-default="Room Management"] i { background-color: #5D9CEC; }
+        .card[data-default="Room Management"]:hover { box-shadow: 0 0 0 4px #5D9CEC; }
+
+        /* 2. Student Management - Light Purple */
+        .card[data-default="Student Management"] { background-color: rgba(160, 128, 255, 0.1); }
+        .card[data-default="Student Management"] i { background-color: #A080FF; }
+        .card[data-default="Student Management"]:hover { box-shadow: 0 0 0 4px #A080FF; }
+
+        /* 3. Complaints - Red/Orange */
+        .card[data-default="Complaints"] { background-color: rgba(255, 123, 123, 0.1); }
+        .card[data-default="Complaints"] i { background-color: #FF7B7B; } 
+        .card[data-default="Complaints"]:hover { box-shadow: 0 0 0 4px #FF7B7B; }
+
+        /* 4. Approvals - Mint Green */
+        .card[data-default="Approvals"] { background-color: rgba(108, 219, 146, 0.1); }
+        .card[data-default="Approvals"] i { background-color: #6CDB92; } 
+        .card[data-default="Approvals"]:hover { box-shadow: 0 0 0 4px #6CDB92; }
+
+        /* 5. Security - Orange */
+        .card[data-default="Security"] { background-color: rgba(255, 201, 89, 0.1); }
+        .card[data-default="Security"] i { background-color: #FFC959; }
+        .card[data-default="Security"]:hover { box-shadow: 0 0 0 4px #FFC959; }
+
+        /* 6. Maintenance - Gray */
+        .card[data-default="Maintenance"] { background-color: rgba(180, 180, 180, 0.1); }
+        .card[data-default="Maintenance"] i { background-color: #B4B4B4; }
+        .card[data-default="Maintenance"]:hover { box-shadow: 0 0 0 4px #B4B4B4; }
+
+        /* 7. Notifications - Yellow/Light Orange */
+        .card[data-default="Notifications"] { background-color: rgba(255, 170, 85, 0.1); }
+        .card[data-default="Notifications"] i { background-color: #FFAA55; }
+        .card[data-default="Notifications"]:hover { box-shadow: 0 0 0 4px #FFAA55; }
+
+        /* 8. Dashboard - Bright Purple */
+        .card[data-default="Dashboard"] { background-color: rgba(160, 128, 255, 0.1); }
+        .card[data-default="Dashboard"] i { background-color: #A080FF; }
+        .card[data-default="Dashboard"]:hover { box-shadow: 0 0 0 4px #A080FF; }
+
+        /* 9. Visitor Management - Teal */
+        .card[data-default="Visitor Management"] { background-color: rgba(87, 211, 167, 0.1); }
+        .card[data-default="Visitor Management"] i { background-color: #57D3A7; }
+        .card[data-default="Visitor Management"]:hover { box-shadow: 0 0 0 4px #57D3A7; }
+
+        /* Responsive adjustments */
+        @media (max-width: 900px) {
+            .main-content { flex-direction: column; padding: 40px 5%; text-align: center; }
+            .hero-text { max-width: 100%; }
+            .dashboard-grid-container { max-width: 100%; padding: 25px; }
+            .dashboard-grid { grid-template-columns: repeat(2, 1fr); }
+            .header { flex-wrap: wrap; justify-content: center; }
+            .nav-links { margin-top: 15px; }
+            .login-button { margin-left: 15px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-sphere sphere-1"></div>
+    <div class="bg-sphere sphere-2"></div>
+    <div class="bg-sphere sphere-3"></div>
+
+    <header class="header">
+        <div class="logo-container">
+            <span class="iiti-logo">iiti</span>
+            <div class="logo-text-box">
+                <div class="logo-text">
+                    IIT INDORE
+                    <span class="logo-subtext">Halls of Residence</span>
+                </div>
+            </div>
+        </div>
+        <nav class="nav-links">
+            <a href="#"><i class="fas fa-layer-group"></i> Resources</a>
+            <a href="#"><i class="fas fa-envelope"></i> Contact</a>
+            <a href="#"><i class="fas fa-code"></i> Dev Team</a>
+            <a href="#" class="login-button">Login</a>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <div class="hero-text">
+            <h1>
+                Welcome to <br>
+                <span class="highlight">Hostel Management System</span>
+            </h1>
+            <p>
+                Access all hostel services and resources in one place. Manage your accommodation, requests, and stay informed about important updates.
+            </p>
+            <a href="#" class="login-now-btn">
+                Login Now <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+
+        <div class="dashboard-grid-container">
+            <div class="dashboard-grid">
+                
+                <a href="#" class="card" 
+                   data-default="Room Management" 
+                   data-hover="Allocate and manage hostel rooms efficiently">
+                    <i class="fas fa-bed"></i>
+                </a>
+
+                <a href="#" class="card" 
+                   data-default="Student Management" 
+                   data-hover="Manage student profiles and enrollment details">
+                    <i class="fas fa-user-graduate"></i>
+                </a>
+
+                <a href="#" class="card" 
+                   data-default="Complaints" 
+                   data-hover="Register and track maintenance or service complaints">
+                    <i class="fas fa-file-alt"></i>
+                </a>
+
+                <a href="#" class="card" 
+                   data-default="Approvals" 
+                   data-hover="Handle leave and request approvals efficiently">
+                    <i class="fas fa-check-circle"></i>
+                </a>
+
+                <a href="#" class="card" 
+                   data-default="Security" 
+                   data-hover="Monitor student movements and gate entries/exits">
+                    <i class="fas fa-shield-alt"></i>
+                </a>
+
+                <a href="#" class="card" 
+                   data-default="Maintenance" 
+                   data-hover="Schedule and manage repairs and facility maintenance">
+                    <i class="fas fa-tools"></i>
+                </a>
+
+                <a href="#" class="card" 
+                   data-default="Notifications" 
+                   data-hover="Receive important alerts and system updates">
+                    <i class="fas fa-bell"></i>
+                </a>
+
+                <a href="#" class="card" 
+                   data-default="Dashboard" 
+                   data-hover="View system overview and key performance indicators">
+                    <i class="fas fa-th-large"></i>
+                </a>
+
+                <a href="#" class="card" 
+                   data-default="Visitor Management" 
+                   data-hover="Register, track, and manage all visitors securely">
+                    <i class="fas fa-user-friends"></i>
+                </a>
+            </div>
+        </div>
+    </main>
+    
+</body>
+</html>
