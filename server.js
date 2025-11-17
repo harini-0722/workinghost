@@ -632,7 +632,7 @@ app.post('/api/attendance/toggle', async (req, res) => {
 // --- Server Start ---
 
 app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, "public", "login.html"));
+    res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
 app.listen(PORT, async () => {
