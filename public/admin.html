@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hostel Admin Dashboard | Professional View</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -14,23 +14,13 @@
                         sans: ['Inter', 'sans-serif'],
                     },
                     colors: {
-                        primary: {
-                            50: '#f0f9ff',
-                            100: '#e0f2fe',
-                            500: '#0ea5e9',
-                            600: '#0284c7',
-                            700: '#0369a1',
-                            800: '#075985',
-                            900: '#0c4a6e',
-                        },
-                        secondary: {
-                            50: '#f8fafc',
-                            100: '#f1f5f9',
-                            500: '#64748b',
-                            600: '#475569',
-                            700: '#334155',
-                            800: '#1e293b',
-                            900: '#0f172a',
+                        indigo: {
+                            50: '#f0f3ff',
+                            100: '#e0e7ff',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            800: '#3730a3',
+                            900: '#312e81',
                         }
                     }
                 }
@@ -41,28 +31,13 @@
     <script type="module" src="https://unpkg.com/heroicons@2.1.1/dist/outline/index.js"></script>
     
     <style>
+        /* Apply Inter Font explicitly to body */
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f8fafc;
+            /* Using gray-50 for a professional, clean background */
+            background-color: #f9fafb; 
         }
-        
-        .nav-gradient {
-            background: linear-gradient(135deg, #0ea5e9 0%, #0369a1 100%);
-        }
-        
-        .card-shadow {
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-        }
-        
-        .card-hover {
-            transition: all 0.3s ease;
-        }
-        
-        .card-hover:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        }
-        
+        /* Your custom styles */
         .progress-ring-text { font-size: 0.75rem; font-weight: 600; }
         .modal-backdrop { background-color: rgba(0, 0, 0, 0.5); transition: opacity 0.3s ease-in-out; }
         .modal-content { transition: all 0.3s ease-in-out; transform: translateY(-20px); opacity: 0; }
@@ -77,74 +52,42 @@
             object-fit: cover;
             width: 100%;
         }
-        
-        .btn-primary {
-            background-color: #0ea5e9;
-            color: white;
-            transition: all 0.2s ease;
-        }
-        
-        .btn-primary:hover {
-            background-color: #0284c7;
-            transform: translateY(-1px);
-        }
-        
-        .btn-secondary {
-            background-color: #f1f5f9;
-            color: #475569;
-            transition: all 0.2s ease;
-        }
-        
-        .btn-secondary:hover {
-            background-color: #e2e8f0;
-        }
-        
-        .back-btn {
-            background-color: #f8fafc;
-            border: 1px solid #e2e8f0;
-            color: #475569;
-            transition: all 0.2s ease;
-        }
-        
-        .back-btn:hover {
-            background-color: #f1f5f9;
-            color: #0ea5e9;
-            border-color: #0ea5e9;
-        }
+        /* Style adjustments for professional look */
+        .shadow-lg { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06); }
+        .hover\:shadow-xl:hover { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1); }
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen flex flex-col">
 
-    <!-- Navigation -->
-    <nav class="nav-gradient shadow-lg sticky top-0 z-20">
+    <nav class="bg-white shadow-lg sticky top-0 z-20 border-b border-gray-200">
         <div class="w-full mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
                 <div class="flex-shrink-0 flex items-center">
-                    <hero-icon-solid name="building-library" class="h-7 w-7 text-white mr-2"></hero-icon-solid>
-                    <h1 class="text-xl font-bold text-white tracking-tight">HOSTEL MANAGEMENT SYSTEM</h1>
-                    <span class="ml-4 text-blue-100 font-normal hidden sm:inline border-l pl-4">Indian Institute of Technology</span>
+                    <hero-icon-solid name="building-library" class="h-7 w-7 text-indigo-600 mr-2"></hero-icon-solid>
+                    <h1 class="text-xl font-extrabold text-gray-800 tracking-tight">HOSTEL MANAGEMENT</h1>
+                    <span class="ml-4 text-gray-400 font-normal hidden sm:inline border-l pl-4">Indian Institute of Technology</span>
                 </div>
                 <div class="flex items-center space-x-6">
-                    <button id="show-complaints-view-btn" class="flex items-center text-sm font-medium text-white hover:text-blue-100 transition duration-150">
+                    <button id="show-complaints-view-btn" class="flex items-center text-sm font-semibold text-red-600 hover:text-red-700 transition duration-150">
                         <hero-icon-outline name="bell-alert" class="h-5 w-5 mr-1"></hero-icon-outline>
                         Complaints
                     </button>
 
-                    <a href="adminhandlegymkhana.html" target="_top" class="flex items-center text-sm font-medium text-white hover:text-blue-100 transition duration-150">
+                    <a href="adminhandlegymkhana.html" target="_top" class="flex items-center text-sm font-semibold text-purple-600 hover:text-purple-700 transition duration-150">
                         <hero-icon-outline name="users" class="h-5 w-5 mr-1"></hero-icon-outline>
                         Gymkhana
                     </a>
                     
                     <div class="flex items-center">
-                        <span class="text-sm font-medium text-white mr-3 hidden sm:inline">Admin</span>
+                        <span class="text-sm font-semibold text-gray-700 mr-3 hidden sm:inline">Admin</span>
                         <div class="flex-shrink-0">
-                            <span class="inline-flex items-center justify-center h-10 w-10 rounded-full bg-white border-2 border-blue-200 shadow-md">
-                                <span class="font-semibold text-primary-600">A</span>
+                            <span class="inline-flex items-center justify-center h-10 w-10 rounded-full bg-indigo-500 border-2 border-white shadow-md">
+                                <span class="font-semibold text-white">A</span>
                             </span>
                         </div>
                     </div>
                     
-                    <button id="admin-logout-btn" class="flex items-center text-sm font-medium text-white hover:text-blue-100 transition duration-150">
+                    <button id="admin-logout-btn" class="flex items-center text-sm font-semibold text-gray-600 hover:text-gray-900 transition duration-150">
                         <hero-icon-outline name="arrow-right-on-rectangle" class="h-5 w-5 mr-1"></hero-icon-outline>
                         Logout
                     </button>
@@ -153,36 +96,30 @@
         </div>
     </nav>
 
-    <main class="mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-grow">
+    <main class="mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full flex-grow">
         
-        <!-- Dashboard View -->
         <div id="dashboard-view">
-            <div class="mb-8">
-                <h1 class="text-3xl font-bold text-secondary-800">Admin Dashboard</h1>
-                <p class="text-secondary-600 mt-2">Manage hostel operations, students, and resources</p>
-            </div>
-            
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 
-                <div class="bg-white p-6 rounded-xl card-shadow border-l-4 border-primary-500 card-hover">
+                <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-indigo-500 transition-all duration-300 hover:shadow-xl hover:scale-[1.01]">
                     <div class="flex justify-between items-start">
                         <div>
-                            <span class="text-xs font-semibold text-secondary-500 tracking-wider uppercase">TOTAL CAPACITY</span>
-                            <p class="text-3xl font-bold text-primary-700 mt-2" id="stat-total-capacity">0</p>
-                            <p class="text-sm text-secondary-500 mt-1">Total Hostel Units</p>
+                            <span class="text-xs font-semibold text-gray-500 tracking-wider uppercase">TOTAL CAPACITY</span>
+                            <p class="text-3xl font-extrabold text-indigo-700 mt-2" id="stat-total-capacity">0</p>
+                            <p class="text-sm text-gray-500 mt-1">Total Hostel Units</p>
                         </div>
-                        <div class="p-3 bg-primary-50 rounded-xl">
-                            <hero-icon-outline name="building-office-2" class="h-6 w-6 text-primary-500"></hero-icon-outline>
+                        <div class="p-3 bg-indigo-100 rounded-xl shadow-inner">
+                            <hero-icon-outline name="building-office-2" class="h-6 w-6 text-indigo-500"></hero-icon-outline>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-white p-6 rounded-xl card-shadow border-l-4 border-amber-500 card-hover">
+                <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-amber-500 transition-all duration-300 hover:shadow-xl hover:scale-[1.01]">
                     <div class="flex justify-between items-start">
                         <div>
-                            <span class="text-xs font-semibold text-secondary-500 tracking-wider uppercase">OCCUPANCY RATE</span>
-                            <p class="text-3xl font-bold text-amber-700 mt-2" id="stat-occupancy-percent">0%</p>
-                            <p class="text-sm text-secondary-500 mt-1">Beds Filled</p>
+                            <span class="text-xs font-semibold text-gray-500 tracking-wider uppercase">OCCUPANCY RATE</span>
+                            <p class="text-3xl font-extrabold text-amber-700 mt-2" id="stat-occupancy-percent">0%</p>
+                            <p class="text-sm text-gray-500 mt-1">Beds Filled</p>
                         </div>
                         <div class="relative h-20 w-20 flex-shrink-0">
                             <svg class="h-full w-full" width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
@@ -195,31 +132,31 @@
                                         id="stat-occupancy-ring"></circle>
                             </svg>
                             <div class="absolute top-0 left-0 flex h-full w-full items-center justify-center">
-                                <span class="text-sm font-semibold text-amber-600" id="stat-occupancy-label">0%</span>
+                                <span class="progress-ring-text text-amber-600" id="stat-occupancy-label">0%</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-white p-6 rounded-xl card-shadow border-l-4 border-red-500 card-hover">
+                <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-red-500 transition-all duration-300 hover:shadow-xl hover:scale-[1.01]">
                     <div class="flex justify-between items-start">
                         <div>
-                            <span class="text-xs font-semibold text-secondary-500 tracking-wider uppercase">OPEN COMPLAINTS</span>
-                            <p class="text-3xl font-bold text-red-700 mt-2" id="stat-open-complaints">0</p>
-                            <p class="text-sm text-secondary-500 mt-1">Pending Resolution</p>
+                            <span class="text-xs font-semibold text-gray-500 tracking-wider uppercase">OPEN COMPLAINTS</span>
+                            <p class="text-3xl font-extrabold text-red-700 mt-2" id="stat-open-complaints">0</p>
+                            <p class="text-sm text-gray-500 mt-1">Pending Resolution</p>
                         </div>
-                        <div class="p-3 bg-red-50 rounded-xl">
+                        <div class="p-3 bg-red-100 rounded-xl shadow-inner">
                             <hero-icon-outline name="exclamation-triangle" class="h-6 w-6 text-red-500"></hero-icon-outline>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-white p-6 rounded-xl card-shadow border-l-4 border-emerald-500 card-hover">
+                <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-emerald-500 transition-all duration-300 hover:shadow-xl hover:scale-[1.01]">
                     <div class="flex justify-between items-start">
                         <div>
-                            <span class="text-xs font-semibold text-secondary-500 tracking-wider uppercase">DAILY ATTENDANCE</span>
-                            <p class="text-3xl font-bold text-emerald-700 mt-2" id="stat-attendance-percent">98%</p>
-                            <p class="text-sm text-secondary-500 mt-1">Latest Check-in Rate</p>
+                            <span class="text-xs font-semibold text-gray-500 tracking-wider uppercase">DAILY ATTENDANCE</span>
+                            <p class="text-3xl font-extrabold text-emerald-700 mt-2" id="stat-attendance-percent">98%</p>
+                            <p class="text-sm text-gray-500 mt-1">Latest Check-in Rate</p>
                         </div>
                         <div class="relative h-20 w-20 flex-shrink-0">
                             <svg class="h-full w-full" width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
@@ -232,48 +169,48 @@
                                         id="stat-attendance-ring"></circle>
                             </svg>
                             <div class="absolute top-0 left-0 flex h-full w-full items-center justify-center">
-                                <span class="text-sm font-semibold text-emerald-600" id="stat-attendance-label">98%</span>
+                                <span class="progress-ring-text text-emerald-600" id="stat-attendance-label">98%</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div id="show-fees-view-btn" class="bg-white p-6 rounded-xl card-shadow border-l-4 border-teal-500 card-hover cursor-pointer">
+                <div id="show-fees-view-btn" class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-teal-500 transition-all duration-300 hover:shadow-xl hover:scale-[1.01] cursor-pointer">
                     <div class="flex justify-between items-start">
                         <div>
-                            <span class="text-xs font-semibold text-secondary-500 tracking-wider uppercase">FEES STATUS</span>
-                            <p class="text-3xl font-bold text-teal-700 mt-2" id="stat-fees-pending">0 Pending</p>
-                            <p class="text-sm text-secondary-500 mt-1">Total Dues</p>
+                            <span class="text-xs font-semibold text-gray-500 tracking-wider uppercase">FEES STATUS</span>
+                            <p class="text-3xl font-extrabold text-teal-700 mt-2" id="stat-fees-pending">0 Pending</p>
+                            <p class="text-sm text-gray-500 mt-1">Total Dues</p>
                         </div>
-                        <div class="p-3 bg-teal-50 rounded-xl">
+                        <div class="p-3 bg-teal-100 rounded-xl shadow-inner">
                             <hero-icon-outline name="banknotes" class="h-6 w-6 text-teal-500"></hero-icon-outline>
                         </div>
                     </div>
                 </div>
 
-                <div id="show-visitors-view-btn" class="bg-white p-6 rounded-xl card-shadow border-l-4 border-sky-500 card-hover cursor-pointer">
+                <div id="show-visitors-view-btn" class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-sky-500 transition-all duration-300 hover:shadow-xl hover:scale-[1.01] cursor-pointer">
                     <div class="flex justify-between items-start">
                         <div>
-                            <span class="text-xs font-semibold text-secondary-500 tracking-wider uppercase">VISITOR LOGS</span>
-                            <p class="text-3xl font-bold text-sky-700 mt-2" id="stat-visitors-today">0 Today</p>
-                            <p class="text-sm text-secondary-500 mt-1">Current Entries</p>
+                            <span class="text-xs font-semibold text-gray-500 tracking-wider uppercase">VISITOR LOGS</span>
+                            <p class="text-3xl font-extrabold text-sky-700 mt-2" id="stat-visitors-today">0 Today</p>
+                            <p class="text-sm text-gray-500 mt-1">Current Entries</p>
                         </div>
-                        <div class="p-3 bg-sky-50 rounded-xl">
+                        <div class="p-3 bg-sky-100 rounded-xl shadow-inner">
                             <hero-icon-outline name="identification" class="h-6 w-6 text-sky-500"></hero-icon-outline>
                         </div>
                     </div>
                 </div>
             </div>
             
-            <hr class="my-10 border-secondary-200">
+            <hr class="my-10 border-gray-200">
 
             <div class="mt-10">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
-                    <h2 class="text-2xl font-bold text-secondary-800 flex items-center">
-                        <hero-icon-solid name="building-office-2" class="h-6 w-6 text-secondary-600 mr-2"></hero-icon-solid>
+                    <h2 class="text-2xl font-extrabold text-gray-800 flex items-center">
+                        <hero-icon-solid name="building-office-2" class="h-6 w-6 text-gray-600 mr-2"></hero-icon-solid>
                         Hostel Block Summary
                     </h2>
-                    <button id="show-add-block-modal-btn" class="mt-4 sm:mt-0 flex items-center px-6 py-3 btn-primary font-semibold rounded-lg text-sm">
+                    <button id="show-add-block-modal-btn" class="mt-4 sm:mt-0 flex items-center px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg shadow-lg hover:bg-indigo-700 transition-all duration-300 hover:scale-[1.02] text-sm">
                         <hero-icon-solid name="plus" class="h-5 w-5 mr-2"></hero-icon-solid>
                         Add New Block
                     </button>
@@ -282,15 +219,15 @@
                 </div>
             </div>
 
-            <hr class="my-10 border-secondary-200">
+            <hr class="my-10 border-gray-200">
 
             <div class="mt-10">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
-                    <h2 class="text-2xl font-bold text-secondary-800 flex items-center">
-                        <hero-icon-solid name="calendar-days" class="h-6 w-6 text-secondary-600 mr-2"></hero-icon-solid>
+                    <h2 class="text-2xl font-extrabold text-gray-800 flex items-center">
+                        <hero-icon-solid name="calendar-days" class="h-6 w-6 text-gray-600 mr-2"></hero-icon-solid>
                         Events & Announcements
                     </h2>
-                    <button id="show-add-event-modal-btn" class="mt-4 sm:mt-0 flex items-center px-6 py-3 btn-primary font-semibold rounded-lg text-sm">
+                    <button id="show-add-event-modal-btn" class="mt-4 sm:mt-0 flex items-center px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg shadow-lg hover:bg-indigo-700 transition-all duration-300 hover:scale-[1.02] text-sm">
                         <hero-icon-solid name="calendar-plus" class="h-5 w-5 mr-2"></hero-icon-solid>
                         Add New Event
                     </button>
@@ -299,15 +236,15 @@
                </div>
             </div>
 
-            <hr class="my-10 border-secondary-200">
+            <hr class="my-10 border-gray-200">
 
             <div class="mt-10">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
-                    <h2 class="text-2xl font-bold text-secondary-800 flex items-center">
-                        <hero-icon-solid name="puzzle-piece" class="h-6 w-6 text-secondary-600 mr-2"></hero-icon-solid>
+                    <h2 class="text-2xl font-extrabold text-gray-800 flex items-center">
+                        <hero-icon-solid name="puzzle-piece" class="h-6 w-6 text-gray-600 mr-2"></hero-icon-solid>
                         Club Activities / Gymkhana
                     </h2>
-                    <button id="show-add-club-activity-modal-btn" class="mt-4 sm:mt-0 flex items-center px-6 py-3 btn-primary font-semibold rounded-lg text-sm">
+                    <button id="show-add-club-activity-modal-btn" class="mt-4 sm:mt-0 flex items-center px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg shadow-lg hover:bg-indigo-700 transition-all duration-300 hover:scale-[1.02] text-sm">
                         <hero-icon-solid name="calendar-plus" class="h-5 w-5 mr-2"></hero-icon-solid>
                         Add New Activity
                     </button>
@@ -316,56 +253,57 @@
                </div>
             </div>
             
-            <hr class="my-10 border-secondary-200">
+            <hr class="my-10 border-gray-200">
 
             <div class="mt-10">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
-                    <h2 class="text-2xl font-bold text-secondary-800 flex items-center">
-                        <hero-icon-solid name="archive-box" class="h-6 w-6 text-secondary-600 mr-2"></hero-icon-solid>
+                    <h2 class="text-2xl font-extrabold text-gray-800 flex items-center">
+                        <hero-icon-solid name="archive-box" class="h-6 w-6 text-gray-600 mr-2"></hero-icon-solid>
                         Hostel Asset Inventory
                     </h2>
-                    <button id="show-add-asset-modal-btn" class="mt-4 sm:mt-0 flex items-center px-6 py-3 btn-primary font-semibold rounded-lg text-sm">
+                    <button id="show-add-asset-modal-btn" class="mt-4 sm:mt-0 flex items-center px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg shadow-lg hover:bg-indigo-700 transition-all duration-300 hover:scale-[1.02] text-sm">
                         <hero-icon-solid name="archive-box-arrow-down" class="h-5 w-5 mr-2"></hero-icon-solid>
                         Add New Asset
                     </button>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="asset-inventory-container">
-                    <p class="text-secondary-500 col-span-full flex items-center">
-                          <hero-icon-outline name="cube" class="h-5 w-5 mr-2 text-secondary-400"></hero-icon-outline>
+                    <p class="text-gray-500 col-span-full flex items-center">
+                          <hero-icon-outline name="cube" class="h-5 w-5 mr-2 text-gray-400"></hero-icon-outline>
                           No assets added yet. Add assets to the inventory.
                     </p>
                 </div>
             </div>
         </div> 
 
-        <!-- Detail View -->
         <div id="detail-view" class="hidden">
-             <div class="flex items-center mb-8">
-                 <button id="back-to-dashboard-btn" class="flex items-center back-btn font-medium transition duration-150 p-3 rounded-lg mr-4">
+             <div class="relative mb-8 pb-4 border-b border-gray-200">
+                 <button id="back-to-dashboard-btn" class="flex items-center text-sm font-semibold text-gray-600 hover:text-indigo-700 transition duration-150 p-2 rounded-lg hover:bg-gray-100">
                      <hero-icon-solid name="arrow-left" class="h-5 w-5 mr-2"></hero-icon-solid>
                      Back to Dashboard
                  </button>
-                 <h1 id="detail-hostel-name" class="text-3xl font-bold text-secondary-800 tracking-tight"></h1>
+                 <div class="flex items-center justify-center absolute inset-x-0 top-0 z-0">
+                     <h1 id="detail-hostel-name" class="text-3xl font-extrabold text-gray-800 tracking-tight" style="color: #4b0082;"></h1>
+                 </div>
              </div>
             
-             <div class="bg-white p-6 rounded-xl card-shadow border-l-8 border-primary-500 mb-8">
+             <div class="bg-white p-6 rounded-xl shadow-lg border-l-8 border-indigo-500 mb-8">
                  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
                      <div>
-                         <span class="text-secondary-500 font-semibold text-sm uppercase tracking-wider">Capacity</span>
+                         <span class="text-gray-500 font-semibold text-sm uppercase tracking-wider">Capacity</span>
                          <div class="flex items-center justify-center mt-2">
-                             <hero-icon-outline name="building-office-2" class="h-6 w-6 text-primary-600 mr-2"></hero-icon-outline>
-                             <span class="text-3xl font-bold text-primary-700" id="detail-stat-capacity">0</span>
+                             <hero-icon-outline name="building-office-2" class="h-6 w-6 text-purple-600 mr-2"></hero-icon-outline>
+                             <span class="text-3xl font-bold text-purple-700" id="detail-stat-capacity">0</span>
                          </div>
                      </div>
-                     <div class="border-l border-r border-secondary-200">
-                         <span class="text-secondary-500 font-semibold text-sm uppercase tracking-wider">Occupancy</span>
+                     <div class="border-l border-r border-gray-200">
+                         <span class="text-gray-500 font-semibold text-sm uppercase tracking-wider">Occupancy</span>
                          <div class="flex items-center justify-center mt-2">
                              <hero-icon-outline name="chart-pie" class="h-6 w-6 text-amber-600 mr-2"></hero-icon-outline>
                              <span class="text-3xl font-bold text-amber-700" id="detail-stat-occupancy">0</span>
                          </div>
                      </div>
                      <div>
-                         <span class="text-secondary-500 font-semibold text-sm uppercase tracking-wider">Available Beds</span>
+                         <span class="text-gray-500 font-semibold text-sm uppercase tracking-wider">Available Beds</span>
                          <div class="flex items-center justify-center mt-2">
                              <hero-icon-outline name="squares-plus" class="h-6 w-6 text-green-600 mr-2"></hero-icon-outline>
                              <span class="text-3xl font-bold text-green-700" id="detail-stat-available">0</span>
@@ -374,24 +312,24 @@
                  </div>
              </div>
             
-             <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4 bg-white p-4 rounded-xl card-shadow">
+             <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4 bg-white p-4 rounded-xl shadow-md">
                  <div class="flex flex-wrap gap-4">
-                      <button id="show-add-student-modal-btn" class="flex items-center px-5 py-2.5 btn-primary font-semibold rounded-lg text-sm">
+                      <button id="show-add-student-modal-btn" class="flex items-center px-5 py-2.5 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition-all duration-300 text-sm">
                               <hero-icon-solid name="user-plus" class="h-5 w-5 mr-2"></hero-icon-solid>
                               Add New Student
                       </button>
-                      <button id="show-add-room-modal-btn" class="flex items-center px-5 py-2.5 btn-primary font-semibold rounded-lg text-sm">
+                      <button id="show-add-room-modal-btn" class="flex items-center px-5 py-2.5 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition-all duration-300 text-sm">
                               <hero-icon-solid name="building-office-2" class="h-5 w-5 mr-2"></hero-icon-solid>
                               Add New Room
                       </button>
                  </div>
                  
                  <div class="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
-                      <div class="relative w-full sm:w-48">
-                          <hero-icon-outline name="magnifying-glass" class="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-secondary-400"></hero-icon-outline>
-                          <input type="text" id="room-search-input" placeholder="Search room number..." class="pl-10 pr-4 py-2 border border-secondary-300 rounded-lg shadow-sm w-full focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition duration-150">
+                      <div class="relative w-full sm:w-auto">
+                          <hero-icon-outline name="magnifying-glass" class="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400"></hero-icon-outline>
+                          <input type="text" id="room-search-input" placeholder="Search room number..." class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg shadow-sm w-full sm:w-48 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition duration-150">
                       </div>
-                      <select id="room-filter-select" class="px-4 py-2 border border-secondary-300 rounded-lg shadow-sm w-full sm:w-32 focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition duration-150">
+                      <select id="room-filter-select" class="px-4 py-2 border border-gray-300 rounded-lg shadow-sm w-full sm:w-32 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition duration-150">
                           <option value="All">All Rooms</option>
                           <option value="Full">Full</option>
                           <option value="Available">Available</option>
@@ -403,117 +341,120 @@
              </div>
         </div>
 
-        <!-- Fees View -->
         <div id="fees-view" class="hidden">
-             <div class="flex items-center mb-8">
-                 <button id="back-to-dashboard-from-fees-btn" class="flex items-center back-btn font-medium transition duration-150 p-3 rounded-lg mr-4">
+             <div class="relative mb-8 pb-4 border-b border-gray-200">
+                 <button id="back-to-dashboard-from-fees-btn" class="flex items-center text-sm font-semibold text-gray-600 hover:text-teal-700 transition duration-150 p-2 rounded-lg hover:bg-gray-100">
                      <hero-icon-solid name="arrow-left" class="h-5 w-5 mr-2"></hero-icon-solid>
                      Back to Dashboard
                  </button>
-                 <h1 class="text-3xl font-bold text-teal-700 tracking-tight flex items-center">
-                     <hero-icon-solid name="banknotes" class="h-7 w-7 mr-2"></hero-icon-solid>
-                     Fees Management
-                 </h1>
+                 <div class="flex items-center justify-center absolute inset-x-0 top-0 z-0">
+                     <h1 class="text-3xl font-extrabold text-teal-700 tracking-tight">
+                         <hero-icon-solid name="banknotes" class="h-7 w-7 inline-block mr-2"></hero-icon-solid>
+                         Fees Management
+                     </h1>
+                 </div>
              </div>
             
-             <div class="flex flex-col md:flex-row justify-end items-center mb-6 gap-4 bg-white p-4 rounded-xl card-shadow">
+             <div class="flex flex-col md:flex-row justify-end items-center mb-6 gap-4 bg-white p-4 rounded-xl shadow-md">
                  <div class="relative w-full md:w-64">
-                     <hero-icon-outline name="magnifying-glass" class="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-secondary-400"></hero-icon-outline>
-                     <input type="text" id="fees-search-input" placeholder="Search by name or roll no..." class="pl-10 pr-4 py-2 border border-secondary-300 rounded-lg shadow-sm w-full focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition duration-150">
+                     <hero-icon-outline name="magnifying-glass" class="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400"></hero-icon-outline>
+                     <input type="text" id="fees-search-input" placeholder="Search by name or roll no..." class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg shadow-sm w-full focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition duration-150">
                  </div>
-                 <select id="fees-filter-select" class="px-4 py-2 border border-secondary-300 rounded-lg shadow-sm w-full md:w-32 focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition duration-150">
+                 <select id="fees-filter-select" class="px-4 py-2 border border-gray-300 rounded-lg shadow-sm w-full md:w-32 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition duration-150">
                      <option value="All">All Statuses</option>
                      <option value="Paid">Paid</option>
                      <option value="Pending">Pending</option>
                  </select>
              </div>
             
-             <div class="bg-white rounded-xl card-shadow overflow-hidden">
+             <div class="bg-white rounded-xl shadow-lg overflow-hidden">
                  <div class="overflow-x-auto">
                      <table class="w-full min-w-max">
-                         <thead class="bg-secondary-50 border-b border-secondary-200">
+                         <thead class="bg-gray-100 border-b border-gray-200">
                              <tr>
-                                 <th class="px-6 py-3 text-left text-xs font-bold text-secondary-700 uppercase tracking-wider">Student Name</th>
-                                 <th class="px-6 py-3 text-left text-xs font-bold text-secondary-700 uppercase tracking-wider">Roll Number</th>
-                                 <th class="px-6 py-3 text-left text-xs font-bold text-secondary-700 uppercase tracking-wider">Block / Room</th>
-                                 <th class="px-6 py-3 text-left text-xs font-bold text-secondary-700 uppercase tracking-wider">Status</th>
-                                 <th class="px-6 py-3 text-center text-xs font-bold text-secondary-700 uppercase tracking-wider">Action</th>
+                                 <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Student Name</th>
+                                 <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Roll Number</th>
+                                 <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Block / Room</th>
+                                 <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Status</th>
+                                 <th class="px-6 py-3 text-center text-xs font-bold text-gray-700 uppercase tracking-wider">Action</th>
                              </tr>
                          </thead>
-                         <tbody id="fees-student-list-container" class="divide-y divide-secondary-200">
+                         <tbody id="fees-student-list-container" class="divide-y divide-gray-200">
                          </tbody>
                      </table>
                  </div>
              </div>
         </div>
         
-        <!-- Visitors View -->
         <div id="visitors-view" class="hidden">
-             <div class="flex items-center mb-8">
-                 <button id="back-to-dashboard-from-visitors-btn" class="flex items-center back-btn font-medium transition duration-150 p-3 rounded-lg mr-4">
+             <div class="relative mb-8 pb-4 border-b border-gray-200">
+                 <button id="back-to-dashboard-from-visitors-btn" class="flex items-center text-sm font-semibold text-gray-600 hover:text-sky-700 transition duration-150 p-2 rounded-lg hover:bg-gray-100">
                      <hero-icon-solid name="arrow-left" class="h-5 w-5 mr-2"></hero-icon-solid>
                      Back to Dashboard
                  </button>
-                 <h1 class="text-3xl font-bold text-sky-700 tracking-tight flex items-center">
-                     <hero-icon-solid name="user-group" class="h-7 w-7 mr-2"></hero-icon-solid>
-                     Visitor Logs
-                 </h1>
-             </div>
-            
-             <div class="flex flex-col md:flex-row justify-end items-center mb-6 gap-4 bg-white p-4 rounded-xl card-shadow">
-                 <div class="relative w-full md:w-64">
-                     <hero-icon-outline name="magnifying-glass" class="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-secondary-400"></hero-icon-outline>
-                     <input type="text" id="visitor-search-input" placeholder="Search by visitor or student name..." class="pl-10 pr-4 py-2 border border-secondary-300 rounded-lg shadow-sm w-full focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition duration-150">
+                 <div class="flex items-center justify-center absolute inset-x-0 top-0 z-0">
+                     <h1 class="text-3xl font-extrabold text-sky-700 tracking-tight">
+                         <hero-icon-solid name="user-group" class="h-7 w-7 inline-block mr-2"></hero-icon-solid>
+                         Visitor Logs
+                     </h1>
                  </div>
-                 <input type="date" id="visitor-date-filter" class="px-4 py-2 border border-secondary-300 rounded-lg shadow-sm w-full md:w-36 focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition duration-150">
              </div>
             
-             <div class="bg-white rounded-xl card-shadow overflow-hidden">
+             <div class="flex flex-col md:flex-row justify-end items-center mb-6 gap-4 bg-white p-4 rounded-xl shadow-md">
+                 <div class="relative w-full md:w-64">
+                     <hero-icon-outline name="magnifying-glass" class="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400"></hero-icon-outline>
+                     <input type="text" id="visitor-search-input" placeholder="Search by visitor or student name..." class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg shadow-sm w-full focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition duration-150">
+                 </div>
+                 <input type="date" id="visitor-date-filter" class="px-4 py-2 border border-gray-300 rounded-lg shadow-sm w-full md:w-36 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition duration-150">
+             </div>
+            
+             <div class="bg-white rounded-xl shadow-lg overflow-hidden">
                  <div class="overflow-x-auto">
                      <table class="w-full min-w-max">
-                         <thead class="bg-secondary-50 border-b border-secondary-200">
+                         <thead class="bg-gray-100 border-b border-gray-200">
                              <tr>
-                                 <th class="px-6 py-3 text-left text-xs font-bold text-secondary-700 uppercase tracking-wider">Visitor Name</th>
-                                 <th class="px-6 py-3 text-left text-xs font-bold text-secondary-700 uppercase tracking-wider">Student Visited</th>
-                                 <th class="px-6 py-3 text-left text-xs font-bold text-secondary-700 uppercase tracking-wider">Room</th>
-                                 <th class="px-6 py-3 text-left text-xs font-bold text-secondary-700 uppercase tracking-wider">Date</th>
-                                 <th class="px-6 py-3 text-left text-xs font-bold text-secondary-700 uppercase tracking-wider">Time In</th>
-                                 <th class="px-6 py-3 text-left text-xs font-bold text-secondary-700 uppercase tracking-wider">Time Out</th>
+                                 <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Visitor Name</th>
+                                 <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Student Visited</th>
+                                 <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Room</th>
+                                 <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Date</th>
+                                 <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Time In</th>
+                                 <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Time Out</th>
                              </tr>
                          </thead>
-                         <tbody id="visitor-log-container" class="divide-y divide-secondary-200">
+                         <tbody id="visitor-log-container" class="divide-y divide-gray-200">
                          </tbody>
                      </table>
                  </div>
              </div>
         </div>
 
-        <!-- Complaints View -->
         <div id="complaints-view" class="hidden">
-             <div class="flex items-center mb-8">
-                 <button id="back-to-dashboard-from-complaints-btn" class="flex items-center back-btn font-medium transition duration-150 p-3 rounded-lg mr-4">
+             <div class="relative mb-8 pb-4 border-b border-gray-200">
+                 <button id="back-to-dashboard-from-complaints-btn" class="flex items-center text-sm font-semibold text-gray-600 hover:text-red-700 transition duration-150 p-2 rounded-lg hover:bg-gray-100">
                      <hero-icon-solid name="arrow-left" class="h-5 w-5 mr-2"></hero-icon-solid>
                      Back to Dashboard
                  </button>
-                 <h1 class="text-3xl font-bold text-red-700 tracking-tight flex items-center">
-                     <hero-icon-solid name="bell-alert" class="h-7 w-7 mr-2"></hero-icon-solid>
-                     Student Complaints
-                 </h1>
+                 <div class="flex items-center justify-center absolute inset-x-0 top-0 z-0">
+                     <h1 class="text-3xl font-extrabold text-red-700 tracking-tight">
+                         <hero-icon-solid name="bell-alert" class="h-7 w-7 inline-block mr-2"></hero-icon-solid>
+                         Student Complaints
+                     </h1>
+                 </div>
              </div>
             
-             <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4 bg-white p-4 rounded-xl card-shadow">
+             <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4 bg-white p-4 rounded-xl shadow-md">
                  <div class="flex flex-col md:flex-row gap-4 w-full md:w-auto">
                      <div class="relative w-full md:w-56">
-                         <hero-icon-outline name="magnifying-glass" class="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-secondary-400"></hero-icon-outline>
-                         <input type="text" id="complaint-search-input" placeholder="Search by student or room..." class="pl-10 pr-4 py-2 border border-secondary-300 rounded-lg shadow-sm w-full focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition duration-150">
+                         <hero-icon-outline name="magnifying-glass" class="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400"></hero-icon-outline>
+                         <input type="text" id="complaint-search-input" placeholder="Search by student or room..." class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg shadow-sm w-full focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition duration-150">
                      </div>
-                     <select id="complaint-status-filter" class="px-4 py-2 border border-secondary-300 rounded-lg shadow-sm w-full md:w-36 focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition duration-150">
+                     <select id="complaint-status-filter" class="px-4 py-2 border border-gray-300 rounded-lg shadow-sm w-full md:w-36 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition duration-150">
                          <option value="All">All Status</option>
                          <option value="Pending">Pending</option>
                          <option value="In Progress">In Progress</option>
                          <option value="Resolved">Resolved</option>
                      </select>
-                     <select id="complaint-type-filter" class="px-4 py-2 border border-secondary-300 rounded-lg shadow-sm w-full md:w-40 focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition duration-150">
+                     <select id="complaint-type-filter" class="px-4 py-2 border border-gray-300 rounded-lg shadow-sm w-full md:w-40 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition duration-150">
                          <option value="All">All Types</option>
                          <option value="Maintenance">Maintenance</option>
                          <option value="Cleaning">Cleaning</option>
@@ -524,27 +465,27 @@
                          <option value="Other">Other</option>
                      </select>
                  </div>
-                 <button id="refresh-complaints-btn" class="flex items-center px-4 py-2 btn-primary font-semibold rounded-lg text-sm">
+                 <button id="refresh-complaints-btn" class="flex items-center px-4 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition-all duration-300 text-sm">
                      <hero-icon-solid name="arrow-path" class="h-5 w-5 mr-2"></hero-icon-solid>
                      Refresh
                  </button>
              </div>
             
-             <div class="bg-white rounded-xl card-shadow overflow-hidden">
+             <div class="bg-white rounded-xl shadow-lg overflow-hidden">
                  <div class="overflow-x-auto">
                      <table class="w-full min-w-max">
-                         <thead class="bg-secondary-50 border-b border-secondary-200">
+                         <thead class="bg-gray-100 border-b border-gray-200">
                              <tr>
-                                 <th class="px-6 py-3 text-left text-xs font-bold text-secondary-700 uppercase tracking-wider">Student</th>
-                                 <th class="px-6 py-3 text-left text-xs font-bold text-secondary-700 uppercase tracking-wider">Room</th>
-                                 <th class="px-6 py-3 text-left text-xs font-bold text-secondary-700 uppercase tracking-wider">Complaint Type</th>
-                                 <th class="px-6 py-3 text-left text-xs font-bold text-secondary-700 uppercase tracking-wider">Description</th>
-                                 <th class="px-6 py-3 text-left text-xs font-bold text-secondary-700 uppercase tracking-wider">Date</th>
-                                 <th class="px-6 py-3 text-left text-xs font-bold text-secondary-700 uppercase tracking-wider">Status</th>
-                                 <th class="px-6 py-3 text-center text-xs font-bold text-secondary-700 uppercase tracking-wider">Actions</th>
+                                 <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Student</th>
+                                 <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Room</th>
+                                 <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Complaint Type</th>
+                                 <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Description</th>
+                                 <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Date</th>
+                                 <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Status</th>
+                                 <th class="px-6 py-3 text-center text-xs font-bold text-gray-700 uppercase tracking-wider">Actions</th>
                              </tr>
                          </thead>
-                         <tbody id="complaints-list-container" class="divide-y divide-secondary-200">
+                         <tbody id="complaints-list-container" class="divide-y divide-gray-200">
                          </tbody>
                      </table>
                  </div>
@@ -553,15 +494,14 @@
 
     </main>
 
-    <footer class="mt-12 py-6 border-t border-secondary-200 bg-white shadow-inner">
+    <footer class="mt-12 py-6 border-t border-gray-200 bg-white shadow-inner">
         <div class="w-full mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <p class="text-sm text-secondary-500">
+            <p class="text-sm text-gray-500">
                 &copy; 2025 Indian Institute of Technology. All rights reserved.
             </p>
         </div>
     </footer>
 
-    <!-- All your original modals remain exactly the same -->
     <div id="add-block-modal" class="modal hidden fixed inset-0 z-30 flex items-center justify-center">
         <div class="modal-backdrop fixed inset-0" data-modal-hide="add-block-modal"></div>
         <div class="modal-content bg-white p-8 rounded-xl shadow-2xl z-40 w-full max-w-md mx-4">
@@ -602,33 +542,408 @@
         </div>
     </div>
     
-    <!-- Include all your other modals exactly as they were -->
     <div id="add-room-modal" class="modal hidden fixed inset-0 z-30 flex items-center justify-center">
-        <!-- Your original add room modal content -->
+        <div class="modal-backdrop fixed inset-0" data-modal-hide="add-room-modal"></div>
+        <div class="modal-content bg-white p-8 rounded-xl shadow-2xl z-40 w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                <hero-icon-outline name="building-office" class="h-6 w-6 text-indigo-500 mr-2"></hero-icon-outline>
+                Add New Room
+            </h2>
+            <form id="add-room-form" class="space-y-4">
+                <div>
+                    <label for="room-id" class="block text-sm font-semibold text-gray-700">Room ID / Number</label>
+                    <input type="text" id="room-id" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="e.g., A-103" required>
+                </div>
+                 <div>
+                    <label for="room-floor" class="block text-sm font-semibold text-gray-700">Floor Details</label>
+                    <input type="text" id="room-floor" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="e.g., 1st Floor, A-Block" required>
+                </div>
+                <div>
+                    <label for="room-capacity" class="block text-sm font-semibold text-gray-700">Total Capacity</label>
+                    <input type="number" id="room-capacity" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" value="2" min="1" required>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700">Assign Assets to Room</label>
+                    <div id="room-asset-assignment-container" class="mt-2 space-y-3 p-3 border border-gray-200 rounded-lg bg-gray-50">
+                    </div>
+                    <button type="button" id="add-room-asset-row-btn" class="mt-3 text-sm font-medium text-indigo-600 hover:text-indigo-800 flex items-center">
+                        <hero-icon-solid name="plus-circle" class="h-5 w-5 mr-1"></hero-icon-solid>
+                        Add Asset Row
+                    </button>
+                </div>
+
+                <div>
+                    <label for="room-image-file" class="block text-sm font-semibold text-gray-700">Upload Room Image</label>
+                    <input type="file" id="room-image-file" name="roomImage" class="mt-1 block w-full text-sm text-gray-500
+                                 file:mr-4 file:py-2 file:px-4
+                                 file:rounded-full file:border-0
+                                 file:text-sm file:font-semibold
+                                 file:bg-indigo-50 file:text-indigo-700
+                                 hover:file:bg-indigo-100"
+                                 accept="image/*">
+                    <p class="mt-1 text-xs text-gray-500">Upload an image of the room (PNG, JPG, etc.).</p>
+                </div>
+                <div class="flex justify-end space-x-3 pt-4 border-t border-gray-100">
+                    <button type="button" class="flex items-center px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 font-medium" data-modal-hide="add-room-modal">
+                        <hero-icon-solid name="x-mark" class="h-5 w-5 mr-1"></hero-icon-solid>
+                        Cancel
+                    </button>
+                    <button type="submit" class="flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium">
+                        <hero-icon-solid name="plus" class="h-5 w-5 mr-1"></hero-icon-solid>
+                        Add Room
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
     
     <div id="add-student-modal" class="modal hidden fixed inset-0 z-30 flex items-center justify-center">
-        <!-- Your original add student modal content -->
+        <div class="modal-backdrop fixed inset-0" data-modal-hide="add-student-modal"></div>
+        <div class="modal-content bg-white p-8 rounded-xl shadow-2xl z-40 w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                <hero-icon-outline name="user-group" class="h-6 w-6 text-indigo-500 mr-2"></hero-icon-outline>
+                Add New Student
+            </h2>
+            <form id="add-student-form" class="space-y-4">
+                 <h3 class="text-sm font-bold text-gray-600 border-b pb-1">Login Details</h3>
+                 <div class="grid grid-cols-2 gap-4">
+                      <div>
+                          <label for="student-username" class="block text-sm font-semibold text-gray-700">Username</label>
+                          <input type="text" id="student-username" name="username" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
+                      </div>
+                      <div>
+                          <label for="student-password" class="block text-sm font-semibold text-gray-700">Password</label>
+                          <input type="password" id="student-password" name="password" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
+                      </div>
+                 </div>
+
+                 <h3 class="text-sm font-bold text-gray-600 border-b pt-2 pb-1">Hostel Details</h3>
+                 <div>
+                      <label for="student-room-id" class="block text-sm font-semibold text-gray-700">Select Room</label>
+                      <select id="student-room-id" name="roomId" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
+                      </select>
+                 </div>
+                 <div>
+                      <label for="student-joining-date" class="block text-sm font-semibold text-gray-700">Joining Date</label>
+                      <input type="date" id="student-joining-date" name="joiningDate" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                 </div>
+                  <div class="grid grid-cols-2 gap-4">
+                      <div>
+                          <label for="student-fee-status" class="block text-sm font-semibold text-gray-700">Fee Status</label>
+                          <select id="student-fee-status" name="feeStatus" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
+                              <option value="Paid">Paid</option>
+                              <option value="Pending" selected>Pending</option>
+                          </select>
+                      </div>
+                      <div>
+                          <label for="student-payment-method" class="block text-sm font-semibold text-gray-700">Payment Method</label>
+                          <select id="student-payment-method" name="paymentMethod" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                              <option value="Not Paid">Not Paid</option>
+                              <option value="Cash">Cash</option>
+                              <option value="Card">Card</option>
+                              <option value="Online">Online</option>
+                          </select>
+                      </div>
+                  </div>
+
+                 <h3 class="text-sm font-bold text-gray-600 border-b pt-2 pb-1">Personal & Academic</h3>
+                 <div>
+                      <label for="student-name" class="block text-sm font-semibold text-gray-700">Student Name</label>
+                      <input type="text" id="student-name" name="name" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="Enter full name" required>
+                 </div>
+                 
+                 <div>
+                      <label for="student-roll-number" class="block text-sm font-semibold text-gray-700">Roll Number</label>
+                      <input type="text" id="student-roll-number" name="rollNumber" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="e.g., 21CS10001" required>
+                 </div>
+                 
+                 <div>
+                      <label for="student-course" class="block text-sm font-semibold text-gray-700">Course</label>
+                      <input type="text" id="student-course" name="course" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="e.g., B.Tech">
+                 </div>
+                 <div>
+                      <label for="student-department" class="block text-sm font-semibold text-gray-700">Department</label>
+                      <input type="text" id="student-department" name="department" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="e.g., CSE">
+                 </div>
+                 <div>
+                      <label for="student-year" class="block text-sm font-semibold text-gray-700">Year</label>
+                      <input type="text" id="student-year" name="year" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="e.g., 3rd Year">
+                 </div>
+                 <div>
+                      <label for="student-email" class="block text-sm font-semibold text-gray-700">Email</label>
+                      <input type="email" id="student-email" name="email" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="student@iit.edu">
+                 </div>
+                 <div>
+                      <label for="student-phone" class="block text-sm font-semibold text-gray-700">Phone</label>
+                      <input type="tel" id="student-phone" name="phone" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="+91 XXXXX XXXXX">
+                 </div>
+                 
+                 <div>
+                      <label for="student-profile-image" class="block text-sm font-semibold text-gray-700">Upload Profile Photo</label>
+                      <input type="file" id="student-profile-image" name="profileImage" class="mt-1 block w-full text-sm text-gray-500
+                                 file:mr-4 file:py-2 file:px-4
+                                 file:rounded-full file:border-0
+                                 file:text-sm file:font-semibold
+                                 file:bg-indigo-50 file:text-indigo-700
+                                 hover:file:bg-indigo-100"
+                                 accept="image/*">
+                 </div>
+
+                 <div>
+                      <label class="block text-sm font-semibold text-gray-700">Assign Assets to Student</label>
+                      <div id="student-asset-assignment-container" class="mt-2 space-y-3 p-3 border border-gray-200 rounded-lg bg-gray-50">
+                      </div>
+                      <button type="button" id="add-student-asset-row-btn" class="mt-3 text-sm font-medium text-indigo-600 hover:text-indigo-800 flex items-center">
+                          <hero-icon-solid name="plus-circle" class="h-5 w-5 mr-1"></hero-icon-solid>
+                          Add Asset Row
+                      </button>
+                 </div>
+
+                 <div class="flex justify-end space-x-3 pt-4 border-t border-gray-100">
+                      <button type="button" class="flex items-center px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 font-medium" data-modal-hide="add-student-modal">
+                          <hero-icon-solid name="x-mark" class="h-5 w-5 mr-1"></hero-icon-solid>
+                          Cancel
+                      </button>
+                      <button type="submit" class="flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium">
+                          <hero-icon-solid name="user-plus" class="h-5 w-5 mr-1"></hero-icon-solid>
+                          Add Student
+                      </button>
+                 </div>
+            </form>
+        </div>
     </div>
     
     <div id="add-event-modal" class="modal hidden fixed inset-0 z-30 flex items-center justify-center">
-        <!-- Your original add event modal content -->
+        <div class="modal-backdrop fixed inset-0" data-modal-hide="add-event-modal"></div>
+        <div class="modal-content bg-white p-8 rounded-xl shadow-2xl z-40 w-full max-w-md mx-4">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                <hero-icon-outline name="calendar-days" class="h-6 w-6 text-indigo-500 mr-2"></hero-icon-outline>
+                Add Event or Announcement
+            </h2>
+            <form id="add-event-form" class="space-y-4">
+                 <div>
+                    <label for="event-title" class="block text-sm font-semibold text-gray-700">Title</label>
+                    <input type="text" id="event-title" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
+                </div>
+                 <div>
+                    <label for="event-type" class="block text-sm font-semibold text-gray-700">Type</label>
+                    <select id="event-type" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        <option value="Sports">Sports</option>
+                        <option value="Club Activity">Club Activity</option>
+                        <option value="Announcement">Announcement</option>
+                        <option value="General">General</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="event-date" class="block text-sm font-semibold text-gray-700">Date</label>
+                    <input type="date" id="event-date" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
+                </div>
+                <div>
+                    <label for="event-description" class="block text-sm font-semibold text-gray-700">Description</label>
+                    <textarea id="event-description" rows="3" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"></textarea>
+                </div>
+                <div class="flex justify-end space-x-3 pt-4 border-t border-gray-100">
+                    <button type="button" class="flex items-center px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 font-medium" data-modal-hide="add-event-modal">
+                        <hero-icon-solid name="x-mark" class="h-5 w-5 mr-1"></hero-icon-solid>
+                        Cancel
+                    </button>
+                    <button type="submit" class="flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium">
+                        <hero-icon-solid name="paper-airplane" class="h-5 w-5 mr-1"></hero-icon-solid>
+                        Post Event
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 
     <div id="room-details-modal" class="modal hidden fixed inset-0 z-30 flex items-center justify-center">
-        <!-- Your original room details modal content -->
+        <div class="modal-backdrop fixed inset-0" data-modal-hide="room-details-modal"></div>
+        <div class="modal-content bg-gray-50 rounded-xl shadow-2xl z-40 w-full max-w-3xl mx-4 max-h-[90vh] flex flex-col">
+             <div class="flex justify-between items-center p-6 border-b bg-white rounded-t-xl">
+                 <div class="flex items-center gap-3">
+                     <h2 class="text-xl font-bold text-gray-800" id="modal-room-title">Room Details: A-101</h2>
+                     <span id="modal-room-complaints-badge" class="hidden items-center text-xs font-bold px-3 py-1 bg-red-100 text-red-600 rounded-full">
+                           <hero-icon-solid name="exclamation-circle" class="h-4 w-4 mr-1"></hero-icon-solid>
+                           <span id="modal-room-complaints-count">1</span> Complaint
+                     </span>
+                 </div>
+                 <button data-modal-hide="room-details-modal" class="text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-100 transition duration-150">
+                     <hero-icon-solid name="x-mark" class="h-6 w-6"></hero-icon-solid>
+                 </button>
+             </div>
+             <div class="p-6 overflow-y-auto space-y-6">
+                 <div class="bg-white p-4 rounded-lg shadow-md border-t-4 border-indigo-500">
+                     <div class="grid grid-cols-3 gap-4 text-center">
+                         <div>
+                             <span class="text-sm text-gray-500 font-semibold uppercase tracking-wider">Capacity</span>
+                             <p class="text-2xl font-bold text-gray-800 mt-1" id="modal-room-capacity">2</p>
+                         </div>
+                         <div class="border-l border-r border-gray-200">
+                             <span class="text-sm text-gray-500 font-semibold uppercase tracking-wider">Occupancy</span>
+                             <p class="text-2xl font-bold text-blue-600 mt-1" id="modal-room-occupancy">2</p>
+                         </div>
+                         <div>
+                             <span class="text-sm text-gray-500 font-semibold uppercase tracking-wider">Available Beds</span>
+                             <p class="text-2xl font-bold text-green-600 mt-1" id="modal-room-available">0</p>
+                         </div>
+                     </div>
+                 </div>
+                 <div>
+                     <div class="flex justify-between items-center mb-4">
+                         <h3 class="text-lg font-semibold text-gray-900" id="modal-occupant-title">Current Occupants (2)</h3>
+                         <button id="modal-delete-room-btn" class="flex items-center px-4 py-2 bg-red-600 text-white text-sm font-semibold rounded-lg shadow-md hover:bg-red-700 transition duration-150">
+                             <hero-icon-solid name="trash" class="h-5 w-5 mr-2"></hero-icon-solid>
+                             Delete Room
+                         </button>
+                     </div>
+                     <div id="modal-occupant-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+                 </div>
+                 <div>
+                     <div class="flex items-center gap-2 mb-4">
+                         <hero-icon-solid name="exclamation-triangle" class="h-5 w-5 text-red-600"></hero-icon-solid>
+                         <h3 class="text-lg font-semibold text-gray-900">Open Issues In This Room</h3>
+                     </div>
+                     <div id="modal-issues-container" class="space-y-3"></div>
+                 </div>
+             </div>
+             <div class="p-4 bg-white border-t rounded-b-xl text-right">
+                 <a href="#" id="modal-view-all-complaints" class="text-sm font-medium text-indigo-600 hover:text-indigo-800 hover:underline transition duration-150">
+                     View All Complaint Tickets &rarr;
+                 </a>
+             </div>
+        </div>
     </div>
     
     <div id="add-club-activity-modal" class="modal hidden fixed inset-0 z-30 flex items-center justify-center">
-        <!-- Your original add club activity modal content -->
+        <div class="modal-backdrop fixed inset-0" data-modal-hide="add-club-activity-modal"></div>
+        <div class="modal-content bg-white p-8 rounded-xl shadow-2xl z-40 w-full max-w-md mx-4">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                <hero-icon-outline name="puzzle-piece" class="h-6 w-6 text-indigo-500 mr-2"></hero-icon-outline>
+                Add New Club Activity
+            </h2>
+            <form id="add-club-activity-form" class="space-y-4">
+                <div>
+                    <label for="club-activity-title" class="block text-sm font-semibold text-gray-700">Activity Title</label>
+                    <input type="text" id="club-activity-title" name="title" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="e.g., Inter-Hostel Cricket Finals" required>
+                </div>
+                 <div>
+                    <label for="club-activity-type" class="block text-sm font-semibold text-gray-700">Activity Type</label>
+                    <select id="club-activity-type" name="type" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        <option value="Sports">Sports</option>
+                        <option value="Cultural">Cultural</option>
+                        <option value="Technical">Technical</option>
+                        <option value="Workshop">Workshop</option>
+                        <option value="General">General</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="club-activity-date" class="block text-sm font-semibold text-gray-700">Date</label>
+                    <input type="date" id="club-activity-date" name="date" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
+                </div>
+                <div>
+                    <label for="club-activity-description" class="block text-sm font-semibold text-gray-700">Description</label>
+                    <textarea id="club-activity-description" name="description" rows="3" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="Add relevant details..."></textarea>
+                </div>
+                <div>
+                    <label for="club-activity-image-file" class="block text-sm font-semibold text-gray-700">Upload Image</label>
+                    <input type="file" id="club-activity-image-file" name="clubActivityImage" class="mt-1 block w-full text-sm text-gray-500
+                                 file:mr-4 file:py-2 file:px-4
+                                 file:rounded-full file:border-0
+                                 file:text-sm file:font-semibold
+                                 file:bg-indigo-50 file:text-indigo-700
+                                 hover:file:bg-indigo-100"
+                                 accept="image/*">
+                    <p class="mt-1 text-xs text-gray-500">Upload an image from your device (PNG, JPG, etc.).</p>
+                </div>
+                <div class="flex justify-end space-x-3 pt-4 border-t border-gray-100">
+                    <button type="button" class="flex items-center px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 font-medium" data-modal-hide="add-club-activity-modal">
+                        <hero-icon-solid name="x-mark" class="h-5 w-5 mr-1"></hero-icon-solid>
+                        Cancel
+                    </button>
+                    <button type="submit" class="flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium">
+                        <hero-icon-solid name="paper-airplane" class="h-5 w-5 mr-1"></hero-icon-solid>
+                        Post Activity
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 
     <div id="add-asset-modal" class="modal hidden fixed inset-0 z-30 flex items-center justify-center">
-        <!-- Your original add asset modal content -->
+        <div class="modal-backdrop fixed inset-0" data-modal-hide="add-asset-modal"></div>
+        <div class="modal-content bg-white p-8 rounded-xl shadow-2xl z-40 w-full max-w-md mx-4">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                <hero-icon-outline name="archive-box" class="h-6 w-6 text-indigo-500 mr-2"></hero-icon-outline>
+                Add New Asset to Inventory
+            </h2>
+            <form id="add-asset-form" class="space-y-4">
+                <div>
+                    <label for="asset-type" class="block text-sm font-semibold text-gray-700">Asset Type</label>
+                    <select id="asset-type" name="type" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        <option value="Table">Table</option>
+                        <option value="Chair">Chair</option>
+                        <option value="Bed">Bed</option>
+                        <option value="Mattress">Mattress</option>
+                        <option value="Cupboard">Cupboard</option>
+                        <option value="Fan">Fan</option>
+                        <option value="Light">Light</option>
+                        <option value="System">System (PC)</option>
+                        <option value="Other">Other (Specify)</option>
+                    </select>
+                </div>
+                <div id="asset-name-other-wrapper" class="hidden">
+                    <label for="asset-name-other" class="block text-sm font-semibold text-gray-700">Specify Asset Name</label>
+                    <input type="text" id="asset-name-other" name="name" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="e.g., Study Lamp">
+                </div>
+                <div>
+                    <label for="asset-quantity" class="block text-sm font-semibold text-gray-700">Quantity</label>
+                    <input type="number" id="asset-quantity" name="quantity" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" min="1" value="1" required>
+                </div>
+                            <div>
+                    <label for="asset-description" class="block text-sm font-semibold text-gray-700">Description / Notes</label>
+                    <textarea id="asset-description" name="description" rows="2" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="e.g., Location, condition..."></textarea>
+                </div>
+                <div>
+                    <label for="asset-image-file" class="block text-sm font-semibold text-gray-700">Upload Asset Image</label>
+                    <input type="file" id="asset-image-file" name="assetImage" class="mt-1 block w-full text-sm text-gray-500
+                                 file:mr-4 file:py-2 file:px-4
+                                 file:rounded-full file:border-0
+                                 file:text-sm file:font-semibold
+                                 file:bg-indigo-50 file:text-indigo-700
+                                 hover:file:bg-indigo-100"
+                                 accept="image/*">
+                </div>
+                <div class="flex justify-end space-x-3 pt-4 border-t border-gray-100">
+                    <button type="button" class="flex items-center px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 font-medium" data-modal-hide="add-asset-modal">
+                        <hero-icon-solid name="x-mark" class="h-5 w-5 mr-1"></hero-icon-solid>
+                        Cancel
+                    </button>
+                    <button type="submit" class="flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium">
+                        <hero-icon-solid name="check-badge" class="h-5 w-5 mr-1"></hero-icon-solid>
+                        Save Asset
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 
     <div id="complaint-details-modal" class="modal hidden fixed inset-0 z-30 flex items-center justify-center">
-        <!-- Your original complaint details modal content -->
+        <div class="modal-backdrop fixed inset-0" data-modal-hide="complaint-details-modal"></div>
+        <div class="modal-content bg-white p-8 rounded-xl shadow-2xl z-40 w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                <hero-icon-outline name="clipboard-document-check" class="h-6 w-6 text-indigo-500 mr-2"></hero-icon-outline>
+                Complaint Details
+            </h2>
+            <div id="complaint-details-content" class="space-y-4">
+            </div>
+            <div class="flex justify-end space-x-3 pt-4 mt-6 border-t border-gray-100">
+                <button type="button" class="flex items-center px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 font-medium" data-modal-hide="complaint-details-modal">
+                    <hero-icon-solid name="x-mark" class="h-5 w-5 mr-1"></hero-icon-solid>
+                    Close
+                </button>
+            </div>
+        </div>
     </div>
     
     <script>
@@ -641,6 +956,7 @@
             complaints: []
         }; 
         let eventData = [
+            // Removed emojis from titles
             { id: 1, title: 'Inter-Hostel Cricket Match', type: 'Sports', date: '2025-11-10', description: 'Finals between Men\'s Hostel and Women\'s Hostel.' },
             { id: 2, title: 'Mess Committee Meeting', type: 'Announcement', date: '2025-11-05', description: 'Discussing the new menu for next month.' }
         ];
@@ -651,7 +967,7 @@
         ];
         let currentRoomData = null; 
 
-        // --- 2. DOM Elements ---
+        // --- 2. DOM Elements (IDs remain the same) ---
         const dashboardView = document.getElementById('dashboard-view');
         const detailView = document.getElementById('detail-view');
         const feesView = document.getElementById('fees-view');
@@ -737,7 +1053,7 @@
         // --- 3. THEME/HELPER DATA ---
         const themes = { 
             pink: { border: 'border-pink-500', bg: 'bg-pink-100', text: 'text-pink-600', icon: 'building-office' },
-            blue: { border: 'border-primary-500', bg: 'bg-primary-100', text: 'text-primary-600', icon: 'building-office' },
+            blue: { border: 'border-indigo-500', bg: 'bg-indigo-100', text: 'text-indigo-600', icon: 'building-office' },
             green: { border: 'border-green-500', bg: 'bg-green-100', text: 'text-green-600', icon: 'building-office' },
             purple: { border: 'border-purple-500', bg: 'bg-purple-100', text: 'text-purple-600', icon: 'academic-cap' },
             yellow: { border: 'border-yellow-500', bg: 'bg-yellow-100', text: 'text-yellow-600', icon: 'beaker' },
@@ -746,16 +1062,17 @@
             'Sports': { border: 'border-green-500', bg: 'bg-green-100', text: 'text-green-700' },
             'Club Activity': { border: 'border-purple-500', bg: 'bg-purple-100', text: 'text-purple-700' },
             'Announcement': { border: 'border-red-500', bg: 'bg-red-100', text: 'text-red-700' },
-            'General': { border: 'border-primary-500', bg: 'bg-primary-100', text: 'text-primary-700' },
+            'General': { border: 'border-indigo-500', bg: 'bg-indigo-100', text: 'text-indigo-700' },
         };
         const clubActivityThemes = { 
             'Sports': { border: 'border-orange-500', bg: 'bg-orange-100', text: 'text-orange-700' },
             'Cultural': { border: 'border-pink-500', bg: 'bg-pink-100', text: 'text-pink-700' },
-            'Technical': { border: 'border-primary-500', bg: 'bg-primary-100', text: 'text-primary-700' },
+            'Technical': { border: 'border-indigo-500', bg: 'bg-indigo-100', text: 'text-indigo-700' },
             'Workshop': { border: 'border-yellow-500', bg: 'bg-yellow-100', text: 'text-yellow-700' },
             'General': { border: 'border-gray-500', bg: 'bg-gray-100', text: 'text-gray-700' },
         };
         const getStatus = (current, max) => { 
+            // Corrected text to exclude emojis as we rely on icons in the rendering logic
             if (current >= max) return { text: 'Full', classes: 'bg-red-500 text-white', progress: 'bg-red-500' };
             return { text: 'Available', classes: 'bg-green-500 text-white', progress: 'bg-green-500' };
         };
@@ -770,46 +1087,7 @@
             return null;
         }
 
-        // --- VIEW MANAGEMENT FUNCTIONS ---
-        function hideAllViews() {
-            dashboardView.classList.add('hidden');
-            detailView.classList.add('hidden');
-            feesView.classList.add('hidden');
-            visitorsView.classList.add('hidden');
-            complaintsView.classList.add('hidden');
-        }
-        
-        function showDashboard() {
-            hideAllViews();
-            dashboardView.classList.remove('hidden');
-            loadHostelData();
-        }
-        
-        function showDetailView(blockKey) {
-            hideAllViews();
-            detailView.classList.remove('hidden');
-            renderDetailView(blockKey);
-        }
-        
-        function showFeesView() {
-            hideAllViews();
-            feesView.classList.remove('hidden');
-            renderFeesView();
-        }
-        
-        function showVisitorsView() {
-            hideAllViews();
-            visitorsView.classList.remove('hidden');
-            renderVisitorsView();
-        }
-        
-        function showComplaintsView() {
-            hideAllViews();
-            complaintsView.classList.remove('hidden');
-            loadComplaintsData();
-        }
-
-        // --- COMPLAINT MANAGEMENT FUNCTIONS ---
+        // --- COMPLAINT MANAGEMENT FUNCTIONS (Updated rendering to use icons) ---
 
         async function loadComplaintsData() {
             try {
@@ -826,6 +1104,7 @@
             } catch (error) {
                 console.error('❌ Failed to load complaints data:', error);
                 showError('Failed to load complaints: ' + error.message);
+                // RENDER: Use Heroicon
                 complaintsListContainer.innerHTML = `
                     <tr>
                         <td colspan="7" class="text-center text-red-500 py-6">
@@ -837,7 +1116,9 @@
         }
 
         async function updateComplaintStatus(complaintId, newStatus, adminNotes = '') {
+            // Logic remains unchanged
             try {
+                 // ... fetch logic here ...
                 const res = await fetch(`/api/complaints/${complaintId}`, {
                     method: 'PATCH',
                     headers: { 'Content-Type': 'application/json', },
@@ -865,7 +1146,9 @@
         }
 
         async function addComplaintResponse(complaintId, response) {
+            // Logic remains unchanged
             try {
+                 // ... fetch logic here ...
                 const res = await fetch(`/api/complaints/${complaintId}/response`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', },
@@ -914,6 +1197,7 @@
             });
 
             if (filteredComplaints.length === 0) {
+                // RENDER: Use Heroicon
                 complaintsListContainer.innerHTML = `
                     <tr>
                         <td colspan="7" class="text-center text-gray-500 py-6">
@@ -938,6 +1222,7 @@
                     year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
                 });
 
+                // MAPPING: Use Heroicons and professional names for consistent rendering
                 const complaintIcons = {
                     'Maintenance': 'wrench-screwdriver',
                     'Cleaning': 'trash',
@@ -959,7 +1244,7 @@
                                 </div>
                             </div>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-primary-600 font-medium">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-indigo-600 font-medium">
                             ${complaint.roomNumber}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
@@ -982,7 +1267,7 @@
                             </span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium space-x-2">
-                            <button class="view-complaint-details-btn px-3 py-1 bg-primary-500 text-white text-xs font-medium rounded-md shadow-sm hover:bg-primary-600" data-complaint-id="${complaint._id}">
+                            <button class="view-complaint-details-btn px-3 py-1 bg-indigo-500 text-white text-xs font-medium rounded-md shadow-sm hover:bg-indigo-600" data-complaint-id="${complaint._id}">
                                 <hero-icon-outline name="eye" class="h-4 w-4 inline-block"></hero-icon-outline> View
                             </button>
                             ${complaint.status !== 'Resolved' ? `
@@ -1031,7 +1316,7 @@
                     <div class="mt-4">
                         <h4 class="font-bold text-gray-800 mb-2 border-b pb-1">Admin Responses:</h4>
                         ${complaint.responses.map(response => `
-                            <div class="bg-primary-50 p-3 rounded-lg mb-2 shadow-sm">
+                            <div class="bg-indigo-50 p-3 rounded-lg mb-2 shadow-sm">
                                 <p class="text-sm text-gray-700">${response.response}</p>
                                 <p class="text-xs text-gray-500 mt-1 flex items-center">
                                     <hero-icon-outline name="user-circle" class="h-4 w-4 mr-1"></hero-icon-outline> By ${response.respondedBy} on ${new Date(response.respondedAt).toLocaleDateString()}
@@ -1042,6 +1327,7 @@
                 `;
             }
 
+            // RENDER: Updated detail content with icons and better spacing
             complaintDetailsContent.innerHTML = `
                  <div class="space-y-4">
                      <div class="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-lg border border-gray-200">
@@ -1059,7 +1345,7 @@
                          <div>
                              <label class="block text-xs font-bold text-gray-500 uppercase">Complaint Type</label>
                              <p class="mt-1 text-sm font-semibold text-gray-900 flex items-center">
-                                 <hero-icon-solid name="${iconName}" class="h-5 w-5 text-primary-500 mr-2"></hero-icon-solid>
+                                 <hero-icon-solid name="${iconName}" class="h-5 w-5 text-indigo-500 mr-2"></hero-icon-solid>
                                  ${complaint.complaintType}
                              </p>
                          </div>
@@ -1096,7 +1382,7 @@
                      ${complaint.adminNotes ? `
                          <div>
                              <label class="block text-xs font-bold text-gray-500 uppercase">Admin Notes</label>
-                             <p class="mt-1 text-sm text-gray-900 bg-primary-50 p-3 rounded-lg border border-primary-200">${complaint.adminNotes}</p>
+                             <p class="mt-1 text-sm text-gray-900 bg-indigo-50 p-3 rounded-lg border border-indigo-200">${complaint.adminNotes}</p>
                          </div>
                      ` : ''}
                      
@@ -1105,7 +1391,7 @@
                      <div class="mt-6 border-t pt-4 border-gray-100">
                          <label for="complaint-response" class="block text-sm font-semibold text-gray-700">Add New Response</label>
                          <textarea id="complaint-response" rows="3" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm" placeholder="Enter your response to the student..."></textarea>
-                         <button id="submit-complaint-response" data-complaint-id="${complaint._id}" class="mt-3 px-4 py-2 bg-primary-600 text-white text-sm font-semibold rounded-lg shadow-md hover:bg-primary-700 transition duration-150 flex items-center">
+                         <button id="submit-complaint-response" data-complaint-id="${complaint._id}" class="mt-3 px-4 py-2 bg-indigo-600 text-white text-sm font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition duration-150 flex items-center">
                              <hero-icon-solid name="paper-airplane" class="h-5 w-5 mr-1"></hero-icon-solid>
                              Send Response
                          </button>
@@ -1119,7 +1405,7 @@
         function showSuccess(message) { console.log('✅ ' + message); alert('✅ ' + message); }
         function showError(message) { console.error('❌ ' + message); alert('❌ ' + message); }
 
-        // --- 4. RENDER FUNCTIONS ---
+        // --- 4. RENDER FUNCTIONS (Updated to use icons/text) ---
         async function loadHostelData() {
             try {
                 const res = await fetch('/api/blocks');
@@ -1176,7 +1462,7 @@
                 grandTotalStudents += currentStudents;
 
                 const blockHTML = `
-                    <div class="bg-white rounded-xl card-shadow overflow-hidden border-l-8 ${theme.border} relative transition-all duration-300 hover:shadow-xl hover:scale-[1.02]">
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden border-l-8 ${theme.border} relative transition-all duration-300 hover:shadow-xl hover:scale-[1.02]">
                         <button class="remove-block-btn absolute top-3 right-3 p-1 text-red-500 hover:bg-red-100 rounded-full transition-colors duration-200 z-10" data-block-id="${block._id}" data-block-name="${block.blockName}" title="Delete Block">
                             <hero-icon-outline name="trash" class="h-5 w-5"></hero-icon-outline>
                         </button>
@@ -1214,6 +1500,7 @@
              if (!block) { alert('Error: Could not find block data.'); backToDashboardBtn.click(); return; }
              detailView.dataset.currentHostelKey = block.blockKey;
              const theme = themes[block.blockTheme] || themes.blue;
+             // RENDER: Updated title 
              detailHostelName.innerHTML = `<span class="p-2 ${theme.bg} ${theme.text} rounded-lg mr-2"><hero-icon-solid name="${theme.icon}" class="h-6 w-6 inline-block"></hero-icon-solid></span> ${block.blockName}`;
              let hostelCapacity = 0, hostelOccupancy = 0;
              roomListContainer.innerHTML = '';
@@ -1229,7 +1516,7 @@
                  const imageUrl = room.imageUrl || `https://via.placeholder.com/300x150/e0e0e0/909090?text=${room.roomNumber}`;
                  
                  const roomHTML = `
-                      <div class="room-card bg-white rounded-xl card-shadow overflow-hidden transition-all duration-300 hover:shadow-2xl hover:scale-[1.02] cursor-pointer" data-room-id="${room.roomNumber}" data-room-status="${status.text}">
+                      <div class="room-card bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:scale-[1.02] cursor-pointer" data-room-id="${room.roomNumber}" data-room-status="${status.text}">
                           <img src="${imageUrl}" alt="Room ${room.roomNumber}" class="activity-card-image">
                           <div class="p-5">
                               <div class="flex justify-between items-center mb-2">
@@ -1263,9 +1550,11 @@
             const occupancy = room.students ? room.students.length : 0;
             const available = room.capacity - occupancy;
             modalRoomOccupancy.textContent = occupancy; modalRoomAvailable.textContent = available;
+            // RENDER: Removed emoji
             modalOccupantTitle.textContent = `Current Occupants (${occupancy})`;
             modalOccupantContainer.innerHTML = '';
             if (occupancy === 0) {
+                 // RENDER: Updated to use icon
                 modalOccupantContainer.innerHTML = '<p class="text-gray-500 md:col-span-2 flex items-center"><hero-icon-outline name="user-slash" class="h-5 w-5 mr-1"></hero-icon-outline> This room is currently vacant.</p>';
             } else {
                 room.students.forEach(student => {
@@ -1276,7 +1565,8 @@
                     if (student.year && student.year.toLowerCase().includes('2')) yearColor = 'bg-yellow-100 text-yellow-700';
                     if (student.year && student.year.toLowerCase().includes('1')) yearColor = 'bg-blue-100 text-blue-700'; 
                     
-                    const studentHTML = `<div class="bg-white border rounded-lg p-4 shadow-sm relative"><button class="remove-student-btn absolute top-2 right-2 p-1 text-red-500 hover:bg-red-100 rounded-full transition-colors duration-200 z-10" data-student-id="${student._id}" title="Remove Student"><hero-icon-outline name="user-minus" class="h-5 w-5"></hero-icon-outline></button><span class="absolute top-3 left-3 text-xs font-semibold px-2 py-0.5 ${yearColor} rounded">${student.year || 'N/A'}</span><div class="flex items-center gap-4 mt-8"><img src="${student.profileImageUrl || './default-avatar.png'}" alt="${student.name}" class="flex-shrink-0 h-12 w-12 rounded-full bg-primary-100 object-cover"><div class="overflow-hidden"><h4 class="font-bold text-gray-800 truncate">${student.name}</h4><p class="text-sm text-primary-600 truncate">${student.rollNumber || ''}</p></div></div><div class="mt-4 space-y-2 text-sm text-gray-600"><p class="truncate flex items-center"><strong><hero-icon-outline name="envelope" class="h-4 w-4 mr-1"></hero-icon-outline> Email:</strong> ${student.email || 'N/A'}</p><p class="flex items-center"><strong><hero-icon-outline name="phone" class="h-4 w-4 mr-1"></hero-icon-outline> Phone:</strong> ${student.phone || 'N/A'}</p><p class="flex items-center"><strong><hero-icon-outline name="calendar-days" class="h-4 w-4 mr-1"></hero-icon-outline> Joined:</strong> ${student.joiningDate ? new Date(student.joiningDate).toLocaleDateString() : 'N/A'}</p></div><div class="flex justify-between items-center mt-4 pt-3 border-t"><div><span class="text-xs font-medium text-gray-500 block mb-1">Fee Status:</span><span class="text-sm font-bold px-3 py-1 rounded ${statusColor}">${feeStatus === 'Pending' ? 'Due' : feeStatus}</span></div><a href="/student-profile.html?id=${student._id}" target="_blank" class="view-student-details text-sm font-medium text-primary-600 hover:underline" data-student-id="${student._id}"><hero-icon-outline name="arrow-right" class="h-4 w-4 inline-block ml-1"></hero-icon-outline> View Full Details</a></div></div>`;
+                    // RENDER: Updated student card icons/text
+                    const studentHTML = `<div class="bg-white border rounded-lg p-4 shadow-sm relative"><button class="remove-student-btn absolute top-2 right-2 p-1 text-red-500 hover:bg-red-100 rounded-full transition-colors duration-200 z-10" data-student-id="${student._id}" title="Remove Student"><hero-icon-outline name="user-minus" class="h-5 w-5"></hero-icon-outline></button><span class="absolute top-3 left-3 text-xs font-semibold px-2 py-0.5 ${yearColor} rounded">${student.year || 'N/A'}</span><div class="flex items-center gap-4 mt-8"><img src="${student.profileImageUrl || './default-avatar.png'}" alt="${student.name}" class="flex-shrink-0 h-12 w-12 rounded-full bg-indigo-100 object-cover"><div class="overflow-hidden"><h4 class="font-bold text-gray-800 truncate">${student.name}</h4><p class="text-sm text-indigo-600 truncate">${student.rollNumber || ''}</p></div></div><div class="mt-4 space-y-2 text-sm text-gray-600"><p class="truncate flex items-center"><strong><hero-icon-outline name="envelope" class="h-4 w-4 mr-1"></hero-icon-outline> Email:</strong> ${student.email || 'N/A'}</p><p class="flex items-center"><strong><hero-icon-outline name="phone" class="h-4 w-4 mr-1"></hero-icon-outline> Phone:</strong> ${student.phone || 'N/A'}</p><p class="flex items-center"><strong><hero-icon-outline name="calendar-days" class="h-4 w-4 mr-1"></hero-icon-outline> Joined:</strong> ${student.joiningDate ? new Date(student.joiningDate).toLocaleDateString() : 'N/A'}</p></div><div class="flex justify-between items-center mt-4 pt-3 border-t"><div><span class="text-xs font-medium text-gray-500 block mb-1">Fee Status:</span><span class="text-sm font-bold px-3 py-1 rounded ${statusColor}">${feeStatus === 'Pending' ? 'Due' : feeStatus}</span></div><a href="/student-profile.html?id=${student._id}" target="_blank" class="view-student-details text-sm font-medium text-indigo-600 hover:underline" data-student-id="${student._id}"><hero-icon-outline name="arrow-right" class="h-4 w-4 inline-block ml-1"></hero-icon-outline> View Full Details</a></div></div>`;
                     
                     modalOccupantContainer.innerHTML += studentHTML;
                 });
@@ -1285,6 +1575,7 @@
             const complaints = room.complaints || []; 
             if (complaints.length === 0 && room.roomNumber === 'A-101') { complaints.push({ title: 'Broken AC/Leakage', status: 'Critical', _id: 'fake123' }); } 
             if (complaints.length === 0) {
+                 // RENDER: Updated to use icon
                 modalIssuesContainer.innerHTML = '<p class="text-gray-500 flex items-center"><hero-icon-solid name="check-circle" class="h-5 w-5 mr-1 text-green-500"></hero-icon-solid> No open issues reported for this room.</p>';
                 modalRoomComplaintsBadge.classList.add('hidden');
             } else {
@@ -1301,6 +1592,7 @@
         function renderEvents() {
              eventListContainer.innerHTML = '';
             if (eventData.length === 0) {
+                 // RENDER: Updated to use icon
                 eventListContainer.innerHTML = `<p class="text-gray-500 col-span-full flex items-center"><hero-icon-solid name="calendar-days" class="h-5 w-5 mr-2 text-gray-400"></hero-icon-solid> No events or announcements posted yet.</p>`; return;
             }
             eventData.slice().reverse().forEach(event => {
@@ -1308,7 +1600,7 @@
                 const formattedDate = new Date(event.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
                 
                 const eventHTML = `
-                    <div class="bg-white rounded-xl card-shadow overflow-hidden border-l-8 ${theme.border} transition-all duration-300 hover:shadow-xl hover:scale-[1.02]">
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden border-l-8 ${theme.border} transition-all duration-300 hover:shadow-xl hover:scale-[1.02]">
                         <div class="p-5">
                             <div class="flex justify-between items-start mb-2">
                                 <h3 class="text-xl font-bold text-gray-900">${event.title}</h3>
@@ -1334,6 +1626,7 @@
                     renderClubActivities(data.activities); 
                 } else { throw new Error(data.message); }
             } catch (error) {
+                // RENDER: Updated to use icon
                 clubActivityContainer.innerHTML = `<p class="text-red-500 col-span-full flex items-center"><hero-icon-solid name="exclamation-circle" class="h-5 w-5 inline-block mr-1"></hero-icon-solid> Error: Could not load activities. ${error.message}</p>`;
             }
         }
@@ -1341,6 +1634,7 @@
         function renderClubActivities(activities) { 
             clubActivityContainer.innerHTML = '';
             if (!activities || activities.length === 0) {
+                 // RENDER: Updated to use icon
                 clubActivityContainer.innerHTML = `<p class="text-gray-500 col-span-full flex items-center"><hero-icon-solid name="puzzle-piece" class="h-5 w-5 mr-2 text-gray-400"></hero-icon-solid> No club activities posted yet.</p>`;
                 return;
             }
@@ -1350,7 +1644,7 @@
                 const imageUrl = activity.imageUrl || `https://via.placeholder.com/300x150/${theme.bg.split('-')[1].slice(0, 2)}00/FFFFFF?text=${activity.type.replace(' ', '+')}`; 
                 
                 const activityHTML = `
-                    <div class="bg-white rounded-xl card-shadow overflow-hidden border-l-8 ${theme.border} relative transition-all duration-300 hover:shadow-xl hover:scale-[1.02] flex flex-col">
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden border-l-8 ${theme.border} relative transition-all duration-300 hover:shadow-xl hover:scale-[1.02] flex flex-col">
                         <button class="remove-activity-btn absolute top-3 right-3 p-1 text-red-500 hover:bg-red-100 rounded-full transition-colors duration-200 z-10" data-activity-id="${activity._id}" data-activity-title="${activity.title}" title="Delete Activity">
                             <hero-icon-outline name="trash" class="h-5 w-5"></hero-icon-outline>
                         </button>
@@ -1381,6 +1675,7 @@
                     renderAssets(appState.assets); 
                 } else { throw new Error(data.message); }
             } catch (error) {
+                // RENDER: Updated to use icon
                 assetInventoryContainer.innerHTML = `<p class="text-red-500 col-span-full flex items-center"><hero-icon-solid name="exclamation-circle" class="h-5 w-5 inline-block mr-1"></hero-icon-solid> Error: Could not load assets. ${error.message}</p>`;
             }
         }
@@ -1388,6 +1683,7 @@
         function renderAssets(assets) {
             assetInventoryContainer.innerHTML = '';
             if (!assets || assets.length === 0) {
+                // RENDER: Updated to use icon
                 assetInventoryContainer.innerHTML = `<p class="text-gray-500 col-span-full flex items-center"><hero-icon-solid name="archive-box" class="h-5 w-5 mr-2 text-gray-400"></hero-icon-solid> No assets found in inventory.</p>`;
                 return;
             }
@@ -1396,6 +1692,7 @@
                 const assetName = asset.name;
                 const imageUrl = asset.imageUrl || `https://via.placeholder.com/300x150/e0e0e0/909090?text=${assetName.replace(' ', '+')}`;
                 
+                // MAPPING: Use Heroicons and professional names
                 const assetIcons = {
                     'Table': 'table-cells', 'Chair': 'chair', 'Bed': 'cube', 'Mattress': 'cube',
                     'Cupboard': 'archive-box', 'Fan': 'wind', 'Light': 'light-bulb', 'System': 'computer-desktop', 'Other': 'document-text'
@@ -1403,7 +1700,7 @@
                 const iconName = assetIcons[asset.type] || 'document-text';
 
                 const assetHTML = `
-                    <div class="bg-white rounded-xl card-shadow overflow-hidden border-l-4 border-primary-200 transition-all duration-300 hover:shadow-xl hover:scale-[1.02] flex flex-col relative">
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden border-l-4 border-indigo-200 transition-all duration-300 hover:shadow-xl hover:scale-[1.02] flex flex-col relative">
                         <button class="remove-asset-btn absolute top-3 right-3 p-1 text-red-500 hover:bg-red-100 rounded-full transition-colors duration-200 z-10" data-asset-id="${asset._id}" data-asset-name="${assetName}" title="Delete Asset">
                             <hero-icon-outline name="trash" class="h-5 w-5"></hero-icon-outline>
                         </button>
@@ -1411,9 +1708,9 @@
                         <div class="p-5 flex flex-col flex-grow">
                             <div class="flex justify-between items-start mb-2">
                                 <h3 class="text-lg font-bold text-gray-900 flex items-center">
-                                    <hero-icon-solid name="${iconName}" class="h-5 w-5 mr-2 text-primary-500"></hero-icon-solid> ${assetName}
+                                    <hero-icon-solid name="${iconName}" class="h-5 w-5 mr-2 text-indigo-500"></hero-icon-solid> ${assetName}
                                 </h3>
-                                <span class="text-2xl font-extrabold text-primary-600">x ${asset.quantity}</span>
+                                <span class="text-2xl font-extrabold text-indigo-600">x ${asset.quantity}</span>
                             </div>
                             <p class="text-sm text-gray-700 flex-grow">${asset.description || 'No description provided.'}</p>
                         </div>
@@ -1443,6 +1740,7 @@
             });
 
             if (filteredStudents.length === 0) {
+                 // RENDER: Updated to use icon
                 feesStudentListContainer.innerHTML = `<tr><td colspan="5" class="text-center text-gray-500 py-6 flex items-center justify-center"><hero-icon-solid name="user-circle" class="h-5 w-5 inline-block mr-1 text-gray-400"></hero-icon-solid> No students match the criteria.</td></tr>`;
                 return;
             }
@@ -1450,7 +1748,8 @@
             filteredStudents.forEach(student => {
                 const isPaid = student.feeStatus === 'Paid';
                 const statusClass = isPaid ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700';
-                const buttonClass = isPaid ? 'bg-yellow-500 hover:bg-yellow-600' : 'bg-primary-600 hover:bg-primary-700';
+                // Buttons updated to Indigo colors and icons
+                const buttonClass = isPaid ? 'bg-yellow-500 hover:bg-yellow-600' : 'bg-indigo-600 hover:bg-indigo-700';
                 const buttonIcon = isPaid ? 'clock' : 'check';
                 const buttonText = isPaid ? 'Mark Pending' : 'Mark Paid';
 
@@ -1472,7 +1771,7 @@
                             <div class="text-xs text-gray-500">${student.department || 'N/A'}</div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                            ${student.blockName} / <strong class="text-primary-600">${student.roomNumber}</strong>
+                            ${student.blockName} / <strong class="text-indigo-600">${student.roomNumber}</strong>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${statusClass}">
@@ -1503,6 +1802,7 @@
             });
             
             if (filteredLogs.length === 0) {
+                 // RENDER: Updated to use icon
                 visitorLogContainer.innerHTML = `<tr><td colspan="6" class="text-center text-gray-500 py-6 flex items-center justify-center"><hero-icon-solid name="document-text" class="h-5 w-5 inline-block mr-1 text-gray-400"></hero-icon-solid> No visitor logs match the criteria.</td></tr>`;
                 return;
             }
@@ -1512,7 +1812,7 @@
                     <tr class="hover:bg-gray-50">
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">${log.visitorName}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${log.studentName}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-primary-600 font-medium">${log.roomNumber}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-indigo-600 font-medium">${log.roomNumber}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${log.date}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600 font-medium">${log.timeIn}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-medium">${log.timeOut || 'N/A'}</td>
@@ -1542,6 +1842,14 @@
                 modal.classList.add('hidden');
             }, 300); 
         }
+        
+        function hideAllViews() {
+            dashboardView.classList.add('hidden');
+            detailView.classList.add('hidden');
+            feesView.classList.add('hidden');
+            visitorsView.classList.add('hidden');
+            complaintsView.classList.add('hidden');
+        }
 
         document.addEventListener('click', (e) => {
             if (e.target.dataset.modalHide) {
@@ -1549,26 +1857,56 @@
             }
         });
 
-        // Event Listeners for Navigation
-        backToDashboardBtn.addEventListener('click', showDashboard);
-        backToDashboardFromFeesBtn.addEventListener('click', showDashboard);
-        backToDashboardFromVisitorsBtn.addEventListener('click', showDashboard);
-        backToDashboardFromComplaintsBtn.addEventListener('click', showDashboard);
-        
-        showFeesViewBtn.addEventListener('click', showFeesView);
-        showVisitorsViewBtn.addEventListener('click', showVisitorsView);
-        showComplaintsViewBtn.addEventListener('click', showComplaintsView);
+        // ==========================================================
+        // FIX: Ensure all 'Back to Dashboard' buttons execute the core logic
+        //      (hide views + show dashboard + reload dashboard data)
+        // ==========================================================
+
+        backToDashboardBtn.addEventListener('click', () => {
+            hideAllViews();
+            dashboardView.classList.remove('hidden');
+            detailView.dataset.currentHostelKey = '';
+            currentRoomData = null;
+            loadHostelData();
+        });
+
+        // Fees View Back Button
+        backToDashboardFromFeesBtn.addEventListener('click', () => {
+            hideAllViews();
+            dashboardView.classList.remove('hidden');
+            loadHostelData(); // Added to refresh dashboard data
+        });
+
+        // Visitors View Back Button
+        backToDashboardFromVisitorsBtn.addEventListener('click', () => {
+            hideAllViews();
+            dashboardView.classList.remove('hidden');
+            loadHostelData(); // Added to refresh dashboard data
+        });
+
+        // Complaints View Back Button
+        backToDashboardFromComplaintsBtn.addEventListener('click', () => {
+            hideAllViews();
+            dashboardView.classList.remove('hidden');
+            loadHostelData(); // Added to refresh dashboard data
+        });
+
+        // ==========================================================
+        // END FIX
+        // ==========================================================
 
         hostelBlockContainer.addEventListener('click', (e) => {
             const link = e.target.closest('.block-link');
             if (link) {
                 e.preventDefault();
                 const blockKey = link.dataset.hostelKey;
-                showDetailView(blockKey);
+                renderDetailView(blockKey);
+                hideAllViews();
+                detailView.classList.remove('hidden');
             }
         });
         
-        // --- 6. ASSET ASSIGNMENT LOGIC ---
+        // --- 6. ASSET ASSIGNMENT LOGIC (Updated rendering to use icons) ---
         function getAssetOptionsHTML() {
             let optionsHTML = '<option value="" disabled selected>Select asset...</option>';
             const availableAssets = appState.assets.filter(a => a.quantity > 0);
@@ -1588,19 +1926,22 @@
             if(noAssetsMsg) noAssetsMsg.remove();
 
             if (assetOptions.includes("No assets")) {
+                 // RENDER: Updated to use icon
                 if (!container.querySelector('.asset-assignment-row')) {
                      container.innerHTML = '<p class="text-sm text-gray-500 no-assets-msg flex items-center"><hero-icon-outline name="archive-box-x-mark" class="h-4 w-4 mr-1"></hero-icon-outline> No assets in stock to assign.</p>';
                 }
                 return;
             }
             
+          
             const row = document.createElement('div');
+            // RENDER: Adjusted grid layout/classes for new look
             row.className = 'asset-assignment-row grid grid-cols-4 gap-3 items-center'; 
             row.innerHTML = `
-                <select name="assignedAssetName" class="asset-select col-span-2 block w-full rounded-lg border-gray-300 shadow-sm text-sm focus:border-primary-500 focus:ring-primary-500">
+                <select name="assignedAssetName" class="asset-select col-span-2 block w-full rounded-lg border-gray-300 shadow-sm text-sm focus:border-indigo-500 focus:ring-indigo-500">
                     ${assetOptions}
                 </select>
-                <input type="number" name="assignedAssetQty" value="1" min="1" class="asset-qty block w-full rounded-lg border-gray-300 shadow-sm text-sm focus:border-primary-500 focus:ring-primary-500" placeholder="Qty">
+                <input type="number" name="assignedAssetQty" value="1" min="1" class="asset-qty block w-full rounded-lg border-gray-300 shadow-sm text-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="Qty">
                 <button type="button" class="remove-asset-row-btn text-red-500 hover:text-red-700 p-1 rounded-full hover:bg-red-50 transition duration-150">
                     <hero-icon-solid name="minus-circle" class="h-5 w-5"></hero-icon-solid>
                 </button>
@@ -1608,6 +1949,7 @@
             
             row.querySelector('.remove-asset-row-btn').addEventListener('click', () => {
                 row.remove();
+                 // RENDER: Updated to use icon
                 if (!container.querySelector('.asset-assignment-row') && assetOptions.includes("No assets")) {
                      container.innerHTML = '<p class="text-sm text-gray-500 no-assets-msg flex items-center"><hero-icon-outline name="archive-box-x-mark" class="h-4 w-4 mr-1"></hero-icon-outline> No assets in stock to assign.</p>';
                 }
@@ -1651,7 +1993,7 @@
             return assignedAssets;
         }
 
-        // --- 7. FORM & DATA HANDLERS ---
+        // --- 7. FORM & DATA HANDLERS (Logic unchanged) ---
         addBlockForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const blockName = document.getElementById('block-name').value;
@@ -1839,7 +2181,7 @@
             }
         });
 
-        // --- 8. DETAIL VIEW & MODAL LISTENERS ---
+        // --- 8. DETAIL VIEW & MODAL LISTENERS (Logic maintained) ---
         function filterAndSearchRooms() {
             const searchTerm = roomSearchInput.value.toLowerCase();
             const filterTerm = roomFilterSelect.value;
@@ -1849,6 +2191,7 @@
                 const roomId = card.dataset.roomId.toLowerCase();
                 const roomStatus = card.dataset.roomStatus;
                 const searchMatch = roomId.includes(searchTerm);
+                // FIX: Use 'Full' and 'Available' text for comparison
                 const filterMatch = (filterTerm === 'All') || (filterTerm === 'Full' && roomStatus === 'Full') || (filterTerm === 'Available' && roomStatus === 'Available');
                 card.style.display = (searchMatch && filterMatch) ? 'block' : 'none';
             });
@@ -1912,7 +2255,7 @@
             }
         });
         
-        // --- 9. DELETE HANDLERS ---
+        // --- 9. DELETE HANDLERS (Logic maintained) ---
         hostelBlockContainer.addEventListener('click', async (e) => {
             const button = e.target.closest('.remove-block-btn');
             if (button) {
@@ -1967,7 +2310,7 @@
             }
         });
 
-        // --- 10. "SHOW MODAL" BUTTON LISTENERS ---
+        // --- 10. "SHOW MODAL" BUTTON LISTENERS (Logic maintained) ---
         showAddBlockModalBtn.addEventListener('click', () => showModal('add-block-modal'));
         
         showAddRoomModalBtn.addEventListener('click', () => {
@@ -1986,18 +2329,38 @@
         showAddClubActivityModalBtn.addEventListener('click', () => showModal('add-club-activity-modal'));
         showAddAssetModalBtn.addEventListener('click', () => showModal('add-asset-modal')); 
 
-        // Complaints filtering and search
+        // View navigation listeners (Logic maintained)
+        showFeesViewBtn.addEventListener('click', () => {
+            hideAllViews();
+            feesView.classList.remove('hidden');
+            renderFeesView();
+        });
+        
+        showVisitorsViewBtn.addEventListener('click', () => {
+            hideAllViews();
+            visitorsView.classList.remove('hidden');
+            visitorDateFilter.value = new Date().toISOString().split('T')[0];
+            renderVisitorsView();
+        });
+        
+        showComplaintsViewBtn.addEventListener('click', () => {
+            hideAllViews();
+            complaintsView.classList.remove('hidden');
+            loadComplaintsData();
+        });
+        
+        // Complaints filtering and search (Logic maintained)
         complaintSearchInput.addEventListener('input', renderComplaintsView);
         complaintStatusFilter.addEventListener('change', renderComplaintsView);
         complaintTypeFilter.addEventListener('change', renderComplaintsView);
 
-        // Refresh complaints
+        // Refresh complaints (Logic maintained)
         refreshComplaintsBtn.addEventListener('click', () => {
             loadComplaintsData();
             showSuccess('Complaints refreshed');
         });
 
-        // Complaint actions
+        // Complaint actions (Logic maintained)
         complaintsListContainer.addEventListener('click', async (e) => {
             const viewBtn = e.target.closest('.view-complaint-details-btn');
             const statusBtn = e.target.closest('.update-complaint-status-btn');
@@ -2023,7 +2386,7 @@
             }
         });
 
-        // Add response to complaint
+        // Add response to complaint (Logic maintained)
         complaintDetailsContent.addEventListener('click', async (e) => {
             if (e.target.id === 'submit-complaint-response') {
                 const complaintId = e.target.dataset.complaintId;
@@ -2038,7 +2401,7 @@
             }
         });
 
-        // --- 11. OTHER LISTENERS ---
+        // --- 11. OTHER LISTENERS (Logic maintained) ---
         adminLogoutBtn.addEventListener('click', () => {
             if (confirm('Are you sure you want to log out?')) {
                 window.location.href = '/login.html';
@@ -2063,8 +2426,9 @@
             }
         });
 
-        // --- 12. INITIALIZE APP ---
+        // --- 12. INITIALIZE APP (Logic maintained) ---
         function initApp() {
+            // Ensure only the dashboard is visible on load
             hideAllViews();
             dashboardView.classList.remove('hidden');
 
