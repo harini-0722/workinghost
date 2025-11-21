@@ -162,7 +162,8 @@ async function loadSettings() {
                 document.getElementById('election-date-2-title').value = dates.d2_title || '';
                 document.getElementById('election-date-2-date').value = dates.d2_date || '';
                 document.getElementById('election-date-3-title').value = dates.d3_title || '';
-                document.getElementById('election-date-3-date').value = dates.d3_date || '';
+                document.getElementById('election-date-3-date').value = dates.d3_dat
+                e || '';
                 document.getElementById('election-date-4-title').value = dates.d4_title || '';
                 document.getElementById('election-date-4-date').value = dates.d4_date || '';
             }

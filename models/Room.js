@@ -9,6 +9,8 @@ const roomSchema = new Schema({
     },
     floor: {
         type: String,
+
+
         required: true
     },
     capacity: {
@@ -28,6 +30,7 @@ const roomSchema = new Schema({
     },
     students: [{
         type: Schema.Types.ObjectId,
+
         ref: 'Student'
     }],
 
