@@ -39,38 +39,6 @@
         }
         /* Custom style to maintain space where the emoji/letter placeholder was */
         .icon-space { display: inline-block; width: 0.5em; overflow: hidden; }
-
-        /* Custom Styles for Donut/Pie Charts in Cards (using ring-style logic) */
-        .chart-container {
-            position: relative;
-            height: 5rem; /* h-20 */
-            width: 5rem;  /* w-20 */
-            flex-shrink: 0;
-        }
-        .chart-svg {
-            transform: rotate(-90deg);
-        }
-        .chart-base {
-            stroke-width: 5;
-            fill: none;
-            stroke: #e5e7eb; /* Light gray base */
-        }
-        .chart-ring {
-            stroke-width: 5;
-            fill: none;
-            transition: stroke-dashoffset 0.5s ease-out;
-            stroke-linecap: round;
-        }
-        .chart-icon-center {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            padding: 0.75rem; /* p-3 */
-            background-color: white;
-            border-radius: 9999px; /* rounded-full */
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06); /* shadow-md */
-        }
     </style>
 </head>
 <body class="bg-blue-50 min-h-screen flex flex-col">
@@ -109,7 +77,6 @@
     <main class="mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-grow">
         <div id="dashboard-view">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                
                 <div class="bg-indigo-50 p-5 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
                     <div class="flex justify-between items-start">
                         <div>
@@ -117,22 +84,11 @@
                             <p class="text-3xl font-extrabold text-indigo-900 mt-2" id="stat-total-capacity">0</p>
                             <p class="text-sm text-indigo-900 opacity-60">Total Hostel Units</p>
                         </div>
-                        <div class="chart-container">
-                            <svg class="h-full w-full chart-svg" width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
-                                <circle cx="18" cy="18" r="16" class="chart-base text-indigo-100" stroke-width="5" stroke="#e0e7ff"></circle>
-                                <circle cx="18" cy="18" r="16" class="chart-ring text-indigo-500" 
-                                    stroke-width="5" 
-                                    stroke-dasharray="100.53" 
-                                    stroke-dashoffset="100.53" 
-                                    id="stat-capacity-ring"></circle>
-                            </svg>
-                            <div class="chart-icon-center">
-                                <hero-icon-solid name="building-office-2" class="h-6 w-6 text-indigo-500"></hero-icon-solid>
-                            </div>
+                        <div class="p-3 bg-white rounded-full shadow-md">
+                            <hero-icon-outline name="building-office-2" class="h-6 w-6 text-indigo-500"></hero-icon-outline>
                         </div>
                     </div>
                 </div>
-
                 <div class="bg-amber-50 p-5 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
                     <div class="flex justify-between items-start">
                         <div>
@@ -156,7 +112,6 @@
                         </div>
                     </div>
                 </div>
-                
                 <div class="bg-red-50 p-5 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
                     <div class="flex justify-between items-start">
                         <div>
@@ -164,27 +119,16 @@
                             <p class="text-3xl font-extrabold text-red-900 mt-2" id="stat-open-complaints">0</p>
                             <p class="text-sm text-red-900 opacity-60">Pending Resolution</p>
                         </div>
-                        <div class="chart-container">
-                            <svg class="h-full w-full chart-svg" width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
-                                <circle cx="18" cy="18" r="16" class="chart-base text-red-100" stroke-width="5" stroke="#fee2e2"></circle>
-                                <circle cx="18" cy="18" r="16" class="chart-ring text-red-500" 
-                                    stroke-width="5" 
-                                    stroke-dasharray="100.53" 
-                                    stroke-dashoffset="100.53" 
-                                    id="stat-complaints-ring"></circle>
-                            </svg>
-                            <div class="chart-icon-center">
-                                <hero-icon-solid name="exclamation-triangle" class="h-6 w-6 text-red-500"></hero-icon-solid>
-                            </div>
+                        <div class="p-3 bg-white rounded-full shadow-md">
+                            <hero-icon-outline name="exclamation-triangle" class="h-6 w-6 text-red-500"></hero-icon-outline>
                         </div>
                     </div>
                 </div>
-
                 <div class="bg-emerald-50 p-5 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
                     <div class="flex justify-between items-start">
                         <div>
                             <span class="text-sm font-medium text-emerald-900 opacity-70">DAILY ATTENDANCE</span>
-                            <p class="text-3xl font-extrabold text-emerald-900 mt-2" id="stat-attendance-percent">0%</p>
+                            <p class="text-3xl font-extrabold text-emerald-900 mt-2" id="stat-attendance-percent">98%</p>
                             <p class="text-sm text-emerald-900 opacity-60">Latest Check-in Rate</p>
                         </div>
                         <div class="relative h-20 w-20 flex-shrink-0">
@@ -193,17 +137,16 @@
                                 <circle cx="18" cy="18" r="16" fill="none" class="progress-ring-circle text-emerald-400" 
                                     stroke-width="5" 
                                     stroke-dasharray="100" 
-                                    stroke-dashoffset="100" 
+                                    stroke-dashoffset="2" 
                                     stroke-linecap="round"
                                     id="stat-attendance-ring"></circle>
                             </svg>
                             <div class="absolute top-0 left-0 flex h-full w-full items-center justify-center">
-                                <span class="progress-ring-text text-emerald-600" id="stat-attendance-label">0%</span>
+                                <span class="progress-ring-text text-emerald-600" id="stat-attendance-label">98%</span>
                             </div>
                         </div>
                     </div>
                 </div>
-                
                 <div id="show-fees-view-btn" class="bg-teal-50 p-5 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer">
                     <div class="flex justify-between items-start">
                         <div>
@@ -211,22 +154,11 @@
                             <p class="text-3xl font-extrabold text-teal-900 mt-2" id="stat-fees-pending">0 Pending</p>
                             <p class="text-sm text-teal-900 opacity-60">Total Dues</p>
                         </div>
-                        <div class="chart-container">
-                            <svg class="h-full w-full chart-svg" width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
-                                <circle cx="18" cy="18" r="16" class="chart-base text-teal-100" stroke-width="5" stroke="#ccfbf1"></circle>
-                                <circle cx="18" cy="18" r="16" class="chart-ring text-teal-500" 
-                                    stroke-width="5" 
-                                    stroke-dasharray="100.53" 
-                                    stroke-dashoffset="100.53" 
-                                    id="stat-fees-ring"></circle>
-                            </svg>
-                            <div class="chart-icon-center">
-                                <hero-icon-solid name="banknotes" class="h-6 w-6 text-teal-500"></hero-icon-solid>
-                            </div>
+                        <div class="p-3 bg-white rounded-full shadow-md">
+                            <hero-icon-outline name="banknotes" class="h-6 w-6 text-teal-500"></hero-icon-outline>
                         </div>
                     </div>
                 </div>
-
                 <div id="show-visitors-view-btn" class="bg-sky-50 p-5 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer">
                     <div class="flex justify-between items-start">
                         <div>
@@ -234,49 +166,12 @@
                             <p class="text-3xl font-extrabold text-sky-900 mt-2" id="stat-visitors-today">0 Today</p>
                             <p class="text-sm text-sky-900 opacity-60">Current Entries</p>
                         </div>
-                        <div class="chart-container">
-                            <svg class="h-full w-full chart-svg" width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
-                                <circle cx="18" cy="18" r="16" class="chart-base text-sky-100" stroke-width="5" stroke="#e0f2fe"></circle>
-                                <circle cx="18" cy="18" r="16" class="chart-ring text-sky-500" 
-                                    stroke-width="5" 
-                                    stroke-dasharray="100.53" 
-                                    stroke-dashoffset="100.53" 
-                                    id="stat-visitors-ring"></circle>
-                            </svg>
-                            <div class="chart-icon-center">
-                                <hero-icon-solid name="identification" class="h-6 w-6 text-sky-500"></hero-icon-solid>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-white p-5 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <span class="text-sm font-medium text-gray-900 opacity-70">ANNOUNCEMENTS</span>
-                            <p class="text-3xl font-extrabold text-gray-900 mt-2" id="stat-announcements">0</p>
-                            <p class="text-sm text-gray-900 opacity-60">New this week</p>
-                        </div>
                         <div class="p-3 bg-white rounded-full shadow-md">
-                            <hero-icon-outline name="megaphone" class="h-6 w-6 text-gray-500"></hero-icon-outline>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="hidden lg:block bg-white p-5 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <span class="text-sm font-medium text-gray-900 opacity-70">AVAILABLE ASSETS</span>
-                            <p class="text-3xl font-extrabold text-gray-900 mt-2" id="stat-available-assets">0</p>
-                            <p class="text-sm text-gray-900 opacity-60">Total Stock</p>
-                        </div>
-                        <div class="p-3 bg-white rounded-full shadow-md">
-                            <hero-icon-outline name="archive-box-arrow-down" class="h-6 w-6 text-gray-500"></hero-icon-outline>
+                            <hero-icon-outline name="identification" class="h-6 w-6 text-sky-500"></hero-icon-outline>
                         </div>
                     </div>
                 </div>
             </div>
-            
             <div class="mt-10">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
                     <h2 class="text-2xl font-semibold text-gray-900"><span class="icon-space"> </span>Hostel Block Summary</h2>
@@ -286,7 +181,6 @@
                     </button>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="hostel-block-container">
-                    <p class="text-gray-500 col-span-full">No hostel blocks found. Add one to get started!</p>
                 </div>
             </div>
             <div class="mt-10">
@@ -298,7 +192,6 @@
                     </button>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="event-list-container">
-                    <p class="text-gray-500 col-span-full">No events or announcements posted yet.</p>
                 </div>
             </div>
             <div class="mt-10">
@@ -672,7 +565,7 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-700"><span class="icon-space"> </span>Assign Assets to Student</label>
                     <div id="student-asset-assignment-container" class="mt-2 space-y-3">
-                                </div>
+                            </div>
                     <button type="button" id="add-student-asset-row-btn" class="mt-2 text-sm font-medium text-blue-600 hover:text-blue-800 flex items-center">
                         <hero-icon-solid name="plus-circle" class="h-5 w-5 mr-1"></hero-icon-solid>
                         Add Asset
@@ -738,21 +631,21 @@
                     <div class="flex gap-4 text-center">
                         <div class="flex-1">
                             <span class="text-sm text-gray-500"><span class="icon-space"> </span>Capacity</span>
-                            <p class="text-2xl font-bold text-gray-800" id="modal-room-capacity">0</p>
+                            <p class="text-2xl font-bold text-gray-800" id="modal-room-capacity">2</p>
                         </div>
                         <div class="flex-1">
                             <span class="text-sm text-gray-500"><span class="icon-space"> </span>Occupancy</span>
-                            <p class="text-2xl font-bold text-blue-600" id="modal-room-occupancy">0</p>
+                            <p class="text-2xl font-bold text-blue-600" id="modal-room-occupancy">2</p>
                         </div>
                         <div class="flex-1">
-                            <span class="text-sm text-gray-500"><span class="icon-space"> </span>Available Beds: </span>
+                            <span class="text-sm text-gray-500"><span class="icon-space"> </span>Available Beds</span>
                             <p class="text-2xl font-bold text-green-600" id="modal-room-available">0</p>
                         </div>
                     </div>
                 </div>
                 <div>
                     <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-lg font-semibold text-gray-900" id="modal-occupant-title"><span class="icon-space"> </span>Current Occupants (0)</h3>
+                        <h3 class="text-lg font-semibold text-gray-900" id="modal-occupant-title"><span class="icon-space"> </span>Current Occupants (2)</h3>
                         <button id="modal-delete-room-btn" class="flex items-center px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-lg shadow-md hover:bg-red-700">
                             <hero-icon-solid name="trash" class="h-5 w-5 mr-2"></hero-icon-solid>
                             <span class="icon-space"> </span>Delete Room
@@ -881,14 +774,21 @@
     </div>
     <script>
     document.addEventListener('DOMContentLoaded', () => {
-        // --- 1. GLOBAL STATE (No Dummy Data) ---
+        // --- 1. GLOBAL STATE ---
         let appState = { 
             blocks: [], 
             assets: [],
             complaints: []
         }; 
-        let eventData = []; 
-        let visitorLogData = [];
+        let eventData = [
+            { id: 1, title: 'Inter-Hostel Cricket Match', type: 'Sports', date: '2025-11-10', description: 'Finals between Men\'s Hostel and Women\'s Hostel.' },
+            { id: 2, title: 'Mess Committee Meeting', type: 'Announcement', date: '2025-11-05', description: 'Discussing the new menu for next month.' }
+        ];
+        let visitorLogData = [
+            { id: 1, visitorName: 'Ramesh Kumar', studentName: 'Priya Sharma', roomNumber: 'A-101', date: '2025-11-05', timeIn: '09:00 AM', timeOut: '10:30 AM' },
+            { id: 2, visitorName: 'Sita Devi', studentName: 'Rohan Verma', roomNumber: 'B-205', date: '2025-11-05', timeIn: '10:00 AM', timeOut: '11:00 AM' },
+            { id: 3, visitorName: 'Arjun Singh', studentName: 'Vikram Singh', roomNumber: 'B-202', date: '2025-11-04', timeIn: '04:00 PM', timeOut: '05:00 PM' }
+        ];
         let currentRoomData = null; 
 
         // --- 2. DOM Elements ---
@@ -928,16 +828,6 @@
         const statOccupancyPercent = document.getElementById('stat-occupancy-percent');
         const statOccupancyLabel = document.getElementById('stat-occupancy-label');
         const statOccupancyRing = document.getElementById('stat-occupancy-ring');
-        
-        // New chart ring elements
-        const statCapacityRing = document.getElementById('stat-capacity-ring');
-        const statComplaintsRing = document.getElementById('stat-complaints-ring');
-        const statFeesRing = document.getElementById('stat-fees-ring');
-        const statVisitorsRing = document.getElementById('stat-visitors-ring');
-        const statAttendanceRing = document.getElementById('stat-attendance-ring');
-        const statAttendanceLabel = document.getElementById('stat-attendance-label');
-        const statAnnouncements = document.getElementById('stat-announcements');
-
         const eventListContainer = document.getElementById('event-list-container');
         const detailHostelName = document.getElementById('detail-hostel-name');
         const backToDashboardBtn = document.getElementById('back-to-dashboard-btn');
@@ -989,10 +879,7 @@
         const addStudentAssetRowBtn = document.getElementById('add-student-asset-row-btn');
         const studentAssetAssignmentContainer = document.getElementById('student-asset-assignment-container');
 
-        // --- 3. THEME/HELPER DATA & CONSTANTS ---
-        const R = 16;
-        const CIRCUMFERENCE = 2 * Math.PI * R; // 100.53
-
+        // --- 3. THEME/HELPER DATA ---
         const themes = { 
             pink: { border: 'border-pink-500', bg: 'bg-pink-100', text: 'text-pink-600', icon: 'user-group' },
             blue: { border: 'border-blue-500', bg: 'bg-blue-100', text: 'text-blue-600', icon: 'user-group' },
@@ -1029,16 +916,12 @@
             return null;
         }
 
-        // Helper to calculate dashoffset for a percentage (donut/ring chart)
-        function calculateDashOffset(percent) {
-            // Percent is the *filled* amount. Offset represents the *empty* space.
-            const offset = (100 - percent) / 100 * CIRCUMFERENCE;
-            return offset;
-        }
-
         // --- COMPLAINT MANAGEMENT FUNCTIONS ---
+
+        // Load real complaints from database
         async function loadComplaintsData() {
             try {
+                console.log('🔄 Loading complaints from database...');
                 const res = await fetch('/api/complaints');
                 
                 if (!res.ok) {
@@ -1050,7 +933,11 @@
                 if (data.success) {
                     appState.complaints = data.complaints;
                     console.log('✅ Complaints loaded from server:', appState.complaints);
+                    
+                    // Update open complaints count
                     updateComplaintsCount();
+                    
+                    // Re-render if we're in complaints view
                     if (!complaintsView.classList.contains('hidden')) {
                         renderComplaintsView();
                     }
@@ -1059,62 +946,125 @@
                 }
             } catch (error) {
                 console.error('❌ Failed to load complaints data:', error);
-                statOpenComplaints.textContent = '0';
-                statComplaintsRing.style.strokeDashoffset = calculateDashOffset(0);
-                if (!complaintsView.classList.contains('hidden')) {
-                     // Still call render to show empty table state or error
-                     renderComplaintsView(); 
-                }
+                showError('Failed to load complaints: ' + error.message);
+                
+                // Update UI to show error state
+                complaintsListContainer.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="text-center text-red-500 py-6">
+                            ❌ Failed to load complaints. Please try again.
+                        </td>
+                    </tr>
+                `;
             }
         }
 
+        // Update complaint status
         async function updateComplaintStatus(complaintId, newStatus, adminNotes = '') {
-            const complaintIndex = appState.complaints.findIndex(c => c._id === complaintId);
-            if (complaintIndex !== -1) {
-                appState.complaints[complaintIndex].status = newStatus;
-                if (adminNotes) {
-                    appState.complaints[complaintIndex].adminNotes = adminNotes;
-                }
-                if (newStatus === 'Resolved') {
-                    appState.complaints[complaintIndex].resolvedAt = new Date().toISOString();
-                }
-            }
-            updateComplaintsCount();
-            renderComplaintsView();
-            return true; 
-        }
-
-        async function addComplaintResponse(complaintId, response) {
-            const complaintIndex = appState.complaints.findIndex(c => c._id === complaintId);
-            if (complaintIndex !== -1) {
-                if (!appState.complaints[complaintIndex].responses) {
-                    appState.complaints[complaintIndex].responses = [];
-                }
-                appState.complaints[complaintIndex].responses.push({
-                    response: response,
-                    respondedAt: new Date().toISOString(),
-                    respondedBy: 'Admin'
+            try {
+                console.log(`🔄 Updating complaint ${complaintId} to status: ${newStatus}`);
+                
+                const res = await fetch(`/api/complaints/${complaintId}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ 
+                        status: newStatus,
+                        adminNotes: adminNotes,
+                        resolvedAt: newStatus === 'Resolved' ? new Date().toISOString() : null
+                    })
                 });
+                
+                const data = await res.json();
+                
+                if (data.success) {
+                    console.log(`✅ Complaint ${complaintId} status updated to ${newStatus}`);
+                    
+                    // Update local state
+                    const complaintIndex = appState.complaints.findIndex(c => c._id === complaintId);
+                    if (complaintIndex !== -1) {
+                        appState.complaints[complaintIndex].status = newStatus;
+                        if (adminNotes) {
+                            appState.complaints[complaintIndex].adminNotes = adminNotes;
+                        }
+                        if (newStatus === 'Resolved') {
+                            appState.complaints[complaintIndex].resolvedAt = new Date().toISOString();
+                        }
+                    }
+                    
+                    // Update counts and re-render
+                    updateComplaintsCount();
+                    renderComplaintsView();
+                    
+                    showSuccess(`Complaint status updated to ${newStatus}`);
+                    return true;
+                } else {
+                    throw new Error(data.message || 'Failed to update complaint status');
+                }
+            } catch (error) {
+                console.error('❌ Failed to update complaint status:', error);
+                showError('Failed to update complaint: ' + error.message);
+                return false;
             }
-            renderComplaintsView();
-            return true;
         }
 
+        // Add admin response to complaint
+        async function addComplaintResponse(complaintId, response) {
+            try {
+                console.log(`🔄 Adding response to complaint ${complaintId}`);
+                
+                const res = await fetch(`/api/complaints/${complaintId}/response`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ 
+                        response: response,
+                        respondedAt: new Date().toISOString()
+                    })
+                });
+                
+                const data = await res.json();
+                
+                if (data.success) {
+                    console.log(`✅ Response added to complaint ${complaintId}`);
+                    
+                    // Update local state
+                    const complaintIndex = appState.complaints.findIndex(c => c._id === complaintId);
+                    if (complaintIndex !== -1) {
+                        if (!appState.complaints[complaintIndex].responses) {
+                            appState.complaints[complaintIndex].responses = [];
+                        }
+                        appState.complaints[complaintIndex].responses.push({
+                            response: response,
+                            respondedAt: new Date().toISOString(),
+                            respondedBy: 'Admin'
+                        });
+                    }
+                    
+                    renderComplaintsView();
+                    showSuccess('Response added successfully');
+                    return true;
+                } else {
+                    throw new Error(data.message || 'Failed to add response');
+                }
+            } catch (error) {
+                console.error('❌ Failed to add complaint response:', error);
+                showError('Failed to add response: ' + error.message);
+                return false;
+            }
+        }
+
+        // Update complaints count on dashboard
         function updateComplaintsCount() {
             const openComplaints = appState.complaints.filter(complaint => 
                 complaint.status === 'Pending' || complaint.status === 'In Progress'
             ).length;
-            const totalComplaints = appState.complaints.length;
-            
             statOpenComplaints.textContent = openComplaints;
-
-            const openPercent = totalComplaints > 0 ? (openComplaints / totalComplaints * 100) : 0;
-            const offset = calculateDashOffset(openPercent);
-            
-            statComplaintsRing.style.strokeDasharray = CIRCUMFERENCE;
-            statComplaintsRing.style.strokeDashoffset = offset;
         }
 
+        // Render complaints view
         function renderComplaintsView() {
             const statusFilter = complaintStatusFilter.value;
             const typeFilter = complaintTypeFilter.value;
@@ -1125,9 +1075,9 @@
             const filteredComplaints = appState.complaints.filter(complaint => {
                 const statusMatch = (statusFilter === 'All') || (complaint.status === statusFilter);
                 const typeMatch = (typeFilter === 'All') || (complaint.complaintType === typeFilter);
-                const searchMatch = (complaint.studentName && complaint.studentName.toLowerCase().includes(searchTerm)) ||
-                                           (complaint.roomNumber && complaint.roomNumber.toLowerCase().includes(searchTerm)) ||
-                                           (complaint.description && complaint.description.toLowerCase().includes(searchTerm));
+                const searchMatch = (complaint.studentName.toLowerCase().includes(searchTerm)) ||
+                                         (complaint.roomNumber.toLowerCase().includes(searchTerm)) ||
+                                         (complaint.description.toLowerCase().includes(searchTerm));
                 return statusMatch && typeMatch && searchMatch;
             });
 
@@ -1142,6 +1092,7 @@
                 return;
             }
 
+            // Sort by date (newest first)
             filteredComplaints.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
             filteredComplaints.forEach(complaint => {
@@ -1160,22 +1111,24 @@
                     minute: '2-digit'
                 });
 
+                const icon = ''; // Emoji replaced with empty space
+
                 const rowHTML = `
                     <tr class="hover:bg-gray-50 complaint-row" data-complaint-id="${complaint._id}">
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="flex items-center">
                                 <div class="ml-4">
-                                    <div class="text-sm font-medium text-gray-900">${complaint.studentName || 'N/A'}</div>
+                                    <div class="text-sm font-medium text-gray-900">${complaint.studentName}</div>
                                     <div class="text-sm text-gray-500">${complaint.studentId || ''}</div>
                                 </div>
                             </div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                            ${complaint.roomNumber || 'N/A'}
+                            ${complaint.roomNumber}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                             <div class="flex items-center">
-                                <span class="icon-space text-lg mr-2"> </span>
+                                <span class="icon-space text-lg mr-2">${icon}</span>
                                 ${complaint.complaintType}
                             </div>
                         </td>
@@ -1218,6 +1171,7 @@
             });
         }
 
+        // Show complaint details modal
         function showComplaintDetails(complaintId) {
             const complaint = appState.complaints.find(c => c._id === complaintId);
             if (!complaint) {
@@ -1241,7 +1195,7 @@
                 minute: '2-digit'
             }) : 'Not resolved yet';
 
-            const icon = '';
+            const icon = ''; // Emoji replaced with empty space
 
             let responsesHTML = '';
             if (complaint.responses && complaint.responses.length > 0) {
@@ -1320,7 +1274,7 @@
                     <div class="mt-6">
                         <label for="complaint-response" class="block text-sm font-medium text-gray-700">Add Response</label>
                         <textarea id="complaint-response" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="Enter your response to the student..."></textarea>
-                        <button id="submit-complaint-response" data-complaint-id="${complaint._id}" class="mt-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                        <button id="submit-complaint-response" data-complaint-id="${complaint._id}" class="mt-2 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md shadow-sm hover:bg-blue-700">
                             Send Response
                         </button>
                     </div>
@@ -1333,10 +1287,12 @@
         // Utility functions for notifications
         function showSuccess(message) {
             console.log('✅ ' + message);
+            alert('✅ ' + message);
         }
 
         function showError(message) {
             console.error('❌ ' + message);
+            alert('❌ ' + message);
         }
 
         // --- 4. RENDER FUNCTIONS ---
@@ -1347,6 +1303,7 @@
                 const data = await res.json();
                 if (data.success) {
                     appState.blocks = data.blocks; 
+                    console.log('✅ Hostel Data reloaded from server:', appState.blocks);
                     if (!dashboardView.classList.contains('hidden')) {
                         renderDashboard();
                     }
@@ -1361,7 +1318,7 @@
                 }
             } catch (error) {
                 console.error('❌ Failed to load hostel data:', error);
-                renderDashboard();
+                hostelBlockContainer.innerHTML = `<p class="text-red-500 col-span-full">Error: Could not load data from server. ${error.message}</p>`;
             }
         }
 
@@ -1371,6 +1328,7 @@
                 if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
                 const data = await res.json();
                 if (data.success) {
+                    console.log('✅ Club Activities reloaded from server:', data.activities);
                     renderClubActivities(data.activities); 
                 } else {
                     throw new Error(data.message);
@@ -1388,6 +1346,7 @@
                 const data = await res.json();
                 if (data.success) {
                     appState.assets = data.assets; 
+                    console.log('✅ Asset Data reloaded from server:', appState.assets);
                     renderAssets(appState.assets); 
                 } else {
                     throw new Error(data.message);
@@ -1448,7 +1407,7 @@
                                 <h3 class="text-2xl font-bold text-gray-900 ml-4">${block.blockName}</h3>
                             </div>
                             <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
-                                <div><span class="text-gray-500">Rooms</span><p class="text-lg font-semibold text-gray-900">${totalRooms}</p></div>
+                                <div><span class="text-gray-500">Capacity</span><p class="text-lg font-semibold text-gray-900">${totalRooms}</p></div>
                                 <div><span class="text-gray-500">Occupied Rooms</span><p class="text-lg font-semibold text-gray-900">${occupiedRooms}</p></div>
                                 <div><span class="text-gray-500">Current Students</span><p class="text-lg font-semibold text-gray-900">${currentStudents}</p></div>
                                 <div><span class="text-gray-500">Total Capacity</span><p class="text-lg font-semibold text-gray-900">${totalCapacity}</p></div>
@@ -1459,50 +1418,16 @@
                 hostelBlockContainer.innerHTML += blockHTML;
             }
             
-            // --- Dashboard Stat Updates ---
             statTotalCapacity.textContent = grandTotalCapacity;
-            
-            // 1. Total Capacity Chart (Occupancy % of Capacity)
             const occupancyPercent = grandTotalCapacity > 0 ? (grandTotalStudents / grandTotalCapacity * 100) : 0;
-            statCapacityRing.style.strokeDasharray = CIRCUMFERENCE; 
-            statCapacityRing.style.strokeDashoffset = calculateDashOffset(occupancyPercent);
-            
-            // 2. Occupancy (Original Ring Chart)
             statOccupancyPercent.textContent = occupancyPercent.toFixed(1) + '%';
             statOccupancyLabel.textContent = occupancyPercent.toFixed(0) + '%';
             statOccupancyRing.style.strokeDashoffset = 100 - occupancyPercent;
             
-            // 3. Open Complaints Chart (Open % of Total Complaints)
-            const openComplaints = appState.complaints.filter(complaint => 
-                complaint.status === 'Pending' || complaint.status === 'In Progress'
-            ).length;
-            const totalComplaints = appState.complaints.length;
-            const openComplaintPercent = totalComplaints > 0 ? (openComplaints / totalComplaints * 100) : 0;
-            statOpenComplaints.textContent = openComplaints;
-            statComplaintsRing.style.strokeDasharray = CIRCUMFERENCE;
-            statComplaintsRing.style.strokeDashoffset = calculateDashOffset(openComplaintPercent); 
-
-            // 4. Daily Attendance (Already handled in initApp, assume 0% initially unless real data loads)
-            // No changes needed here, relies on initApp setting 0%.
-            
-            // 5. Fees Status Chart (Pending % of Total Students)
-            const totalStudents = grandTotalStudents;
-            const pendingFeesPercent = totalStudents > 0 ? (totalPendingFees / totalStudents * 100) : 0;
             statFeesPending.textContent = `${totalPendingFees} Pending`;
-            statFeesRing.style.strokeDasharray = CIRCUMFERENCE;
-            statFeesRing.style.strokeDashoffset = calculateDashOffset(pendingFeesPercent); 
-            
-            // 6. Visitor Logs Chart (Today's Visitors % of Total Logs)
             const today = new Date().toISOString().split('T')[0];
             const visitorsToday = visitorLogData.filter(v => v.date === today).length;
-            const totalVisitorLogs = visitorLogData.length;
-            const visitorPercent = totalVisitorLogs > 0 ? (visitorsToday / totalVisitorLogs * 100) : 0;
             statVisitorsToday.textContent = `${visitorsToday} Today`;
-            statVisitorsRing.style.strokeDasharray = CIRCUMFERENCE;
-            statVisitorsRing.style.strokeDashoffset = calculateDashOffset(visitorPercent);
-
-            // 7. Announcements (Update count)
-            statAnnouncements.textContent = eventData.filter(e => e.type === 'Announcement').length;
         }
 
         function renderDetailView(blockKey) {
@@ -1575,18 +1500,18 @@
                 });
             }
             modalIssuesContainer.innerHTML = '';
-            const roomComplaints = appState.complaints.filter(c => c.roomNumber === room.roomNumber && c.status !== 'Resolved');
-            
-            if (roomComplaints.length === 0) {
+            const complaints = room.complaints || []; 
+            if (complaints.length === 0 && room.roomNumber === 'A-101') { complaints.push({ title: 'Broken AC/Leakage', status: 'Critical', _id: 'fake123' }); }
+            if (complaints.length === 0) {
                 modalIssuesContainer.innerHTML = '<p class="text-gray-500">No open issues reported for this room.</p>';
                 modalRoomComplaintsBadge.classList.add('hidden');
             } else {
-                roomComplaints.forEach(complaint => {
-                    const statusColor = complaint.status.toLowerCase().includes('pending') ? 'bg-red-500 text-white' : 'bg-yellow-500 text-white';
-                    const issueHTML = `<div class="flex justify-between items-center bg-white p-3 rounded-lg shadow-sm border"><p class="font-medium text-gray-700">${complaint.complaintType}: ${complaint.description.substring(0, 30)}...</p><span class="text-xs font-bold px-3 py-1 rounded-full ${statusColor}">${complaint.status}</span></div>`;
+                complaints.forEach(complaint => {
+                    const statusColor = complaint.status.toLowerCase() === 'critical' ? 'bg-red-500 text-white' : 'bg-yellow-500 text-white';
+                    const issueHTML = `<div class="flex justify-between items-center bg-white p-3 rounded-lg shadow-sm border"><p class="font-medium text-gray-700">${complaint.title}</p><span class="text-xs font-bold px-3 py-1 rounded-full ${statusColor}">${complaint.status}</span></div>`;
                     modalIssuesContainer.innerHTML += issueHTML;
                 });
-                modalRoomComplaintsCount.textContent = roomComplaints.length;
+                modalRoomComplaintsCount.textContent = complaints.length;
                 modalRoomComplaintsBadge.classList.remove('hidden');
             }
         } 
@@ -1602,7 +1527,6 @@
                 const eventHTML = `<div class="bg-white rounded-lg shadow-md overflow-hidden border-l-8 ${theme.border} transition-all duration-300 hover:shadow-xl hover:scale-105"><div class="p-5"><div class="flex justify-between items-center mb-2"><h3 class="text-xl font-bold text-gray-800">${event.title}</h3><span class="text-xs font-bold px-3 py-1 rounded-full ${theme.bg} ${theme.text}">${event.type}</span></div><p class="text-sm font-medium text-gray-600 mb-3">Date: ${formattedDate}</p><p class="text-sm text-gray-700">${event.description}</p></div></div>`;
                 eventListContainer.innerHTML += eventHTML;
             });
-            statAnnouncements.textContent = eventData.filter(e => e.type === 'Announcement').length;
         }
         
         function renderClubActivities(activities) { 
@@ -1640,17 +1564,16 @@
         
         function renderAssets(assets) {
             assetInventoryContainer.innerHTML = '';
-            let totalAssetStock = 0;
             if (!assets || assets.length === 0) {
                 assetInventoryContainer.innerHTML = `<p class="text-gray-500 col-span-full">No assets found in inventory.</p>`;
+                return;
             }
             
             assets.forEach(asset => {
-                totalAssetStock += asset.quantity || 0;
                 const assetName = asset.name;
                 const imageUrl = asset.imageUrl || `https://via.placeholder.com/300x150/e0e0e0/909090?text=${assetName.replace(' ', '+')}`;
                 
-                const icon = '';
+                const icon = ''; // Emoji replaced with empty space
 
                 const assetHTML = `
                     <div class="bg-white rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl hover:scale-105 flex flex-col relative">
@@ -1671,8 +1594,6 @@
                 `;
                 assetInventoryContainer.innerHTML += assetHTML;
             });
-
-            document.getElementById('stat-available-assets').textContent = totalAssetStock;
         }
         
         function renderFeesView() {
@@ -1692,8 +1613,8 @@
             
             const filteredStudents = allStudents.filter(student => {
                 const statusMatch = (statusFilter === 'All') || (student.feeStatus === statusFilter);
-                const searchMatch = (student.name && student.name.toLowerCase().includes(searchTerm)) || 
-                                           (student.rollNumber && student.rollNumber.toLowerCase().includes(searchTerm));
+                const searchMatch = (student.name.toLowerCase().includes(searchTerm)) || 
+                                         (student.rollNumber.toLowerCase().includes(searchTerm));
                 return statusMatch && searchMatch;
             });
 
@@ -1704,7 +1625,7 @@
             
             filteredStudents.forEach(student => {
                 const isPaid = student.feeStatus === 'Paid';
-                const statusIcon = isPaid ? 'x-mark' : 'check';
+                const statusIcon = 'check'; // Kept 'check' as it's a heroicon, not an emoji
                 const statusClass = isPaid ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700';
                 const buttonClass = isPaid ? 'bg-yellow-500 hover:bg-yellow-600' : 'bg-green-500 hover:bg-green-600';
                 const buttonText = isPaid ? 'Mark Pending' : 'Mark Paid';
@@ -1752,8 +1673,8 @@
             visitorLogContainer.innerHTML = '';
             
             const filteredLogs = visitorLogData.filter(log => {
-                const searchMatch = (log.visitorName && log.visitorName.toLowerCase().includes(searchTerm)) ||
-                                           (log.studentName && log.studentName.toLowerCase().includes(searchTerm));
+                const searchMatch = (log.visitorName.toLowerCase().includes(searchTerm)) ||
+                                         (log.studentName.toLowerCase().includes(searchTerm));
                 const dateMatch = (!dateFilter) || (log.date === dateFilter);
                 return searchMatch && dateMatch;
             });
@@ -1889,11 +1810,8 @@
             const tempStockCheck = {}; 
 
             for (const row of assignmentRows) {
-                const assetNameSelect = row.querySelector('.asset-select');
-                const assetQtyInput = row.querySelector('.asset-qty');
-                
-                const assetName = assetNameSelect.value;
-                const quantity = parseInt(assetQtyInput.value, 10);
+                const assetName = row.querySelector('.asset-select').value;
+                const quantity = parseInt(row.querySelector('.asset-qty').value, 10);
                 
                 if (!assetName || !quantity || quantity <= 0) {
                     continue; 
@@ -1923,37 +1841,128 @@
         // --- 7. FORM & DATA HANDLERS ---
         addBlockForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            await loadHostelData(); 
-            hideModal('add-block-modal');
-            addBlockForm.reset();
+            const blockName = document.getElementById('block-name').value;
+            const blockKey = document.getElementById('block-key').value.toLowerCase().replace(/\s+/g, '-');
+            const blockTheme = document.getElementById('block-theme').value;
+            if (!blockName || !blockKey) return;
+
+            try {
+                const res = await fetch('/api/blocks', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ blockName, blockKey, blockTheme })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    await loadHostelData(); 
+                    hideModal('add-block-modal');
+                    addBlockForm.reset();
+                } else {
+                    throw new Error(data.message);
+                }
+            } catch (error) {
+                alert(`Error adding block: ${error.message}`);
+            }
         });
 
         addRoomForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const blockKey = detailView.dataset.currentHostelKey;
             
             const assignedAssets = processAssetAssignments(roomAssetAssignmentContainer);
-            if (assignedAssets === null) return; 
+            if (assignedAssets === null) {
+                return; 
+            }
 
-            await loadHostelData(); 
-            await loadAssetData(); 
-            hideModal('add-room-modal');
-            addRoomForm.reset();
-            roomAssetAssignmentContainer.innerHTML = ''; 
+            const blockKey = detailView.dataset.currentHostelKey;
+            if (!blockKey) {
+                alert('Error: No block selected.');
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('roomNumber', document.getElementById('room-id').value);
+            formData.append('floor', document.getElementById('room-floor').value);
+            formData.append('capacity', document.getElementById('room-capacity').value);
+            formData.append('assets', JSON.stringify(assignedAssets)); 
+            
+            const imageFile = document.getElementById('room-image-file').files[0];
+            if (imageFile) {
+                formData.append('roomImage', imageFile);
+            }
+            
+            const submitBtn = addRoomForm.querySelector('button[type="submit"]');
+
+            try {
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Saving...';
+                
+                const res = await fetch(`/api/blocks/${blockKey}/rooms`, {
+                    method: 'POST',
+                    body: formData 
+                });
+
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Add Room';
+
+                const data = await res.json();
+                if (data.success) {
+                    await loadHostelData(); 
+                    await loadAssetData(); 
+                    hideModal('add-room-modal');
+                    addRoomForm.reset();
+                    roomAssetAssignmentContainer.innerHTML = ''; 
+                } else {
+                    throw new Error(data.message);
+                }
+            } catch (error) {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Add Room';
+                alert(`Error adding room: ${error.message}`);
+            }
         });
 
         addStudentForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const blockKey = detailView.dataset.currentHostelKey;
             
             const assignedAssets = processAssetAssignments(studentAssetAssignmentContainer);
-            if (assignedAssets === null) return; 
+            if (assignedAssets === null) {
+                return; 
+            }
+            
+            const blockKey = detailView.dataset.currentHostelKey;
+            const formData = new FormData(addStudentForm);
+            formData.append('blockKey', blockKey);
+            formData.append('assets', JSON.stringify(assignedAssets)); 
 
-            await loadHostelData(); 
-            await loadAssetData(); 
-            hideModal('add-student-modal');
-            addStudentForm.reset();
-            studentAssetAssignmentContainer.innerHTML = ''; 
+            try {
+                const submitBtn = addStudentForm.querySelector('button[type="submit"]');
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Uploading...';
+                
+                const res = await fetch('/api/students', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Add Student';
+
+                const data = await res.json();
+                if (data.success) {
+                    await loadHostelData(); 
+                    await loadAssetData(); 
+                    hideModal('add-student-modal');
+                    addStudentForm.reset();
+                    studentAssetAssignmentContainer.innerHTML = ''; 
+                } else {
+                    throw new Error(data.message);
+                }
+            } catch (error) {
+                alert(`Error adding student: ${error.message}`);
+                const submitBtn = addStudentForm.querySelector('button[type="submit"]');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Add Student';
+            }
         });
 
         addEventForm.addEventListener('submit', (e) => {
@@ -1973,18 +1982,78 @@
 
         addClubActivityForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            await loadClubActivities();
-            hideModal('add-club-activity-modal');
-            addClubActivityForm.reset();
+            const formData = new FormData(addClubActivityForm);
+            
+            try {
+                const submitBtn = addClubActivityForm.querySelector('button[type="submit"]');
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Uploading...';
+
+                const res = await fetch('/api/activities', {
+                    method: 'POST',
+                    body: formData 
+                });
+
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Post Activity';
+
+                const data = await res.json();
+                if (data.success) {
+                    await loadClubActivities();
+                    hideModal('add-club-activity-modal');
+                    addClubActivityForm.reset();
+                } else {
+                    throw new Error(data.message);
+                }
+            } catch (error) {
+                alert(`Error adding activity: ${error.message}`);
+                const submitBtn = addClubActivityForm.querySelector('button[type="submit"]');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Post Activity';
+            }
         });
         
         addAssetForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            await loadAssetData(); 
-            hideModal('add-asset-modal');
-            addAssetForm.reset();
-            assetNameOtherWrapper.classList.add('hidden');
+            const type = assetTypeSelect.value;
+            const otherName = document.getElementById('asset-name-other').value;
+
+            if (type === 'Other' && !otherName) {
+                alert('Please specify the asset name when selecting "Other".');
+                return;
+            }
+            
+            const formData = new FormData(addAssetForm);
+            
+            const submitBtn = addAssetForm.querySelector('button[type="submit"]');
+
+            try {
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Saving...';
+                
+                const res = await fetch('/api/assets', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Save Asset';
+
+                const data = await res.json();
+                if (data.success) {
+                    await loadAssetData(); 
+                    hideModal('add-asset-modal');
+                    addAssetForm.reset();
+                    assetNameOtherWrapper.classList.add('hidden');
+                } else {
+                    throw new Error(data.message);
+                }
+            } catch (error) {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Save Asset';
+                alert(`Error adding asset: ${error.message}`);
+            }
         });
 
         assetTypeSelect.addEventListener('change', () => {
@@ -2030,30 +2099,57 @@
         modalDeleteRoomBtn.addEventListener('click', async () => {
             if (!currentRoomData || !currentRoomData._id) return;
             const blockKey = detailView.dataset.currentHostelKey;
-            
+            const roomId = currentRoomData._id;
+
             if (confirm(`Are you sure you want to delete room ${currentRoomData.roomNumber}?\nThis will also remove all students in it and return all assets to stock.`)) {
-                await loadHostelData(); 
-                await loadAssetData(); 
-                hideModal('room-details-modal');
+                try {
+                    const res = await fetch(`/api/blocks/${blockKey}/rooms/${roomId}`, {
+                        method: 'DELETE'
+                    });
+                    const data = await res.json();
+                    if (data.success) {
+                        await loadHostelData(); 
+                        await loadAssetData(); 
+                        hideModal('room-details-modal');
+                    } else {
+                        throw new Error(data.message);
+                    }
+                } catch (error) {
+                    alert(`Error deleting room: ${error.message}`);
+                }
             }
         });
 
         modalOccupantContainer.addEventListener('click', async (e) => {
             const button = e.target.closest('.remove-student-btn');
             if (button) {
-                e.preventDefault(); e.stopPropagation();
+                e.preventDefault();
+                e.stopPropagation();
                 const studentId = button.dataset.studentId;
                 if (confirm(`Are you sure you want to remove this student?\nTheir assets will be returned to stock.`)) {
-                    await loadHostelData(); 
-                    await loadAssetData(); 
+                    try {
+                        const res = await fetch(`/api/students/${studentId}`, {
+                            method: 'DELETE'
+                        });
+                        const data = await res.json();
+                        if (data.success) {
+                            await loadHostelData(); 
+                            await loadAssetData(); 
 
-                    const blockKey = detailView.dataset.currentHostelKey;
-                    const block = appState.blocks.find(b => b.blockKey === blockKey);
-                    const updatedRoom = block.rooms.find(r => r._id === currentRoomData._id); 
-                    if (updatedRoom) {
-                        renderRoomDetailsModal(updatedRoom, block);
-                    } else {
-                        hideModal('room-details-modal');
+                            const blockKey = detailView.dataset.currentHostelKey;
+                            const block = appState.blocks.find(b => b.blockKey === blockKey);
+                            const updatedRoom = block.rooms.find(r => r._id === currentRoomData._id);
+                            if (updatedRoom) {
+                                renderRoomDetailsModal(updatedRoom, block);
+                                console.log('✅ Student removed, modal updated.');
+                            } else {
+                                hideModal('room-details-modal');
+                            }
+                        } else {
+                            throw new Error(data.message);
+                        }
+                    } catch (error) {
+                        alert(`Error removing student: ${error.message}`);
                     }
                 }
             }
@@ -2064,10 +2160,17 @@
             const button = e.target.closest('.remove-block-btn');
             if (button) {
                 e.preventDefault(); e.stopPropagation();
+                const blockId = button.dataset.blockId;
                 const blockName = button.dataset.blockName;
                 if (confirm(`Are you sure you want to delete the block "${blockName}"?\nThis action is permanent and will delete all associated rooms, students, and return their assets.`)) {
-                    await loadHostelData();
-                    await loadAssetData(); 
+                    try {
+                        const res = await fetch(`/api/blocks/${blockId}`, { method: 'DELETE' });
+                        const data = await res.json();
+                        if (data.success) {
+                            await loadHostelData();
+                            await loadAssetData(); 
+                        } else { throw new Error(data.message); }
+                    } catch (error) { alert(`Error deleting block: ${error.message}`); }
                 }
             }
         });
@@ -2076,9 +2179,16 @@
             const button = e.target.closest('.remove-activity-btn');
             if (button) {
                 e.preventDefault(); e.stopPropagation();
+                const activityId = button.dataset.activityId;
                 const activityTitle = button.dataset.activityTitle;
                 if (confirm(`Are you sure you want to delete the activity "${activityTitle}"?`)) {
-                    await loadClubActivities();
+                    try {
+                        const res = await fetch(`/api/activities/${activityId}`, { method: 'DELETE' });
+                        const data = await res.json();
+                        if (data.success) {
+                            await loadClubActivities();
+                        } else { throw new Error(data.message); }
+                    } catch (error) { alert(`Error deleting activity: ${error.message}`); }
                 }
             }
         });
@@ -2087,9 +2197,20 @@
             const button = e.target.closest('.remove-asset-btn');
             if (button) {
                 e.preventDefault(); e.stopPropagation();
+                const assetId = button.dataset.assetId;
                 const assetName = button.dataset.assetName;
                 if (confirm(`Are you sure you want to delete "${assetName}" from the inventory?`)) {
-                    await loadAssetData(); 
+                    try {
+                        const res = await fetch(`/api/assets/${assetId}`, { method: 'DELETE' });
+                        const data = await res.json();
+                        if (data.success) {
+                            await loadAssetData(); 
+                        } else {
+                            throw new Error(data.message);
+                        }
+                    } catch (error) {
+                        alert(`Error deleting asset: ${error.message}`);
+                    }
                 }
             }
         });
@@ -2158,6 +2279,7 @@
         // Refresh complaints
         refreshComplaintsBtn.addEventListener('click', () => {
             loadComplaintsData();
+            showSuccess('Complaints refreshed');
         });
 
         // Complaint actions
@@ -2224,20 +2346,15 @@
                 const student = findStudentById(studentId);
                 if (student) {
                     student.feeStatus = (student.feeStatus === 'Paid') ? 'Pending' : 'Paid';
+                    console.log(`Updated student ${student.name} fee status to ${student.feeStatus}`);
                     renderFeesView();
-                    renderDashboard();
                 }
             }
         });
 
         // --- 12. INITIALIZE APP ---
         function initApp() {
-            // Initialize appearance for empty data
-            statAttendanceRing.style.strokeDashoffset = CIRCUMFERENCE; // 0% attendance
-            statOccupancyRing.style.strokeDashoffset = CIRCUMFERENCE; // 0% occupancy
-            
-            // All other charts already default to empty rings due to 0 values
-            
+            console.log('🚀 Initializing Admin Dashboard...');
             loadHostelData();
             loadClubActivities();
             loadAssetData();
