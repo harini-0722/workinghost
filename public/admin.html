@@ -4,15 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hostel Admin Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script type="module" src="https://unpkg.com/heroicons@2.1.1/dist/solid/index.js"></script>
     <script type="module" src="https://unpkg.com/heroicons@2.1.1/dist/outline/index.js"></script>
     <style>
         body {
-            /* Professional Dark Serif Font Stack */
-            font-family: Georgia, Cambria, "Times New Roman", Times, serif;
+            /* Applied Inter font stack */
+            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             color: #1f2937; /* Dark Gray for text */
         }
+        /* Style to force uniform (tabular) number alignment for dashboard stats */
+        #stat-total-capacity, #stat-occupancy-percent, #stat-open-complaints, #stat-attendance-percent, 
+        #stat-fees-pending, #stat-visitors-today, #stat-occupancy-label, 
+        #detail-stat-capacity, #detail-stat-occupancy, #detail-stat-available, .text-3xl {
+            /* Force tabular numbers (aligns figures vertically regardless of width) */
+            font-feature-settings: "tnum";
+            font-variant-numeric: tabular-nums;
+        }
+
         .progress-ring-text { font-size: 0.75rem; font-weight: 600; }
         .modal-backdrop { background-color: rgba(0, 0, 0, 0.5); transition: opacity 0.3s ease-in-out; }
         .modal-content { transition: all 0.3s ease-in-out; transform: translateY(-20px); opacity: 0; }
@@ -1101,17 +1111,7 @@
                     minute: '2-digit'
                 });
 
-                const complaintIcons = {
-                    'Maintenance': 'M',
-                    'Cleaning': 'C',
-                    'Electrical': 'E',
-                    'Plumbing': 'P',
-                    'Internet': 'I',
-                    'Security': 'S',
-                    'Other': 'O'
-                };
-
-                const icon = ''; // Emoji is replaced with empty space
+                const icon = ''; // Emoji replaced with empty space
 
                 const rowHTML = `
                     <tr class="hover:bg-gray-50 complaint-row" data-complaint-id="${complaint._id}">
@@ -1194,16 +1194,6 @@
                 hour: '2-digit',
                 minute: '2-digit'
             }) : 'Not resolved yet';
-
-            const complaintIcons = {
-                'Maintenance': 'M',
-                'Cleaning': 'C',
-                'Electrical': 'E',
-                'Plumbing': 'P',
-                'Internet': 'I',
-                'Security': 'S',
-                'Other': 'O'
-            };
 
             const icon = ''; // Emoji replaced with empty space
 
@@ -1583,10 +1573,6 @@
                 const assetName = asset.name;
                 const imageUrl = asset.imageUrl || `https://via.placeholder.com/300x150/e0e0e0/909090?text=${assetName.replace(' ', '+')}`;
                 
-                const assetIcons = {
-                    'Table': 'T', 'Chair': 'C', 'Bed': 'B', 'Mattress': 'M',
-                    'Cupboard': 'C', 'Fan': 'F', 'Light': 'L', 'System': 'S', 'Other': 'O'
-                };
                 const icon = ''; // Emoji replaced with empty space
 
                 const assetHTML = `
@@ -1639,7 +1625,7 @@
             
             filteredStudents.forEach(student => {
                 const isPaid = student.feeStatus === 'Paid';
-                const statusIcon = isPaid ? 'check' : 'clock';
+                const statusIcon = 'check'; // Kept 'check' as it's a heroicon, not an emoji
                 const statusClass = isPaid ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700';
                 const buttonClass = isPaid ? 'bg-yellow-500 hover:bg-yellow-600' : 'bg-green-500 hover:bg-green-600';
                 const buttonText = isPaid ? 'Mark Pending' : 'Mark Paid';
