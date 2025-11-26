@@ -504,34 +504,8 @@
                 </div>
             </div>
         </div>
-
-        <div id="add-block-modal" class="modal hidden fixed inset-0 z-30 flex items-center justify-center">
-        </div>
-        <div id="add-room-modal" class="modal hidden fixed inset-0 z-30 flex items-center justify-center">
-        </div>
-        <div id="add-student-modal" class="modal hidden fixed inset-0 z-30 flex items-center justify-center">
-        </div>
-        <div id="add-event-modal" class="modal hidden fixed inset-0 z-30 flex items-center justify-center">
-        </div>
-        <div id="room-details-modal" class="modal hidden fixed inset-0 z-30 flex items-center justify-center">
-        </div>
-        <div id="add-club-activity-modal" class="modal hidden fixed inset-0 z-30 flex items-center justify-center">
-        </div>
-        <div id="add-asset-modal" class="modal hidden fixed inset-0 z-30 flex items-center justify-center">
-        </div>
-        <div id="complaint-details-modal" class="modal hidden fixed inset-0 z-30 flex items-center justify-center">
-        </div>
         
-    </main>
-    <footer class="mt-12 py-6 border-t border-gray-200 bg-white">
-        <div class="w-full mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <p class="text-sm text-gray-500">
-                &copy; 2025 Indian Institute of Technology. All rights reserved.
-            </p>
-        </div>
-    </footer>
-    
-    <div id="add-block-modal" class="modal hidden fixed inset-0 z-30 flex items-center justify-center">
+        <div id="add-block-modal" class="modal hidden fixed inset-0 z-30 flex items-center justify-center">
         <div class="modal-backdrop fixed inset-0" data-modal-hide="add-block-modal"></div>
         <div class="modal-content bg-white p-6 rounded-lg shadow-xl z-40 w-full max-w-md mx-4">
             <h2 class="text-xl font-semibold mb-4"><span class="icon-space"> </span>Add New Hostel Block</h2>
@@ -1073,7 +1047,7 @@
             return null;
         }
         
-        // **NEW** File reader utility for base64 (to display local images)
+        // **File reader utility for base64 (to display local images)**
         function handleFileUpload(file, callback) {
             if (!file) {
                 callback(null);
@@ -1989,7 +1963,6 @@
         backToDashboardFromStaffBtn.addEventListener('click', () => {
             hideAllViews();
             dashboardView.classList.remove('hidden');
-            // Reload dashboard to ensure any state changes are reflected
             loadHostelData();
         });
 
@@ -2095,14 +2068,7 @@
             }
         });
 
-        backToDashboardBtn.addEventListener('click', () => {
-            hideAllViews();
-            dashboardView.classList.remove('hidden');
-            detailView.dataset.currentHostelKey = '';
-            currentRoomData = null;
-            loadHostelData();
-        });
-
+        // **FIXED**: Block click handler now correctly targets the anchor tag inside the card
         hostelBlockContainer.addEventListener('click', (e) => {
             const link = e.target.closest('.block-link');
             if (link) {
@@ -2249,7 +2215,7 @@
             submitBtn.disabled = true;
             submitBtn.textContent = 'Saving...';
             
-            // **NEW LOGIC**: Handle image upload to display locally
+            // **FIXED LOGIC**: Handle image upload to display locally
             handleFileUpload(imageFile, (imageUrl) => {
                 try {
                     // SIMULATION: Add room to the block in appState
