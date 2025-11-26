@@ -1575,14 +1575,13 @@
             appState.assets.forEach(asset => {
                 totalAssetQuantity += asset.quantity;
             });
-            
+
             // --- INTEGRATION POINT: SIMULATE ASSET ALLOCATION FOR VISUALS ---
             // If totalAssetQuantity is 0 (API failed or initial state), manually set values for a visual representation
             if (totalAssetQuantity === 0 && appState.assets.length > 0) {
                  totalAssetQuantity = 165; // Simulated total from initial assets
                  totalAssignedAssets = 79; // Simulated assigned assets for a dynamic view (~48%)
             }
-
 
             // Update Main Dashboard Stats
             statTotalCapacity.textContent = grandTotalCapacity;
