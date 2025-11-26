@@ -878,9 +878,9 @@
             ], 
             // DEFAULT ASSETS for Asset Allocation calculation integrity
             assets: [
-                { _id: 'a1', name: 'Table', quantity: 50 },
-                { _id: 'a2', name: 'Chair', quantity: 100 },
-                { _id: 'a3', name: 'Fan', quantity: 15 }
+                { _id: 'a1', name: 'Bed', quantity: 2, imageUrl: 'https://via.placeholder.com/300x150/e0e0e0/909090?text=Bed' },
+                { _id: 'a2', name: 'Light', quantity: 8, imageUrl: 'https://via.placeholder.com/300x150/e0e0e0/909090?text=Light' },
+                { _id: 'a3', name: 'Mattress', quantity: 17, imageUrl: 'https://via.placeholder.com/300x150/e0e0e0/909090?text=Mattress' }
             ],
             complaints: [],
             staff: [
@@ -899,7 +899,7 @@
         ];
         let currentRoomData = null; 
 
-        // --- 2. DOM Elements ---
+        // --- 2. DOM Elements (Same as before) ---
         const dashboardView = document.getElementById('dashboard-view');
         const detailView = document.getElementById('detail-view');
         const feesView = document.getElementById('fees-view');
@@ -1035,6 +1035,23 @@
                 }
             }
             return null;
+        }
+        
+        // **NEW** File reader utility for base64 (to display local images)
+        function handleFileUpload(file, callback) {
+            if (!file) {
+                callback(null);
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                callback(e.target.result);
+            };
+            reader.onerror = () => {
+                console.error("Error reading file.");
+                callback(null);
+            };
+            reader.readAsDataURL(file);
         }
 
         // --- COMPLAINT MANAGEMENT FUNCTIONS (unchanged) ---
@@ -1488,9 +1505,9 @@
                 // --- INTEGRATION POINT: Default Asset Data Fallback for UI/Calculations
                 if (appState.assets.length === 0) {
                      appState.assets = [
-                        { _id: 'a1', name: 'Table', quantity: 50 },
-                        { _id: 'a2', name: 'Chair', quantity: 100 },
-                        { _id: 'a3', name: 'Fan', quantity: 15 }
+                        { _id: 'a1', name: 'Bed', quantity: 2, imageUrl: 'https://via.placeholder.com/300x150/e0e0e0/909090?text=Bed' },
+                        { _id: 'a2', name: 'Light', quantity: 8, imageUrl: 'https://via.placeholder.com/300x150/e0e0e0/909090?text=Light' },
+                        { _id: 'a3', name: 'Mattress', quantity: 17, imageUrl: 'https://via.placeholder.com/300x150/e0e0e0/909090?text=Mattress' }
                     ];
                 }
                 assetInventoryContainer.innerHTML = `<p class="text-red-500 col-span-full">Error: Could not load assets. ${error.message}</p>`;
@@ -1766,10 +1783,8 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                         </button>
+                        <img src="${asset.imageUrl || `https://via.placeholder.com/300x150/e0e0e0/909090?text=${asset.name.replace(' ', '+')}`}" alt="${asset.name}" class="activity-card-image mb-3">
                         <div class="flex items-start gap-4">
-                            <div class="flex-shrink-0">
-                                <hero-icon-solid name="archive-box" class="h-8 w-8 text-violet-600"></hero-icon-solid>
-                            </div>
                             <div class="w-full overflow-hidden">
                                 <h4 class="text-xl font-bold text-gray-900 truncate">${asset.name}</h4>
                                 <p class="text-sm text-gray-500">${asset.description || 'General item'}</p>
@@ -1942,48 +1957,38 @@
             }
 
             const assignedBlock = appState.blocks.find(b => b.blockKey === blockKey);
+            const submitBtn = addStaffForm.querySelector('button[type="submit"]');
 
-            // SIMULATION: Create image URL and data object
-            let imageUrl = 'https://via.placeholder.com/150/f9a8d4/FFFFFF?text=W';
-            if (profileImageFile) {
-                // In a real scenario, this would be a server response URL, here it's an in-memory blob URL.
-                imageUrl = URL.createObjectURL(profileImageFile);
-            }
-
-            const newStaff = {
-                id: Date.now().toString(),
-                name: staffName,
-                username: staffUsername,
-                password: staffPassword, // WARNING: NEVER store plaintext password in a real app
-                phone: staffPhone,
-                email: staffEmail,
-                assignedBlockKey: blockKey,
-                assignedBlockName: assignedBlock ? assignedBlock.blockName : 'N/A',
-                profileImageUrl: imageUrl,
-                role: 'Warden'
-            };
-
-            // SIMULATION ONLY: Add to local state and notify user
-            appState.staff.push(newStaff);
-            console.log('✅ New Staff Added (Simulated):', newStaff);
-            showSuccess(`Warden ${staffName} added and assigned to ${newStaff.assignedBlockName}.`);
-
-            renderStaffList(); // Update the list in the modal
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Saving...';
             
-            // Reset form fields
-            addStaffForm.reset();
-            
-            // In a real application, you would send this to the server using FormData:
-            /*
-            const formData = new FormData(addStaffForm);
-            formData.append('blockName', assignedBlock ? assignedBlock.blockName : 'N/A');
+            // **NEW LOGIC**: Handle image upload to display locally
+            handleFileUpload(profileImageFile, (imageUrl) => {
+                const newStaff = {
+                    id: Date.now().toString(),
+                    name: staffName,
+                    username: staffUsername,
+                    password: staffPassword, 
+                    phone: staffPhone,
+                    email: staffEmail,
+                    assignedBlockKey: blockKey,
+                    assignedBlockName: assignedBlock ? assignedBlock.blockName : 'N/A',
+                    profileImageUrl: imageUrl || 'https://via.placeholder.com/150/f9a8d4/FFFFFF?text=W',
+                    role: 'Warden'
+                };
 
-            fetch('/api/staff', {
-                method: 'POST',
-                body: formData 
-            })
-            // ... handle response ...
-            */
+                // SIMULATION ONLY: Add to local state and notify user
+                appState.staff.push(newStaff);
+                console.log('✅ New Staff Added (Simulated):', newStaff);
+                showSuccess(`Warden ${staffName} added and assigned to ${newStaff.assignedBlockName}.`);
+
+                renderStaffList(); 
+                
+                // Reset form fields
+                addStaffForm.reset();
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Save Staff';
+            });
         });
 
         currentStaffCardsContainer.addEventListener('click', (e) => {
@@ -1997,19 +2002,6 @@
                     appState.staff = appState.staff.filter(s => s.id !== staffId);
                     showSuccess(`Warden ${staffMember.name} removed.`);
                     renderStaffList();
-
-                    /* In a real app:
-                    fetch(`/api/staff/${staffId}`, { method: 'DELETE' })
-                        .then(res => res.json())
-                        .then(data => {
-                            if (data.success) {
-                                // ... update state and UI ...
-                            } else {
-                                showError('Failed to delete staff: ' + (data.message || 'Server error.'));
-                            }
-                        })
-                        .catch(error => showError('Failed to delete staff: ' + error.message));
-                    */
                 }
             }
         });
@@ -2067,7 +2059,7 @@
             }
         });
         
-        // --- 6. ASSET ASSIGNMENT LOGIC (unchanged) ---
+        // --- 6. ASSET ASSIGNMENT LOGIC (same as before) ---
         function getAssetOptionsHTML() {
             let optionsHTML = '<option value="" disabled selected>Select asset...</option>';
             const allAssets = appState.assets;
@@ -2152,8 +2144,7 @@
             return assignedAssets;
         }
 
-
-        // --- 7. FORM & DATA HANDLERS (unchanged, using fetch placeholders) ---
+        // --- 7. FORM & DATA HANDLERS (UPDATED for images) ---
         addBlockForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const blockName = document.getElementById('block-name').value;
@@ -2196,54 +2187,56 @@
             const roomNumber = document.getElementById('room-id').value;
             const floor = document.getElementById('room-floor').value;
             const capacity = parseInt(document.getElementById('room-capacity').value, 10);
+            const imageFile = document.getElementById('room-image-file').files[0];
             
             const submitBtn = addRoomForm.querySelector('button[type="submit"]');
 
-            try {
-                submitBtn.disabled = true;
-                submitBtn.textContent = 'Saving...';
-                
-                // SIMULATION: Add room to the block in appState
-                const block = appState.blocks.find(b => b.blockKey === blockKey);
-                if (block) {
-                    const newRoom = {
-                        _id: Date.now().toString(),
-                        roomNumber,
-                        floor,
-                        capacity,
-                        students: [],
-                        assignedAssets
-                    };
-                    block.rooms.push(newRoom);
-                    
-                    // Simulate asset stock reduction
-                    assignedAssets.forEach(assigned => {
-                        const asset = appState.assets.find(a => a.name === assigned.name);
-                        if (asset) asset.quantity -= assigned.quantity;
-                    });
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Saving...';
+            
+            // **NEW LOGIC**: Handle image upload to display locally
+            handleFileUpload(imageFile, (imageUrl) => {
+                try {
+                    // SIMULATION: Add room to the block in appState
+                    const block = appState.blocks.find(b => b.blockKey === blockKey);
+                    if (block) {
+                        const newRoom = {
+                            _id: Date.now().toString(),
+                            roomNumber,
+                            floor,
+                            capacity,
+                            students: [],
+                            assignedAssets,
+                            imageUrl: imageUrl // Use Base64 URL or null
+                        };
+                        block.rooms.push(newRoom);
+                        
+                        // Simulate asset stock reduction
+                        assignedAssets.forEach(assigned => {
+                            const asset = appState.assets.find(invA => invA.name === assigned.name);
+                            if (asset) asset.quantity -= assigned.quantity;
+                        });
+                    }
+
+                    // Refresh UI
+                    renderDetailView(blockKey);
+                    renderDashboard();
+                    renderAssets(appState.assets);
+
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Add Room';
+
+                    hideModal('add-room-modal');
+                    addRoomForm.reset();
+                    roomAssetAssignmentContainer.innerHTML = ''; 
+                    showSuccess(`Room ${roomNumber} added successfully.`);
+
+                } catch (error) {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Add Room';
+                    alert(`Error adding room: ${error.message}`);
                 }
-
-
-                // AWAIT would be here in a real app: const res = await fetch(`/api/blocks/${blockKey}/rooms`, { method: 'POST', body: formData });
-                
-                // Refresh UI
-                renderDetailView(blockKey);
-                renderDashboard();
-                renderAssets(appState.assets);
-
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Add Room';
-
-                hideModal('add-room-modal');
-                addRoomForm.reset();
-                roomAssetAssignmentContainer.innerHTML = ''; 
-                showSuccess(`Room ${roomNumber} added successfully.`);
-
-            } catch (error) {
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Add Room';
-                alert(`Error adding room: ${error.message}`);
-            }
+            });
         });
 
         addStudentForm.addEventListener('submit', async (e) => {
@@ -2256,62 +2249,65 @@
             
             const blockKey = detailView.dataset.currentHostelKey;
             const roomId = document.getElementById('student-room-id').value;
+            const profileImageFile = document.getElementById('student-profile-image').files[0];
             
-            const newStudent = {
-                _id: Date.now().toString(),
-                username: document.getElementById('student-username').value,
-                password: document.getElementById('student-password').value, 
-                name: document.getElementById('student-name').value,
-                rollNumber: document.getElementById('student-roll-number').value,
-                course: document.getElementById('student-course').value,
-                department: document.getElementById('student-department').value,
-                year: document.getElementById('student-year').value,
-                email: document.getElementById('student-email').value,
-                phone: document.getElementById('student-phone').value,
-                joiningDate: document.getElementById('student-joining-date').value,
-                feeStatus: document.getElementById('student-fee-status').value,
-                paymentMethod: document.getElementById('student-payment-method').value,
-                assignedAssets,
-                profileImageUrl: 'https://via.placeholder.com/150/0000FF/FFFFFF?text=S'
-            };
-
             const submitBtn = addStudentForm.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Uploading...';
+            
+            // **NEW LOGIC**: Handle image upload to display locally
+            handleFileUpload(profileImageFile, (profileImageUrl) => {
+                try {
+                    const newStudent = {
+                        _id: Date.now().toString(),
+                        username: document.getElementById('student-username').value,
+                        password: document.getElementById('student-password').value, 
+                        name: document.getElementById('student-name').value,
+                        rollNumber: document.getElementById('student-roll-number').value,
+                        course: document.getElementById('student-course').value,
+                        department: document.getElementById('student-department').value,
+                        year: document.getElementById('student-year').value,
+                        email: document.getElementById('student-email').value,
+                        phone: document.getElementById('student-phone').value,
+                        joiningDate: document.getElementById('student-joining-date').value,
+                        feeStatus: document.getElementById('student-fee-status').value,
+                        paymentMethod: document.getElementById('student-payment-method').value,
+                        assignedAssets,
+                        profileImageUrl: profileImageUrl || 'https://via.placeholder.com/150/0000FF/FFFFFF?text=S'
+                    };
 
-            try {
-                submitBtn.disabled = true;
-                submitBtn.textContent = 'Uploading...';
-                
-                // SIMULATION: Add student to the room in appState
-                const block = appState.blocks.find(b => b.blockKey === blockKey);
-                const room = block ? block.rooms.find(r => r._id === roomId) : null;
-                if (room) {
-                    room.students.push(newStudent);
+                    // SIMULATION: Add student to the room in appState
+                    const block = appState.blocks.find(b => b.blockKey === blockKey);
+                    const room = block ? block.rooms.find(r => r._id === roomId) : null;
+                    if (room) {
+                        room.students.push(newStudent);
+                        
+                        // Simulate asset stock reduction
+                        assignedAssets.forEach(assigned => {
+                            const asset = appState.assets.find(invA => invA.name === assigned.name);
+                            if (asset) asset.quantity -= assigned.quantity;
+                        });
+                    }
+
+                    // Refresh UI
+                    renderDetailView(blockKey);
+                    renderDashboard();
+                    renderAssets(appState.assets);
+
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Add Student';
+
+                    hideModal('add-student-modal');
+                    addStudentForm.reset();
+                    studentAssetAssignmentContainer.innerHTML = '';
+                    showSuccess(`Student ${newStudent.name} added to room ${room.roomNumber}!`);
                     
-                    // Simulate asset stock reduction
-                    assignedAssets.forEach(assigned => {
-                        const asset = appState.assets.find(a => a.name === assigned.name);
-                        if (asset) asset.quantity -= assigned.quantity;
-                    });
+                } catch (error) {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Add Student';
+                    alert(`Error adding student: ${error.message}`);
                 }
-
-                // Refresh UI
-                renderDetailView(blockKey);
-                renderDashboard();
-                renderAssets(appState.assets);
-
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Add Student';
-
-                hideModal('add-student-modal');
-                addStudentForm.reset();
-                studentAssetAssignmentContainer.innerHTML = '';
-                showSuccess(`Student ${newStudent.name} added to room ${room.roomNumber}!`);
-                
-            } catch (error) {
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Add Student';
-                alert(`Error adding student: ${error.message}`);
-            }
+            });
         });
 
         addEventForm.addEventListener('submit', (e) => {
@@ -2333,30 +2329,28 @@
         addClubActivityForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const formData = new FormData(addClubActivityForm);
-            
-            // SIMULATION: Create new activity object
-            const newActivity = {
-                id: Date.now().toString(),
-                title: formData.get('title'),
-                type: formData.get('type'),
-                date: formData.get('date'),
-                description: formData.get('description'),
-                // Simulate imageUrl using type if file isn't processed
-                imageUrl: formData.get('clubActivityImage').size > 0 ? 'simulated_upload_url' : undefined
-            };
+            const imageFile = document.getElementById('club-activity-image-file').files[0];
             
             const submitBtn = addClubActivityForm.querySelector('button[type="submit"]');
 
-            try {
-                submitBtn.disabled = true;
-                submitBtn.textContent = 'Uploading...';
-
-                // SIMULATION: Add to state
-                // In a real app, you would await the fetch call here.
-                // Assuming success for simulation:
-                const mockActivities = [newActivity];
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Uploading...';
+            
+            // **NEW LOGIC**: Handle image upload to display locally
+            handleFileUpload(imageFile, (imageUrl) => {
+                // SIMULATION: Create new activity object
+                const newActivity = {
+                    id: Date.now().toString(),
+                    title: formData.get('title'),
+                    type: formData.get('type'),
+                    date: formData.get('date'),
+                    description: formData.get('description'),
+                    imageUrl: imageUrl
+                };
                 
-                renderClubActivities(mockActivities); // Re-render with mock data
+                // SIMULATION: Add to state
+                eventData.push(newActivity);
+                renderClubActivities(eventData); // Re-render with mock data
                 
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'Post Activity';
@@ -2364,11 +2358,7 @@
                 hideModal('add-club-activity-modal');
                 addClubActivityForm.reset();
                 showSuccess(`Activity "${newActivity.title}" posted!`);
-            } catch (error) {
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Post Activity';
-                alert(`Error adding activity: ${error.message}`);
-            }
+            });
         });
         
         addAssetForm.addEventListener('submit', async (e) => {
@@ -2384,43 +2374,47 @@
             }
             
             const quantity = parseInt(document.getElementById('asset-quantity').value, 10);
+            const imageFile = document.getElementById('asset-image-file').files[0];
             
             const submitBtn = addAssetForm.querySelector('button[type="submit"]');
 
-            try {
-                submitBtn.disabled = true;
-                submitBtn.textContent = 'Saving...';
-                
-                // SIMULATION: Add asset to appState
-                const existingAsset = appState.assets.find(a => a.name === name);
-                if (existingAsset) {
-                    existingAsset.quantity += quantity;
-                } else {
-                    appState.assets.push({
-                        _id: Date.now().toString(),
-                        name: name,
-                        quantity: quantity,
-                        description: document.getElementById('asset-description').value,
-                        imageUrl: document.getElementById('asset-image-file').files[0] ? 'simulated_asset_url' : undefined
-                    });
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Saving...';
+            
+            // **NEW LOGIC**: Handle image upload to display locally
+            handleFileUpload(imageFile, (imageUrl) => {
+                try {
+                    // SIMULATION: Add asset to appState
+                    const existingAsset = appState.assets.find(a => a.name === name);
+                    if (existingAsset) {
+                        existingAsset.quantity += quantity;
+                    } else {
+                        appState.assets.push({
+                            _id: Date.now().toString(),
+                            name: name,
+                            quantity: quantity,
+                            description: document.getElementById('asset-description').value,
+                            imageUrl: imageUrl 
+                        });
+                    }
+                    
+                    // Refresh UI
+                    renderDashboard(); 
+                    renderAssets(appState.assets);
+
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Save Asset';
+
+                    hideModal('add-asset-modal');
+                    addAssetForm.reset();
+                    assetNameOtherWrapper.classList.add('hidden');
+                    showSuccess(`${quantity} units of ${name} added to inventory!`);
+                } catch (error) {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Save Asset';
+                    alert(`Error adding asset: ${error.message}`);
                 }
-                
-                // Refresh UI
-                renderDashboard(); 
-                renderAssets(appState.assets);
-
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Save Asset';
-
-                hideModal('add-asset-modal');
-                addAssetForm.reset();
-                assetNameOtherWrapper.classList.add('hidden');
-                showSuccess(`${quantity} units of ${name} added to inventory!`);
-            } catch (error) {
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Save Asset';
-                alert(`Error adding asset: ${error.message}`);
-            }
+            });
         });
 
         assetTypeSelect.addEventListener('change', () => {
@@ -2431,7 +2425,7 @@
             }
         });
 
-        // --- 8. DETAIL VIEW & MODAL LISTENERS (unchanged) ---
+        // --- 8. DETAIL VIEW & MODAL LISTENERS (same as before) ---
         function filterAndSearchRooms() {
             const searchTerm = roomSearchInput.value.toLowerCase();
             const filterTerm = roomFilterSelect.value;
@@ -2546,7 +2540,7 @@
             }
         });
         
-        // --- 9. DELETE HANDLERS (for cards, unchanged) ---
+        // --- 9. DELETE HANDLERS (for cards, same as before) ---
         hostelBlockContainer.addEventListener('click', async (e) => {
             const button = e.target.closest('.remove-block-btn');
             if (button) {
@@ -2606,7 +2600,7 @@
             }
         });
 
-        // --- 10. "SHOW MODAL" BUTTON LISTENERS (unchanged) ---
+        // --- 10. "SHOW MODAL" BUTTON LISTENERS (same as before) ---
         showAddBlockModalBtn.addEventListener('click', () => showModal('add-block-modal'));
         
         showAddRoomModalBtn.addEventListener('click', () => {
@@ -2702,7 +2696,7 @@
         // Add response to complaint
         complaintDetailsContent.addEventListener('click', async (e) => {
             if (e.target.id === 'submit-complaint-response') {
-                const complaintId = e.target.dataset.complaintId;
+                const complaintId = e.target.dataset.complaint-id;
                 const responseText = document.getElementById('complaint-response').value.trim();
                 
                 if (!responseText) {
@@ -2717,7 +2711,7 @@
             }
         });
 
-        // --- 11. OTHER LISTENERS (unchanged) ---
+        // --- 11. OTHER LISTENERS (same as before) ---
         adminLogoutBtn.addEventListener('click', () => {
             if (confirm('Are you sure you want to log out?')) {
                 window.location.href = '/login.html';
