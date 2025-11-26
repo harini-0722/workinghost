@@ -194,11 +194,11 @@
                         </div>
                     </div>
                 </div>
-                <div id="show-add-staff-modal-btn" class="bg-fuchsia-50 p-5 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer">
+                <div id="show-staff-view-btn" class="bg-fuchsia-50 p-5 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer">
                     <div class="flex justify-between items-start">
                         <div>
                             <span class="text-sm font-medium text-fuchsia-900 opacity-70">STAFF MANAGEMENT</span>
-                            <p class="text-3xl font-extrabold text-fuchsia-900 mt-2">Add Staff</p>
+                            <p class="text-3xl font-extrabold text-fuchsia-900 mt-2">Manage Staff</p>
                             <p class="text-sm text-fuchsia-900 opacity-60">Assign Wardens</p>
                         </div>
                         <div class="p-3 bg-white rounded-full shadow-md">
@@ -432,6 +432,96 @@
                 </div>
             </div>
         </div>
+
+        <div id="staff-view" class="hidden">
+            <div class="relative mb-6 pb-4">
+                <button id="back-to-dashboard-from-staff-btn" class="flex items-center text-sm font-medium text-gray-600 hover:text-gray-900">
+                    <hero-icon-solid name="arrow-left" class="h-4 w-4 mr-2"></hero-icon-solid>
+                    <span class="icon-space"> </span>Back to Dashboard
+                </button>
+                <div class="flex items-center justify-center absolute inset-x-0 top-0 -z-10">
+                    <h1 class="text-xl sm:text-3xl font-bold text-fuchsia-700">
+                        Staff & Warden Management
+                    </h1>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <h3 class="text-xl font-semibold mb-4 text-gray-800"><span class="icon-space"> </span>Add New Staff / Warden</h3>
+                    <form id="add-staff-form" class="space-y-4">
+                        <div>
+                            <label for="staff-name" class="block text-sm font-medium text-gray-700"><span class="icon-space"> </span>Staff Name</label>
+                            <input type="text" id="staff-name" name="staffName" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="Enter full name" required>
+                        </div>
+                        <div>
+                            <label for="staff-username" class="block text-sm font-medium text-gray-700"><span class="icon-space"> </span>Username</label>
+                            <input type="text" id="staff-username" name="staffUsername" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="Login username" required>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label for="staff-password" class="block text-sm font-medium text-gray-700"><span class="icon-space"> </span>Password</label>
+                                <input type="password" id="staff-password" name="staffPassword" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
+                            </div>
+                            <div>
+                                <label for="staff-phone" class="block text-sm font-medium text-gray-700"><span class="icon-space"> </span>Phone</label>
+                                <input type="tel" id="staff-phone" name="staffPhone" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="+91 XXXXX XXXXX">
+                            </div>
+                        </div>
+                        <div>
+                            <label for="staff-email" class="block text-sm font-medium text-gray-700"><span class="icon-space"> </span>Email</label>
+                            <input type="email" id="staff-email" name="staffEmail" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="warden@iit.edu">
+                        </div>
+                        <div>
+                            <label for="staff-profile-image" class="block text-sm font-medium text-gray-700"><span class="icon-space"> </span>Upload Profile Photo</label>
+                            <input type="file" id="staff-profile-image" name="staffProfileImage" class="mt-1 block w-full text-sm text-gray-500
+                                        file:mr-4 file:py-2 file:px-4
+                                        file:rounded-full file:border-0
+                                        file:text-sm file:font-semibold
+                                        file:bg-blue-50 file:text-blue-700
+                                        hover:file:bg-blue-100"
+                                        accept="image/*">
+                        </div>
+                        <div class="pt-2">
+                            <label for="staff-block-assignment" class="block text-sm font-medium text-gray-700"><span class="icon-space"> </span>Assign Block</label>
+                            <select id="staff-block-assignment" name="blockKey" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
+                                <option value="" disabled selected>-- Select Hostel Block --</option>
+                                </select>
+                        </div>
+                        <div class="flex justify-end space-x-3 pt-4">
+                            <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                                <span class="icon-space"> </span>Save Staff
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="lg:col-span-2 bg-white p-6 rounded-lg shadow-lg">
+                    <h3 class="text-xl font-semibold mb-4 text-gray-800">Current Wardens List</h3>
+                    <div id="current-staff-cards" class="space-y-4">
+                        <p class="text-sm text-gray-500">Staff records will appear here after saving.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="add-block-modal" class="modal hidden fixed inset-0 z-30 flex items-center justify-center">
+        </div>
+        <div id="add-room-modal" class="modal hidden fixed inset-0 z-30 flex items-center justify-center">
+        </div>
+        <div id="add-student-modal" class="modal hidden fixed inset-0 z-30 flex items-center justify-center">
+        </div>
+        <div id="add-event-modal" class="modal hidden fixed inset-0 z-30 flex items-center justify-center">
+        </div>
+        <div id="room-details-modal" class="modal hidden fixed inset-0 z-30 flex items-center justify-center">
+        </div>
+        <div id="add-club-activity-modal" class="modal hidden fixed inset-0 z-30 flex items-center justify-center">
+        </div>
+        <div id="add-asset-modal" class="modal hidden fixed inset-0 z-30 flex items-center justify-center">
+        </div>
+        <div id="complaint-details-modal" class="modal hidden fixed inset-0 z-30 flex items-center justify-center">
+        </div>
+        
     </main>
     <footer class="mt-12 py-6 border-t border-gray-200 bg-white">
         <div class="w-full mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -440,6 +530,7 @@
             </p>
         </div>
     </footer>
+    
     <div id="add-block-modal" class="modal hidden fixed inset-0 z-30 flex items-center justify-center">
         <div class="modal-backdrop fixed inset-0" data-modal-hide="add-block-modal"></div>
         <div class="modal-content bg-white p-6 rounded-lg shadow-xl z-40 w-full max-w-md mx-4">
@@ -808,63 +899,6 @@
         </div>
     </div>
 
-    <div id="add-staff-modal" class="modal hidden fixed inset-0 z-30 flex items-center justify-center">
-        <div class="modal-backdrop fixed inset-0" data-modal-hide="add-staff-modal"></div>
-        <div class="modal-content bg-white p-6 rounded-lg shadow-xl z-40 w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto">
-            <h2 class="text-xl font-semibold mb-4"><span class="icon-space"> </span>Add New Staff / Warden</h2>
-            <form id="add-staff-form" class="space-y-4">
-                <div>
-                    <label for="staff-name" class="block text-sm font-medium text-gray-700"><span class="icon-space"> </span>Staff Name</label>
-                    <input type="text" id="staff-name" name="staffName" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="Enter full name" required>
-                </div>
-                <div>
-                    <label for="staff-username" class="block text-sm font-medium text-gray-700"><span class="icon-space"> </span>Username</label>
-                    <input type="text" id="staff-username" name="staffUsername" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="Login username" required>
-                </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label for="staff-password" class="block text-sm font-medium text-gray-700"><span class="icon-space"> </span>Password</label>
-                        <input type="password" id="staff-password" name="staffPassword" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
-                    </div>
-                    <div>
-                        <label for="staff-phone" class="block text-sm font-medium text-gray-700"><span class="icon-space"> </span>Phone</label>
-                        <input type="tel" id="staff-phone" name="staffPhone" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="+91 XXXXX XXXXX">
-                    </div>
-                </div>
-                <div>
-                    <label for="staff-email" class="block text-sm font-medium text-gray-700"><span class="icon-space"> </span>Email</label>
-                    <input type="email" id="staff-email" name="staffEmail" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="warden@iit.edu">
-                </div>
-                <div>
-                    <label for="staff-profile-image" class="block text-sm font-medium text-gray-700"><span class="icon-space"> </span>Upload Profile Photo</label>
-                    <input type="file" id="staff-profile-image" name="staffProfileImage" class="mt-1 block w-full text-sm text-gray-500
-                                file:mr-4 file:py-2 file:px-4
-                                file:rounded-full file:border-0
-                                file:text-sm file:font-semibold
-                                file:bg-blue-50 file:text-blue-700
-                                hover:file:bg-blue-100"
-                                accept="image/*">
-                </div>
-                <div class="pt-2">
-                    <label for="staff-block-assignment" class="block text-sm font-medium text-gray-700"><span class="icon-space"> </span>Assign Block</label>
-                    <select id="staff-block-assignment" name="blockKey" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
-                        <option value="" disabled selected>-- Select Hostel Block --</option>
-                        </select>
-                </div>
-                <div class="flex justify-end space-x-3 pt-4">
-                    <button type="button" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300" data-modal-hide="add-staff-modal"><span class="icon-space"> </span>Cancel</button>
-                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"><span class="icon-space"> </span>Save Staff</button>
-                </div>
-            </form>
-            <div id="staff-list-container" class="mt-8 pt-4 border-t border-gray-200">
-                <h3 class="text-lg font-semibold mb-3">Current Wardens</h3>
-                <div id="current-staff-cards" class="space-y-2">
-                    <p class="text-sm text-gray-500">Staff records will appear here after saving.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
 
     <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -899,7 +933,7 @@
         ];
         let currentRoomData = null; 
 
-        // --- 2. DOM Elements (Same as before) ---
+        // --- 2. DOM Elements ---
         const dashboardView = document.getElementById('dashboard-view');
         const detailView = document.getElementById('detail-view');
         const feesView = document.getElementById('fees-view');
@@ -961,6 +995,15 @@
         const statAssetAllocationLabel = document.getElementById('stat-asset-allocation-label');
         const statAssetAllocationRing = document.getElementById('stat-asset-allocation-ring');
 
+        // Staff View Elements (UPDATED)
+        const staffView = document.getElementById('staff-view');
+        const showStaffViewBtn = document.getElementById('show-staff-view-btn');
+        const backToDashboardFromStaffBtn = document.getElementById('back-to-dashboard-from-staff-btn');
+        const addStaffForm = document.getElementById('add-staff-form');
+        const staffBlockAssignmentSelect = document.getElementById('staff-block-assignment');
+        const currentStaffCardsContainer = document.getElementById('current-staff-cards');
+
+
         // Room Detail Modal Elements
         const roomDetailsModal = document.getElementById('room-details-modal');
         const modalRoomTitle = document.getElementById('modal-room-title');
@@ -992,13 +1035,6 @@
         const addStudentAssetRowBtn = document.getElementById('add-student-asset-row-btn');
         const studentAssetAssignmentContainer = document.getElementById('student-asset-assignment-container');
         
-        // Staff Elements 
-        const showAddStaffModalBtn = document.getElementById('show-add-staff-modal-btn');
-        const addStaffModal = document.getElementById('add-staff-modal');
-        const addStaffForm = document.getElementById('add-staff-form');
-        const staffBlockAssignmentSelect = document.getElementById('staff-block-assignment');
-        const currentStaffCardsContainer = document.getElementById('current-staff-cards');
-
 
         // --- 3. THEME/HELPER DATA ---
         const themes = { 
@@ -1890,7 +1926,7 @@
             });
         }
 
-        // --- STAFF MANAGEMENT LOGIC (NEW) ---
+        // --- STAFF MANAGEMENT FUNCTIONS (UPDATED FOR VIEW) ---
 
         function populateBlockAssignmentDropdown() {
             staffBlockAssignmentSelect.innerHTML = '<option value="" disabled selected>-- Select Hostel Block --</option>';
@@ -1912,16 +1948,19 @@
         
         function renderStaffList() {
             if (appState.staff.length === 0) {
-                currentStaffCardsContainer.innerHTML = '<p class="text-sm text-gray-500">Staff records will appear here after saving.</p>';
+                currentStaffCardsContainer.innerHTML = '<p class="text-sm text-gray-500">No wardens currently assigned.</p>';
                 return;
             }
-            currentStaffCardsContainer.innerHTML = appState.staff.map(staff => `
+            // Sort staff by assigned block name
+            const sortedStaff = appState.staff.slice().sort((a, b) => a.assignedBlockName.localeCompare(b.assignedBlockName));
+
+            currentStaffCardsContainer.innerHTML = sortedStaff.map(staff => `
                 <div class="bg-white border border-fuchsia-200 p-3 rounded-lg flex items-center justify-between shadow-sm">
                     <div class="flex items-center">
                         <img src="${staff.profileImageUrl || 'https://via.placeholder.com/150/f9a8d4/FFFFFF?text=S'}" class="h-10 w-10 rounded-full object-cover bg-fuchsia-100 mr-3"/>
                         <div>
                             <p class="font-semibold text-gray-800 text-sm">${staff.name}</p>
-                            <p class="text-xs text-fuchsia-600">${staff.role} - ${staff.assignedBlockName}</p>
+                            <p class="text-xs text-fuchsia-600">${staff.role} - <strong>${staff.assignedBlockName}</strong></p>
                         </div>
                     </div>
                     <span class="text-xs text-gray-500">${staff.phone || staff.email || 'N/A'}</span>
@@ -1934,11 +1973,26 @@
             `).join('');
         }
 
-        showAddStaffModalBtn.addEventListener('click', () => {
+        function renderStaffView() {
+            // 1. Ensure the dropdown is populated with current blocks
             populateBlockAssignmentDropdown();
+            // 2. Render the list of current staff members
             renderStaffList();
-            showModal('add-staff-modal');
+        }
+
+        showStaffViewBtn.addEventListener('click', () => {
+            hideAllViews();
+            staffView.classList.remove('hidden');
+            renderStaffView();
         });
+
+        backToDashboardFromStaffBtn.addEventListener('click', () => {
+            hideAllViews();
+            dashboardView.classList.remove('hidden');
+            // Reload dashboard to ensure any state changes are reflected
+            loadHostelData();
+        });
+
 
         addStaffForm.addEventListener('submit', (e) => {
             e.preventDefault();
@@ -1982,7 +2036,7 @@
                 console.log('✅ New Staff Added (Simulated):', newStaff);
                 showSuccess(`Warden ${staffName} added and assigned to ${newStaff.assignedBlockName}.`);
 
-                renderStaffList(); 
+                renderStaffView(); // Update the list in the current view
                 
                 // Reset form fields
                 addStaffForm.reset();
@@ -2001,13 +2055,13 @@
                     // SIMULATION: Remove from local state
                     appState.staff = appState.staff.filter(s => s.id !== staffId);
                     showSuccess(`Warden ${staffMember.name} removed.`);
-                    renderStaffList();
+                    renderStaffView(); // Update the list in the current view
                 }
             }
         });
 
 
-        // --- 5. MODAL & VIEW-SWITCHING LOGIC (unchanged) ---
+        // --- 5. MODAL & VIEW-SWITCHING LOGIC (same as before) ---
         function showModal(modalId) { 
             const modal = document.getElementById(modalId);
             if (!modal) return;
@@ -2032,6 +2086,7 @@
             feesView.classList.add('hidden');
             visitorsView.classList.add('hidden');
             complaintsView.classList.add('hidden');
+            staffView.classList.add('hidden'); // HIDDEN FOR NEW VIEW
         }
 
         document.addEventListener('click', (e) => {
@@ -2656,6 +2711,20 @@
             dashboardView.classList.remove('hidden');
         });
 
+        // Staff View Listeners (UPDATED)
+        showStaffViewBtn.addEventListener('click', () => {
+            hideAllViews();
+            staffView.classList.remove('hidden');
+            renderStaffView();
+        });
+
+        backToDashboardFromStaffBtn.addEventListener('click', () => {
+            hideAllViews();
+            dashboardView.classList.remove('hidden');
+            loadHostelData();
+        });
+
+
         // Complaints filtering and search
         complaintSearchInput.addEventListener('input', renderComplaintsView);
         complaintStatusFilter.addEventListener('change', renderComplaintsView);
@@ -2696,7 +2765,7 @@
         // Add response to complaint
         complaintDetailsContent.addEventListener('click', async (e) => {
             if (e.target.id === 'submit-complaint-response') {
-                const complaintId = e.target.dataset.complaint-id;
+                const complaintId = e.target.dataset.complaintId;
                 const responseText = document.getElementById('complaint-response').value.trim();
                 
                 if (!responseText) {
