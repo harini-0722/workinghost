@@ -1835,40 +1835,45 @@
         }
 
         // --- FIXED: Populate Visitor Request History ---
-        function populateVisitorRequestHistory() {
-            const tableBody = document.getElementById('visitor-request-history-body');
-            tableBody.innerHTML = '';
-            
-            // Use g_visitorRequests which is now loaded from server in loadStudentData
-            const myVisitorHistory = g_visitorRequests
-                .sort((a, b) => new Date(b.startDate) - new Date(a.startDate)); // Use startDate field from server data
+        // UPDATED: Function to populate history using the global g_visitorRequests array
+function populateVisitorRequestHistory() {
+    const tableBody = document.getElementById('visitor-request-history-body');
+    tableBody.innerHTML = '';
+    
+    // Use g_visitorRequests (which is now populated from the server via loadStudentData)
+    // Filter and sort the requests specific to the logged-in student
+    const myVisitorHistory = g_visitorRequests
+        // Filter is no longer needed here if server already filters, but keeping it robust.
+        // Assuming g_visitorRequests now holds only the logged-in student's data:
+        .sort((a, b) => new Date(b.startDate) - new Date(a.startDate)); 
+        // NOTE: The server now provides 'startDate' and 'endDate' (Date objects)
 
-            if (myVisitorHistory.length === 0) {
-                tableBody.innerHTML = `<tr><td colspan="5" class="py-4 px-6 text-center text-secondary-gray">No visitor request history.</td></tr>`;
-                return;
-            }
+    if (myVisitorHistory.length === 0) {
+        tableBody.innerHTML = `<tr><td colspan="5" class="py-4 px-6 text-center text-secondary-gray">No visitor request history.</td></tr>`;
+        return;
+    }
 
-            myVisitorHistory.forEach(v => {
-                let statusClass;
-                if (v.status === 'Approved') {
-                    statusClass = 'text-accent-green';
-                } else if (v.status === 'Pending') {
-                    statusClass = 'text-info-yellow';
-                } else {
-                    statusClass = 'text-accent-red'; // For 'Rejected'
-                }
-                
-                tableBody.innerHTML += `
-                    <tr class="hover:bg-light-bg transition duration-150">
-                        <td class="py-3 px-6 whitespace-nowrap text-sm text-accent-dark">${v.visitorName}</td>
-                        <td class="py-3 px-6 whitespace-nowrap text-sm text-secondary-gray">${formatDate(v.startDate)}</td>
-                        <td class="py-3 px-6 whitespace-nowrap text-sm text-secondary-gray">${formatDate(v.endDate)}</td>
-                        <td class="py-3 px-6 text-sm text-secondary-gray">${v.reason}</td>
-                        <td class="py-3 px-6 whitespace-nowrap text-sm font-medium ${statusClass}">${v.status}</td>
-                    </tr>
-                `;
-            });
+    myVisitorHistory.forEach(v => {
+        let statusClass;
+        if (v.status === 'Approved') {
+            statusClass = 'text-accent-green';
+        } else if (v.status === 'Pending') {
+            statusClass = 'text-info-yellow';
+        } else {
+            statusClass = 'text-accent-red'; // For 'Rejected'
         }
+        
+        tableBody.innerHTML += `
+            <tr class="hover:bg-light-bg transition duration-150">
+                <td class="py-3 px-6 whitespace-nowrap text-sm text-accent-dark">${v.visitorName}</td>
+                <td class="py-3 px-6 whitespace-nowrap text-sm text-secondary-gray">${formatDate(v.startDate)}</td>
+                <td class="py-3 px-6 whitespace-nowrap text-sm text-secondary-gray">${formatDate(v.endDate)}</td>
+                <td class="py-3 px-6 text-sm text-secondary-gray">${v.reason}</td>
+                <td class="py-3 px-6 whitespace-nowrap text-sm font-medium ${statusClass}">${v.status}</td>
+            </tr>
+        `;
+    });
+}
         // --- END: Visitor Request Functions ---
         
         function populateLostAndFound() {
