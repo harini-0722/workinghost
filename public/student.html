@@ -18,24 +18,24 @@
                 extend: {
                     colors: {
                         // --- IIT Executive Palette ---
-                        'primary-blue': '#2563EB',     // Main brand color (Blue 600)
-                        'secondary-accent': '#F9C74F',    // Vibrant Yellow/Gold
+                        'primary-blue': '#2563EB',      // Main brand color (Blue 600)
+                        'secondary-accent': '#F9C74F',  // Vibrant Yellow/Gold
                         
-                        'accent-dark': '#1F2937',     // Deep Charcoal/Navy for Headers/Strong Text
+                        'accent-dark': '#1F2937',       // Deep Charcoal/Navy for Headers/Strong Text
                         
-                        'accent-green': '#059669',     // Success/Paid/Present (Emerald 600)
-                        'accent-red': '#DC2626',       // Danger/Due/Critical (Red 600)
+                        'accent-green': '#059669',      // Success/Paid/Present (Emerald 600)
+                        'accent-red': '#DC2626',        // Danger/Due/Critical (Red 600)
                         'info-yellow': '#FBBF24',      // Warning (Amber 500)
                         
                         'complaint-theme': '#EA580C',   
                         
                         // Structure
-                        'secondary-gray': '#6B7280',   // Muted Text/Subtitles
-                        'light-bg': '#F9FAFB',         // Very Light Gray (Internal distinctions like table headers)
-                        'card-bg': '#FFFFFF',          // PURE WHITE for all main content boxes/cards
-                        'text-muted': '#E5E7EB',       // Light divider/border
+                        'secondary-gray': '#6B7280',    // Muted Text/Subtitles
+                        'light-bg': '#F9FAFB',          // Very Light Gray (Internal distinctions like table headers)
+                        'card-bg': '#FFFFFF',           // PURE WHITE for all main content boxes/cards
+                        'text-muted': '#E5E7EB',        // Light divider/border
                         
-                        'page-bg': '#eff6ff'           // MILD BLUE
+                        'page-bg': '#eff6ff'            // MILD BLUE
                     },
                     boxShadow: {
                         'soft': '0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.02)',
@@ -166,7 +166,6 @@
                         <a href="#" onclick="showView('student-leave-view')" id="nav-student-leave-view" class="nav-link inline-flex items-center px-1 pt-1 text-sm font-medium text-secondary-gray hover:text-primary-blue transition duration-200">
                             <span class="mr-1">🗓</span> Leave Request
                         </a>
-                        <!-- === FIX: Changed href, removed onclick, and added target="_top" === -->
                         <a href="gymkhana.html" target="_top" id="nav-student-gymkhana-view" class="nav-link inline-flex items-center px-1 pt-1 text-sm font-medium text-secondary-gray hover:text-primary-blue transition duration-200">
                             <span class="mr-1">🗳️</span> Gymkhana
                         </a>
@@ -203,7 +202,6 @@
                 <a href="#" onclick="showView('student-reports-view'); hideMobileMenu();" id="mobile-nav-student-reports-view" class="nav-link block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:bg-light-bg hover:text-gray-800"><span class="mr-2">⚠️</span> Reports & Issues</a>
                 <a href="#" onclick="showView('student-visitor-view'); hideMobileMenu();" id="mobile-nav-student-visitor-view" class="nav-link block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:bg-light-bg hover:text-gray-800"><span class="mr-2">👤</span> Visitor Request</a>
                 <a href="#" onclick="showView('student-leave-view'); hideMobileMenu();" id="mobile-nav-student-leave-view" class="nav-link block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:bg-light-bg hover:text-gray-800"><span class="mr-2">🗓</span> Leave Request</a>
-                <!-- === FIX: Changed href, removed onclick, and added target="_top" === -->
                 <a href="gymkhana.html" target="_top" id="mobile-nav-student-gymkhana-view" class="nav-link block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:bg-light-bg hover:text-gray-800"><span class="mr-2">🗳️</span> Gymkhana</a>
                 <a href="#" onclick="logout(); hideMobileMenu();" class="nav-link block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:bg-light-bg hover:text-accent-red"><span class="mr-2">🚪</span> Logout</a>
             </div>
@@ -270,8 +268,8 @@
                         <h2 class="text-2xl md:text-3xl font-bold text-accent-dark mb-6">Quick Actions</h2>
                         <div class="grid grid-cols-1 gap-4">
                              <button onclick="showView('student-reports-view')" class="btn-classy-lift bg-primary-blue text-card-bg text-sm font-semibold px-5 py-3 rounded-lg shadow-lift hover:bg-blue-700 transition duration-300">
-                                File a Report or Issue
-                            </button>
+                                 File a Report or Issue
+                             </button>
                             <button onclick="showView('student-leave-view')" class="btn-classy-lift bg-primary-blue text-card-bg text-sm font-semibold px-5 py-3 rounded-lg shadow-lift hover:bg-blue-700 transition duration-300">
                                 Apply for Leave
                             </button>
@@ -285,7 +283,7 @@
                     </div>
         
                 </div>
-                </div>
+            </div>
 
             <div id="student-room-view" class="view hidden">
                 <h1 class="text-3xl md:text-4xl font-extrabold text-accent-dark mb-6 md:mb-8">My Room & Mates 🛏️</h1>
@@ -397,7 +395,7 @@
                                     </tr>
                                 </thead>
                                 <tbody id="visitor-request-history-body" class="bg-card-bg divide-y divide-text-muted">
-                                    </tbody>
+                                </tbody>
                             </table>
                         </div>
                     </div>
@@ -460,7 +458,7 @@
                                     </select>
                                 </div>
                                 
-                               
+                                
                                 
                                 <div>
                                     <label class="block text-sm font-medium text-secondary-gray mb-1">Issue Date</label>
@@ -491,20 +489,20 @@
                         <div class="lg:col-span-2">
                             <h3 class="text-xl font-bold text-accent-dark mb-5">My Complaint History</h3>
                             <div class="bg-card-bg rounded-xl shadow-lift overflow-x-auto">
-                                 <table class="min-w-full divide-y divide-text-muted">
-                                     <thead class="bg-light-bg">
-                                         <tr>
-                                             <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">ID</th>
-                                             <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Date</th>
-                                             <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Type</th>
-                                             <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Location</th>
-                                             <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Priority</th>
-                                             <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Status</th>
-                                         </tr>
-                                     </thead>
-                                     <tbody id="student-complaint-history" class="bg-card-bg divide-y divide-text-muted">
-                                     </tbody>
-                                 </table>
+                                   <table class="min-w-full divide-y divide-text-muted">
+                                       <thead class="bg-light-bg">
+                                           <tr>
+                                               <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">ID</th>
+                                               <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Date</th>
+                                               <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Type</th>
+                                               <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Location</th>
+                                               <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Priority</th>
+                                               <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Status</th>
+                                           </tr>
+                                       </thead>
+                                       <tbody id="student-complaint-history" class="bg-card-bg divide-y divide-text-muted">
+                                       </tbody>
+                                   </table>
                             </div>
                         </div>
                     </div>
@@ -628,7 +626,7 @@
                                     </tr>
                                 </thead>
                                 <tbody id="student-leave-history" class="bg-card-bg divide-y divide-text-muted">
-                                     </tbody>
+                                            </tbody>
                             </table>
                         </div>
                     </div>
@@ -791,8 +789,6 @@
                 </div>
             </div>
 
-            <!-- === FIX: Removed the entire 'student-gymkhana-view' div === -->
-            
             </div>
     </div>
     
@@ -813,7 +809,7 @@
                     <button onclick="closeAnnouncementsModal()" class="text-secondary-gray hover:text-accent-dark">&times;</button>
                 </div>
                 <div id="announcement-list-container" class="p-6 space-y-4 overflow-y-auto" style="max-height: 70vh;">
-                   </div>
+                       </div>
             </div>
 
             <div id="announcement-detail-view" class="hidden">
@@ -827,7 +823,7 @@
                     <h3 id="announcement-detail-title" class="text-2xl font-bold text-accent-dark mb-2"></h3>
                     <p id="announcement-detail-date" class="text-sm text-secondary-gray mb-4"></p>
                     <div id="announcement-detail-body" class="prose max-w-none text-accent-dark">
-                       </div>
+                        </div>
                 </div>
             </div>
 
@@ -844,6 +840,7 @@
         let g_roommates = []; // This array contains all occupants, including the logged-in student
         let g_attendance = [];
         let g_complaints = [];
+        let g_visitorRequests = []; // FIX: Initialized globally
         let g_clubActivities = []; // NEW: Store club activities
         
         let g_attendanceStatus = { status: 'Checked Out', lastActionTime: null };
@@ -855,7 +852,7 @@
         ];
         
         // UPDATED: New mock data for visitor requests
-       
+        
 
         const mockLostFound = [
             { id: 'F001', item: 'Blue Umbrella', dateFound: '2025-10-20', location: 'Hostel Lobby', status: 'Available' },
@@ -872,137 +869,12 @@
             }
         ];
         
-        async function loadStudentData() {
-    const studentId = localStorage.getItem('currentStudentId');
-    // ... (rest of the existing loadStudentData function) ...
-
-    // --- NEW: Load Visitor Requests
-    await loadVisitorRequests(studentId);
-    
-    // ... (return true)
-}
-
-// =========================================================================
-// NEW: API Functions for Visitor Requests
-// =========================================================================
-
-// NEW FUNCTION to load visitor history from the backend
-async function loadVisitorRequests(studentId) {
-    try {
-        const response = await fetch(`/api/visitor-request/history/${studentId}`);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        if (data.success) {
-            g_visitorRequests = data.requests;
-            console.log('✅ Visitor requests loaded:', g_visitorRequests);
-        } else {
-            console.warn('Could not load visitor requests from API, falling back to empty list.');
-            g_visitorRequests = []; // Ensure it's empty on failure
-        }
-    } catch (error) {
-        console.error('❌ Failed to load visitor requests:', error);
-        // Fallback to mock if API fails completely (optional, use empty array for prod)
-        // g_visitorRequests = [...mockVisitorRequests]; 
-        g_visitorRequests = []; // Use empty list for a clean slate
-    }
-}
-
-// UPDATED: Function to submit visitor request to the MongoDB backend
-async function submitVisitorRequest() {
-    const name = document.getElementById('visitor-name').value;
-    const startDate = document.getElementById('visitor-start-date').value;
-    const endDate = document.getElementById('visitor-end-date').value;
-    const reason = document.getElementById('visitor-reason').value;
-    const studentId = g_student._id; // Get the student ID from the globally loaded student object
-
-    if (!name || !startDate || !endDate || !reason || !studentId) {
-        alert('Please fill out all fields and ensure you are logged in.');
-        return;
-    }
-    if (new Date(endDate) < new Date(startDate)) {
-        alert('End date must be after the start date.');
-        return;
-    }
-    
-    const requestData = {
-        studentId: studentId,
-        visitorName: name,
-        startDate: startDate,
-        endDate: endDate,
-        reason: reason,
-        submissionDate: new Date().toISOString(),
-        status: 'Pending'
-    };
-
-    try {
-        const response = await fetch('/api/visitor-request', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(requestData)
-        });
-
-        const data = await response.json();
-
-        if (response.ok && data.success) {
-            alert(`Visitor request for ${name} submitted successfully! Status: Pending`);
-            
-            // Re-load the history to include the new submission and update the table
-            await loadVisitorRequests(studentId);
-            populateVisitorRequestHistory();
-            
-            // Reset form
-            document.getElementById('visitor-request-form').reset();
-        } else {
-            throw new Error(data.message || 'Failed to submit visitor request on the server.');
-        }
-
-    } catch (error) {
-        console.error('Submission Error:', error);
-        alert(`Failed to submit request: ${error.message}`);
-    }
-}
-
-// UPDATED: Function to populate history using the global g_visitorRequests array
-function populateVisitorRequestHistory() {
-    const tableBody = document.getElementById('visitor-request-history-body');
-    tableBody.innerHTML = '';
-    
-    // Sort by start date, newest first
-    const sortedHistory = g_visitorRequests
-        .sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
-
-    if (sortedHistory.length === 0) {
-        tableBody.innerHTML = `<tr><td colspan="5" class="py-4 px-6 text-center text-secondary-gray">No visitor request history.</td></tr>`;
-        return;
-    }
-
-    sortedHistory.forEach(v => {
-        let statusClass;
-        if (v.status === 'Approved') {
-            statusClass = 'text-accent-green';
-        } else if (v.status === 'Pending') {
-            statusClass = 'text-info-yellow';
-        } else {
-            statusClass = 'text-accent-red'; // For 'Rejected'
-        }
         
-        tableBody.innerHTML += `
-            <tr class="hover:bg-light-bg transition duration-150">
-                <td class="py-3 px-6 whitespace-nowrap text-sm text-accent-dark">${v.visitorName}</td>
-                <td class="py-3 px-6 whitespace-nowrap text-sm text-secondary-gray">${formatDate(v.startDate)}</td>
-                <td class="py-3 px-6 whitespace-nowrap text-sm text-secondary-gray">${formatDate(v.endDate)}</td>
-                <td class="py-3 px-6 text-sm text-secondary-gray">${v.reason}</td>
-                <td class="py-3 px-6 whitespace-nowrap text-sm font-medium ${statusClass}">${v.status}</td>
-            </tr>
-        `;
-    });
-}
-        // --- UPDATED: loadStudentData ---
-        // This function is now more robust at finding the room object
+        // =========================================================================
+        // DATA LOADING & REFRESH
+        // =========================================================================
+
+        // --- UPDATED: loadStudentData to fetch all related data ---
         async function loadStudentData() {
             const studentId = localStorage.getItem('currentStudentId');
             
@@ -1013,59 +885,43 @@ function populateVisitorRequestHistory() {
             }
 
             try {
-                // --- 1. Get main student profile data ---
+                // Fetch student profile, room, roommates, attendance, complaints, AND visitorRequests
                 const response = await fetch(`/api/student/${studentId}`);
                 if (!response.ok) {
                     const errData = await response.json();
                     throw new Error(errData.message || `Error: ${response.status}`);
                 }
                 const data = await response.json();
+
                 if (!data.success) {
                     throw new Error(data.message);
                 }
 
-                console.log('📦 Server response:', data);    
+                console.log('📦 Server response:', data); 
 
                 // --- 2. 🚀 FIX: Map server response to expected structure ---
                 g_student = data.student;
                 
                 // --- NEW ROBUST LOGIC for finding room data ---
                 if (data.room && typeof data.room === 'object') {
-                    // Best case: Server sends a top-level 'room' object
                     g_room = data.room;
-                    console.log('Found room data in `data.room`');
                 } else if (data.student.room && typeof data.student.room === 'object') {
-                    // Second best: Server sends a populated 'student.room' object
                     g_room = data.student.room;
-                    console.log('Found room data in `data.student.room`');
                 } else {
-                    // Fallback if no room object is found
-                    console.warn('No populated room object found. Creating fallback.');
-                    g_room = {    
-                        roomNumber: data.roomNumber || 'N/A',    
-                        floor: 'N/A',    
-                        capacity: 2, // Assuming default
-                        imageUrl: null    
-                    };
+                    g_room = { roomNumber: data.roomNumber || 'N/A', floor: 'N/A', capacity: 2, imageUrl: null };
                 }
-                
-                // Ensure the definite roomNumber from the top level is used
                 if (data.roomNumber) {
                     g_room.roomNumber = data.roomNumber;
                 }
                 // --- END OF FIX ---
                 
-                g_block = {
-                    blockName: data.blockName
-                };
-                
-                // --- 🚀 This logic is now correct based on the server fix ---
-                // g_roommates contains *only* the other roommates.
-                g_roommates = data.roommates || []; 
+                g_block = { blockName: data.blockName };
+                g_roommates = data.roommates || [];    
                 g_attendance = data.attendance || [];
                 g_complaints = data.complaints || [];
+                g_visitorRequests = data.visitorRequests || []; // FIX: Load real visitor requests
 
-                // --- 3. Get current attendance status ---
+                // --- 3. Get current attendance status (separate API call) ---
                 const statusResponse = await fetch(`/api/attendance/status/${studentId}`);
                 if (statusResponse.ok) {
                     const statusData = await statusResponse.json();
@@ -1079,7 +935,7 @@ function populateVisitorRequestHistory() {
                     student: g_student,
                     room: g_room,
                     block: g_block,
-                    roommates: g_roommates, // This array should now be correct
+                    roommates: g_roommates, 
                     attendance: g_attendance
                 });
                 
@@ -1091,7 +947,117 @@ function populateVisitorRequestHistory() {
                 return false;    
             }
         }
+
+        // =========================================================================
+        // API FUNCTIONS
+        // =========================================================================
         
+        // --- FIXED: Complaint Submission using fetch (Replaced Old Mock/Broken Code) ---
+        async function submitComplaint() {
+            const type = document.getElementById('complaint-type').value;
+            const location = document.getElementById('complaint-location').value;
+            // FIX: Removed the invalid element access that caused the TypeError:
+            // const locationDetails = document.getElementById('complaint-location-details').value; 
+            const date = document.getElementById('complaint-date').value;
+            const priority = document.getElementById('complaint-priority').value;
+            const description = document.getElementById('complaint-description').value;
+            const studentId = g_student._id;
+
+            if (!type || !location || !date || !priority || !description || !studentId) {
+                alert('Please fill all required fields and ensure student data is loaded.');
+                return;
+            }
+
+            const complaintData = {
+                studentId: studentId, 
+                type: type,
+                location: location,
+                date: date,
+                priority: priority,
+                description: description,
+                title: `${type} - ${location}`,
+            };
+
+            try {
+                const response = await fetch('/api/complaints', { 
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(complaintData)
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    alert(`Complaint submitted successfully!\n\nComplaint ID: #C${data.complaint._id.slice(-4)}\nPriority: ${priority}\nStatus: Pending Review`);
+                    
+                    // Refresh data and UI
+                    await loadStudentData(); 
+                    populateStudentComplaintHistory();
+                    updateDashboardComplaintCount();
+                    
+                    document.getElementById('complaint-form').reset();
+                } else {
+                    throw new Error(data.message || 'Failed to submit complaint on the server.');
+                }
+
+            } catch (error) {
+                console.error('Submission Error:', error);
+                alert(`Failed to submit complaint: ${error.message}`);
+            }
+        }
+
+        // --- FIXED: Visitor Request Submission using fetch (Replaced Old Mock/Broken Code) ---
+        async function submitVisitorRequest() {
+            const name = document.getElementById('visitor-name').value;
+            const startDate = document.getElementById('visitor-start-date').value;
+            const endDate = document.getElementById('visitor-end-date').value;
+            const reason = document.getElementById('visitor-reason').value;
+            const studentId = g_student._id; 
+
+            if (!name || !startDate || !endDate || !reason || !studentId) {
+                alert('Please fill out all fields and ensure you are logged in.');
+                return;
+            }
+            if (new Date(endDate) < new Date(startDate)) {
+                alert('End date must be after the start date.');
+                return;
+            }
+            
+            const requestData = {
+                studentId: studentId,
+                visitorName: name,
+                startDate: startDate,
+                endDate: endDate,
+                reason: reason,
+            };
+
+            try {
+                const response = await fetch('/api/visitor-request', { 
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestData)
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    alert(`Visitor request for ${name} submitted successfully! Status: Pending`);
+                    
+                    // Refresh data and UI
+                    await loadStudentData(); // Re-fetches updated g_visitorRequests
+                    populateVisitorRequestHistory();
+                    
+                    document.getElementById('visitor-request-form').reset();
+                } else {
+                    throw new Error(data.message || 'Failed to submit visitor request on the server.');
+                }
+
+            } catch (error) {
+                console.error('Submission Error:', error);
+                alert(`Failed to submit request: ${error.message}`);
+            }
+        }
+
         // =========================================================================
         // UTILITIES & NAVIGATION
         // =========================================================================
@@ -1234,7 +1200,7 @@ function populateVisitorRequestHistory() {
                         imageUrl: ''
                     },
                     {
-                        _id: '2', 
+                        _id: '2',    
                         title: '💃 Cultural Night Rehearsals',
                         type: 'Cultural',
                         date: '2025-11-12',
@@ -1604,54 +1570,6 @@ function populateVisitorRequestHistory() {
             });
         }
         
-        function submitComplaint() {
-            const type = document.getElementById('complaint-type').value;
-            const location = document.getElementById('complaint-location').value;
-            const locationDetails = document.getElementById('complaint-location-details').value;
-            const date = document.getElementById('complaint-date').value;
-            const priority = document.getElementById('complaint-priority').value;
-            const description = document.getElementById('complaint-description').value;
-
-            // Validation
-            if (!type || !location || !date || !priority || !description) {
-                alert('Please fill all required fields.');
-                return;
-            }
-
-            // Create complaint object
-            const newComplaint = {
-                _id: 'C' + Date.now(), // Generate unique ID
-                studentId: g_student._id,
-                type: type,
-                location: location,
-                locationDetails: locationDetails,
-                date: date,
-                priority: priority,
-                description: description,
-                status: 'Pending',
-                submissionDate: new Date().toISOString(),
-                title: `${type} - ${location}` // For backward compatibility
-            };
-
-            // Add to complaints array
-            g_complaints.push(newComplaint);
-            
-            // Update dashboard open requests count
-            updateDashboardComplaintCount();
-            
-            // Update complaint history display
-            populateStudentComplaintHistory();
-            
-            // Reset form
-            document.getElementById('complaint-form').reset();
-            
-            // Show success message
-            alert(`Complaint submitted successfully!\n\nComplaint ID: ${newComplaint._id}\nPriority: ${priority}\nStatus: Pending Review`);
-            
-            // In a real application, you would send this to the server:
-            // sendComplaintToAdmin(newComplaint);
-        }
-
         function updateDashboardComplaintCount() {
             const pendingComplaints = g_complaints.filter(c => c.status === 'Pending');
             const openRequestsEl = document.getElementById('dashboard-open-requests');
@@ -1916,49 +1834,15 @@ function populateVisitorRequestHistory() {
             });
         }
 
-        // --- UPDATED: Visitor Request Functions ---
-        function submitVisitorRequest() {
-            const name = document.getElementById('visitor-name').value;
-            const startDate = document.getElementById('visitor-start-date').value;
-            const endDate = document.getElementById('visitor-end-date').value;
-            const reason = document.getElementById('visitor-reason').value;
-
-            if (!name || !startDate || !endDate || !reason) {
-                alert('Please fill out all fields.');
-                return;
-            }
-            if (new Date(endDate) < new Date(startDate)) {
-                alert('End date must be after the start date.');
-                return;
-            }
-
-            // Add to mock data (in a real app, send to server)
-            const newRequest = {
-                id: `V${String(mockVisitorRequests.length + 1).padStart(3, '0')}`,
-                studentId: g_student._id,
-                name: name,
-                start: startDate,
-                end: endDate,
-                reason: reason,
-                status: 'Pending'
-            };
-            mockVisitorRequests.push(newRequest);
-            
-            alert(`Visitor request for ${name} submitted! Status: Pending`);
-            
-            // Re-populate and reset
-            populateVisitorRequestHistory();
-            document.getElementById('visitor-request-form').reset();
-        }
-
+        // --- FIXED: Populate Visitor Request History ---
         function populateVisitorRequestHistory() {
             const tableBody = document.getElementById('visitor-request-history-body');
             tableBody.innerHTML = '';
-            // Filter for this student
-          // CORRECTED CODE:
-const myVisitorHistory = g_visitorRequests
-    .filter(v => v.studentId === g_student._id || v.studentId === 1)
-    .sort((a, b) => new Date(b.startDate) - new Date(a.startDate)); // NOTE: Changed 'start' to 'startDate' based on new schema
+            
+            // Use g_visitorRequests which is now loaded from server in loadStudentData
+            const myVisitorHistory = g_visitorRequests
+                .sort((a, b) => new Date(b.startDate) - new Date(a.startDate)); // Use startDate field from server data
+
             if (myVisitorHistory.length === 0) {
                 tableBody.innerHTML = `<tr><td colspan="5" class="py-4 px-6 text-center text-secondary-gray">No visitor request history.</td></tr>`;
                 return;
@@ -1976,9 +1860,9 @@ const myVisitorHistory = g_visitorRequests
                 
                 tableBody.innerHTML += `
                     <tr class="hover:bg-light-bg transition duration-150">
-                        <td class="py-3 px-6 whitespace-nowrap text-sm text-accent-dark">${v.name}</td>
-                        <td class="py-3 px-6 whitespace-nowrap text-sm text-secondary-gray">${formatDate(v.start)}</td>
-                        <td class="py-3 px-6 whitespace-nowrap text-sm text-secondary-gray">${formatDate(v.end)}</td>
+                        <td class="py-3 px-6 whitespace-nowrap text-sm text-accent-dark">${v.visitorName}</td>
+                        <td class="py-3 px-6 whitespace-nowrap text-sm text-secondary-gray">${formatDate(v.startDate)}</td>
+                        <td class="py-3 px-6 whitespace-nowrap text-sm text-secondary-gray">${formatDate(v.endDate)}</td>
                         <td class="py-3 px-6 text-sm text-secondary-gray">${v.reason}</td>
                         <td class="py-3 px-6 whitespace-nowrap text-sm font-medium ${statusClass}">${v.status}</td>
                     </tr>
@@ -1986,14 +1870,13 @@ const myVisitorHistory = g_visitorRequests
             });
         }
         // --- END: Visitor Request Functions ---
-
         
         function populateLostAndFound() {
             const tableBody = document.getElementById('lost-found-body');
             tableBody.innerHTML = '';
             if (mockLostFound.length === 0) {
-                 tableBody.innerHTML = `<tr><td colspan="4" class="py-4 px-6 text-center text-secondary-gray">No items reported found.</td></tr>`;
-                 return;
+                   tableBody.innerHTML = `<tr><td colspan="4" class="py-4 px-6 text-center text-secondary-gray">No items reported found.</td></tr>`;
+                   return;
             }
             mockLostFound.forEach(item => {
                 const statusClass = item.status === 'Available' ? 'text-accent-green' : 'text-secondary-gray';
