@@ -504,7 +504,7 @@
                 </div>
             </div>
         </div>
-
+        
         <div id="add-block-modal" class="modal hidden fixed inset-0 z-30 flex items-center justify-center">
         <div class="modal-backdrop fixed inset-0" data-modal-hide="add-block-modal"></div>
         <div class="modal-content bg-white p-6 rounded-lg shadow-xl z-40 w-full max-w-md mx-4">
@@ -1684,7 +1684,7 @@
                     if (student.year && student.year.toLowerCase().includes('1')) yearColor = 'bg-blue-100 text-blue-700'; 
                     
                     // Use actual profile image URL
-                    const profileImage = student.profileImageUrl || './default-avatar.png';
+                    const profileImage = student.profileImageUrl || 'https://via.placeholder.com/150/0000FF/FFFFFF?text=S';
                     
                     const studentHTML = `
                         <div class="bg-white border rounded-lg p-4 shadow-sm relative">
@@ -1719,22 +1719,19 @@
                 });
             }
             modalIssuesContainer.innerHTML = '';
-            // NOTE: room.complaints is non-standard, assuming it's a way to track complaints related to this room
+            // Filter complaints related to this room that are not resolved
             const roomComplaints = appState.complaints.filter(c => c.roomNumber === room.roomNumber && c.status !== 'Resolved');
-            const complaints = roomComplaints || [];
             
-            // Simplified fallback logic removed, relying only on actual `roomComplaints` from `appState.complaints`
-            
-            if (complaints.length === 0) {
+            if (roomComplaints.length === 0) {
                 modalIssuesContainer.innerHTML = '<p class="text-gray-500">No open issues reported for this room.</p>';
                 modalRoomComplaintsBadge.classList.add('hidden');
             } else {
-                complaints.forEach(complaint => {
+                roomComplaints.forEach(complaint => {
                     const statusColor = complaint.status.toLowerCase() === 'pending' ? 'bg-yellow-500 text-white' : 'bg-blue-500 text-white';
-                    const issueHTML = `<div class="flex justify-between items-center bg-white p-3 rounded-lg shadow-sm border"><p class="font-medium text-gray-700">${complaint.complaintType} (${complaint.description.substring(0, 30)}...)</p><span class="text-xs font-bold px-3 py-1 rounded-full ${statusColor}">${complaint.status}</span></div>`;
+                    const issueHTML = `<div class="flex justify-between items-center bg-white p-3 rounded-lg shadow-sm border"><p class="font-medium text-gray-700">${complaint.complaintType}: ${complaint.description.substring(0, 30)}...</p><span class="text-xs font-bold px-3 py-1 rounded-full ${statusColor}">${complaint.status}</span></div>`;
                     modalIssuesContainer.innerHTML += issueHTML;
                 });
-                modalRoomComplaintsCount.textContent = complaints.length;
+                modalRoomComplaintsCount.textContent = roomComplaints.length;
                 modalRoomComplaintsBadge.classList.remove('hidden');
             }
         } 
@@ -2328,6 +2325,10 @@
                     const block = appState.blocks.find(b => b.blockKey === blockKey);
                     const room = block ? block.rooms.find(r => r._id === roomId) : null;
                     if (room) {
+                        if (room.students.length >= room.capacity) {
+                             throw new Error(`Room ${room.roomNumber} is full. Capacity: ${room.capacity}`);
+                        }
+
                         room.students.push(newStudent);
                         
                         // Simulate asset stock reduction
@@ -2335,6 +2336,8 @@
                             const asset = appState.assets.find(invA => invA.name === assigned.name);
                             if (asset) asset.quantity -= assigned.quantity;
                         });
+                    } else {
+                        throw new Error("Target room not found.");
                     }
 
                     // Refresh UI
