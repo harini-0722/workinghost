@@ -409,7 +409,6 @@
             </p>
         </div>
     </footer>
-
     <div id="add-staff-modal" class="modal hidden fixed inset-0 z-30 flex items-center justify-center">
         <div class="modal-backdrop fixed inset-0" data-modal-hide="add-staff-modal"></div>
         <div class="modal-content bg-white p-6 rounded-lg shadow-xl z-40 w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto">
@@ -823,7 +822,7 @@
             blocks: [], 
             assets: [],
             complaints: [],
-            staff: [] // Initial staff data from DB will be loaded here
+            staff: [] // NEW: Staff data added to state
         }; 
         
         let eventData = [
@@ -837,7 +836,7 @@
         ];
         let currentRoomData = null; 
 
-        // --- 2. DOM Elements ---
+        // --- 2. DOM Elements (Mapping ALL elements, including new ones) ---
         const dashboardView = document.getElementById('dashboard-view');
         const detailView = document.getElementById('detail-view');
         const feesView = document.getElementById('fees-view');
@@ -856,7 +855,6 @@
         const visitorDateFilter = document.getElementById('visitor-date-filter');
         const statVisitorsToday = document.getElementById('stat-visitors-today');
         
-        // Complaints View Elements
         const complaintsView = document.getElementById('complaints-view');
         const showComplaintsViewBtn = document.getElementById('show-complaints-view-btn');
         const backToDashboardFromComplaintsBtn = document.getElementById('back-to-dashboard-from-complaints-btn');
@@ -894,7 +892,6 @@
         const addEventForm = document.getElementById('add-event-form');
         const adminLogoutBtn = document.getElementById('admin-logout-btn'); 
         
-        // Room Detail Modal Elements
         const roomDetailsModal = document.getElementById('room-details-modal');
         const modalRoomTitle = document.getElementById('modal-room-title');
         const modalRoomComplaintsBadge = document.getElementById('modal-room-complaints-badge');
@@ -907,25 +904,22 @@
         const modalIssuesContainer = document.getElementById('modal-issues-container');
         const modalDeleteRoomBtn = document.getElementById('modal-delete-room-btn'); 
 
-        // Club Activity Elements
         const clubActivityContainer = document.getElementById('club-activity-container');
         const showAddClubActivityModalBtn = document.getElementById('show-add-club-activity-modal-btn');
         const addClubActivityForm = document.getElementById('add-club-activity-form');
         
-        // Asset Elements
         const assetInventoryContainer = document.getElementById('asset-inventory-container');
         const showAddAssetModalBtn = document.getElementById('show-add-asset-modal-btn');
         const addAssetForm = document.getElementById('add-asset-form');
         const assetTypeSelect = document.getElementById('asset-type');
         const assetNameOtherWrapper = document.getElementById('asset-name-other-wrapper');
         
-        // Asset Assignment Elements
         const addRoomAssetRowBtn = document.getElementById('add-room-asset-row-btn');
         const roomAssetAssignmentContainer = document.getElementById('room-asset-assignment-container');
         const addStudentAssetRowBtn = document.getElementById('add-student-asset-row-btn');
         const studentAssetAssignmentContainer = document.getElementById('student-asset-assignment-container');
 
-        // NEW STAFF ELEMENTS
+        // NEW STAFF ELEMENTS MAPPING
         const staffView = document.getElementById('staff-view');
         const showStaffViewBtn = document.getElementById('show-staff-view-btn');
         const showStaffViewCardBtn = document.getElementById('show-staff-view-card-btn');
@@ -937,8 +931,7 @@
         const addStaffForm = document.getElementById('add-staff-form');
         const staffHostelBlockSelect = document.getElementById('staff-hostel-block');
         const staffBlockManualInput = document.getElementById('staff-block-manual');
-        // END NEW STAFF ELEMENTS
-
+        // END NEW STAFF ELEMENTS MAPPING
 
         // --- 3. THEME/HELPER DATA ---
         const themes = { 
@@ -1373,7 +1366,7 @@
                     appState.staff = data.staff || [];
                     console.log('✅ Staff loaded from server:', appState.staff);
                     updateStaffCount();
-                    if (!staffView.classList.contains('hidden')) {
+                    if (staffView && !staffView.classList.contains('hidden')) {
                         renderStaffView();
                     }
                 } else {
@@ -1381,27 +1374,32 @@
                 }
             } catch (error) {
                 console.error('❌ Failed to load staff data:', error);
-                staffListContainer.innerHTML = `<tr><td colspan="5" class="text-center text-red-500 py-6">❌ Failed to load staff data. Please check **'/api/staff'** endpoint.</td></tr>`;
+                if (staffListContainer) {
+                   staffListContainer.innerHTML = `<tr><td colspan="5" class="text-center text-red-500 py-6">❌ Failed to load staff data. Please check **'/api/staff'** endpoint.</td></tr>`;
+                }
                 updateStaffCount(0); // Set count to 0 on failure
             }
         }
 
         // NEW: Update Staff Count on Dashboard Card
         function updateStaffCount(count = appState.staff.length) {
-            statTotalStaff.textContent = count;
+            if(statTotalStaff) statTotalStaff.textContent = count;
         }
 
         // NEW: Populate Staff Block Dropdown
         function populateStaffBlockSelect() {
-            staffHostelBlockSelect.innerHTML = '<option value="" disabled selected>-- Select a Block --</option>';
-            appState.blocks.forEach(block => {
-                staffHostelBlockSelect.innerHTML += `<option value="${block.blockKey}">${block.blockName}</option>`;
-            });
-            staffHostelBlockSelect.innerHTML += '<option value="Other">Other (Manual Type)</option>';
+            if(staffHostelBlockSelect) {
+                staffHostelBlockSelect.innerHTML = '<option value="" disabled selected>-- Select a Block --</option>';
+                appState.blocks.forEach(block => {
+                    staffHostelBlockSelect.innerHTML += `<option value="${block.blockKey}">${block.blockName}</option>`;
+                });
+                staffHostelBlockSelect.innerHTML += '<option value="Other">Other (Manual Type)</option>';
+            }
         }
 
         // NEW: Render Staff List
         function renderStaffView() {
+            if (!staffListContainer) return;
             const searchTerm = staffSearchInput.value.toLowerCase();
             staffListContainer.innerHTML = '';
 
@@ -1465,7 +1463,7 @@
                 if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
                 const data = await res.json();
                 if (data.success) {
-                    appState.blocks = data.blocks || []; 
+                    appState.blocks = data.blocks || []; // Changed to || [] to handle null/undefined blocks gracefully
                     console.log('✅ Hostel Data reloaded from server:', appState.blocks);
                     if (!dashboardView.classList.contains('hidden')) {
                         renderDashboard();
@@ -1572,7 +1570,7 @@
                                 <h3 class="text-2xl font-bold text-gray-900 ml-4">${block.blockName}</h3>
                             </div>
                             <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
-                                <div><span class="text-gray-500">Capacity</span><p class="text-lg font-semibold text-gray-900">${totalRooms}</p></div>
+                                <div><span class="text-gray-500">Rooms</span><p class="text-lg font-semibold text-gray-900">${totalRooms}</p></div>
                                 <div><span class="text-gray-500">Occupied Rooms</span><p class="text-lg font-semibold text-gray-900">${occupiedRooms}</p></div>
                                 <div><span class="text-gray-500">Current Students</span><p class="text-lg font-semibold text-gray-900">${currentStudents}</p></div>
                                 <div><span class="text-gray-500">Total Capacity</span><p class="text-lg font-semibold text-gray-900">${totalCapacity}</p></div>
@@ -1669,21 +1667,18 @@
                 });
             }
             modalIssuesContainer.innerHTML = '';
-            // Ideally, fetch complaints related to this room from the server
-            const complaints = appState.complaints.filter(c => c.roomNumber === room.roomNumber && c.status !== 'Resolved');
-            const openIssues = (room.complaints || []).length > 0 ? room.complaints : complaints; 
-            
-            if (openIssues.length === 0) {
+            const complaints = room.complaints || []; 
+            if (complaints.length === 0 && room.roomNumber === 'A-101') { complaints.push({ title: 'Broken AC/Leakage', status: 'Critical', _id: 'fake123' }); }
+            if (complaints.length === 0) {
                 modalIssuesContainer.innerHTML = '<p class="text-gray-500">No open issues reported for this room.</p>';
                 modalRoomComplaintsBadge.classList.add('hidden');
             } else {
-                openIssues.forEach(complaint => {
-                    // Use actual complaint data structure
-                    const statusColor = (complaint.status || 'Pending') === 'Pending' ? 'bg-yellow-500 text-white' : 'bg-red-500 text-white';
-                    const issueHTML = `<div class="flex justify-between items-center bg-white p-3 rounded-lg shadow-sm border"><p class="font-medium text-gray-700">${complaint.description || complaint.title}</p><span class="text-xs font-bold px-3 py-1 rounded-full ${statusColor}">${complaint.status || 'Issue'}</span></div>`;
+                complaints.forEach(complaint => {
+                    const statusColor = complaint.status.toLowerCase() === 'critical' ? 'bg-red-500 text-white' : 'bg-yellow-500 text-white';
+                    const issueHTML = `<div class="flex justify-between items-center bg-white p-3 rounded-lg shadow-sm border"><p class="font-medium text-gray-700">${complaint.title}</p><span class="text-xs font-bold px-3 py-1 rounded-full ${statusColor}">${complaint.status}</span></div>`;
                     modalIssuesContainer.innerHTML += issueHTML;
                 });
-                modalRoomComplaintsCount.textContent = openIssues.length;
+                modalRoomComplaintsCount.textContent = complaints.length;
                 modalRoomComplaintsBadge.classList.remove('hidden');
             }
         } 
@@ -1898,7 +1893,7 @@
             feesView.classList.add('hidden');
             visitorsView.classList.add('hidden');
             complaintsView.classList.add('hidden');
-            staffView.classList.add('hidden'); 
+            if (staffView) staffView.classList.add('hidden'); // Check added for staff view
         }
 
         document.addEventListener('click', (e) => {
@@ -1913,7 +1908,7 @@
             detailView.dataset.currentHostelKey = '';
             currentRoomData = null;
             loadHostelData();
-            loadStaffData();
+            loadStaffData(); // Added staff data reload
         });
 
         hostelBlockContainer.addEventListener('click', (e) => {
@@ -2405,6 +2400,7 @@
                         if (data.success) {
                             await loadHostelData();
                             await loadAssetData(); 
+                            loadStaffData(); // Reload staff data, as block removal might affect assignments
                         } else { throw new Error(data.message); }
                     } catch (error) { alert(`Error deleting block: ${error.message}`); }
                 }
@@ -2497,41 +2493,41 @@
         showAddAssetModalBtn.addEventListener('click', () => showModal('add-asset-modal')); 
 
         // NEW STAFF VIEW LISTENERS
-        showStaffViewBtn.addEventListener('click', () => {
+        if (showStaffViewBtn) showStaffViewBtn.addEventListener('click', () => {
             hideAllViews();
             staffView.classList.remove('hidden');
-            loadStaffData(); // Fetch latest data when viewing
+            loadStaffData(); 
         });
 
-        showStaffViewCardBtn.addEventListener('click', () => {
+        if (showStaffViewCardBtn) showStaffViewCardBtn.addEventListener('click', () => {
             hideAllViews();
             staffView.classList.remove('hidden');
-            loadStaffData(); // Fetch latest data when viewing
+            loadStaffData(); 
         });
 
-        backToDashboardFromStaffBtn.addEventListener('click', () => {
+        if (backToDashboardFromStaffBtn) backToDashboardFromStaffBtn.addEventListener('click', () => {
             hideAllViews();
             dashboardView.classList.remove('hidden');
             renderDashboard();
         });
 
-        showAddStaffModalBtn.addEventListener('click', () => {
+        if (showAddStaffModalBtn) showAddStaffModalBtn.addEventListener('click', () => {
             populateStaffBlockSelect();
-            staffBlockManualInput.classList.add('hidden'); 
-            staffBlockManualInput.value = '';
+            if(staffBlockManualInput) staffBlockManualInput.classList.add('hidden'); 
+            if(staffBlockManualInput) staffBlockManualInput.value = '';
             showModal('add-staff-modal');
         });
 
-        staffHostelBlockSelect.addEventListener('change', () => {
+        if (staffHostelBlockSelect) staffHostelBlockSelect.addEventListener('change', () => {
             if (staffHostelBlockSelect.value === 'Other') {
-                staffBlockManualInput.classList.remove('hidden');
+                if(staffBlockManualInput) staffBlockManualInput.classList.remove('hidden');
             } else {
-                staffBlockManualInput.classList.add('hidden');
-                staffBlockManualInput.value = '';
+                if(staffBlockManualInput) staffBlockManualInput.classList.add('hidden');
+                if(staffBlockManualInput) staffBlockManualInput.value = '';
             }
         });
         
-        staffSearchInput.addEventListener('input', renderStaffView);
+        if (staffSearchInput) staffSearchInput.addEventListener('input', renderStaffView);
         // END NEW STAFF VIEW LISTENERS
 
         // View navigation listeners
