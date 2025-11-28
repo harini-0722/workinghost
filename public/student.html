@@ -25,7 +25,7 @@
                         
                         'accent-green': '#059669',      // Success/Paid/Present (Emerald 600)
                         'accent-red': '#DC2626',        // Danger/Due/Critical (Red 600)
-                        'info-yellow': '#FBBF24',      // Warning (Amber 500)
+                        'info-yellow': '#FBBF24',       // Warning (Amber 500)
                         
                         'complaint-theme': '#EA580C',   
                         
@@ -490,18 +490,18 @@
                             <h3 class="text-xl font-bold text-accent-dark mb-5">My Complaint History</h3>
                             <div class="bg-card-bg rounded-xl shadow-lift overflow-x-auto">
                                    <table class="min-w-full divide-y divide-text-muted">
-                                       <thead class="bg-light-bg">
-                                           <tr>
-                                               <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">ID</th>
-                                               <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Date</th>
-                                               <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Type</th>
-                                               <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Location</th>
-                                               <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Priority</th>
-                                               <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Status</th>
-                                           </tr>
-                                       </thead>
-                                       <tbody id="student-complaint-history" class="bg-card-bg divide-y divide-text-muted">
-                                       </tbody>
+                                        <thead class="bg-light-bg">
+                                            <tr>
+                                                <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">ID</th>
+                                                <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Date</th>
+                                                <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Type</th>
+                                                <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Location</th>
+                                                <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Priority</th>
+                                                <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="student-complaint-history" class="bg-card-bg divide-y divide-text-muted">
+                                        </tbody>
                                    </table>
                             </div>
                         </div>
@@ -809,7 +809,7 @@
                     <button onclick="closeAnnouncementsModal()" class="text-secondary-gray hover:text-accent-dark">&times;</button>
                 </div>
                 <div id="announcement-list-container" class="p-6 space-y-4 overflow-y-auto" style="max-height: 70vh;">
-                       </div>
+                        </div>
             </div>
 
             <div id="announcement-detail-view" class="hidden">
@@ -874,6 +874,28 @@
         // DATA LOADING & REFRESH
         // =========================================================================
 
+        // ** NEW FUNCTION: Fetch Visitor Requests separately **
+        async function fetchVisitorRequests(studentId) {
+            try {
+                // Assuming your GET endpoint is set up as /api/visitor-request/history/:studentId
+                const response = await fetch(`/api/visitor-request/history/${studentId}`); 
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch visitor requests: ${response.status}`);
+                }
+                const data = await response.json();
+                if (data.success && Array.isArray(data.visitorRequests)) {
+                    g_visitorRequests = data.visitorRequests;
+                    console.log('✅ Visitor requests loaded:', g_visitorRequests);
+                } else {
+                    g_visitorRequests = [];
+                    console.warn('No visitor requests found or server response was malformed.');
+                }
+            } catch (error) {
+                console.error('❌ Error fetching visitor requests:', error);
+                g_visitorRequests = [];
+            }
+        }
+
         // --- UPDATED: loadStudentData to fetch all related data ---
         async function loadStudentData() {
             const studentId = localStorage.getItem('currentStudentId');
@@ -885,13 +907,20 @@
             }
 
             try {
-                // Fetch student profile, room, roommates, attendance, complaints, AND visitorRequests
-                const response = await fetch(`/api/student/${studentId}`);
-                if (!response.ok) {
-                    const errData = await response.json();
-                    throw new Error(errData.message || `Error: ${response.status}`);
+                // Fetch student profile, room, roommates, attendance, complaints
+                const [
+                    studentResponse, 
+                    statusResponse
+                ] = await Promise.all([
+                    fetch(`/api/student/${studentId}`),
+                    fetch(`/api/attendance/status/${studentId}`)
+                ]);
+
+                if (!studentResponse.ok) {
+                    const errData = await studentResponse.json();
+                    throw new Error(errData.message || `Error: ${studentResponse.status}`);
                 }
-                const data = await response.json();
+                const data = await studentResponse.json();
 
                 if (!data.success) {
                     throw new Error(data.message);
@@ -899,7 +928,7 @@
 
                 console.log('📦 Server response:', data); 
 
-                // --- 2. 🚀 FIX: Map server response to expected structure ---
+                // --- 2. 🚀 Map server response to expected structure ---
                 g_student = data.student;
                 
                 // --- NEW ROBUST LOGIC for finding room data ---
@@ -919,10 +948,11 @@
                 g_roommates = data.roommates || [];    
                 g_attendance = data.attendance || [];
                 g_complaints = data.complaints || [];
-                g_visitorRequests = data.visitorRequests || []; // FIX: Load real visitor requests
 
-                // --- 3. Get current attendance status (separate API call) ---
-                const statusResponse = await fetch(`/api/attendance/status/${studentId}`);
+                // 🚀 NEW STEP: Fetch visitor requests separately!
+                await fetchVisitorRequests(studentId); 
+
+                // --- 3. Get current attendance status ---
                 if (statusResponse.ok) {
                     const statusData = await statusResponse.json();
                     if (statusData.success) {
@@ -933,10 +963,7 @@
 
                 console.log('✅ Student data loaded and mapped:', {
                     student: g_student,
-                    room: g_room,
-                    block: g_block,
-                    roommates: g_roommates, 
-                    attendance: g_attendance
+                    visitorRequests: g_visitorRequests, // Check updated requests here
                 });
                 
                 return true;    
@@ -1043,8 +1070,9 @@
                 if (response.ok && data.success) {
                     alert(`Visitor request for ${name} submitted successfully! Status: Pending`);
                     
-                    // Refresh data and UI
-                    await loadStudentData(); // Re-fetches updated g_visitorRequests
+                    // 🚀 CRITICAL FIX: After successful submission, only re-fetch the visitor requests
+                    // This minimizes overhead compared to re-running loadStudentData()
+                    await fetchVisitorRequests(studentId); // Re-fetches updated g_visitorRequests
                     populateVisitorRequestHistory();
                     
                     document.getElementById('visitor-request-form').reset();
@@ -1136,7 +1164,7 @@
                 updateAttendanceStatus();    
                 populateAttendanceLog();
             } else if (viewId === 'student-visitor-view') {
-                populateVisitorRequestHistory();
+                populateVisitorRequestHistory(); // 🚀 IMPORTANT: Call the population function on view switch
             } else if (viewId === 'student-activities-view') {
                 displayAllActivities();
             }
@@ -1875,8 +1903,8 @@
             const tableBody = document.getElementById('lost-found-body');
             tableBody.innerHTML = '';
             if (mockLostFound.length === 0) {
-                   tableBody.innerHTML = `<tr><td colspan="4" class="py-4 px-6 text-center text-secondary-gray">No items reported found.</td></tr>`;
-                   return;
+                    tableBody.innerHTML = `<tr><td colspan="4" class="py-4 px-6 text-center text-secondary-gray">No items reported found.</td></tr>`;
+                    return;
             }
             mockLostFound.forEach(item => {
                 const statusClass = item.status === 'Available' ? 'text-accent-green' : 'text-secondary-gray';

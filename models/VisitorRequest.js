@@ -1,36 +1,41 @@
-const mongoose = require('mongoose');
+const express = require('express');
+const router = express.Router();
+const VisitorRequest = require('../models/VisitorRequest'); 
+// ... (Your other imports)
 
-const visitorRequestSchema = new mongoose.Schema({
-    studentId: {
-        type: mongoose.Schema.Types.ObjectId, // Assumes studentId is an ObjectId
-        ref: 'Student', // Reference to your Student model
-        required: true
-    },
-    visitorName: {
-        type: String,
-        required: true
-    },
-    startDate: {
-        type: Date,
-        required: true
-    },
-    endDate: {
-        type: Date,
-        required: true
-    },
-    reason: {
-        type: String,
-        required: true
-    },
-    status: {
-        type: String,
-        enum: ['Pending', 'Approved', 'Rejected'],
-        default: 'Pending'
-    },
-    submissionDate: {
-        type: Date,
-        default: Date.now
+// The POST handler - This is for POST /api/visitor-request
+router.post('/', async (req, res) => { 
+    try {
+        const newRequest = new VisitorRequest(req.body);
+        await newRequest.save();
+        
+        // Ensure you are returning valid JSON!
+        res.status(201).json({ 
+            success: true, 
+            message: 'Visitor request saved successfully', 
+            request: newRequest 
+        });
+    } catch (error) {
+        console.error("Error creating visitor request:", error);
+        res.status(500).json({ success: false, message: error.message });
     }
 });
 
-module.exports = mongoose.model('VisitorRequest', visitorRequestSchema);
+// The GET handler - This is for GET /api/visitor-request/history/:studentId
+router.get('/history/:studentId', async (req, res) => { 
+    try {
+        // Fetch all visitor requests for the given studentId, sorted by submissionDate desc
+        const visitorRequests = await VisitorRequest.find({ studentId: req.params.studentId })
+                                                .sort({ submissionDate: -1 });
+        
+        res.status(200).json({
+            success: true,
+            visitorRequests: visitorRequests
+        });
+    } catch (error) {
+        console.error("Error fetching visitor history:", error);
+        res.status(500).json({ success: false, message: error.message });
+    }
+});
+
+module.exports = router;
