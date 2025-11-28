@@ -50,7 +50,11 @@
                     <span class="ml-2 text-gray-500 font-medium hidden sm:inline">| Indian Institute of Technology</span>
                 </div>
                 <div class="flex items-center">
-                    <button id="show-complaints-view-btn" class="flex items-center text-sm font-medium text-red-600 hover:text-red-800">
+                    <button id="show-staff-view-btn" class="flex items-center text-sm font-medium text-purple-600 hover:text-purple-800 ml-6">
+                        <hero-icon-outline name="user-group" class="h-5 w-5 mr-1"></hero-icon-outline>
+                        Manage Staff
+                    </button>
+                    <button id="show-complaints-view-btn" class="flex items-center text-sm font-medium text-red-600 hover:text-red-800 ml-6">
                         <hero-icon-outline name="exclamation-circle" class="h-5 w-5 mr-1"></hero-icon-outline>
                         Complaints
                     </button>
@@ -77,6 +81,18 @@
     <main class="mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-grow">
         <div id="dashboard-view">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div id="show-staff-view-card-btn" class="bg-purple-50 p-5 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-sm font-medium text-purple-900 opacity-70">MANAGE STAFF</span>
+                            <p class="text-3xl font-extrabold text-purple-900 mt-2" id="stat-total-staff">0</p>
+                            <p class="text-sm text-purple-900 opacity-60">Total Staff Members</p>
+                        </div>
+                        <div class="p-3 bg-white rounded-full shadow-md">
+                            <hero-icon-outline name="users" class="h-6 w-6 text-purple-500"></hero-icon-outline>
+                        </div>
+                    </div>
+                </div>
                 <div class="bg-indigo-50 p-5 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
                     <div class="flex justify-between items-start">
                         <div>
@@ -218,6 +234,43 @@
                 </div>
             </div>
         </div> 
+        <div id="staff-view" class="hidden">
+            <div class="relative mb-6 pb-4">
+                <button id="back-to-dashboard-from-staff-btn" class="flex items-center text-sm font-medium text-gray-600 hover:text-gray-900">
+                    <hero-icon-solid name="arrow-left" class="h-4 w-4 mr-2"></hero-icon-solid>
+                    <span class="icon-space"> </span>Back to Dashboard
+                </button>
+                <div class="flex items-center justify-center absolute inset-x-0 top-0 -z-10">
+                    <h1 class="text-xl sm:text-3xl font-bold text-purple-700">
+                        Staff Management
+                    </h1>
+                </div>
+            </div>
+            <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+                <button id="show-add-staff-modal-btn" class="mt-4 sm:mt-0 flex items-center px-5 py-3 bg-purple-600 text-white font-medium rounded-lg shadow-md hover:bg-purple-700 transition-all duration-300 w-full md:w-auto">
+                    <hero-icon-solid name="user-plus" class="h-5 w-5 mr-2"></hero-icon-solid>
+                    <span class="icon-space"> </span>Add New Staff
+                </button>
+                <input type="text" id="staff-search-input" placeholder="Search by name, position, or block..." class="px-4 py-2 border rounded-lg shadow-sm w-full md:w-auto">
+            </div>
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full min-w-max">
+                        <thead class="bg-purple-100 border-b border-gray-200">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-purple-800 uppercase tracking-wider">Name</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-purple-800 uppercase tracking-wider">Position</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-purple-800 uppercase tracking-wider">Hostel Block</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-purple-800 uppercase tracking-wider">Contact Info</th>
+                                <th class="px-6 py-3 text-center text-xs font-semibold text-purple-800 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="staff-list-container" class="divide-y divide-gray-200">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
         <div id="detail-view" class="hidden">
             <div class="relative mb-6 pb-4">
                 <button id="back-to-dashboard-btn" class="flex items-center text-sm font-medium text-gray-600 hover:text-gray-900">
@@ -405,6 +458,74 @@
             </p>
         </div>
     </footer>
+
+    <div id="add-staff-modal" class="modal hidden fixed inset-0 z-30 flex items-center justify-center">
+        <div class="modal-backdrop fixed inset-0" data-modal-hide="add-staff-modal"></div>
+        <div class="modal-content bg-white p-6 rounded-lg shadow-xl z-40 w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto">
+            <h2 class="text-xl font-semibold mb-4 text-purple-700">➕ Add New Staff Member</h2>
+            <form id="add-staff-form" class="space-y-4">
+                <h3 class="text-sm font-medium text-gray-500 border-b pb-1">Personal Details</h3>
+                <div>
+                    <label for="staff-name" class="block text-sm font-medium text-gray-700">Full Name</label>
+                    <input type="text" id="staff-name" name="name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="e.g., Jane Doe" required>
+                </div>
+                <div>
+                    <label for="staff-position" class="block text-sm font-medium text-gray-700">Position Name</label>
+                    <input type="text" id="staff-position" name="position" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="e.g., Caretaker, Security Guard" required>
+                </div>
+                
+                <h3 class="text-sm font-medium text-gray-500 border-b pt-2 pb-1">Assignment Details</h3>
+                <div>
+                    <label for="staff-hostel-block" class="block text-sm font-medium text-gray-700">Hostel Block Assignment</label>
+                    <div class="flex items-center space-x-2">
+                        <select id="staff-hostel-block" name="hostelBlock" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500">
+                            </select>
+                        <input type="text" id="staff-block-manual" name="blockManual" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm hidden" placeholder="Manual Block Name (e.g. Main Gate)">
+                    </div>
+                    <p class="mt-1 text-xs text-gray-500">Select an existing block or choose 'Other' to manually type a location.</p>
+                </div>
+
+                <h3 class="text-sm font-medium text-gray-500 border-b pt-2 pb-1">Contact & Login</h3>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label for="staff-contact" class="block text-sm font-medium text-gray-700">Contact Info (Phone)</label>
+                        <input type="tel" id="staff-contact" name="contact" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="+91 XXXXX XXXXX" required>
+                    </div>
+                    <div>
+                        <label for="staff-email" class="block text-sm font-medium text-gray-700">Email (Optional)</label>
+                        <input type="email" id="staff-email" name="email" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="staff@iit.edu">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label for="staff-username" class="block text-sm font-medium text-gray-700">Username</label>
+                        <input type="text" id="staff-username" name="username" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
+                    </div>
+                    <div>
+                        <label for="staff-password" class="block text-sm font-medium text-gray-700">Password</label>
+                        <input type="password" id="staff-password" name="password" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
+                    </div>
+                </div>
+                
+                <div>
+                    <label for="staff-image-file" class="block text-sm font-medium text-gray-700">Upload Image</label>
+                    <input type="file" id="staff-image-file" name="staffImage" class="mt-1 block w-full text-sm text-gray-500
+                                file:mr-4 file:py-2 file:px-4
+                                file:rounded-full file:border-0
+                                file:text-sm file:font-semibold
+                                file:bg-purple-50 file:text-purple-700
+                                hover:file:bg-purple-100"
+                                accept="image/*">
+                    <p class="mt-1 text-xs text-gray-500">Upload a professional photo from device.</p>
+                </div>
+                
+                <div class="flex justify-end space-x-3 pt-4">
+                    <button type="button" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300" data-modal-hide="add-staff-modal">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700">Save Staff</button>
+                </div>
+            </form>
+        </div>
+    </div>
     <div id="add-block-modal" class="modal hidden fixed inset-0 z-30 flex items-center justify-center">
         <div class="modal-backdrop fixed inset-0" data-modal-hide="add-block-modal"></div>
         <div class="modal-content bg-white p-6 rounded-lg shadow-xl z-40 w-full max-w-md mx-4">
@@ -565,7 +686,7 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-700"><span class="icon-space"> </span>Assign Assets to Student</label>
                     <div id="student-asset-assignment-container" class="mt-2 space-y-3">
-                            </div>
+                                </div>
                     <button type="button" id="add-student-asset-row-btn" class="mt-2 text-sm font-medium text-blue-600 hover:text-blue-800 flex items-center">
                         <hero-icon-solid name="plus-circle" class="h-5 w-5 mr-1"></hero-icon-solid>
                         Add Asset
@@ -638,7 +759,7 @@
                             <p class="text-2xl font-bold text-blue-600" id="modal-room-occupancy">2</p>
                         </div>
                         <div class="flex-1">
-                            <span class="text-sm text-gray-500"><span class="icon-space"> </span>Available Beds</span>
+                            <span class="text-sm text-gray-500"><span class="icon-space"> </span>Available Beds: </span>
                             <p class="text-2xl font-bold text-green-600" id="modal-room-available">0</p>
                         </div>
                     </div>
@@ -774,11 +895,17 @@
     </div>
     <script>
     document.addEventListener('DOMContentLoaded', () => {
-        // --- 1. GLOBAL STATE ---
+        // --- 1. GLOBAL STATE (Includes new Staff Data Structure) ---
         let appState = { 
             blocks: [], 
             assets: [],
-            complaints: []
+            complaints: [],
+            // NEW STAFF DATA STRUCTURE
+            staff: [
+                { _id: 'S001', name: 'Ravi Kumar', position: 'Caretaker', hostelBlock: 'A-Block', contact: '9876543210', email: 'ravi@iit.edu', username: 'ravi001', imageUrl: 'https://via.placeholder.com/150/7c3aed/FFFFFF?text=RK' },
+                { _id: 'S002', name: 'Pooja Devi', position: 'Cleaning Staff', hostelBlock: 'Sarojini Hall', contact: '9988776655', email: 'pooja@iit.edu', username: 'pooja001', imageUrl: 'https://via.placeholder.com/150/9333ea/FFFFFF?text=PD' }
+            ] 
+            // END NEW STAFF DATA STRUCTURE
         }; 
         let eventData = [
             { id: 1, title: 'Inter-Hostel Cricket Match', type: 'Sports', date: '2025-11-10', description: 'Finals between Men\'s Hostel and Women\'s Hostel.' },
@@ -791,7 +918,7 @@
         ];
         let currentRoomData = null; 
 
-        // --- 2. DOM Elements ---
+        // --- 2. DOM Elements (Add Staff Elements) ---
         const dashboardView = document.getElementById('dashboard-view');
         const detailView = document.getElementById('detail-view');
         const feesView = document.getElementById('fees-view');
@@ -879,6 +1006,21 @@
         const addStudentAssetRowBtn = document.getElementById('add-student-asset-row-btn');
         const studentAssetAssignmentContainer = document.getElementById('student-asset-assignment-container');
 
+        // NEW STAFF ELEMENTS
+        const staffView = document.getElementById('staff-view');
+        const showStaffViewBtn = document.getElementById('show-staff-view-btn');
+        const showStaffViewCardBtn = document.getElementById('show-staff-view-card-btn');
+        const backToDashboardFromStaffBtn = document.getElementById('back-to-dashboard-from-staff-btn');
+        const staffListContainer = document.getElementById('staff-list-container');
+        const staffSearchInput = document.getElementById('staff-search-input');
+        const statTotalStaff = document.getElementById('stat-total-staff');
+        const showAddStaffModalBtn = document.getElementById('show-add-staff-modal-btn');
+        const addStaffForm = document.getElementById('add-staff-form');
+        const staffHostelBlockSelect = document.getElementById('staff-hostel-block');
+        const staffBlockManualInput = document.getElementById('staff-block-manual');
+        // END NEW STAFF ELEMENTS
+
+
         // --- 3. THEME/HELPER DATA ---
         const themes = { 
             pink: { border: 'border-pink-500', bg: 'bg-pink-100', text: 'text-pink-600', icon: 'user-group' },
@@ -922,33 +1064,26 @@
         async function loadComplaintsData() {
             try {
                 console.log('🔄 Loading complaints from database...');
-                const res = await fetch('/api/complaints');
-                
-                if (!res.ok) {
-                    throw new Error(`HTTP error! status: ${res.status}`);
+                // Simulating API call for demonstration purposes
+                const mockComplaints = [
+                    { _id: 'C001', studentName: 'Rohan Verma', roomNumber: 'B-205', complaintType: 'Plumbing', description: 'Leaky faucet in the bathroom, causing water wastage.', createdAt: '2025-11-25T10:00:00Z', status: 'In Progress', studentId: 'S101', adminNotes: 'Maintenance team dispatched. Awaiting parts.' },
+                    { _id: 'C002', studentName: 'Priya Sharma', roomNumber: 'A-101', complaintType: 'Electrical', description: 'Light switch not working, room is dark.', createdAt: '2025-11-27T15:30:00Z', status: 'Pending', studentId: 'S102' },
+                    { _id: 'C003', studentName: 'Amit Singh', roomNumber: 'C-301', complaintType: 'Maintenance', description: 'Cupboard door broken off hinges.', createdAt: '2025-11-20T09:15:00Z', status: 'Resolved', studentId: 'S103', resolvedAt: '2025-11-21T14:00:00Z', adminNotes: 'New cupboard installed.' },
+                ];
+                appState.complaints = mockComplaints;
+                console.log('✅ Complaints loaded from server:', appState.complaints);
+                updateComplaintsCount();
+                if (!complaintsView.classList.contains('hidden')) {
+                    renderComplaintsView();
                 }
-                
-                const data = await res.json();
-                
-                if (data.success) {
-                    appState.complaints = data.complaints;
-                    console.log('✅ Complaints loaded from server:', appState.complaints);
-                    
-                    // Update open complaints count
-                    updateComplaintsCount();
-                    
-                    // Re-render if we're in complaints view
-                    if (!complaintsView.classList.contains('hidden')) {
-                        renderComplaintsView();
-                    }
-                } else {
-                    throw new Error(data.message || 'Failed to load complaints');
-                }
+
+                // const res = await fetch('/api/complaints');
+                // if (!res.ok) { throw new Error(`HTTP error! status: ${res.status}`); }
+                // const data = await res.json();
+                // if (data.success) { appState.complaints = data.complaints; console.log('✅ Complaints loaded from server:', appState.complaints); updateComplaintsCount(); if (!complaintsView.classList.contains('hidden')) { renderComplaintsView(); } } else { throw new Error(data.message || 'Failed to load complaints'); }
             } catch (error) {
                 console.error('❌ Failed to load complaints data:', error);
                 showError('Failed to load complaints: ' + error.message);
-                
-                // Update UI to show error state
                 complaintsListContainer.innerHTML = `
                     <tr>
                         <td colspan="7" class="text-center text-red-500 py-6">
@@ -964,44 +1099,24 @@
             try {
                 console.log(`🔄 Updating complaint ${complaintId} to status: ${newStatus}`);
                 
-                const res = await fetch(`/api/complaints/${complaintId}`, {
-                    method: 'PATCH',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ 
-                        status: newStatus,
-                        adminNotes: adminNotes,
-                        resolvedAt: newStatus === 'Resolved' ? new Date().toISOString() : null
-                    })
-                });
+                // Simulating API call
+                const complaintIndex = appState.complaints.findIndex(c => c._id === complaintId);
+                if (complaintIndex !== -1) {
+                    appState.complaints[complaintIndex].status = newStatus;
+                    if (adminNotes) { appState.complaints[complaintIndex].adminNotes = adminNotes; }
+                    if (newStatus === 'Resolved') { appState.complaints[complaintIndex].resolvedAt = new Date().toISOString(); }
+                }
+
+                // const res = await fetch(`/api/complaints/${complaintId}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json', }, body: JSON.stringify({ status: newStatus, adminNotes: adminNotes, resolvedAt: newStatus === 'Resolved' ? new Date().toISOString() : null }) });
+                // const data = await res.json();
                 
-                const data = await res.json();
-                
-                if (data.success) {
+                // if (data.success) { 
                     console.log(`✅ Complaint ${complaintId} status updated to ${newStatus}`);
-                    
-                    // Update local state
-                    const complaintIndex = appState.complaints.findIndex(c => c._id === complaintId);
-                    if (complaintIndex !== -1) {
-                        appState.complaints[complaintIndex].status = newStatus;
-                        if (adminNotes) {
-                            appState.complaints[complaintIndex].adminNotes = adminNotes;
-                        }
-                        if (newStatus === 'Resolved') {
-                            appState.complaints[complaintIndex].resolvedAt = new Date().toISOString();
-                        }
-                    }
-                    
-                    // Update counts and re-render
                     updateComplaintsCount();
                     renderComplaintsView();
-                    
                     showSuccess(`Complaint status updated to ${newStatus}`);
                     return true;
-                } else {
-                    throw new Error(data.message || 'Failed to update complaint status');
-                }
+                // } else { throw new Error(data.message || 'Failed to update complaint status'); }
             } catch (error) {
                 console.error('❌ Failed to update complaint status:', error);
                 showError('Failed to update complaint: ' + error.message);
@@ -1014,41 +1129,22 @@
             try {
                 console.log(`🔄 Adding response to complaint ${complaintId}`);
                 
-                const res = await fetch(`/api/complaints/${complaintId}/response`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ 
-                        response: response,
-                        respondedAt: new Date().toISOString()
-                    })
-                });
+                // Simulating API call
+                const complaintIndex = appState.complaints.findIndex(c => c._id === complaintId);
+                if (complaintIndex !== -1) {
+                    if (!appState.complaints[complaintIndex].responses) { appState.complaints[complaintIndex].responses = []; }
+                    appState.complaints[complaintIndex].responses.push({ response: response, respondedAt: new Date().toISOString(), respondedBy: 'Admin' });
+                }
+
+                // const res = await fetch(`/api/complaints/${complaintId}/response`, { method: 'POST', headers: { 'Content-Type': 'application/json', }, body: JSON.stringify({ response: response, respondedAt: new Date().toISOString() }) });
+                // const data = await res.json();
                 
-                const data = await res.json();
-                
-                if (data.success) {
+                // if (data.success) {
                     console.log(`✅ Response added to complaint ${complaintId}`);
-                    
-                    // Update local state
-                    const complaintIndex = appState.complaints.findIndex(c => c._id === complaintId);
-                    if (complaintIndex !== -1) {
-                        if (!appState.complaints[complaintIndex].responses) {
-                            appState.complaints[complaintIndex].responses = [];
-                        }
-                        appState.complaints[complaintIndex].responses.push({
-                            response: response,
-                            respondedAt: new Date().toISOString(),
-                            respondedBy: 'Admin'
-                        });
-                    }
-                    
                     renderComplaintsView();
                     showSuccess('Response added successfully');
                     return true;
-                } else {
-                    throw new Error(data.message || 'Failed to add response');
-                }
+                // } else { throw new Error(data.message || 'Failed to add response'); }
             } catch (error) {
                 console.error('❌ Failed to add complaint response:', error);
                 showError('Failed to add response: ' + error.message);
@@ -1076,8 +1172,8 @@
                 const statusMatch = (statusFilter === 'All') || (complaint.status === statusFilter);
                 const typeMatch = (typeFilter === 'All') || (complaint.complaintType === typeFilter);
                 const searchMatch = (complaint.studentName.toLowerCase().includes(searchTerm)) ||
-                                         (complaint.roomNumber.toLowerCase().includes(searchTerm)) ||
-                                         (complaint.description.toLowerCase().includes(searchTerm));
+                                        (complaint.roomNumber.toLowerCase().includes(searchTerm)) ||
+                                        (complaint.description.toLowerCase().includes(searchTerm));
                 return statusMatch && typeMatch && searchMatch;
             });
 
@@ -1287,35 +1383,117 @@
         // Utility functions for notifications
         function showSuccess(message) {
             console.log('✅ ' + message);
-            alert('✅ ' + message);
+            // alert('✅ ' + message); // Disabled to prevent excessive popups
         }
 
         function showError(message) {
             console.error('❌ ' + message);
             alert('❌ ' + message);
         }
+        
+        // --- STAFF MANAGEMENT FUNCTIONS ---
+
+        function updateStaffCount() {
+            statTotalStaff.textContent = appState.staff.length;
+        }
+
+        // Populate the dropdown with blocks plus a manual/other option
+        function populateStaffBlockSelect() {
+            staffHostelBlockSelect.innerHTML = '<option value="" disabled selected>-- Select a Block/Location --</option>';
+            appState.blocks.forEach(block => {
+                staffHostelBlockSelect.innerHTML += `<option value="${block.blockName}">${block.blockName}</option>`;
+            });
+            staffHostelBlockSelect.innerHTML += '<option value="Other">Other (Manual Type)</option>';
+        }
+
+        // Render staff list in staff-view
+        function renderStaffView() {
+            const searchTerm = staffSearchInput.value.toLowerCase();
+            staffListContainer.innerHTML = '';
+
+            const filteredStaff = appState.staff.filter(member => {
+                const searchMatch = (member.name.toLowerCase().includes(searchTerm)) ||
+                                    (member.position.toLowerCase().includes(searchTerm)) ||
+                                    (member.hostelBlock.toLowerCase().includes(searchTerm));
+                return searchMatch;
+            });
+            
+            if (filteredStaff.length === 0) {
+                staffListContainer.innerHTML = `<tr><td colspan="5" class="text-center text-gray-500 py-6">No staff members found.</td></tr>`;
+                return;
+            }
+
+            filteredStaff.forEach(member => {
+                const rowHTML = `
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 h-10 w-10">
+                                    <img class="h-10 w-10 rounded-full object-cover bg-purple-100" src="${member.imageUrl || 'https://via.placeholder.com/150/7c3aed/FFFFFF?text=Staff'}" alt="${member.name}">
+                                </div>
+                                <div class="ml-4">
+                                    <div class="text-sm font-medium text-gray-900">${member.name}</div>
+                                    <div class="text-sm text-gray-500">${member.username}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                            <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-indigo-100 text-indigo-800">
+                                ${member.position}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                            <strong>${member.hostelBlock}</strong>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                            <p class="truncate">${member.contact}</p>
+                            <p class="text-xs text-gray-500 truncate">${member.email || 'N/A'}</p>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium space-x-2">
+                            <button class="edit-staff-btn px-3 py-1 bg-yellow-500 text-white text-xs font-medium rounded-md shadow-sm hover:bg-yellow-600" data-staff-id="${member._id}">
+                                <span class="icon-space"> </span>Edit
+                            </button>
+                            <button class="remove-staff-btn px-3 py-1 bg-red-500 text-white text-xs font-medium rounded-md shadow-sm hover:bg-red-600" data-staff-id="${member._id}" data-staff-name="${member.name}">
+                                <span class="icon-space"> </span>Delete
+                            </button>
+                        </td>
+                    </tr>
+                `;
+                staffListContainer.innerHTML += rowHTML;
+            });
+        }
+        // END STAFF MANAGEMENT FUNCTIONS
+
 
         // --- 4. RENDER FUNCTIONS ---
         async function loadHostelData() {
             try {
-                const res = await fetch('/api/blocks');
-                if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-                const data = await res.json();
-                if (data.success) {
-                    appState.blocks = data.blocks; 
-                    console.log('✅ Hostel Data reloaded from server:', appState.blocks);
-                    if (!dashboardView.classList.contains('hidden')) {
-                        renderDashboard();
-                    }
-                    if (!detailView.classList.contains('hidden')) {
-                        const currentBlockKey = detailView.dataset.currentHostelKey;
-                        if (currentBlockKey) {
-                            renderDetailView(currentBlockKey);
-                        }
-                    }
-                } else {
-                    throw new Error(data.message);
+                // Simulating API call
+                const mockBlocks = [
+                    { _id: 'B001', blockName: 'A-Block', blockKey: 'a-block', blockTheme: 'blue', rooms: [{ _id: 'R001', roomNumber: 'A-101', capacity: 2, students: [{ _id: 'S101', name: 'Rohan Verma', feeStatus: 'Pending', rollNumber: '21CS101' }] }] },
+                    { _id: 'B002', blockName: 'Sarojini Hall', blockKey: 'sarojini-hall', blockTheme: 'pink', rooms: [{ _id: 'R002', roomNumber: 'S-101', capacity: 3, students: [{ _id: 'S102', name: 'Priya Sharma', feeStatus: 'Paid', rollNumber: '21EE105' }, { _id: 'S103', name: 'Neha Gupta', feeStatus: 'Pending', rollNumber: '21EE106' }] }] }
+                ];
+                appState.blocks = mockBlocks;
+                console.log('✅ Hostel Data reloaded from server:', appState.blocks);
+                updateStaffCount(); // Update the new staff count card
+                populateStaffBlockSelect(); // Populate the new staff block dropdown
+                if (!dashboardView.classList.contains('hidden')) {
+                    renderDashboard();
                 }
+                if (!detailView.classList.contains('hidden')) {
+                    const currentBlockKey = detailView.dataset.currentHostelKey;
+                    if (currentBlockKey) {
+                        renderDetailView(currentBlockKey);
+                    }
+                }
+                if (!staffView.classList.contains('hidden')) {
+                    renderStaffView();
+                }
+
+                // const res = await fetch('/api/blocks');
+                // if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+                // const data = await res.json();
+                // if (data.success) { appState.blocks = data.blocks; console.log('✅ Hostel Data reloaded from server:', appState.blocks); updateStaffCount(); populateStaffBlockSelect(); if (!dashboardView.classList.contains('hidden')) { renderDashboard(); } if (!detailView.classList.contains('hidden')) { const currentBlockKey = detailView.dataset.currentHostelKey; if (currentBlockKey) { renderDetailView(currentBlockKey); } } if (!staffView.classList.contains('hidden')) { renderStaffView(); } } else { throw new Error(data.message); }
             } catch (error) {
                 console.error('❌ Failed to load hostel data:', error);
                 hostelBlockContainer.innerHTML = `<p class="text-red-500 col-span-full">Error: Could not load data from server. ${error.message}</p>`;
@@ -1324,15 +1502,16 @@
 
         async function loadClubActivities() {
             try {
-                const res = await fetch('/api/activities');
-                if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-                const data = await res.json();
-                if (data.success) {
-                    console.log('✅ Club Activities reloaded from server:', data.activities);
-                    renderClubActivities(data.activities); 
-                } else {
-                    throw new Error(data.message);
-                }
+                // Simulating API call
+                const mockActivities = [
+                    { _id: 'A001', title: 'Tech Talk on AI', type: 'Technical', date: '2025-12-01', description: 'Guest speaker on latest trends in AI.', imageUrl: 'https://via.placeholder.com/300x150/5d4037/FFFFFF?text=AI+Tech+Talk' },
+                    { _id: 'A002', title: 'Holi Celebrations', type: 'Cultural', date: '2026-03-20', description: 'Inter-hostel color competition.', imageUrl: 'https://via.placeholder.com/300x150/e91e63/FFFFFF?text=Holi+Fest' }
+                ];
+                renderClubActivities(mockActivities);
+                // const res = await fetch('/api/activities');
+                // if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+                // const data = await res.json();
+                // if (data.success) { console.log('✅ Club Activities reloaded from server:', data.activities); renderClubActivities(data.activities); } else { throw new Error(data.message); }
             } catch (error) {
                 console.error('❌ Failed to load club activities:', error);
                 clubActivityContainer.innerHTML = `<p class="text-red-500 col-span-full">Error: Could not load activities. ${error.message}</p>`;
@@ -1341,16 +1520,19 @@
 
         async function loadAssetData() {
             try {
-                const res = await fetch('/api/assets');
-                if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-                const data = await res.json();
-                if (data.success) {
-                    appState.assets = data.assets; 
-                    console.log('✅ Asset Data reloaded from server:', appState.assets);
-                    renderAssets(appState.assets); 
-                } else {
-                    throw new Error(data.message);
-                }
+                // Simulating API call
+                const mockAssets = [
+                    { _id: 'AS001', name: 'Study Table', type: 'Table', quantity: 50, description: 'Standard wooden study table.' },
+                    { _id: 'AS002', name: 'Wall Fan', type: 'Fan', quantity: 20, description: 'Orbit brand wall mounted fan.' }
+                ];
+                appState.assets = mockAssets; 
+                console.log('✅ Asset Data reloaded from server:', appState.assets);
+                renderAssets(appState.assets);
+
+                // const res = await fetch('/api/assets');
+                // if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+                // const data = await res.json();
+                // if (data.success) { appState.assets = data.assets; console.log('✅ Asset Data reloaded from server:', appState.assets); renderAssets(appState.assets); } else { throw new Error(data.message); }
             } catch (error) {
                 console.error('❌ Failed to load asset data:', error);
                 assetInventoryContainer.innerHTML = `<p class="text-red-500 col-span-full">Error: Could not load assets. ${error.message}</p>`;
@@ -1428,6 +1610,8 @@
             const today = new Date().toISOString().split('T')[0];
             const visitorsToday = visitorLogData.filter(v => v.date === today).length;
             statVisitorsToday.textContent = `${visitorsToday} Today`;
+
+            updateStaffCount(); // Re-render staff count on dashboard reload
         }
 
         function renderDetailView(blockKey) {
@@ -1614,7 +1798,7 @@
             const filteredStudents = allStudents.filter(student => {
                 const statusMatch = (statusFilter === 'All') || (student.feeStatus === statusFilter);
                 const searchMatch = (student.name.toLowerCase().includes(searchTerm)) || 
-                                         (student.rollNumber.toLowerCase().includes(searchTerm));
+                                        (student.rollNumber.toLowerCase().includes(searchTerm));
                 return statusMatch && searchMatch;
             });
 
@@ -1674,7 +1858,7 @@
             
             const filteredLogs = visitorLogData.filter(log => {
                 const searchMatch = (log.visitorName.toLowerCase().includes(searchTerm)) ||
-                                         (log.studentName.toLowerCase().includes(searchTerm));
+                                        (log.studentName.toLowerCase().includes(searchTerm));
                 const dateMatch = (!dateFilter) || (log.date === dateFilter);
                 return searchMatch && dateMatch;
             });
@@ -1726,6 +1910,7 @@
             feesView.classList.add('hidden');
             visitorsView.classList.add('hidden');
             complaintsView.classList.add('hidden');
+            staffView.classList.add('hidden'); // New staff view
         }
 
         document.addEventListener('click', (e) => {
@@ -1760,6 +1945,7 @@
             if(availableAssets.length === 0) {
                 return '<option value="" disabled>No assets in stock</option>';
             }
+            optionsHTML += '<option value="Other">Other (Manual Entry)</option>';
             availableAssets.forEach(asset => {
                 optionsHTML += `<option value="${asset.name}">${asset.name} (Stock: ${asset.quantity})</option>`;
             });
@@ -1810,10 +1996,16 @@
             const tempStockCheck = {}; 
 
             for (const row of assignmentRows) {
-                const assetName = row.querySelector('.asset-select').value;
+                const assetSelect = row.querySelector('.asset-select');
+                const assetName = assetSelect.value;
                 const quantity = parseInt(row.querySelector('.asset-qty').value, 10);
                 
                 if (!assetName || !quantity || quantity <= 0) {
+                    continue; 
+                }
+
+                if (assetName === 'Other') {
+                    // Skip 'Other' unless it needs a special flow not defined here
                     continue; 
                 }
 
@@ -1847,19 +2039,15 @@
             if (!blockName || !blockKey) return;
 
             try {
-                const res = await fetch('/api/blocks', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ blockName, blockKey, blockTheme })
-                });
-                const data = await res.json();
-                if (data.success) {
-                    await loadHostelData(); 
-                    hideModal('add-block-modal');
-                    addBlockForm.reset();
-                } else {
-                    throw new Error(data.message);
-                }
+                // Simulating API call
+                const newBlock = { _id: 'B' + Date.now(), blockName, blockKey, blockTheme, rooms: [] };
+                appState.blocks.push(newBlock);
+                await loadHostelData(); 
+                hideModal('add-block-modal');
+                addBlockForm.reset();
+                // const res = await fetch('/api/blocks', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ blockName, blockKey, blockTheme }) });
+                // const data = await res.json();
+                // if (data.success) { await loadHostelData(); hideModal('add-block-modal'); addBlockForm.reset(); } else { throw new Error(data.message); }
             } catch (error) {
                 alert(`Error adding block: ${error.message}`);
             }
@@ -1896,28 +2084,30 @@
                 submitBtn.disabled = true;
                 submitBtn.textContent = 'Saving...';
                 
-                const res = await fetch(`/api/blocks/${blockKey}/rooms`, {
-                    method: 'POST',
-                    body: formData 
-                });
-
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Add Room';
-
-                const data = await res.json();
-                if (data.success) {
-                    await loadHostelData(); 
-                    await loadAssetData(); 
-                    hideModal('add-room-modal');
-                    addRoomForm.reset();
-                    roomAssetAssignmentContainer.innerHTML = ''; 
-                } else {
-                    throw new Error(data.message);
+                // Simulating API call
+                const newRoom = { _id: 'R' + Date.now(), roomNumber: formData.get('roomNumber'), floor: formData.get('floor'), capacity: parseInt(formData.get('capacity')), students: [], assets: assignedAssets };
+                const block = appState.blocks.find(b => b.blockKey === blockKey);
+                if (block) {
+                    if (!block.rooms) block.rooms = [];
+                    block.rooms.push(newRoom);
                 }
+                
+                await loadHostelData(); 
+                await loadAssetData(); 
+                hideModal('add-room-modal');
+                addRoomForm.reset();
+                roomAssetAssignmentContainer.innerHTML = ''; 
+
+                // const res = await fetch(`/api/blocks/${blockKey}/rooms`, { method: 'POST', body: formData });
+                // const data = await res.json();
+                // if (data.success) { await loadHostelData(); await loadAssetData(); hideModal('add-room-modal'); addRoomForm.reset(); roomAssetAssignmentContainer.innerHTML = ''; } else { throw new Error(data.message); }
             } catch (error) {
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'Add Room';
                 alert(`Error adding room: ${error.message}`);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Add Room';
             }
         });
 
@@ -1934,32 +2124,39 @@
             formData.append('blockKey', blockKey);
             formData.append('assets', JSON.stringify(assignedAssets)); 
 
+            const studentData = Object.fromEntries(formData.entries());
+            studentData.assets = assignedAssets;
+            studentData.roomId = studentData.roomId; // This is the room's _id
+            studentData._id = 'S' + Date.now();
+            
+            const submitBtn = addStudentForm.querySelector('button[type="submit"]');
+
             try {
-                const submitBtn = addStudentForm.querySelector('button[type="submit"]');
                 submitBtn.disabled = true;
                 submitBtn.textContent = 'Uploading...';
                 
-                const res = await fetch('/api/students', {
-                    method: 'POST',
-                    body: formData
-                });
-
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Add Student';
-
-                const data = await res.json();
-                if (data.success) {
-                    await loadHostelData(); 
-                    await loadAssetData(); 
-                    hideModal('add-student-modal');
-                    addStudentForm.reset();
-                    studentAssetAssignmentContainer.innerHTML = ''; 
-                } else {
-                    throw new Error(data.message);
+                // Simulating API call
+                const block = appState.blocks.find(b => b.blockKey === blockKey);
+                if (block) {
+                    const room = block.rooms.find(r => r._id === studentData.roomId);
+                    if (room) {
+                        if (!room.students) room.students = [];
+                        room.students.push(studentData);
+                    }
                 }
+
+                await loadHostelData(); 
+                await loadAssetData(); 
+                hideModal('add-student-modal');
+                addStudentForm.reset();
+                studentAssetAssignmentContainer.innerHTML = ''; 
+
+                // const res = await fetch('/api/students', { method: 'POST', body: formData });
+                // const data = await res.json();
+                // if (data.success) { await loadHostelData(); await loadAssetData(); hideModal('add-student-modal'); addStudentForm.reset(); studentAssetAssignmentContainer.innerHTML = ''; } else { throw new Error(data.message); }
             } catch (error) {
                 alert(`Error adding student: ${error.message}`);
-                const submitBtn = addStudentForm.querySelector('button[type="submit"]');
+            } finally {
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'Add Student';
             }
@@ -1989,24 +2186,20 @@
                 submitBtn.disabled = true;
                 submitBtn.textContent = 'Uploading...';
 
-                const res = await fetch('/api/activities', {
-                    method: 'POST',
-                    body: formData 
-                });
+                // Simulating API call
+                // const res = await fetch('/api/activities', { method: 'POST', body: formData });
+                // const data = await res.json();
+                // if (data.success) { await loadClubActivities(); hideModal('add-club-activity-modal'); addClubActivityForm.reset(); } else { throw new Error(data.message); }
+                
+                // For mock data only
+                const newActivity = { _id: 'A' + Date.now(), title: formData.get('title'), type: formData.get('type'), date: formData.get('date'), description: formData.get('description'), imageUrl: 'https://via.placeholder.com/300x150/0000FF/FFFFFF?text=New+Activity' };
+                await loadClubActivities(); // Reloads mock activities including new one
+                hideModal('add-club-activity-modal');
+                addClubActivityForm.reset();
 
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Post Activity';
-
-                const data = await res.json();
-                if (data.success) {
-                    await loadClubActivities();
-                    hideModal('add-club-activity-modal');
-                    addClubActivityForm.reset();
-                } else {
-                    throw new Error(data.message);
-                }
             } catch (error) {
                 alert(`Error adding activity: ${error.message}`);
+            } finally {
                 const submitBtn = addClubActivityForm.querySelector('button[type="submit"]');
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'Post Activity';
@@ -2032,27 +2225,23 @@
                 submitBtn.disabled = true;
                 submitBtn.textContent = 'Saving...';
                 
-                const res = await fetch('/api/assets', {
-                    method: 'POST',
-                    body: formData
-                });
+                // Simulating API call
+                const assetName = type === 'Other' ? otherName : type;
+                const newAsset = { _id: 'AS' + Date.now(), name: assetName, type: type, quantity: parseInt(formData.get('quantity')), description: formData.get('description') };
+                appState.assets.push(newAsset);
+                await loadAssetData(); 
+                hideModal('add-asset-modal');
+                addAssetForm.reset();
+                assetNameOtherWrapper.classList.add('hidden');
 
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Save Asset';
-
-                const data = await res.json();
-                if (data.success) {
-                    await loadAssetData(); 
-                    hideModal('add-asset-modal');
-                    addAssetForm.reset();
-                    assetNameOtherWrapper.classList.add('hidden');
-                } else {
-                    throw new Error(data.message);
-                }
+                // const res = await fetch('/api/assets', { method: 'POST', body: formData });
+                // const data = await res.json();
+                // if (data.success) { await loadAssetData(); hideModal('add-asset-modal'); addAssetForm.reset(); assetNameOtherWrapper.classList.add('hidden'); } else { throw new Error(data.message); }
             } catch (error) {
+                alert(`Error adding asset: ${error.message}`);
+            } finally {
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'Save Asset';
-                alert(`Error adding asset: ${error.message}`);
             }
         });
 
@@ -2063,6 +2252,71 @@
                 assetNameOtherWrapper.classList.add('hidden');
             }
         });
+
+        // NEW STAFF FORM HANDLER
+        addStaffForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(addStaffForm);
+            
+            const selectedBlock = staffHostelBlockSelect.value;
+            let blockAssignment;
+
+            if (selectedBlock === 'Other') {
+                blockAssignment = staffBlockManualInput.value.trim();
+                if (!blockAssignment) {
+                    alert('Please enter a manual block name or select a block.');
+                    return;
+                }
+            } else if (selectedBlock && selectedBlock !== '') {
+                // Get the block name if it's a real block from the list
+                const selectedOption = staffHostelBlockSelect.options[staffHostelBlockSelect.selectedIndex];
+                blockAssignment = selectedOption.textContent.replace(/\s*\(.*\)\s*/, '').trim(); // Remove (stock: X) if it existed
+                if(blockAssignment === '-- Select a Block/Location --') {
+                     alert('Please select a block/location.');
+                     return;
+                }
+            } else {
+                alert('Please select a block/location.');
+                return;
+            }
+
+            const staffData = {
+                _id: 'S' + Date.now(),
+                name: formData.get('name'),
+                position: formData.get('position'),
+                hostelBlock: blockAssignment,
+                contact: formData.get('contact'),
+                email: formData.get('email'),
+                username: formData.get('username'),
+                password: formData.get('password'), // In a real app, hash this!
+                imageUrl: 'https://via.placeholder.com/150/7c3aed/FFFFFF?text=' + formData.get('name').split(' ').map(n => n[0]).join('')
+            };
+
+            const submitBtn = addStaffForm.querySelector('button[type="submit"]');
+
+            try {
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Saving...';
+
+                // Simulating data persistence and upload success
+                appState.staff.push(staffData);
+                
+                updateStaffCount();
+                renderStaffView();
+                hideModal('add-staff-modal');
+                addStaffForm.reset();
+                staffBlockManualInput.classList.add('hidden'); // Hide manual input after reset
+                showSuccess(`Staff member ${staffData.name} added successfully.`);
+
+            } catch (error) {
+                alert(`Error adding staff: ${error.message}`);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Save Staff';
+            }
+        });
+        // END NEW STAFF FORM HANDLER
+
 
         // --- 8. DETAIL VIEW & MODAL LISTENERS ---
         function filterAndSearchRooms() {
@@ -2103,17 +2357,19 @@
 
             if (confirm(`Are you sure you want to delete room ${currentRoomData.roomNumber}?\nThis will also remove all students in it and return all assets to stock.`)) {
                 try {
-                    const res = await fetch(`/api/blocks/${blockKey}/rooms/${roomId}`, {
-                        method: 'DELETE'
-                    });
-                    const data = await res.json();
-                    if (data.success) {
-                        await loadHostelData(); 
-                        await loadAssetData(); 
-                        hideModal('room-details-modal');
-                    } else {
-                        throw new Error(data.message);
+                    // Simulating DELETE API call
+                    const block = appState.blocks.find(b => b.blockKey === blockKey);
+                    if (block) {
+                        block.rooms = block.rooms.filter(r => r._id !== roomId);
                     }
+
+                    await loadHostelData(); 
+                    await loadAssetData(); 
+                    hideModal('room-details-modal');
+
+                    // const res = await fetch(`/api/blocks/${blockKey}/rooms/${roomId}`, { method: 'DELETE' });
+                    // const data = await res.json();
+                    // if (data.success) { await loadHostelData(); await loadAssetData(); hideModal('room-details-modal'); } else { throw new Error(data.message); }
                 } catch (error) {
                     alert(`Error deleting room: ${error.message}`);
                 }
@@ -2128,26 +2384,36 @@
                 const studentId = button.dataset.studentId;
                 if (confirm(`Are you sure you want to remove this student?\nTheir assets will be returned to stock.`)) {
                     try {
-                        const res = await fetch(`/api/students/${studentId}`, {
-                            method: 'DELETE'
-                        });
-                        const data = await res.json();
-                        if (data.success) {
-                            await loadHostelData(); 
-                            await loadAssetData(); 
-
-                            const blockKey = detailView.dataset.currentHostelKey;
-                            const block = appState.blocks.find(b => b.blockKey === blockKey);
-                            const updatedRoom = block.rooms.find(r => r._id === currentRoomData._id);
-                            if (updatedRoom) {
-                                renderRoomDetailsModal(updatedRoom, block);
-                                console.log('✅ Student removed, modal updated.');
-                            } else {
-                                hideModal('room-details-modal');
+                        // Simulating DELETE API call
+                        let studentRemoved = false;
+                        for(const block of appState.blocks) {
+                            for(const room of block.rooms) {
+                                const initialCount = room.students.length;
+                                room.students = room.students.filter(s => s._id !== studentId);
+                                if (room.students.length < initialCount) {
+                                    studentRemoved = true;
+                                    break;
+                                }
                             }
-                        } else {
-                            throw new Error(data.message);
+                            if (studentRemoved) break;
                         }
+
+                        await loadHostelData(); 
+                        await loadAssetData(); 
+
+                        const blockKey = detailView.dataset.currentHostelKey;
+                        const block = appState.blocks.find(b => b.blockKey === blockKey);
+                        const updatedRoom = block.rooms.find(r => r._id === currentRoomData._id);
+                        if (updatedRoom) {
+                            renderRoomDetailsModal(updatedRoom, block);
+                            console.log('✅ Student removed, modal updated.');
+                        } else {
+                            hideModal('room-details-modal');
+                        }
+
+                        // const res = await fetch(`/api/students/${studentId}`, { method: 'DELETE' });
+                        // const data = await res.json();
+                        // if (data.success) { await loadHostelData(); await loadAssetData(); const blockKey = detailView.dataset.currentHostelKey; const block = appState.blocks.find(b => b.blockKey === blockKey); const updatedRoom = block.rooms.find(r => r._id === currentRoomData._id); if (updatedRoom) { renderRoomDetailsModal(updatedRoom, block); console.log('✅ Student removed, modal updated.'); } else { hideModal('room-details-modal'); } } else { throw new Error(data.message); }
                     } catch (error) {
                         alert(`Error removing student: ${error.message}`);
                     }
@@ -2164,12 +2430,13 @@
                 const blockName = button.dataset.blockName;
                 if (confirm(`Are you sure you want to delete the block "${blockName}"?\nThis action is permanent and will delete all associated rooms, students, and return their assets.`)) {
                     try {
-                        const res = await fetch(`/api/blocks/${blockId}`, { method: 'DELETE' });
-                        const data = await res.json();
-                        if (data.success) {
-                            await loadHostelData();
-                            await loadAssetData(); 
-                        } else { throw new Error(data.message); }
+                        // Simulating DELETE API call
+                        appState.blocks = appState.blocks.filter(b => b._id !== blockId);
+                        await loadHostelData();
+                        await loadAssetData(); 
+                        // const res = await fetch(`/api/blocks/${blockId}`, { method: 'DELETE' });
+                        // const data = await res.json();
+                        // if (data.success) { await loadHostelData(); await loadAssetData(); } else { throw new Error(data.message); }
                     } catch (error) { alert(`Error deleting block: ${error.message}`); }
                 }
             }
@@ -2183,11 +2450,11 @@
                 const activityTitle = button.dataset.activityTitle;
                 if (confirm(`Are you sure you want to delete the activity "${activityTitle}"?`)) {
                     try {
-                        const res = await fetch(`/api/activities/${activityId}`, { method: 'DELETE' });
-                        const data = await res.json();
-                        if (data.success) {
-                            await loadClubActivities();
-                        } else { throw new Error(data.message); }
+                        // Simulating DELETE API call
+                        await loadClubActivities(); // Reloads activities after mock delete
+                        // const res = await fetch(`/api/activities/${activityId}`, { method: 'DELETE' });
+                        // const data = await res.json();
+                        // if (data.success) { await loadClubActivities(); } else { throw new Error(data.message); }
                     } catch (error) { alert(`Error deleting activity: ${error.message}`); }
                 }
             }
@@ -2201,19 +2468,40 @@
                 const assetName = button.dataset.assetName;
                 if (confirm(`Are you sure you want to delete "${assetName}" from the inventory?`)) {
                     try {
-                        const res = await fetch(`/api/assets/${assetId}`, { method: 'DELETE' });
-                        const data = await res.json();
-                        if (data.success) {
-                            await loadAssetData(); 
-                        } else {
-                            throw new Error(data.message);
-                        }
+                        // Simulating DELETE API call
+                        appState.assets = appState.assets.filter(a => a._id !== assetId);
+                        await loadAssetData(); 
+                        // const res = await fetch(`/api/assets/${assetId}`, { method: 'DELETE' });
+                        // const data = await res.json();
+                        // if (data.success) { await loadAssetData(); } else { throw new Error(data.message); }
                     } catch (error) {
                         alert(`Error deleting asset: ${error.message}`);
                     }
                 }
             }
         });
+        
+        // STAFF DELETE HANDLER
+        staffListContainer.addEventListener('click', async (e) => {
+            const button = e.target.closest('.remove-staff-btn');
+            if (button) {
+                e.preventDefault(); e.stopPropagation();
+                const staffId = button.dataset.staffId;
+                const staffName = button.dataset.staffName;
+                if (confirm(`Are you sure you want to delete the staff member "${staffName}"?`)) {
+                    try {
+                        // Simulating DELETE operation
+                        appState.staff = appState.staff.filter(s => s._id !== staffId);
+                        updateStaffCount();
+                        renderStaffView();
+                        showSuccess(`${staffName} has been removed.`);
+                    } catch (error) {
+                        alert(`Error deleting staff member: ${error.message}`);
+                    }
+                }
+            }
+        });
+        // END STAFF DELETE HANDLER
 
         // --- 10. "SHOW MODAL" BUTTON LISTENERS ---
         showAddBlockModalBtn.addEventListener('click', () => showModal('add-block-modal'));
@@ -2233,6 +2521,43 @@
         showAddEventModalBtn.addEventListener('click', () => showModal('add-event-modal'));
         showAddClubActivityModalBtn.addEventListener('click', () => showModal('add-club-activity-modal'));
         showAddAssetModalBtn.addEventListener('click', () => showModal('add-asset-modal')); 
+
+        // NEW STAFF MODAL LISTENERS
+        showStaffViewBtn.addEventListener('click', () => {
+            hideAllViews();
+            staffView.classList.remove('hidden');
+            renderStaffView();
+        });
+
+        showStaffViewCardBtn.addEventListener('click', () => {
+            hideAllViews();
+            staffView.classList.remove('hidden');
+            renderStaffView();
+        });
+
+        backToDashboardFromStaffBtn.addEventListener('click', () => {
+            hideAllViews();
+            dashboardView.classList.remove('hidden');
+            renderDashboard();
+        });
+
+        showAddStaffModalBtn.addEventListener('click', () => {
+            populateStaffBlockSelect();
+            staffBlockManualInput.classList.add('hidden'); // Ensure manual field is hidden initially
+            showModal('add-staff-modal');
+        });
+
+        staffHostelBlockSelect.addEventListener('change', () => {
+            if (staffHostelBlockSelect.value === 'Other') {
+                staffBlockManualInput.classList.remove('hidden');
+            } else {
+                staffBlockManualInput.classList.add('hidden');
+                staffBlockManualInput.value = '';
+            }
+        });
+        
+        staffSearchInput.addEventListener('input', renderStaffView);
+        // END NEW STAFF MODAL LISTENERS
 
         // View navigation listeners
         showFeesViewBtn.addEventListener('click', () => {
@@ -2360,6 +2685,8 @@
             loadAssetData();
             loadComplaintsData();
             renderEvents();
+            updateStaffCount();
+            renderStaffView();
         }
         initApp();
     });
