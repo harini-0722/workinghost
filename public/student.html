@@ -874,28 +874,6 @@
         // DATA LOADING & REFRESH
         // =========================================================================
 
-        // ** NEW FUNCTION: Fetch Visitor Requests separately **
-        async function fetchVisitorRequests(studentId) {
-            try {
-                // Assuming your GET endpoint is set up as /api/visitor-request/history/:studentId
-                const response = await fetch(`/api/visitor-request/history/${studentId}`); 
-                if (!response.ok) {
-                    throw new Error(`Failed to fetch visitor requests: ${response.status}`);
-                }
-                const data = await response.json();
-                if (data.success && Array.isArray(data.visitorRequests)) {
-                    g_visitorRequests = data.visitorRequests;
-                    console.log('✅ Visitor requests loaded:', g_visitorRequests);
-                } else {
-                    g_visitorRequests = [];
-                    console.warn('No visitor requests found or server response was malformed.');
-                }
-            } catch (error) {
-                console.error('❌ Error fetching visitor requests:', error);
-                g_visitorRequests = [];
-            }
-        }
-
         // --- UPDATED: loadStudentData to fetch all related data ---
         async function loadStudentData() {
             const studentId = localStorage.getItem('currentStudentId');
@@ -907,20 +885,13 @@
             }
 
             try {
-                // Fetch student profile, room, roommates, attendance, complaints
-                const [
-                    studentResponse, 
-                    statusResponse
-                ] = await Promise.all([
-                    fetch(`/api/student/${studentId}`),
-                    fetch(`/api/attendance/status/${studentId}`)
-                ]);
-
-                if (!studentResponse.ok) {
-                    const errData = await studentResponse.json();
-                    throw new Error(errData.message || `Error: ${studentResponse.status}`);
+                // Fetch student profile, room, roommates, attendance, complaints, AND visitorRequests
+                const response = await fetch(`/api/student/${studentId}`);
+                if (!response.ok) {
+                    const errData = await response.json();
+                    throw new Error(errData.message || `Error: ${response.status}`);
                 }
-                const data = await studentResponse.json();
+                const data = await response.json();
 
                 if (!data.success) {
                     throw new Error(data.message);
@@ -928,7 +899,7 @@
 
                 console.log('📦 Server response:', data); 
 
-                // --- 2. 🚀 Map server response to expected structure ---
+                // --- 2. 🚀 FIX: Map server response to expected structure ---
                 g_student = data.student;
                 
                 // --- NEW ROBUST LOGIC for finding room data ---
@@ -948,11 +919,20 @@
                 g_roommates = data.roommates || [];    
                 g_attendance = data.attendance || [];
                 g_complaints = data.complaints || [];
+                g_visitorRequests = data.visitorRequests || []; // FIX: Load real visitor requests if server sends them
 
-                // 🚀 NEW STEP: Fetch visitor requests separately!
-                await fetchVisitorRequests(studentId); 
+                // --- NEW STEP: Fetch Visitor History explicitly ---
+                try {
+                    const vRes = await fetch(`/api/visitor-request/history/${studentId}`);
+                    const vData = await vRes.json();
+                    if(vData.success) {
+                        g_visitorRequests = vData.visitorRequests;
+                    }
+                } catch(err) { console.error("Visitor history fetch failed", err); }
+                // ----------------------------------------------------
 
-                // --- 3. Get current attendance status ---
+                // --- 3. Get current attendance status (separate API call) ---
+                const statusResponse = await fetch(`/api/attendance/status/${studentId}`);
                 if (statusResponse.ok) {
                     const statusData = await statusResponse.json();
                     if (statusData.success) {
@@ -963,7 +943,10 @@
 
                 console.log('✅ Student data loaded and mapped:', {
                     student: g_student,
-                    visitorRequests: g_visitorRequests, // Check updated requests here
+                    room: g_room,
+                    block: g_block,
+                    roommates: g_roommates, 
+                    attendance: g_attendance
                 });
                 
                 return true;    
@@ -1070,10 +1053,15 @@
                 if (response.ok && data.success) {
                     alert(`Visitor request for ${name} submitted successfully! Status: Pending`);
                     
-                    // 🚀 CRITICAL FIX: After successful submission, only re-fetch the visitor requests
-                    // This minimizes overhead compared to re-running loadStudentData()
-                    await fetchVisitorRequests(studentId); // Re-fetches updated g_visitorRequests
-                    populateVisitorRequestHistory();
+                    // Refresh visitor data and UI
+                    try {
+                        const vRes = await fetch(`/api/visitor-request/history/${studentId}`);
+                        const vData = await vRes.json();
+                        if(vData.success) {
+                            g_visitorRequests = vData.visitorRequests;
+                            populateVisitorRequestHistory();
+                        }
+                    } catch(err) { console.error(err); }
                     
                     document.getElementById('visitor-request-form').reset();
                 } else {
@@ -1164,7 +1152,7 @@
                 updateAttendanceStatus();    
                 populateAttendanceLog();
             } else if (viewId === 'student-visitor-view') {
-                populateVisitorRequestHistory(); // 🚀 IMPORTANT: Call the population function on view switch
+                populateVisitorRequestHistory();
             } else if (viewId === 'student-activities-view') {
                 displayAllActivities();
             }
@@ -1388,9 +1376,9 @@
         // =========================================================================
 
         function initializeDashboard() {
-            if (!g_student) {    
+            if (!g_student) {    
                 console.error("No student data loaded.");
-                logout();    
+                logout();    
                 return;
             }
             
@@ -1416,10 +1404,10 @@
             // 3. Room Card
             const roomCard = document.querySelector('.card-classy-lift[onclick="showView(\'student-room-view\')"]');
             if (g_room && g_block) {
-                roomCard.querySelector('.text-4xl').textContent = g_room.roomNumber;    
+                roomCard.querySelector('.text-4xl').textContent = g_room.roomNumber;    
                 roomCard.querySelector('.text-sm').textContent = `${g_block.blockName} | ${g_room.floor}`;
-                roomCard.classList.add('border-primary-blue');    
-                roomCard.querySelector('.text-xs').classList.add('text-primary-blue');    
+                roomCard.classList.add('border-primary-blue');    
+                roomCard.querySelector('.text-xs').classList.add('text-primary-blue');    
             }
 
             // 4. Fee Card
@@ -1429,7 +1417,7 @@
             const feeStatusIcon = feeCard.querySelector('.mt-4');
 
             if (g_student.feeStatus === 'Pending') {
-                feeStatusElement.textContent = 'Fee Due';    
+                feeStatusElement.textContent = 'Fee Due';    
                 feeStatusElement.classList.add('text-accent-red');
                 feeStatusElement.classList.remove('text-accent-green');
                 feeCard.classList.replace('border-accent-green', 'border-accent-red');
@@ -1438,7 +1426,7 @@
                 feeStatusIcon.classList.replace('text-accent-green', 'text-accent-red');
                 feeStatusIcon.querySelector('span').textContent = 'Please pay at the admin office.';
             } else {
-                feeStatusElement.textContent = 'Paid';    
+                feeStatusElement.textContent = 'Paid';    
                 feeStatusElement.classList.add('text-accent-green');
                 feeStatusElement.classList.remove('text-accent-red');
                 feeCard.classList.replace('border-accent-red', 'border-accent-green');
@@ -1452,7 +1440,7 @@
             const openRequestsEl = document.getElementById('dashboard-open-requests');
             const openRequestsText = openRequestsEl.nextElementSibling;
             
-            const pendingComplaints = g_complaints.filter(c => c.status === 'Pending' || c.status === 'Critical');    
+            const pendingComplaints = g_complaints.filter(c => c.status === 'Pending' || c.status === 'Critical');    
             openRequestsEl.textContent = String(pendingComplaints.length).padStart(2, '0');
             
             if (pendingComplaints.length > 0) {
@@ -1492,7 +1480,7 @@
             summaryCard.querySelector('p.flex:nth-child(3) span').textContent = `${g_room.capacity} Beds`;
             
             // Occupancy = other roommates (from g_roommates array) + 1 (the student)
-            const occupancy = g_roommates.length + 1;    
+            const occupancy = g_roommates.length + 1;    
             const occupancyText = `${occupancy}/${g_room.capacity}`;
             const occupancyEl = summaryCard.querySelector('p.flex:nth-child(4) span');
             occupancyEl.textContent = occupancyText;
@@ -1512,7 +1500,7 @@
             roommatesList.previousElementSibling.textContent = `Current Roommates (${g_roommates.length})`;
 
             // Loop over the g_roommates array
-            g_roommates.forEach(mate => {    
+            g_roommates.forEach(mate => {    
                 if (!mate) return;
                 
                 const mateCard = document.createElement('div');
@@ -1576,7 +1564,7 @@
             const tableBody = document.getElementById('student-leave-history');
             tableBody.innerHTML = '';
             const sortedLeaves = mockLeaveHistory
-                .filter(l => l.studentId === g_student._id || l.studentId === 1)    
+                .filter(l => l.studentId === g_student._id || l.studentId === 1)    
                 .sort((a, b) => new Date(b.start) - new Date(a.start));
 
             if (sortedLeaves.length === 0) {
@@ -1681,7 +1669,7 @@
             feeStatusEl.textContent = student.feeStatus || 'Pending';
             paymentMethodEl.textContent = student.paymentMethod || 'Not Paid';
             
-            feeStatusEl.classList.remove('bg-green-100', 'text-green-700', 'bg-red-100', 'text-red-700');    
+            feeStatusEl.classList.remove('bg-green-100', 'text-green-700', 'bg-red-100', 'text-red-700');    
             if (student.feeStatus === 'Paid') {
                 feeStatusEl.classList.add('bg-green-100', 'text-green-700');
             } else {
@@ -1748,8 +1736,8 @@
             } else {
                 complaintsList.innerHTML = '';
                 complaints.forEach(complaint => {
-                    const statusColor = complaint.status === 'Resolved'    
-                        ? 'bg-green-100 text-green-700'    
+                    const statusColor = complaint.status === 'Resolved'    
+                        ? 'bg-green-100 text-green-700'    
                         : 'bg-yellow-100 text-yellow-700';
                     
                     const item = `
@@ -1804,7 +1792,7 @@
             button.textContent = 'Updating...';
 
             try {
-                const response = await fetch('/api/attendance/toggle', {    
+                const response = await fetch('/api/attendance/toggle', {    
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ studentId: g_student._id })
@@ -1823,8 +1811,8 @@
                 const attResponse = await fetch(`/api/student/${g_student._id}`);
                 const attData = await attResponse.json();
                 if (attData.success) {
-                    g_attendance = attData.attendance;    
-                    populateAttendanceLog();    
+                    g_attendance = attData.attendance;    
+                    populateAttendanceLog();    
                 }
                 
             } catch (error) {
@@ -1931,7 +1919,7 @@
             document.getElementById('announcement-list-view').classList.remove('hidden');
             document.getElementById('announcement-detail-view').classList.add('hidden');
             const container = document.getElementById('announcement-list-container');
-            container.innerHTML = '';    
+            container.innerHTML = '';    
             mockAnnouncements.forEach(ann => {
                 container.innerHTML += `
                     <a href="#" onclick="event.preventDefault(); showAnnouncementDetail(${ann.id})" class="block p-4 rounded-lg bg-light-bg hover:bg-gray-200 transition duration-200">
@@ -1962,13 +1950,13 @@
         // =========================================================================
         document.addEventListener('DOMContentLoaded', async () => {
             
-            const success = await loadStudentData();    
+            const success = await loadStudentData();    
             
             if (success) {
                 // Load club activities
                 await loadClubActivities();
                 
-                initializeDashboard();    
+                initializeDashboard();    
                 showView('student-dashboard-view');
                 
                 document.getElementById('mobile-menu-button').addEventListener('click', toggleMobileMenu);
