@@ -50,7 +50,11 @@
                     <span class="ml-2 text-gray-500 font-medium hidden sm:inline">| Indian Institute of Technology</span>
                 </div>
                 <div class="flex items-center">
-                    <button id="show-complaints-view-btn" class="flex items-center text-sm font-medium text-red-600 hover:text-red-800">
+                    <button id="show-staff-view-btn" class="flex items-center text-sm font-medium text-purple-600 hover:text-purple-800 ml-6">
+                        <hero-icon-outline name="user-group" class="h-5 w-5 mr-1"></hero-icon-outline>
+                        Manage Staff
+                    </button>
+                    <button id="show-complaints-view-btn" class="flex items-center text-sm font-medium text-red-600 hover:text-red-800 ml-6">
                         <hero-icon-outline name="exclamation-circle" class="h-5 w-5 mr-1"></hero-icon-outline>
                         Complaints
                     </button>
@@ -77,6 +81,18 @@
     <main class="mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-grow">
         <div id="dashboard-view">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                 <div id="show-staff-view-card-btn" class="bg-purple-50 p-5 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-sm font-medium text-purple-900 opacity-70">MANAGE STAFF</span>
+                            <p class="text-3xl font-extrabold text-purple-900 mt-2" id="stat-total-staff">0</p>
+                            <p class="text-sm text-purple-900 opacity-60">Total Staff Members</p>
+                        </div>
+                        <div class="p-3 bg-white rounded-full shadow-md">
+                            <hero-icon-outline name="users" class="h-6 w-6 text-purple-500"></hero-icon-outline>
+                        </div>
+                    </div>
+                </div>
                 <div class="bg-indigo-50 p-5 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
                     <div class="flex justify-between items-start">
                         <div>
@@ -218,53 +234,41 @@
                 </div>
             </div>
         </div> 
-        <div id="detail-view" class="hidden">
+        <div id="staff-view" class="hidden">
             <div class="relative mb-6 pb-4">
-                <button id="back-to-dashboard-btn" class="flex items-center text-sm font-medium text-gray-600 hover:text-gray-900">
+                <button id="back-to-dashboard-from-staff-btn" class="flex items-center text-sm font-medium text-gray-600 hover:text-gray-900">
                     <hero-icon-solid name="arrow-left" class="h-4 w-4 mr-2"></hero-icon-solid>
                     <span class="icon-space"> </span>Back to Dashboard
                 </button>
                 <div class="flex items-center justify-center absolute inset-x-0 top-0 -z-10">
-                    <h1 id="detail-hostel-name" class="text-xl sm:text-3xl font-bold text-gray-800" style="color: #4b0082;"></h1>
-                </div>
-            </div>
-            <div class="bg-white p-4 sm:p-6 rounded-lg shadow-md border-l-8 border-blue-500 mb-8">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
-                    <div>
-                        <span class="text-gray-500"><span class="icon-space"> </span>Capacity: </span>
-                        <span class="text-xl sm:text-2xl font-bold" style="color: #800080;" id="detail-stat-capacity">0</span>
-                    </div>
-                    <div>
-                        <span class="text-gray-500"><span class="icon-space"> </span>Occupancy: </span>
-                        <span class="text-xl sm:text-2xl font-bold" style="color: #ffa500;" id="detail-stat-occupancy">0</span>
-                    </div>
-                    <div>
-                        <span class="text-gray-500"><span class="icon-space"> </span>Available Beds: </span>
-                        <span class="text-xl sm:text-2xl font-bold" style="color: #008000;" id="detail-stat-available">0</span>
-                    </div>
+                    <h1 class="text-xl sm:text-3xl font-bold text-purple-700">
+                        Staff Management
+                    </h1>
                 </div>
             </div>
             <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
-                <div class="flex flex-wrap gap-4">
-                    <button id="show-add-student-modal-btn" class="flex items-center px-5 py-3 bg-blue-600 text-white font-medium rounded-lg shadow-md hover:bg-blue-700 transition-all duration-300 hover:scale-105">
-                        <hero-icon-solid name="user-plus" class="h-5 w-5 mr-2"></hero-icon-solid>
-                        <span class="icon-space"> </span>Add New Student
-                    </button>
-                    <button id="show-add-room-modal-btn" class="flex items-center px-5 py-3 bg-blue-600 text-white font-medium rounded-lg shadow-md hover:bg-blue-700 transition-all duration-300 hover:scale-105">
-                        <hero-icon-solid name="building-office-plus" class="h-5 w-5 mr-2"></hero-icon-solid>
-                        <span class="icon-space"> </span>Add New Room
-                    </button>
-                </div>
-                <div class="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
-                    <input type="text" id="room-search-input" placeholder="Search room number..." class="px-4 py-2 border rounded-lg shadow-sm w-full sm:w-auto">
-                    <select id="room-filter-select" class="px-4 py-2 border rounded-lg shadow-sm w-full sm:w-auto">
-                        <option value="All">All Rooms</option>
-                        <option value="Full">Full</option>
-                        <option value="Available">Available</option>
-                    </select>
-                </div>
+                <button id="show-add-staff-modal-btn" class="mt-4 sm:mt-0 flex items-center px-5 py-3 bg-purple-600 text-white font-medium rounded-lg shadow-md hover:bg-purple-700 transition-all duration-300 w-full md:w-auto">
+                    <hero-icon-solid name="user-plus" class="h-5 w-5 mr-2"></hero-icon-solid>
+                    <span class="icon-space"> </span>Add New Staff
+                </button>
+                <input type="text" id="staff-search-input" placeholder="Search by name, position, or block..." class="px-4 py-2 border rounded-lg shadow-sm w-full md:w-auto">
             </div>
-            <div id="room-list-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full min-w-max">
+                        <thead class="bg-purple-100 border-b border-gray-200">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-purple-800 uppercase tracking-wider">Name</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-purple-800 uppercase tracking-wider">Position</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-purple-800 uppercase tracking-wider">Hostel Block</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-purple-800 uppercase tracking-wider">Contact Info</th>
+                                <th class="px-6 py-3 text-center text-xs font-semibold text-purple-800 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="staff-list-container" class="divide-y divide-gray-200">
+                            </tbody>
+                    </table>
+                </div>
             </div>
         </div>
         <div id="fees-view" class="hidden">
@@ -405,32 +409,72 @@
             </p>
         </div>
     </footer>
-    <div id="add-block-modal" class="modal hidden fixed inset-0 z-30 flex items-center justify-center">
-        <div class="modal-backdrop fixed inset-0" data-modal-hide="add-block-modal"></div>
-        <div class="modal-content bg-white p-6 rounded-lg shadow-xl z-40 w-full max-w-md mx-4">
-            <h2 class="text-xl font-semibold mb-4"><span class="icon-space"> </span>Add New Hostel Block</h2>
-            <form id="add-block-form" class="space-y-4">
+
+    <div id="add-staff-modal" class="modal hidden fixed inset-0 z-30 flex items-center justify-center">
+        <div class="modal-backdrop fixed inset-0" data-modal-hide="add-staff-modal"></div>
+        <div class="modal-content bg-white p-6 rounded-lg shadow-xl z-40 w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto">
+            <h2 class="text-xl font-semibold mb-4 text-purple-700">➕ Add New Staff Member</h2>
+            <form id="add-staff-form" class="space-y-4">
+                <h3 class="text-sm font-medium text-gray-500 border-b pb-1">Personal Details</h3>
                 <div>
-                    <label for="block-name" class="block text-sm font-medium text-gray-700"><span class="icon-space"> </span>Block Name</label>
-                    <input type="text" id="block-name" name="blockName" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="e.g., Sarojini Hall" required>
+                    <label for="staff-name" class="block text-sm font-medium text-gray-700">Full Name</label>
+                    <input type="text" id="staff-name" name="name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="e.g., Jane Doe" required>
                 </div>
                 <div>
-                    <label for="block-key" class="block text-sm font-medium text-gray-700"><span class="icon-space"> </span>Unique Key</label>
-                    <input type="text" id="block-key" name="blockKey" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="e.g., 'sarojini' (lowercase, no spaces)" required>
+                    <label for="staff-position" class="block text-sm font-medium text-gray-700">Position Name</label>
+                    <input type="text" id="staff-position" name="position" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="e.g., Caretaker, Security Guard" required>
                 </div>
+                
+                <h3 class="text-sm font-medium text-gray-500 border-b pt-2 pb-1">Assignment Details</h3>
                 <div>
-                    <label for="block-theme" class="block text-sm font-medium text-gray-700"><span class="icon-space"> </span>Theme Color</label>
-                    <select id="block-theme" name="blockTheme" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
-                        <option value="pink">Pink (Women)</option>
-                        <option value="blue">Blue (Men)</option>
-                        <option value="green">Green</option>
-                        <option value="purple">Purple</option>
-                        <option value="yellow">Yellow</option>
-                    </select>
+                    <label for="staff-hostel-block" class="block text-sm font-medium text-gray-700">Hostel Block Assignment</label>
+                    <div class="flex items-center space-x-2">
+                        <select id="staff-hostel-block" name="hostelBlock" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500" required>
+                            <option value="" disabled selected>-- Select a Block --</option>
+                            <option value="Other">Other (Manual Type)</option>
+                            </select>
+                        <input type="text" id="staff-block-manual" name="blockManual" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm hidden" placeholder="Manual Location (e.g. Main Gate)">
+                    </div>
+                    <p class="mt-1 text-xs text-gray-500">Select an existing block or choose **Other (Manual Type)**.</p>
                 </div>
+
+                <h3 class="text-sm font-medium text-gray-500 border-b pt-2 pb-1">Contact & Login</h3>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label for="staff-contact" class="block text-sm font-medium text-gray-700">Contact Info (Phone)</label>
+                        <input type="tel" id="staff-contact" name="contact" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="+91 XXXXX XXXXX" required>
+                    </div>
+                    <div>
+                        <label for="staff-email" class="block text-sm font-medium text-gray-700">Email (Optional)</label>
+                        <input type="email" id="staff-email" name="email" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="staff@iit.edu">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label for="staff-username" class="block text-sm font-medium text-gray-700">Username</label>
+                        <input type="text" id="staff-username" name="username" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
+                    </div>
+                    <div>
+                        <label for="staff-password" class="block text-sm font-medium text-gray-700">Password</label>
+                        <input type="password" id="staff-password" name="password" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
+                    </div>
+                </div>
+                
+                <div>
+                    <label for="staff-image-file" class="block text-sm font-medium text-gray-700">Upload Image</label>
+                    <input type="file" id="staff-image-file" name="staffImage" class="mt-1 block w-full text-sm text-gray-500
+                                file:mr-4 file:py-2 file:px-4
+                                file:rounded-full file:border-0
+                                file:text-sm file:font-semibold
+                                file:bg-purple-50 file:text-purple-700
+                                hover:file:bg-purple-100"
+                                accept="image/*">
+                    <p class="mt-1 text-xs text-gray-500">Upload a professional photo from device.</p>
+                </div>
+                
                 <div class="flex justify-end space-x-3 pt-4">
-                    <button type="button" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300" data-modal-hide="add-block-modal"><span class="icon-space"> </span>Cancel</button>
-                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"><span class="icon-space"> </span>Save Block</button>
+                    <button type="button" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300" data-modal-hide="add-staff-modal">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700">Save Staff</button>
                 </div>
             </form>
         </div>
@@ -565,7 +609,7 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-700"><span class="icon-space"> </span>Assign Assets to Student</label>
                     <div id="student-asset-assignment-container" class="mt-2 space-y-3">
-                            </div>
+                                </div>
                     <button type="button" id="add-student-asset-row-btn" class="mt-2 text-sm font-medium text-blue-600 hover:text-blue-800 flex items-center">
                         <hero-icon-solid name="plus-circle" class="h-5 w-5 mr-1"></hero-icon-solid>
                         Add Asset
@@ -638,7 +682,7 @@
                             <p class="text-2xl font-bold text-blue-600" id="modal-room-occupancy">2</p>
                         </div>
                         <div class="flex-1">
-                            <span class="text-sm text-gray-500"><span class="icon-space"> </span>Available Beds</span>
+                            <span class="text-sm text-gray-500"><span class="icon-space"> </span>Available Beds: </span>
                             <p class="text-2xl font-bold text-green-600" id="modal-room-available">0</p>
                         </div>
                     </div>
@@ -778,8 +822,10 @@
         let appState = { 
             blocks: [], 
             assets: [],
-            complaints: []
+            complaints: [],
+            staff: [] // Initial staff data from DB will be loaded here
         }; 
+        
         let eventData = [
             { id: 1, title: 'Inter-Hostel Cricket Match', type: 'Sports', date: '2025-11-10', description: 'Finals between Men\'s Hostel and Women\'s Hostel.' },
             { id: 2, title: 'Mess Committee Meeting', type: 'Announcement', date: '2025-11-05', description: 'Discussing the new menu for next month.' }
@@ -879,6 +925,21 @@
         const addStudentAssetRowBtn = document.getElementById('add-student-asset-row-btn');
         const studentAssetAssignmentContainer = document.getElementById('student-asset-assignment-container');
 
+        // NEW STAFF ELEMENTS
+        const staffView = document.getElementById('staff-view');
+        const showStaffViewBtn = document.getElementById('show-staff-view-btn');
+        const showStaffViewCardBtn = document.getElementById('show-staff-view-card-btn');
+        const backToDashboardFromStaffBtn = document.getElementById('back-to-dashboard-from-staff-btn');
+        const staffListContainer = document.getElementById('staff-list-container');
+        const staffSearchInput = document.getElementById('staff-search-input');
+        const statTotalStaff = document.getElementById('stat-total-staff');
+        const showAddStaffModalBtn = document.getElementById('show-add-staff-modal-btn');
+        const addStaffForm = document.getElementById('add-staff-form');
+        const staffHostelBlockSelect = document.getElementById('staff-hostel-block');
+        const staffBlockManualInput = document.getElementById('staff-block-manual');
+        // END NEW STAFF ELEMENTS
+
+
         // --- 3. THEME/HELPER DATA ---
         const themes = { 
             pink: { border: 'border-pink-500', bg: 'bg-pink-100', text: 'text-pink-600', icon: 'user-group' },
@@ -909,7 +970,7 @@
         function findStudentById(studentId) {
             for (const block of appState.blocks) {
                 for (const room of block.rooms) {
-                    const student = room.students.find(s => s._id === studentId);
+                    const student = (room.students || []).find(s => s._id === studentId);
                     if (student) return student;
                 }
             }
@@ -931,7 +992,7 @@
                 const data = await res.json();
                 
                 if (data.success) {
-                    appState.complaints = data.complaints;
+                    appState.complaints = data.complaints || [];
                     console.log('✅ Complaints loaded from server:', appState.complaints);
                     
                     // Update open complaints count
@@ -1076,8 +1137,8 @@
                 const statusMatch = (statusFilter === 'All') || (complaint.status === statusFilter);
                 const typeMatch = (typeFilter === 'All') || (complaint.complaintType === typeFilter);
                 const searchMatch = (complaint.studentName.toLowerCase().includes(searchTerm)) ||
-                                         (complaint.roomNumber.toLowerCase().includes(searchTerm)) ||
-                                         (complaint.description.toLowerCase().includes(searchTerm));
+                                        (complaint.roomNumber.toLowerCase().includes(searchTerm)) ||
+                                        (complaint.description.toLowerCase().includes(searchTerm));
                 return statusMatch && typeMatch && searchMatch;
             });
 
@@ -1287,13 +1348,115 @@
         // Utility functions for notifications
         function showSuccess(message) {
             console.log('✅ ' + message);
-            alert('✅ ' + message);
+            // alert('✅ ' + message); // Disabled to prevent excessive popups
         }
 
         function showError(message) {
             console.error('❌ ' + message);
             alert('❌ ' + message);
         }
+
+        // --- STAFF MANAGEMENT FUNCTIONS ---
+        // NEW: Load Staff Data
+        async function loadStaffData() {
+            try {
+                console.log('🔄 Loading staff data from database...');
+                const res = await fetch('/api/staff');
+                
+                if (!res.ok) {
+                    throw new Error(`HTTP error! status: ${res.status}`);
+                }
+                
+                const data = await res.json();
+                
+                if (data.success) {
+                    appState.staff = data.staff || [];
+                    console.log('✅ Staff loaded from server:', appState.staff);
+                    updateStaffCount();
+                    if (!staffView.classList.contains('hidden')) {
+                        renderStaffView();
+                    }
+                } else {
+                    throw new Error(data.message || 'Failed to load staff');
+                }
+            } catch (error) {
+                console.error('❌ Failed to load staff data:', error);
+                staffListContainer.innerHTML = `<tr><td colspan="5" class="text-center text-red-500 py-6">❌ Failed to load staff data. Please check **'/api/staff'** endpoint.</td></tr>`;
+                updateStaffCount(0); // Set count to 0 on failure
+            }
+        }
+
+        // NEW: Update Staff Count on Dashboard Card
+        function updateStaffCount(count = appState.staff.length) {
+            statTotalStaff.textContent = count;
+        }
+
+        // NEW: Populate Staff Block Dropdown
+        function populateStaffBlockSelect() {
+            staffHostelBlockSelect.innerHTML = '<option value="" disabled selected>-- Select a Block --</option>';
+            appState.blocks.forEach(block => {
+                staffHostelBlockSelect.innerHTML += `<option value="${block.blockKey}">${block.blockName}</option>`;
+            });
+            staffHostelBlockSelect.innerHTML += '<option value="Other">Other (Manual Type)</option>';
+        }
+
+        // NEW: Render Staff List
+        function renderStaffView() {
+            const searchTerm = staffSearchInput.value.toLowerCase();
+            staffListContainer.innerHTML = '';
+
+            const filteredStaff = appState.staff.filter(member => {
+                const searchMatch = (member.name && member.name.toLowerCase().includes(searchTerm)) ||
+                                    (member.position && member.position.toLowerCase().includes(searchTerm)) ||
+                                    (member.hostelBlock && member.hostelBlock.toLowerCase().includes(searchTerm));
+                return searchMatch;
+            });
+            
+            if (filteredStaff.length === 0) {
+                staffListContainer.innerHTML = `<tr><td colspan="5" class="text-center text-gray-500 py-6">No staff members found.</td></tr>`;
+                return;
+            }
+
+            filteredStaff.forEach(member => {
+                const rowHTML = `
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 h-10 w-10">
+                                    <img class="h-10 w-10 rounded-full object-cover bg-purple-100" src="${member.imageUrl || 'https://via.placeholder.com/150/7c3aed/FFFFFF?text=Staff'}" alt="${member.name || 'Staff'}">
+                                </div>
+                                <div class="ml-4">
+                                    <div class="text-sm font-medium text-gray-900">${member.name || 'N/A'}</div>
+                                    <div class="text-sm text-gray-500">${member.username || 'N/A'}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                            <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-indigo-100 text-indigo-800">
+                                ${member.position || 'N/A'}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                            <strong>${member.hostelBlock || 'N/A'}</strong>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                            <p class="truncate">${member.contact || 'N/A'}</p>
+                            <p class="text-xs text-gray-500 truncate">${member.email || 'N/A'}</p>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium space-x-2">
+                            <button class="edit-staff-btn px-3 py-1 bg-yellow-500 text-white text-xs font-medium rounded-md shadow-sm hover:bg-yellow-600" data-staff-id="${member._id}">
+                                <span class="icon-space"> </span>Edit
+                            </button>
+                            <button class="remove-staff-btn px-3 py-1 bg-red-500 text-white text-xs font-medium rounded-md shadow-sm hover:bg-red-600" data-staff-id="${member._id}" data-staff-name="${member.name || 'Staff'}">
+                                <span class="icon-space"> </span>Delete
+                            </button>
+                        </td>
+                    </tr>
+                `;
+                staffListContainer.innerHTML += rowHTML;
+            });
+        }
+        // END STAFF MANAGEMENT FUNCTIONS
 
         // --- 4. RENDER FUNCTIONS ---
         async function loadHostelData() {
@@ -1302,7 +1465,7 @@
                 if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
                 const data = await res.json();
                 if (data.success) {
-                    appState.blocks = data.blocks; 
+                    appState.blocks = data.blocks || []; 
                     console.log('✅ Hostel Data reloaded from server:', appState.blocks);
                     if (!dashboardView.classList.contains('hidden')) {
                         renderDashboard();
@@ -1313,6 +1476,8 @@
                             renderDetailView(currentBlockKey);
                         }
                     }
+                    // Crucial: Update the staff dropdown after blocks load
+                    populateStaffBlockSelect(); 
                 } else {
                     throw new Error(data.message);
                 }
@@ -1329,7 +1494,7 @@
                 const data = await res.json();
                 if (data.success) {
                     console.log('✅ Club Activities reloaded from server:', data.activities);
-                    renderClubActivities(data.activities); 
+                    renderClubActivities(data.activities || []); 
                 } else {
                     throw new Error(data.message);
                 }
@@ -1345,7 +1510,7 @@
                 if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
                 const data = await res.json();
                 if (data.success) {
-                    appState.assets = data.assets; 
+                    appState.assets = data.assets || []; 
                     console.log('✅ Asset Data reloaded from server:', appState.assets);
                     renderAssets(appState.assets); 
                 } else {
@@ -1369,13 +1534,13 @@
 
             for (const block of appState.blocks) {
                 const theme = themes[block.blockTheme] || themes.blue;
-                const totalRooms = block.rooms ? block.rooms.length : 0;
+                const totalRooms = (block.rooms || []).length;
                 let currentStudents = 0;
                 let totalCapacity = 0;
                 
                 if (block.rooms) {
                     block.rooms.forEach(room => {
-                        const studentsInRoom = room.students ? room.students.length : 0;
+                        const studentsInRoom = (room.students || []).length;
                         currentStudents += studentsInRoom;
                         totalCapacity += (room.capacity || 0);
                         
@@ -1389,7 +1554,7 @@
                     });
                 }
                 
-                const occupiedRooms = block.rooms ? block.rooms.filter(room => room.students && room.students.length > 0).length : 0;
+                const occupiedRooms = (block.rooms || []).filter(room => (room.students || []).length > 0).length;
                 
                 grandTotalCapacity += totalCapacity;
                 grandTotalStudents += currentStudents;
@@ -1426,8 +1591,10 @@
             
             statFeesPending.textContent = `${totalPendingFees} Pending`;
             const today = new Date().toISOString().split('T')[0];
-            const visitorsToday = visitorLogData.filter(v => v.date === today).length;
+            const visitorsToday = visitorLogData.filter(v => v.date === today).length; 
             statVisitorsToday.textContent = `${visitorsToday} Today`;
+
+            updateStaffCount(); 
         }
 
         function renderDetailView(blockKey) {
@@ -1443,7 +1610,7 @@
             rooms.sort((a, b) => a.roomNumber.localeCompare(b.roomNumber, undefined, { numeric: true, sensitivity: 'base' }));
 
             rooms.forEach(room => {
-                const current = room.students ? room.students.length : 0;
+                const current = (room.students || []).length;
                 const max = room.capacity; hostelCapacity += max; hostelOccupancy += current;
                 const status = getStatus(current, max); const percent = max > 0 ? (current / max) * 100 : 0;
                 const studentNames = (room.students && room.students.length > 0) ? room.students.map(s => s.name).join(', ') : 'None';
@@ -1456,7 +1623,7 @@
                                 <h3 class="text-xl font-bold text-gray-800">${room.roomNumber}</h3>
                                 <span class="text-xs font-bold px-3 py-1 rounded-full ${status.classes}">${status.text}</span>
                             </div>
-                            <p class="text-sm text-gray-500 mb-4">${room.floor}</p>
+                            <p class="text-sm text-gray-500 mb-4">${room.floor || 'N/A'}</p>
                             <div class="progress-bar mb-2">
                                 <div class="progress-bar-inner ${status.progress}" style="width: ${percent}%;"></div>
                             </div>
@@ -1478,40 +1645,45 @@
             currentRoomData = room; 
             modalRoomTitle.textContent = `Room Details: ${room.roomNumber}`;
             modalRoomCapacity.textContent = room.capacity;
-            const occupancy = room.students ? room.students.length : 0;
+            const occupancy = (room.students || []).length;
             const available = room.capacity - occupancy;
             modalRoomOccupancy.textContent = occupancy; modalRoomAvailable.textContent = available;
             modalOccupantTitle.textContent = `Current Occupants (${occupancy})`;
             modalOccupantContainer.innerHTML = '';
+            
             if (occupancy === 0) {
                 modalOccupantContainer.innerHTML = '<p class="text-gray-500 md:col-span-2">This room is empty.</p>';
             } else {
-                room.students.forEach(student => {
+                (room.students || []).forEach(student => {
                     const feeStatus = student.feeStatus || 'Pending';
                     const statusColor = feeStatus.toLowerCase() === 'paid' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700';
                     let yearColor = 'bg-gray-100 text-gray-700'; 
+                    // Simplified year check
                     if (student.year && student.year.toLowerCase().includes('3')) yearColor = 'bg-pink-100 text-pink-700';
                     if (student.year && student.year.toLowerCase().includes('2')) yearColor = 'bg-yellow-100 text-yellow-700';
                     if (student.year && student.year.toLowerCase().includes('1')) yearColor = 'bg-blue-100 text-blue-700'; 
                     
-                    const studentHTML = `<div class="bg-white border rounded-lg p-4 shadow-sm relative"><button class="remove-student-btn absolute top-2 right-2 p-1 text-red-500 hover:bg-red-100 rounded-full transition-colors duration-200 z-10" data-student-id="${student._id}" title="Remove Student"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></button><span class="absolute top-3 left-3 text-xs font-semibold px-2 py-0.5 ${yearColor} rounded">${student.year || 'N/A'}</span><div class="flex items-center gap-4 mt-8"><img src="${student.profileImageUrl || './default-avatar.png'}" alt="${student.name}" class="flex-shrink-0 h-12 w-12 rounded-full bg-indigo-100 object-cover"><div class="overflow-hidden"><h4 class="font-bold text-gray-800 truncate">${student.name}</h4><p class="text-sm text-blue-600 truncate">${student.rollNumber || ''}</p></div></div><div class="mt-4 space-y-2 text-sm text-gray-600"><p class="truncate"><strong>Email:</strong> ${student.email || 'N/A'}</p><p><strong>Phone:</strong> ${student.phone || 'N/A'}</p><p><strong>Joined:</strong> ${student.joiningDate ? new Date(student.joiningDate).toLocaleDateString() : 'N/A'}</p></div><div class="flex justify-between items-center mt-4 pt-3 border-t"><div><span class="text-xs font-medium">Fee Status:</span><span class="text-sm font-bold px-3 py-1 rounded ${statusColor}">${feeStatus === 'Pending' ? 'Pending' : feeStatus}</span></div><a href="/student-profile.html?id=${student._id}" target="_blank" class="view-student-details text-sm font-medium text-blue-600 hover:underline" data-student-id="${student._id}">View Full Details</a></div></div>`;
+                    const studentHTML = `<div class="bg-white border rounded-lg p-4 shadow-sm relative"><button class="remove-student-btn absolute top-2 right-2 p-1 text-red-500 hover:bg-red-100 rounded-full transition-colors duration-200 z-10" data-student-id="${student._id}" title="Remove Student"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></button><span class="absolute top-3 left-3 text-xs font-semibold px-2 py-0.5 ${yearColor} rounded">${student.year || 'N/A'}</span><div class="flex items-center gap-4 mt-8"><img src="${student.profileImageUrl || './default-avatar.png'}" alt="${student.name}" class="flex-shrink-0 h-12 w-12 rounded-full bg-indigo-100 object-cover"><div class="overflow-hidden"><h4 class="font-bold text-gray-800 truncate">${student.name || 'N/A'}</h4><p class="text-sm text-blue-600 truncate">${student.rollNumber || ''}</p></div></div><div class="mt-4 space-y-2 text-sm text-gray-600"><p class="truncate"><strong>Email:</strong> ${student.email || 'N/A'}</p><p><strong>Phone:</strong> ${student.phone || 'N/A'}</p><p><strong>Joined:</strong> ${student.joiningDate ? new Date(student.joiningDate).toLocaleDateString() : 'N/A'}</p></div><div class="flex justify-between items-center mt-4 pt-3 border-t"><div><span class="text-xs font-medium">Fee Status:</span><span class="text-sm font-bold px-3 py-1 rounded ${statusColor}">${feeStatus === 'Pending' ? 'Pending' : feeStatus}</span></div><a href="/student-profile.html?id=${student._id}" target="_blank" class="view-student-details text-sm font-medium text-blue-600 hover:underline" data-student-id="${student._id}">View Full Details</a></div></div>`;
                     
                     modalOccupantContainer.innerHTML += studentHTML;
                 });
             }
             modalIssuesContainer.innerHTML = '';
-            const complaints = room.complaints || []; 
-            if (complaints.length === 0 && room.roomNumber === 'A-101') { complaints.push({ title: 'Broken AC/Leakage', status: 'Critical', _id: 'fake123' }); }
-            if (complaints.length === 0) {
+            // Ideally, fetch complaints related to this room from the server
+            const complaints = appState.complaints.filter(c => c.roomNumber === room.roomNumber && c.status !== 'Resolved');
+            const openIssues = (room.complaints || []).length > 0 ? room.complaints : complaints; 
+            
+            if (openIssues.length === 0) {
                 modalIssuesContainer.innerHTML = '<p class="text-gray-500">No open issues reported for this room.</p>';
                 modalRoomComplaintsBadge.classList.add('hidden');
             } else {
-                complaints.forEach(complaint => {
-                    const statusColor = complaint.status.toLowerCase() === 'critical' ? 'bg-red-500 text-white' : 'bg-yellow-500 text-white';
-                    const issueHTML = `<div class="flex justify-between items-center bg-white p-3 rounded-lg shadow-sm border"><p class="font-medium text-gray-700">${complaint.title}</p><span class="text-xs font-bold px-3 py-1 rounded-full ${statusColor}">${complaint.status}</span></div>`;
+                openIssues.forEach(complaint => {
+                    // Use actual complaint data structure
+                    const statusColor = (complaint.status || 'Pending') === 'Pending' ? 'bg-yellow-500 text-white' : 'bg-red-500 text-white';
+                    const issueHTML = `<div class="flex justify-between items-center bg-white p-3 rounded-lg shadow-sm border"><p class="font-medium text-gray-700">${complaint.description || complaint.title}</p><span class="text-xs font-bold px-3 py-1 rounded-full ${statusColor}">${complaint.status || 'Issue'}</span></div>`;
                     modalIssuesContainer.innerHTML += issueHTML;
                 });
-                modalRoomComplaintsCount.textContent = complaints.length;
+                modalRoomComplaintsCount.textContent = openIssues.length;
                 modalRoomComplaintsBadge.classList.remove('hidden');
             }
         } 
@@ -1614,7 +1786,7 @@
             const filteredStudents = allStudents.filter(student => {
                 const statusMatch = (statusFilter === 'All') || (student.feeStatus === statusFilter);
                 const searchMatch = (student.name.toLowerCase().includes(searchTerm)) || 
-                                         (student.rollNumber.toLowerCase().includes(searchTerm));
+                                        (student.rollNumber.toLowerCase().includes(searchTerm));
                 return statusMatch && searchMatch;
             });
 
@@ -1674,7 +1846,7 @@
             
             const filteredLogs = visitorLogData.filter(log => {
                 const searchMatch = (log.visitorName.toLowerCase().includes(searchTerm)) ||
-                                         (log.studentName.toLowerCase().includes(searchTerm));
+                                        (log.studentName.toLowerCase().includes(searchTerm));
                 const dateMatch = (!dateFilter) || (log.date === dateFilter);
                 return searchMatch && dateMatch;
             });
@@ -1726,6 +1898,7 @@
             feesView.classList.add('hidden');
             visitorsView.classList.add('hidden');
             complaintsView.classList.add('hidden');
+            staffView.classList.add('hidden'); 
         }
 
         document.addEventListener('click', (e) => {
@@ -1740,6 +1913,7 @@
             detailView.dataset.currentHostelKey = '';
             currentRoomData = null;
             loadHostelData();
+            loadStaffData();
         });
 
         hostelBlockContainer.addEventListener('click', (e) => {
@@ -2064,6 +2238,68 @@
             }
         });
 
+        // NEW STAFF FORM HANDLER
+        addStaffForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(addStaffForm);
+            
+            const selectedBlockKey = staffHostelBlockSelect.value;
+            let blockAssignment;
+
+            if (selectedBlockKey === 'Other') {
+                blockAssignment = staffBlockManualInput.value.trim();
+                if (!blockAssignment) {
+                    alert('Please enter a manual location name or select a block.');
+                    return;
+                }
+            } else if (selectedBlockKey && selectedBlockKey !== '') {
+                const selectedOption = staffHostelBlockSelect.options[staffHostelBlockSelect.selectedIndex];
+                blockAssignment = selectedOption.textContent.replace(/\s*\(.*\)\s*/, '').trim(); 
+            } else {
+                alert('Please select a block/location.');
+                return;
+            }
+
+            formData.delete('hostelBlock');
+            formData.delete('blockManual'); 
+            formData.append('hostelBlock', blockAssignment);
+
+            const submitBtn = addStaffForm.querySelector('button[type="submit"]');
+
+            try {
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Uploading...';
+
+                // API CALL: This endpoint must handle multipart form data (including the image upload).
+                const res = await fetch('/api/staff', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Save Staff';
+                
+                const data = await res.json();
+
+                if (data.success) {
+                    await loadStaffData(); // Reload the staff list
+                    hideModal('add-staff-modal');
+                    addStaffForm.reset();
+                    staffBlockManualInput.classList.add('hidden'); 
+                    showSuccess(`Staff member ${formData.get('name')} added successfully.`);
+                } else {
+                    throw new Error(data.message);
+                }
+
+            } catch (error) {
+                alert(`Error adding staff: ${error.message}`);
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Save Staff';
+            }
+        });
+        // END NEW STAFF FORM HANDLER
+
         // --- 8. DETAIL VIEW & MODAL LISTENERS ---
         function filterAndSearchRooms() {
             const searchTerm = roomSearchInput.value.toLowerCase();
@@ -2215,7 +2451,33 @@
             }
         });
 
-        // --- 10. "SHOW MODAL" BUTTON LISTENERS ---
+        // STAFF DELETE HANDLER
+        staffListContainer.addEventListener('click', async (e) => {
+            const button = e.target.closest('.remove-staff-btn');
+            if (button) {
+                e.preventDefault(); e.stopPropagation();
+                const staffId = button.dataset.staffId;
+                const staffName = button.dataset.staffName;
+                if (confirm(`Are you sure you want to delete the staff member "${staffName}"?`)) {
+                    try {
+                        const res = await fetch(`/api/staff/${staffId}`, { method: 'DELETE' });
+                        const data = await res.json();
+
+                        if (data.success) {
+                            await loadStaffData();
+                            showSuccess(`${staffName} has been removed.`);
+                        } else {
+                            throw new Error(data.message);
+                        }
+                    } catch (error) {
+                        alert(`Error deleting staff member: ${error.message}`);
+                    }
+                }
+            }
+        });
+        // END STAFF DELETE HANDLER
+
+        // --- 10. "SHOW MODAL" BUTTON LISTENERS & View Nav ---
         showAddBlockModalBtn.addEventListener('click', () => showModal('add-block-modal'));
         
         showAddRoomModalBtn.addEventListener('click', () => {
@@ -2233,6 +2495,44 @@
         showAddEventModalBtn.addEventListener('click', () => showModal('add-event-modal'));
         showAddClubActivityModalBtn.addEventListener('click', () => showModal('add-club-activity-modal'));
         showAddAssetModalBtn.addEventListener('click', () => showModal('add-asset-modal')); 
+
+        // NEW STAFF VIEW LISTENERS
+        showStaffViewBtn.addEventListener('click', () => {
+            hideAllViews();
+            staffView.classList.remove('hidden');
+            loadStaffData(); // Fetch latest data when viewing
+        });
+
+        showStaffViewCardBtn.addEventListener('click', () => {
+            hideAllViews();
+            staffView.classList.remove('hidden');
+            loadStaffData(); // Fetch latest data when viewing
+        });
+
+        backToDashboardFromStaffBtn.addEventListener('click', () => {
+            hideAllViews();
+            dashboardView.classList.remove('hidden');
+            renderDashboard();
+        });
+
+        showAddStaffModalBtn.addEventListener('click', () => {
+            populateStaffBlockSelect();
+            staffBlockManualInput.classList.add('hidden'); 
+            staffBlockManualInput.value = '';
+            showModal('add-staff-modal');
+        });
+
+        staffHostelBlockSelect.addEventListener('change', () => {
+            if (staffHostelBlockSelect.value === 'Other') {
+                staffBlockManualInput.classList.remove('hidden');
+            } else {
+                staffBlockManualInput.classList.add('hidden');
+                staffBlockManualInput.value = '';
+            }
+        });
+        
+        staffSearchInput.addEventListener('input', renderStaffView);
+        // END NEW STAFF VIEW LISTENERS
 
         // View navigation listeners
         showFeesViewBtn.addEventListener('click', () => {
@@ -2344,9 +2644,15 @@
             if (button) {
                 const studentId = button.dataset.studentId;
                 const student = findStudentById(studentId);
-                if (student) {
-                    student.feeStatus = (student.feeStatus === 'Paid') ? 'Pending' : 'Paid';
-                    console.log(`Updated student ${student.name} fee status to ${student.feeStatus}`);
+                
+                if (student && confirm(`Are you sure you want to toggle the fee status for ${student.name}?`)) {
+                    const newStatus = (student.feeStatus === 'Paid') ? 'Pending' : 'Paid';
+                    
+                    // Note: In a real application, this should call a PATCH API endpoint to update the student's fee status in the database.
+                    console.log(`Simulating update for student ${student.name} fee status to ${newStatus}`);
+                    
+                    // Simulating client-side update
+                    student.feeStatus = newStatus;
                     renderFeesView();
                 }
             }
@@ -2355,11 +2661,13 @@
         // --- 12. INITIALIZE APP ---
         function initApp() {
             console.log('🚀 Initializing Admin Dashboard...');
+            // Load essential data on startup
             loadHostelData();
             loadClubActivities();
             loadAssetData();
             loadComplaintsData();
-            renderEvents();
+            loadStaffData(); 
+            renderEvents(); // Uses local mock data
         }
         initApp();
     });
