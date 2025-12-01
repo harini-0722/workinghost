@@ -295,6 +295,7 @@
                     initPlaceField();
                     loadStaffRoster();
                 } else {
+                    // Check for the specific "Missing required fields" message here
                     throw new Error(data.message || 'Server failed to add staff.');
                 }
             } catch (error) {
@@ -519,48 +520,46 @@
         }
 
 
-        // --- FORM SUBMISSION LOGIC (The main fix) ---
+        // --- FORM SUBMISSION LOGIC (Fix applied here) ---
         addStaffForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            // Collect form data using the constructor
             const data = new FormData(addStaffForm); 
             
             // --- Determine Role and Place values based on which field is visible ---
             let assignedRole;
             if (staffRoleWrapper.querySelector('#staff-role-manual')) {
-                // If manual input is visible, use its value (name="role")
                 assignedRole = data.get('role');
             } else {
-                // Otherwise, use the dropdown value (name="role_dropdown_value")
                 assignedRole = data.get('role_dropdown_value');
             }
             
             let assignedPlace;
             if (staffPlaceWrapper.querySelector('#staff-place-manual')) {
-                // If manual input is visible, use its value (name="place")
                 assignedPlace = data.get('place');
             } else {
-                // Otherwise, use the dropdown value (name="place_dropdown_value")
                 assignedPlace = data.get('place_dropdown_value');
             }
             
-            if (!assignedRole || assignedRole === 'Other' || !assignedPlace || assignedPlace === 'Other') {
-                showError('Error: Please specify a valid Position/Role and Duty Area/Place.');
+            // ✅ Explicit Client-side validation check
+            if (!data.get('name') || !data.get('username') || !data.get('password') || !assignedRole || !assignedPlace) {
+                showError('Error: Name, Username, Password, Position/Role, and Duty Area are all required.');
                 return;
             }
-            
+
             // 1. Create a NEW FormData object for the server
             const formDataToSubmit = new FormData();
 
-            // 2. Append the required data fields with their resolved values
+            // 2. Append all fields, ensuring mandatory ones are included
             formDataToSubmit.append('name', data.get('name'));
             formDataToSubmit.append('username', data.get('username'));
             formDataToSubmit.append('password', data.get('password'));
-            formDataToSubmit.append('phone', data.get('phone'));
-            formDataToSubmit.append('email', data.get('email'));
+            formDataToSubmit.append('phone', data.get('phone') || ''); 
+            formDataToSubmit.append('email', data.get('email') || '');
             formDataToSubmit.append('role', assignedRole); 
             formDataToSubmit.append('place', assignedPlace); 
+            formDataToSubmit.append('notes', ''); 
+            formDataToSubmit.append('status', 'Active'); 
             
             // 3. Append the file. Multer uses the fieldname 'profileImage'.
             const imageFile = staffImageInput.files[0];

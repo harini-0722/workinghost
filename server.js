@@ -1,13 +1,13 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const fsp = require('fs').promises; // Promise-based file operations
-const fs = require('fs');           // Standard/Synchronous file operations (for existsSync)
+const fsp = require('fs').promises; 
+const fs = require('fs');           
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const open = require("open");
 const cron = require('node-cron');
 const multer = require('multer');
-const path = require('path'); // DECLARED ONCE at the top
+const path = require('path'); 
 
 
 // --- IMPORT ROUTES ---
@@ -22,7 +22,7 @@ const Student = require('./models/Student');
 const ClubActivity = require('./models/ClubActivity');
 const Attendance = require('./models/Attendance');
 const Asset = require('./models/Asset');
-const User = require('./models/user'); // Assuming your User model is in 'models/user.js'
+const User = require('./models/user'); 
 const Complaint = require('./models/Complaint');
 const Staff = require('./models/Staff');
 const app = express();
