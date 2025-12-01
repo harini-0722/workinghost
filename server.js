@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const fs = require('fs').promises;
+const fsp = require('fs').promises; // ✅ Use fsp for PROMISE-BASED file operations (like async read/write)
+const fs = require('fs');           // ✅ Use fs for STANDARD/SYNCHRONOUS file operations (like existsSync)
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const open = require("open");
@@ -49,8 +50,8 @@ app.use('/api/staff', staffRoutes);
 
 // --- Multer Configuration ---
 const uploadDir = 'public/uploads';
-if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir, { recursive: true });
+if (!fs.existsSync(uploadDir)) { // ✅ FIXED: Using fs (synchronous)
+    fs.mkdirSync(uploadDir, { recursive: true }); // ✅ FIXED: Using fs (synchronous)
 }
 
 const storage = multer.diskStorage({
@@ -192,22 +193,22 @@ async function returnAssetsToStock(assetsArray) {
 // ------------------------------------------
 // This is your NEW route for server.js
 app.get("/api/blocks", async (req, res) => {
-    try {
-        const blocks = await Block.find({})
-            .populate({
-                path: 'rooms',
-                // We now populate an array:
-                populate: [
-                    { path: 'students' }, // 1. Populate students
-                    { path: 'complaints' } // 2. Populate complaints
-                ]
-            })
-            .sort({ createdAt: 'desc' });
-        res.json({ success: true, blocks });
-    } catch (error) {
-        console.error("❌ Error fetching blocks:", error);
-        res.status(500).json({ success: false, message: "Server error" });
-    }
+    try {
+        const blocks = await Block.find({})
+            .populate({
+                path: 'rooms',
+                // We now populate an array:
+                populate: [
+                    { path: 'students' }, // 1. Populate students
+                    { path: 'complaints' } // 2. Populate complaints
+                ]
+            })
+            .sort({ createdAt: 'desc' });
+        res.json({ success: true, blocks });
+    } catch (error) {
+        console.error("❌ Error fetching blocks:", error);
+        res.status(500).json({ success: false, message: "Server error" });
+    }
 });
 app.post("/api/blocks", async (req, res) => {
     try {
@@ -401,7 +402,7 @@ app.post('/api/students', upload.single('profileImage'), async (req, res) => {
 app.get('/api/student/:id', async (req, res) => {
     try {
         const studentId = req.params.id;
-       const student = await Student.findById(studentId);
+        const student = await Student.findById(studentId);
             
         if (!student) {
             return res.status(404).json({ success: false, message: 'Student not found.' });
@@ -428,13 +429,11 @@ app.get('/api/student/:id', async (req, res) => {
             .sort({ date: -1 })
             .limit(30);
 
-        // --- THIS IS THE FIX ---
         // Fetch REAL complaints from the database for this student
         const realComplaints = await Complaint.find({ student: studentId })
             .sort({ submissionDate: -1 }) // Show newest first
             .limit(20);
-        // --- END OF FIX ---
-
+        
         res.json({
             success: true,
             student: student,
@@ -442,7 +441,7 @@ app.get('/api/student/:id', async (req, res) => {
             blockName: block.blockName,
             roommates: roommates,
             attendance: realAttendance,
-            complaints: realComplaints,  // <-- Send the real data
+            complaints: realComplaints,  // <-- Send the real data
             roomNumber: room.roomNumber // Keep this for convenience
         });
 
