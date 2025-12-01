@@ -4,175 +4,229 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Staff Management - Hostel Admin</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script type="module" src="https://unpkg.com/heroicons@2.1.1/dist/solid/index.js"></script>
     <script type="module" src="https://unpkg.com/heroicons@2.1.1/dist/outline/index.js"></script>
     <style>
         body {
-            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+            background-color: #f3f4f6;
             color: #1f2937;
         }
-        /* Visual adjustments */
-        .form-label { font-size: 0.75rem; font-weight: 600; color: #4b5563; }
-        .form-input { border-radius: 0.5rem; border-color: #d1d5db; font-size: 0.875rem; }
         
-        /* Modal Styles */
-        .modal-backdrop { background-color: rgba(0, 0, 0, 0.5); opacity: 0; transition: opacity 0.3s ease-in-out; }
-        .modal-content { transition: all 0.3s ease-in-out; transform: translateY(-20px); opacity: 0; }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #c7c7c7; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #a0aec0; }
+
+        /* Form Input Styling */
+        .input-group { position: relative; }
+        .input-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #9ca3af; pointer-events: none; width: 18px; height: 18px; }
+        .form-input { 
+            padding-left: 40px; 
+            border: 1px solid #e5e7eb; 
+            border-radius: 0.75rem; 
+            font-size: 0.875rem; 
+            transition: all 0.2s;
+        }
+        .form-input:focus { border-color: #6366f1; ring: 2px solid #e0e7ff; outline: none; box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1); }
+        .form-label { font-size: 0.75rem; font-weight: 700; color: #374151; margin-bottom: 4px; display: block; text-transform: uppercase; letter-spacing: 0.025em; }
+
+        /* Card Hover Effect */
+        .staff-card { transition: all 0.3s ease; }
+        .staff-card:hover { transform: translateY(-5px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); }
+
+        /* Modal Transitions */
+        .modal-backdrop { background-color: rgba(17, 24, 39, 0.6); backdrop-filter: blur(4px); opacity: 0; transition: opacity 0.3s ease; }
+        .modal-content { transform: scale(0.95); opacity: 0; transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
         .modal.active .modal-backdrop { opacity: 1; }
-        .modal.active .modal-content { transform: translateY(0); opacity: 1; }
+        .modal.active .modal-content { transform: scale(1); opacity: 1; }
     </style>
 </head>
-<body class="bg-gray-50 min-h-screen flex flex-col">
+<body class="min-h-screen flex flex-col">
 
-    <nav class="bg-white shadow-sm sticky top-0 z-20 border-b border-gray-200">
-        <div class="w-full mx-auto px-4 sm:px-6 lg:px-8">
+    <nav class="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-30 border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16 items-center">
-                <div class="flex-shrink-0 flex items-center">
-                    <a href="index.html" target="_top" class="flex items-center text-gray-500 hover:text-indigo-600 transition-colors duration-200 font-medium text-sm">
-                        <hero-icon-solid name="arrow-left" class="h-4 w-4 mr-2"></hero-icon-solid>
-                        Dashboard
+                <div class="flex items-center gap-3">
+                    <a href="index.html" class="flex items-center text-gray-500 hover:text-indigo-600 transition-colors">
+                        <div class="p-2 bg-gray-100 rounded-lg hover:bg-indigo-50 transition-colors">
+                            <hero-icon-solid name="arrow-left" class="h-5 w-5"></hero-icon-solid>
+                        </div>
                     </a>
-                </div>
-                <h1 class="text-xl font-bold text-gray-800 hidden sm:block">Staff Management</h1>
-                <div class="flex items-center">
-                    <span class="text-xs font-semibold text-gray-500 mr-3 uppercase tracking-wider">Admin</span>
-                    <div class="flex-shrink-0">
-                        <span class="inline-flex items-center justify-center h-8 w-8 rounded-full bg-indigo-600 shadow-md">
-                            <span class="font-bold text-white text-sm">A</span>
-                        </span>
+                    <div>
+                        <h1 class="text-lg font-bold text-gray-900 leading-none">Staff Management</h1>
+                        <p class="text-xs text-gray-500 mt-0.5">Hostel Admin Portal</p>
                     </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="hidden sm:flex flex-col items-end mr-2">
+                        <span class="text-sm font-semibold text-gray-800">Administrator</span>
+                        <span class="text-xs text-green-600 font-medium">● Online</span>
+                    </div>
+                    <div class="h-10 w-10 rounded-full bg-gradient-to-tr from-indigo-600 to-purple-600 flex items-center justify-center text-white font-bold shadow-lg ring-2 ring-white">A</div>
                 </div>
             </div>
         </div>
     </nav>
 
-    <main class="mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-grow max-w-7xl">
-        
-        <div class="flex flex-col lg:flex-row gap-8">
+    <main class="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
+        <div class="flex flex-col lg:flex-row gap-8 items-start">
             
-            <div class="lg:w-1/3 w-full sticky top-24 h-fit">
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-                    <h3 class="text-lg font-bold mb-4 text-gray-800 flex items-center border-b pb-3">
-                        <hero-icon-solid name="user-plus" class="h-5 w-5 text-indigo-600 mr-2"></hero-icon-solid>
-                        Add New Staff
-                    </h3>
+            <div class="lg:w-1/3 w-full sticky top-24 z-10">
+                <div class="bg-white rounded-2xl shadow-xl shadow-indigo-100/50 border border-gray-100 overflow-hidden">
+                    <div class="bg-indigo-600 px-6 py-4">
+                        <h3 class="text-white font-bold text-lg flex items-center gap-2">
+                            <hero-icon-solid name="user-plus" class="h-5 w-5 text-indigo-200"></hero-icon-solid>
+                            Register New Staff
+                        </h3>
+                        <p class="text-indigo-100 text-xs mt-1">Fill in the details to create an account.</p>
+                    </div>
                     
-                    <form id="add-staff-form" class="space-y-4">
-                        <div class="space-y-3">
-                            <div>
-                                <label for="staff-name" class="form-label">Full Name</label>
-                                <input type="text" id="staff-name" name="name" class="mt-1 block w-full form-input shadow-sm focus:ring-indigo-500 focus:border-indigo-500" required placeholder="e.g. John Doe">
+                    <form id="add-staff-form" class="p-6 space-y-5">
+                        <div class="flex justify-center">
+                            <div class="relative group">
+                                <label for="staff-profile-image" class="cursor-pointer block">
+                                    <div class="w-24 h-24 rounded-full bg-gray-50 border-2 border-dashed border-indigo-300 flex flex-col items-center justify-center text-gray-400 hover:bg-indigo-50 hover:border-indigo-500 transition-all overflow-hidden" id="image-preview-wrapper">
+                                        <hero-icon-outline name="camera" class="h-8 w-8 mb-1"></hero-icon-outline>
+                                        <span class="text-[10px] font-medium">Upload Photo</span>
+                                        <img id="image-preview" class="absolute inset-0 w-full h-full object-cover hidden">
+                                    </div>
+                                </label>
+                                <input type="file" id="staff-profile-image" name="profileImage" class="hidden" accept="image/*">
                             </div>
-                            <div class="grid grid-cols-2 gap-3">
-                                <div>
-                                    <label for="staff-username" class="form-label">Username</label>
-                                    <input type="text" id="staff-username" name="username" class="mt-1 block w-full form-input shadow-sm" required>
+                        </div>
+
+                        <div>
+                            <label class="form-label">Full Name</label>
+                            <div class="input-group">
+                                <hero-icon-outline name="user" class="input-icon"></hero-icon-outline>
+                                <input type="text" name="name" class="form-input w-full" placeholder="e.g. Robert Fox" required>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="form-label">Username</label>
+                                <div class="input-group">
+                                    <hero-icon-outline name="at-symbol" class="input-icon"></hero-icon-outline>
+                                    <input type="text" name="username" class="form-input w-full" placeholder="robert.f" required>
                                 </div>
-                                <div>
-                                    <label for="staff-password" class="form-label">Password</label>
-                                    <input type="password" id="staff-password" name="password" class="mt-1 block w-full form-input shadow-sm" required>
+                            </div>
+                            <div>
+                                <label class="form-label">Password</label>
+                                <div class="input-group">
+                                    <hero-icon-outline name="lock-closed" class="input-icon"></hero-icon-outline>
+                                    <input type="password" name="password" class="form-input w-full" placeholder="••••••" required>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="space-y-3 pt-2 border-t border-dashed">
+                        <div class="p-4 bg-gray-50 rounded-xl space-y-4 border border-gray-100">
                             <div id="staff-role-wrapper">
-                                <label for="staff-role-select" class="form-label">Role</label>
-                                <select id="staff-role-select" class="mt-1 block w-full form-input bg-gray-50" required>
-                                    <option value="" disabled selected>-- Select Role --</option>
-                                    <option value="Warden">Warden</option>
-                                    <option value="Security">Security</option>
-                                    <option value="Cleaning Staff">Cleaning Staff</option>
-                                    <option value="Maintenance Staff">Maintenance Staff</option>
-                                    <option value="Office Staff">Office Staff</option>
-                                    <option value="Other">Other (Manual Entry)</option>
-                                </select>
+                                <label class="form-label">Role</label>
+                                <div class="input-group">
+                                    <hero-icon-outline name="briefcase" class="input-icon"></hero-icon-outline>
+                                    <select id="staff-role-select" class="form-input w-full bg-white" required>
+                                        <option value="" disabled selected>Select Role</option>
+                                        <option value="Warden">Warden</option>
+                                        <option value="Security">Security</option>
+                                        <option value="Cleaning Staff">Cleaning Staff</option>
+                                        <option value="Maintenance Staff">Maintenance Staff</option>
+                                        <option value="Office Staff">Office Staff</option>
+                                        <option value="Other">Other (Manual)</option>
+                                    </select>
+                                </div>
                             </div>
 
                             <div id="staff-place-wrapper">
-                                <label for="staff-place-select" class="form-label">Assigned Area</label>
-                                <select id="staff-place-select" class="mt-1 block w-full form-input bg-gray-50" required>
-                                    <option value="" disabled selected>-- Loading Blocks --</option>
-                                </select>
+                                <label class="form-label">Assigned Area</label>
+                                <div class="input-group">
+                                    <hero-icon-outline name="location-marker" class="input-icon"></hero-icon-outline>
+                                    <select id="staff-place-select" class="form-input w-full bg-white" required>
+                                        <option value="" disabled selected>Loading Blocks...</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="space-y-3 pt-2 border-t border-dashed">
-                            <div class="grid grid-cols-2 gap-3">
-                                <div>
-                                    <label for="staff-phone" class="form-label">Phone</label>
-                                    <input type="tel" id="staff-phone" name="phone" class="mt-1 block w-full form-input shadow-sm" placeholder="+91...">
-                                </div>
-                                <div>
-                                    <label for="staff-email" class="form-label">Email</label>
-                                    <input type="email" id="staff-email" name="email" class="mt-1 block w-full form-input shadow-sm" placeholder="@hostel.edu">
+                        <div class="grid grid-cols-1 gap-4">
+                            <div>
+                                <label class="form-label">Phone Number</label>
+                                <div class="input-group">
+                                    <hero-icon-outline name="phone" class="input-icon"></hero-icon-outline>
+                                    <input type="tel" name="phone" class="form-input w-full" placeholder="+91 98765 43210">
                                 </div>
                             </div>
                             <div>
-                                <label for="staff-profile-image" class="form-label">Photo</label>
-                                <input type="file" id="staff-profile-image" name="profileImage" class="mt-1 block w-full text-xs text-gray-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100" accept="image/*">
+                                <label class="form-label">Email Address</label>
+                                <div class="input-group">
+                                    <hero-icon-outline name="mail" class="input-icon"></hero-icon-outline>
+                                    <input type="email" name="email" class="form-input w-full" placeholder="staff@hostel.com">
+                                </div>
                             </div>
                         </div>
-                        
-                        <div class="pt-4">
-                            <button type="submit" id="add-staff-submit-btn" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
-                                Create Staff Account
-                            </button>
-                        </div>
+
+                        <button type="submit" id="add-staff-submit-btn" class="w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg shadow-indigo-200 transition-all transform hover:-translate-y-0.5 active:translate-y-0 flex justify-center items-center gap-2">
+                            <span>Create Account</span>
+                            <hero-icon-solid name="check" class="h-5 w-5"></hero-icon-solid>
+                        </button>
                     </form>
                 </div>
             </div>
 
             <div class="lg:w-2/3 w-full">
-                <div class="flex justify-between items-center mb-5">
-                    <h3 class="text-xl font-bold text-gray-800">Staff Directory</h3>
-                    <span class="text-xs text-gray-500 bg-gray-200 px-2 py-1 rounded-md" id="staff-count-badge">Loading...</span>
+                <div class="flex flex-wrap justify-between items-center mb-6 gap-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-900">Staff Directory</h2>
+                        <p class="text-gray-500 text-sm">Manage all hostel employees from here.</p>
+                    </div>
+                    <div class="bg-white px-4 py-2 rounded-lg shadow-sm border border-gray-200 flex items-center gap-2">
+                        <span class="h-2 w-2 bg-green-500 rounded-full animate-pulse"></span>
+                        <span class="text-sm font-bold text-gray-700" id="staff-count-badge">Loading...</span>
+                    </div>
                 </div>
 
-                <div id="staff-roster-container" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-                    <div class="col-span-full text-center text-gray-500 py-12 bg-white rounded-xl border border-dashed border-gray-300" id="loading-message">
-                        <div class="animate-spin inline-block w-6 h-6 border-[3px] border-current border-t-transparent text-indigo-600 rounded-full" role="status" aria-label="loading"></div>
-                        <p class="mt-2 text-sm">Loading staff data...</p>
+                <div id="staff-roster-container" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-6">
+                    <div class="col-span-full flex flex-col items-center justify-center py-20 bg-white rounded-2xl border border-dashed border-gray-300" id="loading-message">
+                        <div class="h-10 w-10 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin mb-4"></div>
+                        <p class="text-gray-500 font-medium">Fetching staff details...</p>
                     </div>
                 </div>
                 
-                <div id="no-staff-message" class="hidden flex flex-col items-center justify-center py-12 bg-white rounded-xl border border-dashed border-gray-300 text-center">
-                    <hero-icon-outline name="users" class="h-10 w-10 text-gray-300 mb-2"></hero-icon-outline>
-                    <p class="text-gray-500 font-medium">No staff members found.</p>
-                    <p class="text-xs text-gray-400">Use the form on the left to add someone.</p>
+                <div id="no-staff-message" class="hidden flex flex-col items-center justify-center py-20 bg-white rounded-2xl border border-dashed border-gray-300 text-center">
+                    <div class="bg-gray-50 p-4 rounded-full mb-4">
+                        <hero-icon-outline name="users" class="h-12 w-12 text-gray-400"></hero-icon-outline>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900">No Staff Found</h3>
+                    <p class="text-gray-500 text-sm mt-1 max-w-xs mx-auto">It looks like the roster is empty. Use the form on the left to add your first staff member.</p>
                 </div>
             </div>
         </div>
     </main>
 
-    <footer class="mt-auto py-6 border-t border-gray-200 bg-white">
+    <footer class="mt-auto py-8 border-t border-gray-200 bg-white">
         <div class="text-center">
-            <p class="text-xs text-gray-400 font-medium">&copy; 2025 Hostel Admin System</p>
+            <p class="text-sm text-gray-400 font-medium">&copy; 2025 Hostel Admin System. All rights reserved.</p>
         </div>
     </footer>
 
-    <div id="staff-details-modal" class="modal hidden fixed inset-0 z-30 flex items-center justify-center p-4">
+    <div id="staff-details-modal" class="modal hidden fixed inset-0 z-50 flex items-center justify-center p-4">
         <div class="modal-backdrop fixed inset-0" data-modal-hide="staff-details-modal"></div>
-        <div class="modal-content bg-white rounded-xl shadow-2xl z-40 w-full max-w-md overflow-hidden">
-            <div class="bg-indigo-600 px-6 py-4 flex justify-between items-center">
-                <h3 class="text-white font-bold text-lg">Staff Details</h3>
-                <button type="button" class="text-indigo-200 hover:text-white" data-modal-hide="staff-details-modal">
-                    <hero-icon-solid name="x" class="h-5 w-5"></hero-icon-solid>
-                </button>
-            </div>
-            <div id="staff-details-content" class="p-6">
+        <div class="modal-content bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden relative z-10">
+            <button type="button" class="absolute top-4 right-4 text-white/80 hover:text-white z-20 transition-colors" data-modal-hide="staff-details-modal">
+                <hero-icon-solid name="x" class="h-6 w-6"></hero-icon-solid>
+            </button>
+            <div id="staff-details-content">
                 </div>
-            <div class="bg-gray-50 px-6 py-3 border-t flex justify-end">
-                <button type="button" class="text-sm font-medium text-gray-600 hover:text-gray-800" data-modal-hide="staff-details-modal">Close</button>
-            </div>
         </div>
     </div>
     
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-        // --- GLOBAL STATE ---
+        // --- GLOBAL VARIABLES ---
         let staffRoster = [];
         let availableBlocks = [];
 
@@ -183,149 +237,141 @@
         const staffRoleWrapper = document.getElementById('staff-role-wrapper');
         const staffPlaceWrapper = document.getElementById('staff-place-wrapper');
         const staffImageInput = document.getElementById('staff-profile-image');
+        const imagePreview = document.getElementById('image-preview');
+        const imagePreviewWrapper = document.getElementById('image-preview-wrapper');
         const submitBtn = document.getElementById('add-staff-submit-btn');
         const staffCountBadge = document.getElementById('staff-count-badge');
         
-        // --- CORE ROLE OPTIONS ---
-        const CORE_ROLES = [
-            "Warden", "Security", "Cleaning Staff", "Maintenance Staff", "Office Staff"
-        ];
+        const CORE_ROLES = ["Warden", "Security", "Cleaning Staff", "Maintenance Staff", "Office Staff"];
         
-        // --- UTILITY FUNCTIONS ---
-        function showSuccess(message) { alert('✅ ' + message); }
-        function showError(message) { alert('❌ ' + message); }
+        // --- HELPERS ---
+        function showSuccess(msg) { alert('✅ ' + msg); }
+        function showError(msg) { alert('❌ ' + msg); }
         
         function getImageUrl(staff) {
-            return staff.profileImageUrl || staff.imageDataURL || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(staff.name) + '&background=random'; 
-        }
-        
-        function getRoleColor(role) {
-            const map = {
-                'Warden': 'bg-red-100 text-red-700 border-red-200',
-                'Security': 'bg-yellow-100 text-yellow-700 border-yellow-200',
-                'Cleaning Staff': 'bg-green-100 text-green-700 border-green-200',
-                'Maintenance Staff': 'bg-blue-100 text-blue-700 border-blue-200',
-                'Office Staff': 'bg-purple-100 text-purple-700 border-purple-200',
-            };
-            return map[role] || 'bg-gray-100 text-gray-700 border-gray-200';
+            return staff.profileImageUrl || staff.imageDataURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(staff.name)}&background=6366f1&color=fff&size=128`; 
         }
 
-        function findStaffById(staffId) {
-            return staffRoster.find(s => (s._id || s.id) == staffId);
-        }
-
-        function toggleNoStaffMessage() {
-            const isLoading = staffRosterContainer.querySelector('#loading-message');
-            staffCountBadge.textContent = `${staffRoster.length} Staff`;
-            
-            if (!isLoading && staffRoster.length === 0) {
-                noStaffMessage.classList.remove('hidden');
-            } else {
-                noStaffMessage.classList.add('hidden');
+        // --- IMAGE PREVIEW LOGIC ---
+        staffImageInput.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result;
+                    imagePreview.classList.remove('hidden');
+                    imagePreviewWrapper.classList.add('border-indigo-500');
+                }
+                reader.readAsDataURL(file);
             }
-        }
-        
-        // --- API CALLS ---
+        });
+
+        // --- FETCH BLOCKS ---
         async function loadAvailableBlocks() {
             try {
                 const res = await fetch('/api/blocks');
-                if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
                 const data = await res.json();
-                if (data.success) {
-                    availableBlocks = data.blocks;
-                }
-            } catch (error) {
-                console.error('Error loading blocks:', error);
-            }
+                if (data.success) availableBlocks = data.blocks;
+            } catch (error) { console.error('Block load error', error); }
         }
 
+        // --- FETCH STAFF ---
         async function loadStaffRoster() {
             try {
                 const res = await fetch('/api/staff');
-                if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
                 const data = await res.json();
-                
-                // Clear loading
-                staffRosterContainer.innerHTML = '';
+                staffRosterContainer.innerHTML = ''; // Clear loading
                 
                 if (data.success) {
                     staffRoster = data.staff;
                     renderStaffRoster();
                 }
             } catch (error) {
-                staffRosterContainer.innerHTML = '<div class="col-span-full text-center text-red-500 text-sm">Failed to load staff roster.</div>';
+                staffRosterContainer.innerHTML = `<div class="col-span-full text-center text-red-500 font-semibold py-10">❌ Failed to connect to server.</div>`;
             }
         }
 
-        // --- RENDER FUNCTION (UPDATED FOR COMPACT UI) ---
+        // --- RENDER CARDS (THE BEAUTIFUL PART) ---
         function renderStaffRoster() {
             staffRosterContainer.innerHTML = '';
+            staffCountBadge.textContent = `${staffRoster.length} Total Staff`;
 
             if (staffRoster.length === 0) {
-                toggleNoStaffMessage();
+                noStaffMessage.classList.remove('hidden');
                 return;
+            } else {
+                noStaffMessage.classList.add('hidden');
             }
             
             staffRoster.forEach(staff => {
                 const staffId = staff._id || staff.id;
-                const roleClasses = getRoleColor(staff.role); 
-                const statusColor = staff.status === 'Active' ? 'bg-green-500' : 'bg-gray-400';
                 
-                // Truncate email logic
-                const displayEmail = staff.email && staff.email.length > 22 ? staff.email.substring(0, 20) + '...' : (staff.email || 'N/A');
-
+                // Card HTML Structure
                 const cardHTML = `
-                    <div class="group bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-all duration-200 overflow-hidden relative flex flex-col h-full">
+                    <div class="staff-card group bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden relative flex flex-col h-full">
                         
-                        <button class="remove-staff-btn absolute top-2 right-2 p-1.5 bg-white/80 backdrop-blur-sm text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-full transition-all opacity-0 group-hover:opacity-100 z-10 border border-transparent hover:border-red-100 shadow-sm" 
-                            data-staff-id="${staffId}" 
-                            data-staff-name="${staff.name}" 
-                            title="Remove Staff">
-                            <hero-icon-outline name="trash" class="h-4 w-4"></hero-icon-outline>
-                        </button>
+                        <div class="h-24 bg-gradient-to-r from-indigo-500 to-purple-600 relative">
+                             <button class="absolute top-3 right-3 p-1.5 bg-white/20 backdrop-blur-sm hover:bg-red-500 text-white rounded-full transition-all opacity-0 group-hover:opacity-100 z-10" 
+                                onclick="deleteStaffMember('${staffId}', '${staff.name}')" title="Delete Staff">
+                                <hero-icon-outline name="trash" class="h-4 w-4"></hero-icon-outline>
+                            </button>
+                        </div>
 
-                        <div class="p-4 flex items-center gap-3 border-b border-gray-50">
-                            <div class="relative flex-shrink-0">
-                                <img src="${getImageUrl(staff)}" alt="${staff.name}" class="h-10 w-10 rounded-full object-cover border border-gray-200">
-                                <span class="absolute bottom-0 right-0 block h-2.5 w-2.5 rounded-full ring-2 ring-white ${statusColor}"></span>
+                        <div class="px-6 flex justify-between items-end -mt-12 mb-4 relative z-10">
+                            <div class="relative">
+                                <img src="${getImageUrl(staff)}" alt="${staff.name}" class="h-24 w-24 rounded-2xl object-cover border-4 border-white shadow-md bg-white">
+                                <span class="absolute -bottom-1 -right-1 h-5 w-5 bg-green-500 border-2 border-white rounded-full" title="Active"></span>
                             </div>
-                            <div class="min-w-0 flex-1">
-                                <h3 class="text-sm font-bold text-gray-900 truncate leading-tight mb-1" title="${staff.name}">${staff.name}</h3>
-                                <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium border ${roleClasses}">
+                            <button class="view-staff-details-btn px-4 py-2 bg-indigo-50 text-indigo-700 text-xs font-bold rounded-lg hover:bg-indigo-100 transition-colors mb-1" data-staff-id="${staffId}">
+                                View Credentials
+                            </button>
+                        </div>
+
+                        <div class="px-6 pb-2">
+                            <h3 class="text-lg font-bold text-gray-900 truncate" title="${staff.name}">${staff.name}</h3>
+                            <div class="flex items-center gap-2 mt-1">
+                                <span class="px-2.5 py-0.5 rounded text-[11px] font-bold uppercase tracking-wide bg-indigo-100 text-indigo-700">
                                     ${staff.role}
+                                </span>
+                                <span class="px-2.5 py-0.5 rounded text-[11px] font-bold uppercase tracking-wide bg-gray-100 text-gray-600 truncate max-w-[120px]">
+                                    @${staff.username}
                                 </span>
                             </div>
                         </div>
 
-                        <div class="px-4 py-3 text-xs text-gray-600 space-y-2 flex-grow bg-white">
-                            <div class="flex items-center">
-                                <hero-icon-outline name="office-building" class="h-3.5 w-3.5 mr-2 text-indigo-400 flex-shrink-0"></hero-icon-outline>
-                                <span class="truncate font-medium text-gray-700">${staff.place}</span>
-                            </div>
-                            <div class="flex items-center" title="${staff.email || ''}">
-                                <hero-icon-outline name="mail" class="h-3.5 w-3.5 mr-2 text-gray-400 flex-shrink-0"></hero-icon-outline>
-                                <span class="truncate text-gray-500">${displayEmail}</span>
-                            </div>
-                            <div class="flex items-center">
-                                <hero-icon-outline name="phone" class="h-3.5 w-3.5 mr-2 text-gray-400 flex-shrink-0"></hero-icon-outline>
-                                <span class="font-mono text-gray-500">${staff.phone || '--'}</span>
-                            </div>
-                        </div>
+                        <div class="px-6 py-4 space-y-3 mt-auto">
+                            <div class="h-px bg-gray-100 w-full mb-3"></div>
+                            
+                            <div class="grid grid-cols-1 gap-y-2 text-sm text-gray-600">
+                                <div class="flex items-center gap-3">
+                                    <div class="p-1.5 bg-purple-50 rounded text-purple-600">
+                                        <hero-icon-outline name="location-marker" class="h-4 w-4"></hero-icon-outline>
+                                    </div>
+                                    <span class="font-medium text-gray-800 truncate" title="${staff.place}">${staff.place}</span>
+                                </div>
+                                
+                                <div class="flex items-center gap-3">
+                                    <div class="p-1.5 bg-blue-50 rounded text-blue-600">
+                                        <hero-icon-outline name="phone" class="h-4 w-4"></hero-icon-outline>
+                                    </div>
+                                    <span class="font-medium truncate">${staff.phone || '<span class="text-gray-400 italic">No phone</span>'}</span>
+                                </div>
 
-                        <div class="px-4 py-2 bg-gray-50 border-t border-gray-100 mt-auto">
-                            <button class="view-staff-details-btn w-full flex items-center justify-center text-xs font-semibold text-indigo-600 hover:text-indigo-800 transition-colors py-1 group/btn" data-staff-id="${staffId}">
-                                Show Credentials
-                                <hero-icon-outline name="arrow-right" class="h-3 w-3 ml-1 transition-transform group-hover/btn:translate-x-1"></hero-icon-outline>
-                            </button>
+                                <div class="flex items-center gap-3">
+                                    <div class="p-1.5 bg-orange-50 rounded text-orange-600">
+                                        <hero-icon-outline name="mail" class="h-4 w-4"></hero-icon-outline>
+                                    </div>
+                                    <span class="font-medium truncate" title="${staff.email}">${staff.email || '<span class="text-gray-400 italic">No email</span>'}</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 `;
                 staffRosterContainer.innerHTML += cardHTML;
             });
-            toggleNoStaffMessage();
         }
 
-        // --- FORM SUBMISSION ---
+        // --- SUBMIT HANDLER ---
         addStaffForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
@@ -333,8 +379,9 @@
             const assignedRole = rawData.get('role') || rawData.get('role_dropdown_value');
             const assignedPlace = rawData.get('place') || rawData.get('place_dropdown_value');
             
+            // Validation
             if (!rawData.get('name') || !rawData.get('username') || !rawData.get('password') || !assignedRole || assignedRole === 'Other' || !assignedPlace || assignedPlace === 'Other') {
-                showError('Please fill in all required fields.');
+                showError('Please fill in Name, Username, Password, Role and Area.');
                 return;
             }
 
@@ -349,75 +396,67 @@
             formDataToSubmit.append('place', assignedPlace); 
             formDataToSubmit.append('status', 'Active'); 
             
-            const imageFile = staffImageInput.files[0];
-            if (imageFile) formDataToSubmit.append('profileImage', imageFile);
+            if (staffImageInput.files[0]) formDataToSubmit.append('profileImage', staffImageInput.files[0]);
             
-            addStaffMember(formDataToSubmit);
-        });
-
-        async function addStaffMember(formData) {
+            // UI Loading
             submitBtn.disabled = true;
-            submitBtn.innerHTML = '<span class="animate-spin inline-block h-4 w-4 border-2 border-white border-t-transparent rounded-full mr-2"></span>Saving...';
+            submitBtn.innerHTML = `<div class="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></div>`;
 
             try {
-                const res = await fetch('/api/staff', { method: 'POST', body: formData });
+                const res = await fetch('/api/staff', { method: 'POST', body: formDataToSubmit });
                 const data = await res.json();
                 
                 if (data.success) {
-                    showSuccess(`Staff added!`);
+                    showSuccess(`Staff Account Created!`);
                     addStaffForm.reset();
-                    staffImageInput.value = ''; 
+                    imagePreview.classList.add('hidden');
+                    imagePreviewWrapper.classList.remove('border-indigo-500');
                     initRoleField(); 
                     initPlaceField();
                     loadStaffRoster();
                 } else {
                     throw new Error(data.message);
                 }
-            } catch (error) {
-                console.error('Error:', error);
-                showError(error.message || 'Failed to add staff.');
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Create Staff Account';
+            } catch (err) { showError(err.message || 'Error creating staff'); }
+            finally { 
+                submitBtn.disabled = false; 
+                submitBtn.innerHTML = `<span>Create Account</span><hero-icon-solid name="check" class="h-5 w-5"></hero-icon-solid>`;
             }
-        }
+        });
 
-        async function deleteStaffMember(staffId, staffName) {
-            if (!confirm(`Remove ${staffName}?`)) return;
-
+        // --- DELETE STAFF (Global scope for onclick) ---
+        window.deleteStaffMember = async function(id, name) {
+            if (!confirm(`Are you sure you want to delete ${name}?`)) return;
             try {
-                const res = await fetch(`/api/staff/${staffId}`, { method: 'DELETE' });
+                const res = await fetch(`/api/staff/${id}`, { method: 'DELETE' });
                 const data = await res.json();
-                if (data.success) {
-                    loadStaffRoster(); 
-                } else {
-                    alert('Failed to delete.');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-            }
-        }
+                if (data.success) loadStaffRoster();
+                else alert('Delete failed');
+            } catch(e) { console.error(e); }
+        };
 
-        // --- FORM DYNAMICS ---
+        // --- DYNAMIC SELECT FIELDS ---
         function initRoleField() {
             staffRoleWrapper.innerHTML = `
-                <label for="staff-role-select" class="form-label">Role *</label>
-                <select id="staff-role-select" class="mt-1 block w-full form-input bg-gray-50" required name="role_dropdown_value">
-                    <option value="" disabled selected>-- Select Role --</option>
-                    ${CORE_ROLES.map(role => `<option value="${role}">${role}</option>`).join('')}
-                    <option value="Other">Other (Manual Entry)</option>
-                </select>`;
+                <label class="form-label">Role</label>
+                <div class="input-group">
+                    <hero-icon-outline name="briefcase" class="input-icon"></hero-icon-outline>
+                    <select id="staff-role-select" class="form-input w-full bg-white" required name="role_dropdown_value">
+                        <option value="" disabled selected>Select Role</option>
+                        ${CORE_ROLES.map(role => `<option value="${role}">${role}</option>`).join('')}
+                        <option value="Other">Other (Manual)</option>
+                    </select>
+                </div>`;
             document.getElementById('staff-role-select').addEventListener('change', handleRoleChange);
         }
 
         function handleRoleChange(e) {
-            const val = e.target.value;
-            if (val === 'Other') {
+            if (e.target.value === 'Other') {
                 staffRoleWrapper.innerHTML = `
-                    <label class="form-label text-indigo-600">Custom Role Name *</label>
+                    <label class="form-label text-indigo-600">Enter Custom Role</label>
                     <div class="flex gap-2">
-                        <input type="text" name="role" class="mt-1 block w-full form-input border-indigo-300 ring-2 ring-indigo-100" placeholder="e.g. Head Cook" required autofocus>
-                        <button type="button" onclick="initRoleField()" class="mt-1 px-3 bg-gray-200 rounded-md hover:bg-gray-300 text-gray-600">Cancel</button>
+                        <input type="text" name="role" class="form-input w-full border-indigo-300 ring-1 ring-indigo-200" placeholder="e.g. Chef" required autofocus>
+                        <button type="button" onclick="initRoleField()" class="px-3 bg-gray-100 rounded-lg hover:bg-gray-200 text-gray-600 text-xs font-bold">Back</button>
                     </div>`;
             }
         }
@@ -425,69 +464,61 @@
         function initPlaceField() {
             const opts = availableBlocks.map(b => `<option value="${b.blockName}">${b.blockName}</option>`).join('');
             staffPlaceWrapper.innerHTML = `
-                <label for="staff-place-select" class="form-label">Assigned Area *</label>
-                <select id="staff-place-select" class="mt-1 block w-full form-input bg-gray-50" required name="place_dropdown_value">
-                    <option value="" disabled selected>-- Select Area --</option>
-                    ${opts}
-                    <option value="Other">Other (Manual Entry)</option>
-                </select>`;
+                <label class="form-label">Assigned Area</label>
+                <div class="input-group">
+                    <hero-icon-outline name="location-marker" class="input-icon"></hero-icon-outline>
+                    <select id="staff-place-select" class="form-input w-full bg-white" required name="place_dropdown_value">
+                        <option value="" disabled selected>Select Area</option>
+                        ${opts}
+                        <option value="Other">Other (Manual)</option>
+                    </select>
+                </div>`;
             document.getElementById('staff-place-select').addEventListener('change', handlePlaceChange);
         }
 
         function handlePlaceChange(e) {
-            const val = e.target.value;
-            if (val === 'Other') {
+            if (e.target.value === 'Other') {
                 staffPlaceWrapper.innerHTML = `
-                    <label class="form-label text-indigo-600">Custom Area Name *</label>
-                     <div class="flex gap-2">
-                        <input type="text" name="place" class="mt-1 block w-full form-input border-indigo-300 ring-2 ring-indigo-100" placeholder="e.g. Main Gate" required autofocus>
-                        <button type="button" onclick="initPlaceField()" class="mt-1 px-3 bg-gray-200 rounded-md hover:bg-gray-300 text-gray-600">Cancel</button>
+                    <label class="form-label text-indigo-600">Enter Custom Area</label>
+                    <div class="flex gap-2">
+                        <input type="text" name="place" class="form-input w-full border-indigo-300 ring-1 ring-indigo-200" placeholder="e.g. Main Gate" required autofocus>
+                        <button type="button" onclick="initPlaceField()" class="px-3 bg-gray-100 rounded-lg hover:bg-gray-200 text-gray-600 text-xs font-bold">Back</button>
                     </div>`;
             }
         }
-        
-        // --- MODAL & CLICK HANDLERS ---
-        staffRosterContainer.addEventListener('click', (e) => {
-            const removeBtn = e.target.closest('.remove-staff-btn');
-            const viewBtn = e.target.closest('.view-staff-details-btn');
 
-            if (removeBtn) deleteStaffMember(removeBtn.dataset.staffId, removeBtn.dataset.staffName);
-            if (viewBtn) {
-                const staff = findStaffById(viewBtn.dataset.staffId);
-                if (staff) showStaffDetails(staff);
+        // --- MODAL ---
+        staffRosterContainer.addEventListener('click', (e) => {
+            if (e.target.closest('.view-staff-details-btn')) {
+                const btn = e.target.closest('.view-staff-details-btn');
+                const staff = staffRoster.find(s => (s._id || s.id) == btn.dataset.staffId);
+                if (staff) openCredentialModal(staff);
             }
         });
 
-        function showStaffDetails(staff) {
+        function openCredentialModal(staff) {
             const content = document.getElementById('staff-details-content');
             content.innerHTML = `
-                <div class="flex items-center space-x-4 mb-6">
-                    <img src="${getImageUrl(staff)}" class="h-16 w-16 rounded-full border-4 border-gray-100 shadow-sm object-cover">
-                    <div>
-                        <h4 class="text-xl font-bold text-gray-900">${staff.name}</h4>
-                        <span class="inline-block bg-indigo-100 text-indigo-800 text-xs px-2 py-0.5 rounded-full font-semibold border border-indigo-200">${staff.role}</span>
-                    </div>
+                <div class="bg-indigo-600 p-6 text-center">
+                    <img src="${getImageUrl(staff)}" class="h-20 w-20 rounded-full border-4 border-indigo-400 shadow-lg mx-auto mb-3 object-cover">
+                    <h3 class="text-white font-bold text-xl">${staff.name}</h3>
+                    <span class="inline-block bg-indigo-500/50 text-indigo-100 text-xs px-2 py-0.5 rounded-full mt-1">${staff.role}</span>
                 </div>
-                
-                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
-                    <h5 class="text-xs font-bold text-yellow-800 uppercase tracking-wide mb-2 flex items-center">
-                        <hero-icon-solid name="lock-closed" class="h-3 w-3 mr-1"></hero-icon-solid> Credentials
-                    </h5>
-                    <div class="grid grid-cols-1 gap-2 text-sm">
-                        <div class="flex justify-between border-b border-yellow-200/50 pb-1">
-                            <span class="text-yellow-700">Username:</span>
-                            <span class="font-mono font-medium text-gray-900 bg-white px-2 rounded">${staff.username}</span>
+                <div class="p-6 space-y-4">
+                    <div class="bg-gray-50 p-4 rounded-xl border border-gray-100">
+                        <p class="text-xs font-bold text-gray-400 uppercase mb-2">Login Credentials</p>
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-sm font-medium text-gray-600">Username</span>
+                            <span class="text-sm font-mono font-bold text-gray-900 bg-white px-2 py-0.5 rounded border">${staff.username}</span>
                         </div>
-                        <div class="flex justify-between pt-1">
-                            <span class="text-yellow-700">Password:</span>
-                            <span class="font-mono text-gray-400 italic">••••••••</span>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm font-medium text-gray-600">Password</span>
+                            <span class="text-sm font-mono text-gray-400 tracking-widest">•••••••</span>
                         </div>
                     </div>
-                </div>
-
-                <div class="space-y-2 text-sm text-gray-600">
-                    <p class="flex justify-between"><span class="font-medium">Joined:</span> <span>${new Date(staff.createdAt || Date.now()).toLocaleDateString()}</span></p>
-                    <p class="flex justify-between"><span class="font-medium">Status:</span> <span class="text-green-600 font-bold">Active</span></p>
+                    <div class="text-center">
+                        <p class="text-xs text-gray-400">Account created on ${new Date(staff.createdAt || Date.now()).toLocaleDateString()}</p>
+                    </div>
                 </div>
             `;
             const modal = document.getElementById('staff-details-modal');
