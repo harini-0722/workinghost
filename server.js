@@ -1,5 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const fs = require('fs').promises;
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const open = require("open");
@@ -12,6 +13,7 @@ const fs = require('fs');
 const gymkhanaRoutes = require('./routes/gymkhana');
 const complaintRoutes = require('./routes/complaintRoutes');
 const visitorRoutes = require('./routes/visitorRoutes');
+const staffRoutes = require('./routes/staffRoutes');
 // --- IMPORT MODELS ---
 const Room = require('./models/Room');
 const Block = require('./models/Block');
@@ -21,6 +23,7 @@ const Attendance = require('./models/Attendance');
 const Asset = require('./models/Asset');
 const User = require('./models/user'); // Assuming your User model is in 'models/user.js'
 const Complaint = require('./models/Complaint');
+const Staff = require('./models/Staff');
 const app = express();
 const PORT = 5000;
 
@@ -41,6 +44,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
 app.use('/api/gymkhana', gymkhanaRoutes);
 app.use('/api', complaintRoutes);
 app.use('/api/visitor-request', visitorRoutes);
+app.use('/api/staff', staffRoutes);
 // ----------------------------------------------------
 
 // --- Multer Configuration ---
