@@ -23,20 +23,26 @@ const staffSchema = new mongoose.Schema({
         type: String,
     },
     // Assignment Details
-    role: { // e.g., Warden, Security, Senior Electrician
+    role: { 
         type: String,
         required: true,
     },
-    place: { // e.g., Block A, Main Gate, Canteen
+    place: { 
         type: String,
         required: true,
     },
-    // Photo URL (stored as a URL/path)
+    // ✅ FIX: Added joiningDate to Schema
+    joiningDate: {
+        type: Date,
+        default: Date.now,
+        required: true 
+    },
+    // Photo URL
     profileImageUrl: {
         type: String,
         default: 'https://via.placeholder.com/150/A5B4FC/374151?text=Staff'
     },
-    // Status/Metadata
+    // Status
     status: {
         type: String,
         enum: ['Active', 'Inactive'],
