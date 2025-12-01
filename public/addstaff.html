@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Staff Management - Hostel Admin</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script type="module" src="https://unpkg.com/heroicons@2.1.1/dist/solid/index.js"></script>
     <script type="module" src="https://unpkg.com/heroicons@2.1.1/dist/outline/index.js"></script>
@@ -13,11 +13,9 @@
             font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             color: #1f2937;
         }
-        /* Visual adjustments for card/form elements */
-        .staff-avatar { object-fit: cover; }
-        .form-label { font-size: 0.75rem; font-weight: 600; color: #4b5563; /* Gray-700 */ }
+        /* Visual adjustments */
+        .form-label { font-size: 0.75rem; font-weight: 600; color: #4b5563; }
         .form-input { border-radius: 0.5rem; border-color: #d1d5db; font-size: 0.875rem; }
-        .card-detail { font-size: 0.8125rem; /* ~13px */ }
         
         /* Modal Styles */
         .modal-backdrop { background-color: rgba(0, 0, 0, 0.5); opacity: 0; transition: opacity 0.3s ease-in-out; }
@@ -26,23 +24,23 @@
         .modal.active .modal-content { transform: translateY(0); opacity: 1; }
     </style>
 </head>
-<body class="bg-indigo-50 min-h-screen flex flex-col">
+<body class="bg-gray-50 min-h-screen flex flex-col">
 
-    <nav class="bg-white shadow-sm sticky top-0 z-20">
+    <nav class="bg-white shadow-sm sticky top-0 z-20 border-b border-gray-200">
         <div class="w-full mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16 items-center">
                 <div class="flex-shrink-0 flex items-center">
-                    <a href="index.html" target="_top" class="flex items-center text-gray-500 hover:text-blue-600 transition-colors duration-200">
-                        <hero-icon-solid name="arrow-left" class="h-5 w-5 mr-2"></hero-icon-solid>
-                        Back to Dashboard
+                    <a href="index.html" target="_top" class="flex items-center text-gray-500 hover:text-indigo-600 transition-colors duration-200 font-medium text-sm">
+                        <hero-icon-solid name="arrow-left" class="h-4 w-4 mr-2"></hero-icon-solid>
+                        Dashboard
                     </a>
                 </div>
-                <h1 class="text-2xl font-bold text-indigo-600 hidden sm:block">Staff Management System</h1>
+                <h1 class="text-xl font-bold text-gray-800 hidden sm:block">Staff Management</h1>
                 <div class="flex items-center">
-                    <span class="text-sm font-medium text-gray-700 mr-3">Admin</span>
+                    <span class="text-xs font-semibold text-gray-500 mr-3 uppercase tracking-wider">Admin</span>
                     <div class="flex-shrink-0">
-                        <span class="inline-flex items-center justify-center h-10 w-10 rounded-full bg-yellow-400">
-                            <span class="font-medium text-white">A</span>
+                        <span class="inline-flex items-center justify-center h-8 w-8 rounded-full bg-indigo-600 shadow-md">
+                            <span class="font-bold text-white text-sm">A</span>
                         </span>
                     </div>
                 </div>
@@ -50,589 +48,470 @@
         </div>
     </nav>
 
-    <main class="mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-grow">
-        <h2 class="text-3xl font-bold text-gray-900 mb-6 flex items-center">
-            <hero-icon-solid name="user-group" class="h-8 w-8 text-indigo-600 mr-3"></hero-icon-solid>
-            Staff Management
-        </h2>
+    <main class="mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-grow max-w-7xl">
         
         <div class="flex flex-col lg:flex-row gap-8">
             
-            <div class="lg:w-1/3 w-full sticky top-20 bg-white p-6 rounded-xl shadow-lg h-fit">
-                <h3 class="text-xl font-bold mb-4 text-indigo-700 border-b pb-2">
-                    <hero-icon-solid name="user-plus" class="h-5 w-5 mr-2 inline-block"></hero-icon-solid>
-                    New Staff Registration
-                </h3>
-                
-                <form id="add-staff-form" class="space-y-4">
+            <div class="lg:w-1/3 w-full sticky top-24 h-fit">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                    <h3 class="text-lg font-bold mb-4 text-gray-800 flex items-center border-b pb-3">
+                        <hero-icon-solid name="user-plus" class="h-5 w-5 text-indigo-600 mr-2"></hero-icon-solid>
+                        Add New Staff
+                    </h3>
                     
-                    <div class="space-y-2 border-b pb-3">
-                        <p class="text-sm font-semibold text-gray-500">Login & Basic Info</p>
-                        <div>
-                            <label for="staff-name" class="form-label">Full Name *</label>
-                            <input type="text" id="staff-name" name="name" class="mt-1 block w-full form-input shadow-sm" required>
+                    <form id="add-staff-form" class="space-y-4">
+                        <div class="space-y-3">
+                            <div>
+                                <label for="staff-name" class="form-label">Full Name</label>
+                                <input type="text" id="staff-name" name="name" class="mt-1 block w-full form-input shadow-sm focus:ring-indigo-500 focus:border-indigo-500" required placeholder="e.g. John Doe">
+                            </div>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label for="staff-username" class="form-label">Username</label>
+                                    <input type="text" id="staff-username" name="username" class="mt-1 block w-full form-input shadow-sm" required>
+                                </div>
+                                <div>
+                                    <label for="staff-password" class="form-label">Password</label>
+                                    <input type="password" id="staff-password" name="password" class="mt-1 block w-full form-input shadow-sm" required>
+                                </div>
+                            </div>
                         </div>
-                        <div>
-                            <label for="staff-username" class="form-label">Username *</label>
-                            <input type="text" id="staff-username" name="username" class="mt-1 block w-full form-input shadow-sm" required>
-                        </div>
-                        <div>
-                            <label for="staff-password" class="form-label">Password *</label>
-                            <input type="password" id="staff-password" name="password" class="mt-1 block w-full form-input shadow-sm" required>
-                        </div>
-                    </div>
 
-                    <div class="space-y-3 border-b pb-3">
-                        <p class="text-sm font-semibold text-gray-500">Role & Assignment</p>
-
-                        <div id="staff-role-wrapper">
-                            <label for="staff-role-select" class="form-label">Position / Role *</label>
-                            <select id="staff-role-select" class="mt-1 block w-full form-input" required>
-                                <option value="" disabled selected>-- Select Standard Role --</option>
-                                <option value="Warden">Warden</option>
-                                <option value="Security">Security</option>
-                                <option value="Cleaning Staff">Cleaning Staff</option>
-                                <option value="Maintenance Staff">Maintenance Staff</option>
-                                <option value="Office Staff">Office Staff</option>
-                                <option value="Other">Other (Manual Entry)</option>
-                            </select>
+                        <div class="space-y-3 pt-2 border-t border-dashed">
+                            <div id="staff-role-wrapper">
+                                <label for="staff-role-select" class="form-label">Role</label>
+                                <select id="staff-role-select" class="mt-1 block w-full form-input bg-gray-50" required>
+                                    <option value="" disabled selected>-- Select Role --</option>
+                                    <option value="Warden">Warden</option>
+                                    <option value="Security">Security</option>
+                                    <option value="Cleaning Staff">Cleaning Staff</option>
+                                    <option value="Maintenance Staff">Maintenance Staff</option>
+                                    <option value="Office Staff">Office Staff</option>
+                                    <option value="Other">Other (Manual Entry)</option>
+                                </select>
                             </div>
 
-                        <div id="staff-place-wrapper">
-                            <label for="staff-place-select" class="form-label">Duty Area / Place *</label>
-                            <select id="staff-place-select" class="mt-1 block w-full form-input" required>
-                                <option value="" disabled selected>-- Loading Blocks --</option>
-                            </select>
+                            <div id="staff-place-wrapper">
+                                <label for="staff-place-select" class="form-label">Assigned Area</label>
+                                <select id="staff-place-select" class="mt-1 block w-full form-input bg-gray-50" required>
+                                    <option value="" disabled selected>-- Loading Blocks --</option>
+                                </select>
                             </div>
-                    </div>
+                        </div>
 
-                    <div class="space-y-2">
-                        <p class="text-sm font-semibold text-gray-500">Contact & Photo</p>
-                        <div>
-                            <label for="staff-phone" class="form-label">Contact Number</label>
-                            <input type="tel" id="staff-phone" name="phone" class="mt-1 block w-full form-input shadow-sm" placeholder="+91 XXXXX XXXXX">
+                        <div class="space-y-3 pt-2 border-t border-dashed">
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label for="staff-phone" class="form-label">Phone</label>
+                                    <input type="tel" id="staff-phone" name="phone" class="mt-1 block w-full form-input shadow-sm" placeholder="+91...">
+                                </div>
+                                <div>
+                                    <label for="staff-email" class="form-label">Email</label>
+                                    <input type="email" id="staff-email" name="email" class="mt-1 block w-full form-input shadow-sm" placeholder="@hostel.edu">
+                                </div>
+                            </div>
+                            <div>
+                                <label for="staff-profile-image" class="form-label">Photo</label>
+                                <input type="file" id="staff-profile-image" name="profileImage" class="mt-1 block w-full text-xs text-gray-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100" accept="image/*">
+                            </div>
                         </div>
-                        <div>
-                            <label for="staff-email" class="form-label">Email Address</label>
-                            <input type="email" id="staff-email" name="email" class="mt-1 block w-full form-input shadow-sm" placeholder="staff@hostel.edu">
+                        
+                        <div class="pt-4">
+                            <button type="submit" id="add-staff-submit-btn" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
+                                Create Staff Account
+                            </button>
                         </div>
-                        <div>
-                            <label for="staff-profile-image" class="form-label">Profile Photo</label>
-                            <input type="file" id="staff-profile-image" name="profileImage" class="mt-1 block w-full text-xs text-gray-500
-                                         file:mr-2 file:py-1 file:px-3 file:rounded-full file:border-0
-                                         file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700
-                                         hover:file:bg-indigo-100" accept="image/*">
-                        </div>
-                    </div>
-                    
-                    <div class="flex justify-end pt-4 border-t">
-                        <button type="submit" id="add-staff-submit-btn" class="px-5 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors shadow-md">
-                            Save Staff
-                        </button>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
 
             <div class="lg:w-2/3 w-full">
-                <h3 class="text-2xl font-bold text-gray-900 mb-4">Current Staff Roster</h3>
-                <div id="staff-roster-container" class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <div class="col-span-full text-center text-gray-500 py-6" id="loading-message">
-                        🔄 Loading staff data...
+                <div class="flex justify-between items-center mb-5">
+                    <h3 class="text-xl font-bold text-gray-800">Staff Directory</h3>
+                    <span class="text-xs text-gray-500 bg-gray-200 px-2 py-1 rounded-md" id="staff-count-badge">Loading...</span>
+                </div>
+
+                <div id="staff-roster-container" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                    <div class="col-span-full text-center text-gray-500 py-12 bg-white rounded-xl border border-dashed border-gray-300" id="loading-message">
+                        <div class="animate-spin inline-block w-6 h-6 border-[3px] border-current border-t-transparent text-indigo-600 rounded-full" role="status" aria-label="loading"></div>
+                        <p class="mt-2 text-sm">Loading staff data...</p>
                     </div>
                 </div>
-                <p id="no-staff-message" class="text-center text-gray-500 mt-10 hidden">No staff members have been added yet.</p>
+                
+                <div id="no-staff-message" class="hidden flex flex-col items-center justify-center py-12 bg-white rounded-xl border border-dashed border-gray-300 text-center">
+                    <hero-icon-outline name="users" class="h-10 w-10 text-gray-300 mb-2"></hero-icon-outline>
+                    <p class="text-gray-500 font-medium">No staff members found.</p>
+                    <p class="text-xs text-gray-400">Use the form on the left to add someone.</p>
+                </div>
             </div>
         </div>
     </main>
 
-    <footer class="mt-12 py-6 border-t border-gray-200 bg-white">
-        <div class="w-full mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <p class="text-sm text-gray-500">
-                &copy; 2025 Staff Management Module. All rights reserved.
-            </p>
+    <footer class="mt-auto py-6 border-t border-gray-200 bg-white">
+        <div class="text-center">
+            <p class="text-xs text-gray-400 font-medium">&copy; 2025 Hostel Admin System</p>
         </div>
     </footer>
 
-    <div id="staff-details-modal" class="modal hidden fixed inset-0 z-30 flex items-center justify-center">
+    <div id="staff-details-modal" class="modal hidden fixed inset-0 z-30 flex items-center justify-center p-4">
         <div class="modal-backdrop fixed inset-0" data-modal-hide="staff-details-modal"></div>
-        <div class="modal-content bg-white p-8 rounded-xl shadow-2xl z-40 w-full max-w-lg mx-4">
-            <div id="staff-details-content">
+        <div class="modal-content bg-white rounded-xl shadow-2xl z-40 w-full max-w-md overflow-hidden">
+            <div class="bg-indigo-600 px-6 py-4 flex justify-between items-center">
+                <h3 class="text-white font-bold text-lg">Staff Details</h3>
+                <button type="button" class="text-indigo-200 hover:text-white" data-modal-hide="staff-details-modal">
+                    <hero-icon-solid name="x" class="h-5 w-5"></hero-icon-solid>
+                </button>
+            </div>
+            <div id="staff-details-content" class="p-6">
                 </div>
-            <div class="flex justify-end pt-6 border-t mt-6">
-                <button type="button" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300" data-modal-hide="staff-details-modal">Close</button>
+            <div class="bg-gray-50 px-6 py-3 border-t flex justify-end">
+                <button type="button" class="text-sm font-medium text-gray-600 hover:text-gray-800" data-modal-hide="staff-details-modal">Close</button>
             </div>
         </div>
     </div>
     
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        // --- GLOBAL STATE ---
-        let staffRoster = [];
-        let availableBlocks = [];
+    document.addEventListener('DOMContentLoaded', () => {
+        // --- GLOBAL STATE ---
+        let staffRoster = [];
+        let availableBlocks = [];
 
-        // --- DOM ELEMENTS ---
-        const staffRosterContainer = document.getElementById('staff-roster-container');
-        const noStaffMessage = document.getElementById('no-staff-message');
-        const addStaffForm = document.getElementById('add-staff-form');
-        const staffRoleWrapper = document.getElementById('staff-role-wrapper');
-        const staffPlaceWrapper = document.getElementById('staff-place-wrapper');
-        const staffImageInput = document.getElementById('staff-profile-image');
-        const submitBtn = document.getElementById('add-staff-submit-btn');
-        
-        // --- CORE ROLE OPTIONS ---
-        const CORE_ROLES = [
-            "Warden", "Security", "Cleaning Staff", "Maintenance Staff", "Office Staff"
-        ];
-        
-        // --- UTILITY FUNCTIONS ---
-        function showSuccess(message) { console.log('✅ ' + message); alert('✅ ' + message); }
-        function showError(message) { console.error('❌ ' + message); alert('❌ ' + message); }
-        
-        function getImageUrl(staff) {
-            return staff.profileImageUrl || staff.imageDataURL || 'https://via.placeholder.com/150/A5B4FC/374151?text=Staff'; 
-        }
-        
-        function getRoleColor(role) {
-            const map = {
-                'Warden': 'bg-red-600',
-                'Security': 'bg-yellow-600',
-                'Cleaning Staff': 'bg-green-600',
-                'Maintenance Staff': 'bg-blue-600',
-                'Office Staff': 'bg-purple-600',
-            };
-            return map[role] || 'bg-gray-600';
-        }
+        // --- DOM ELEMENTS ---
+        const staffRosterContainer = document.getElementById('staff-roster-container');
+        const noStaffMessage = document.getElementById('no-staff-message');
+        const addStaffForm = document.getElementById('add-staff-form');
+        const staffRoleWrapper = document.getElementById('staff-role-wrapper');
+        const staffPlaceWrapper = document.getElementById('staff-place-wrapper');
+        const staffImageInput = document.getElementById('staff-profile-image');
+        const submitBtn = document.getElementById('add-staff-submit-btn');
+        const staffCountBadge = document.getElementById('staff-count-badge');
+        
+        // --- CORE ROLE OPTIONS ---
+        const CORE_ROLES = [
+            "Warden", "Security", "Cleaning Staff", "Maintenance Staff", "Office Staff"
+        ];
+        
+        // --- UTILITY FUNCTIONS ---
+        function showSuccess(message) { alert('✅ ' + message); }
+        function showError(message) { alert('❌ ' + message); }
+        
+        function getImageUrl(staff) {
+            return staff.profileImageUrl || staff.imageDataURL || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(staff.name) + '&background=random'; 
+        }
+        
+        function getRoleColor(role) {
+            const map = {
+                'Warden': 'bg-red-100 text-red-700 border-red-200',
+                'Security': 'bg-yellow-100 text-yellow-700 border-yellow-200',
+                'Cleaning Staff': 'bg-green-100 text-green-700 border-green-200',
+                'Maintenance Staff': 'bg-blue-100 text-blue-700 border-blue-200',
+                'Office Staff': 'bg-purple-100 text-purple-700 border-purple-200',
+            };
+            return map[role] || 'bg-gray-100 text-gray-700 border-gray-200';
+        }
 
-        function getStatusColor(status) {
-            return status === 'Active' ? 'text-green-600 bg-green-100' : 'text-yellow-600 bg-yellow-100';
-        }
+        function findStaffById(staffId) {
+            return staffRoster.find(s => (s._id || s.id) == staffId);
+        }
 
-        function findStaffById(staffId) {
-            return staffRoster.find(s => (s._id || s.id) == staffId);
-        }
+        function toggleNoStaffMessage() {
+            const isLoading = staffRosterContainer.querySelector('#loading-message');
+            staffCountBadge.textContent = `${staffRoster.length} Staff`;
+            
+            if (!isLoading && staffRoster.length === 0) {
+                noStaffMessage.classList.remove('hidden');
+            } else {
+                noStaffMessage.classList.add('hidden');
+            }
+        }
+        
+        // --- API CALLS ---
+        async function loadAvailableBlocks() {
+            try {
+                const res = await fetch('/api/blocks');
+                if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+                const data = await res.json();
+                if (data.success) {
+                    availableBlocks = data.blocks;
+                }
+            } catch (error) {
+                console.error('Error loading blocks:', error);
+            }
+        }
 
-        function toggleNoStaffMessage() {
-            const isLoading = staffRosterContainer.querySelector('#loading-message');
-            if (!isLoading && staffRoster.length === 0) {
-                noStaffMessage.classList.remove('hidden');
-            } else {
-                noStaffMessage.classList.add('hidden');
-            }
-        }
-        
-        // --- API CALLS ---
-        async function loadAvailableBlocks() {
-            try {
-                const res = await fetch('/api/blocks');
-                if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-                const data = await res.json();
-                if (data.success) {
-                    availableBlocks = data.blocks;
-                }
-            } catch (error) {
-                console.error('❌ Error loading blocks:', error);
-            }
-        }
+        async function loadStaffRoster() {
+            try {
+                const res = await fetch('/api/staff');
+                if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+                const data = await res.json();
+                
+                // Clear loading
+                staffRosterContainer.innerHTML = '';
+                
+                if (data.success) {
+                    staffRoster = data.staff;
+                    renderStaffRoster();
+                }
+            } catch (error) {
+                staffRosterContainer.innerHTML = '<div class="col-span-full text-center text-red-500 text-sm">Failed to load staff roster.</div>';
+            }
+        }
 
-        async function loadStaffRoster() {
-            staffRosterContainer.innerHTML = '<div class="col-span-full text-center text-gray-500 py-4" id="loading-message">🔄 Loading staff data...</div>';
-            try {
-                const res = await fetch('/api/staff');
-                if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-                const data = await res.json();
-                
-                const loadingMsg = document.getElementById('loading-message');
-                if (loadingMsg) loadingMsg.remove();
-                
-                if (data.success) {
-                    staffRoster = data.staff;
-                    renderStaffRoster();
-                } else {
-                    throw new Error(data.message || 'Failed to load staff roster.');
-                }
-            } catch (error) {
-                const loadingMsg = document.getElementById('loading-message');
-                if (loadingMsg) loadingMsg.remove();
-                staffRosterContainer.innerHTML = '<div class="col-span-full text-center text-red-500 py-4">❌ Failed to load staff roster. Check backend connection.</div>';
-                toggleNoStaffMessage();
-            }
-        }
+        // --- RENDER FUNCTION (UPDATED FOR COMPACT UI) ---
+        function renderStaffRoster() {
+            staffRosterContainer.innerHTML = '';
 
-        // ✅ MODIFIED: Function to handle FormData submission
-        async function addStaffMember(formData) {
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Saving...';
+            if (staffRoster.length === 0) {
+                toggleNoStaffMessage();
+                return;
+            }
+            
+            staffRoster.forEach(staff => {
+                const staffId = staff._id || staff.id;
+                const roleClasses = getRoleColor(staff.role); 
+                const statusColor = staff.status === 'Active' ? 'bg-green-500' : 'bg-gray-400';
+                
+                // Truncate email logic
+                const displayEmail = staff.email && staff.email.length > 22 ? staff.email.substring(0, 20) + '...' : (staff.email || 'N/A');
 
-            try {
-                // IMPORTANT: When sending FormData, DO NOT set Content-Type header
-                const res = await fetch('/api/staff', {
-                    method: 'POST',
-                    body: formData // Send FormData directly
-                });
+                const cardHTML = `
+                    <div class="group bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-all duration-200 overflow-hidden relative flex flex-col h-full">
+                        
+                        <button class="remove-staff-btn absolute top-2 right-2 p-1.5 bg-white/80 backdrop-blur-sm text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-full transition-all opacity-0 group-hover:opacity-100 z-10 border border-transparent hover:border-red-100 shadow-sm" 
+                            data-staff-id="${staffId}" 
+                            data-staff-name="${staff.name}" 
+                            title="Remove Staff">
+                            <hero-icon-outline name="trash" class="h-4 w-4"></hero-icon-outline>
+                        </button>
 
-                // --- Improved Error Handling for 413, 500, etc. ---
-                let data;
-                try {
-                    data = await res.json();
-                } catch (jsonError) {
-                    const errorText = await res.text();
-                    // Check if server returned an HTML error page (starts with <)
-                    if (errorText.startsWith('<!DOCTYPE')) {
-                         throw new Error(`Server request failed with status ${res.status}. (Possible file size limit exceeded: 413)`);
-                    }
-                    throw new Error(`Failed to parse server response. Status: ${res.status}`);
-                }
-                // --- End Error Handling ---
-                
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Save Staff';
-                
-                if (data.success) {
-                    showSuccess(`Staff member ${data.staff.name || 'added'} added successfully!`);
-                    addStaffForm.reset();
-                    staffImageInput.value = ''; 
-                    initRoleField(); // Re-initialize fields
-                    initPlaceField();
-                    loadStaffRoster();
-                } else {
-                    // Check for the specific "Missing required fields" message here
-                    throw new Error(data.message || 'Server failed to add staff.');
-                }
-            } catch (error) {
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Save Staff';
-                console.error('❌ Error adding staff:', error);
-                showError('Failed to add staff member: ' + error.message);
-            }
-        }
+                        <div class="p-4 flex items-center gap-3 border-b border-gray-50">
+                            <div class="relative flex-shrink-0">
+                                <img src="${getImageUrl(staff)}" alt="${staff.name}" class="h-10 w-10 rounded-full object-cover border border-gray-200">
+                                <span class="absolute bottom-0 right-0 block h-2.5 w-2.5 rounded-full ring-2 ring-white ${statusColor}"></span>
+                            </div>
+                            <div class="min-w-0 flex-1">
+                                <h3 class="text-sm font-bold text-gray-900 truncate leading-tight mb-1" title="${staff.name}">${staff.name}</h3>
+                                <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium border ${roleClasses}">
+                                    ${staff.role}
+                                </span>
+                            </div>
+                        </div>
 
-        async function deleteStaffMember(staffId, staffName) {
-            if (!confirm(`Are you sure you want to remove ${staffName} from the staff roster? This cannot be undone.`)) {
-                return;
-            }
+                        <div class="px-4 py-3 text-xs text-gray-600 space-y-2 flex-grow bg-white">
+                            <div class="flex items-center">
+                                <hero-icon-outline name="office-building" class="h-3.5 w-3.5 mr-2 text-indigo-400 flex-shrink-0"></hero-icon-outline>
+                                <span class="truncate font-medium text-gray-700">${staff.place}</span>
+                            </div>
+                            <div class="flex items-center" title="${staff.email || ''}">
+                                <hero-icon-outline name="mail" class="h-3.5 w-3.5 mr-2 text-gray-400 flex-shrink-0"></hero-icon-outline>
+                                <span class="truncate text-gray-500">${displayEmail}</span>
+                            </div>
+                            <div class="flex items-center">
+                                <hero-icon-outline name="phone" class="h-3.5 w-3.5 mr-2 text-gray-400 flex-shrink-0"></hero-icon-outline>
+                                <span class="font-mono text-gray-500">${staff.phone || '--'}</span>
+                            </div>
+                        </div>
 
-            try {
-                const res = await fetch(`/api/staff/${staffId}`, {
-                    method: 'DELETE',
-                });
+                        <div class="px-4 py-2 bg-gray-50 border-t border-gray-100 mt-auto">
+                            <button class="view-staff-details-btn w-full flex items-center justify-center text-xs font-semibold text-indigo-600 hover:text-indigo-800 transition-colors py-1 group/btn" data-staff-id="${staffId}">
+                                Show Credentials
+                                <hero-icon-outline name="arrow-right" class="h-3 w-3 ml-1 transition-transform group-hover/btn:translate-x-1"></hero-icon-outline>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                staffRosterContainer.innerHTML += cardHTML;
+            });
+            toggleNoStaffMessage();
+        }
 
-                const data = await res.json();
-                if (data.success) {
-                    showSuccess(`🗑️ ${staffName} removed successfully.`);
-                    loadStaffRoster(); 
-                } else {
-                    throw new Error(data.message || 'Server failed to delete staff.');
-                }
-            } catch (error) {
-                console.error('❌ Error deleting staff:', error);
-                showError('Failed to remove staff member: ' + error.message);
-            }
-        }
-
-        // --- DYNAMIC FORM LOGIC FIXES (Minor adjustments) ---
-
-        // 1. Position/Role Logic
-        function initRoleField() {
-            staffRoleWrapper.innerHTML = '';
-            const selectId = 'staff-role-select';
-
-            let selectHTML = `
-                <label for="${selectId}" class="form-label">Position / Role *</label>
-                <select id="${selectId}" class="mt-1 block w-full form-input" required name="role_dropdown_value">
-                    <option value="" disabled selected>-- Select Standard Role --</option>
-                    ${CORE_ROLES.map(role => `<option value="${role}">${role}</option>`).join('')}
-                    <option value="Other">Other (Manual Entry)</option>
-                </select>
-            `;
-            staffRoleWrapper.innerHTML = selectHTML;
-            document.getElementById(selectId).addEventListener('change', handleRoleChange);
-        }
-
-        function handleRoleChange(e) {
-            const selectElement = e.target;
-            const selectedValue = selectElement.value;
-            let manualInput = staffRoleWrapper.querySelector('#staff-role-manual');
-
-            if (selectedValue === 'Other') {
-                if (!manualInput) {
-                    manualInput = document.createElement('input');
-                    manualInput.type = 'text';
-                    manualInput.id = 'staff-role-manual';
-                    manualInput.name = 'role'; // This is the field we submit
-                    manualInput.className = 'mt-1 block w-full form-input shadow-sm border-2 border-indigo-400';
-                    manualInput.placeholder = 'Type custom role here (e.g., Senior Electrician)';
-                    manualInput.required = true;
-                    
-                    const hiddenType = document.createElement('input');
-                    hiddenType.type = 'hidden';
-                    hiddenType.name = 'role_type';
-                    hiddenType.value = 'manual';
-
-                    selectElement.style.display = 'none';
-                    staffRoleWrapper.appendChild(manualInput);
-                    staffRoleWrapper.appendChild(hiddenType);
-                }
-            } else {
-                if (manualInput) {
-                    manualInput.remove();
-                    const hiddenField = staffRoleWrapper.querySelector('input[name="role_type"]');
-                    if (hiddenField) hiddenField.remove();
-                }
-                selectElement.style.display = 'block';
-            }
-        }
-
-        // 2. Duty Area/Place Logic
-        function initPlaceField() {
-            staffPlaceWrapper.innerHTML = '';
-            const selectId = 'staff-place-select';
-
-            const blockOptions = availableBlocks.map(block => 
-                `<option value="${block.blockName}">${block.blockName}</option>`
-            ).join('');
-
-            let selectHTML = `
-                <label for="${selectId}" class="form-label">Duty Area / Place *</label>
-                <select id="${selectId}" class="mt-1 block w-full form-input" required name="place_dropdown_value">
-                    <option value="" disabled selected>-- Select Block or Area --</option>
-                    ${blockOptions}
-                    <option value="Other">Other (Manual Entry)</option>
-                </select>
-            `;
-            staffPlaceWrapper.innerHTML = selectHTML;
-            document.getElementById(selectId).addEventListener('change', handlePlaceChange);
-        }
-
-        function handlePlaceChange(e) {
-            const selectElement = e.target;
-            const selectedValue = selectElement.value;
-            let manualInput = staffPlaceWrapper.querySelector('#staff-place-manual');
-
-            if (selectedValue === 'Other') {
-                if (!manualInput) {
-                    manualInput = document.createElement('input');
-                    manualInput.type = 'text';
-                    manualInput.id = 'staff-place-manual';
-                    manualInput.name = 'place'; // This is the field we submit
-                    manualInput.className = 'mt-1 block w-full form-input shadow-sm border-2 border-indigo-400';
-                    manualInput.placeholder = 'Type custom place here (e.g., Canteen, Main Gate)';
-                    manualInput.required = true;
-
-                    const hiddenType = document.createElement('input');
-                    hiddenType.type = 'hidden';
-                    hiddenType.name = 'place_type';
-                    hiddenType.value = 'manual';
-                    
-                    selectElement.style.display = 'none';
-                    staffPlaceWrapper.appendChild(manualInput);
-                    staffPlaceWrapper.appendChild(hiddenType);
-                }
-            } else {
-                if (manualInput) {
-                    manualInput.remove();
-                    const hiddenField = staffPlaceWrapper.querySelector('input[name="place_type"]');
-                    if (hiddenField) hiddenField.remove();
-                }
-                selectElement.style.display = 'block';
-            }
-        }
-
-        // --- CARD RENDERING (Unchanged) ---
-        function renderStaffRoster() {
-            staffRosterContainer.innerHTML = '';
-
-            if (staffRoster.length === 0) {
-                toggleNoStaffMessage();
-                return;
-            }
-            
-            staffRoster.forEach(staff => {
-                const staffId = staff._id || staff.id;
-                const roleColorClass = getRoleColor(staff.role);
-                const statusColorClass = getStatusColor(staff.status || 'Active');
-
-                const cardHTML = `
-                    <div class="bg-white rounded-xl shadow-lg border-t-8 border-indigo-600 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 relative">
-                        <button class="remove-staff-btn absolute top-3 right-3 p-1 text-red-500 hover:bg-red-100 rounded-full transition-colors duration-200 z-10" data-staff-id="${staffId}" data-staff-name="${staff.name}" title="Remove Staff">
-                            <hero-icon-solid name="x-circle" class="h-6 w-6"></hero-icon-solid>
-                        </button>
-
-                        <div class="p-4 flex items-center border-b pb-4">
-                            <img src="${getImageUrl(staff)}" alt="${staff.name}" class="staff-avatar h-14 w-14 rounded-full mr-4 ring-2 ring-indigo-200">
-                            <div>
-                                <h3 class="text-lg font-bold text-gray-900">${staff.name}</h3>
-                                <span class="text-sm font-semibold text-white px-2 py-0.5 rounded-full mt-1 inline-block ${roleColorClass}">${staff.role}</span>
-                            </div>
-                        </div>
-
-                        <div class="p-4 space-y-2 card-detail">
-                            <p class="flex items-start text-gray-700">
-                                <hero-icon-solid name="map-pin" class="h-4 w-4 mr-2 text-indigo-500 flex-shrink-0"></hero-icon-solid>
-                                <span class="font-medium text-gray-900">Duty Area:</span> ${staff.place}
-                            </p>
-                            <p class="flex items-start text-gray-700">
-                                <hero-icon-solid name="envelope" class="h-4 w-4 mr-2 text-indigo-500 flex-shrink-0"></hero-icon-solid>
-                                <span class="font-medium text-gray-900">Email:</span> ${staff.email || 'N/A'}
-                            </p>
-                            <p class="flex items-start text-gray-700">
-                                <hero-icon-solid name="phone" class="h-4 w-4 mr-2 text-indigo-500 flex-shrink-0"></hero-icon-solid>
-                                <span class="font-medium text-gray-900">Phone:</span> ${staff.phone || 'N/A'}
-                            </p>
-                            <p class="flex items-start text-gray-700">
-                                <hero-icon-solid name="check-circle" class="h-4 w-4 mr-2 flex-shrink-0 ${getStatusColor(staff.status || 'Active').split(' ')[0]}"></hero-icon-solid>
-                                <span class="font-medium text-gray-900">Status:</span> 
-                                <span class="font-semibold px-2 py-0.5 rounded-full text-xs ml-1 ${getStatusColor(staff.status || 'Active')}">${staff.status || 'Active'}</span>
-                            </p>
-                        </div>
-
-                        <div class="p-4 border-t text-center">
-                            <button class="view-staff-details-btn text-indigo-600 hover:text-indigo-800 text-sm font-medium" data-staff-id="${staffId}">
-                                View Login Info & Notes &rarr;
-                            </button>
-                        </div>
-                    </div>
-                `;
-                staffRosterContainer.innerHTML += cardHTML;
-            });
-            toggleNoStaffMessage();
-        }
-        
-        function showStaffDetails(staff) {
-            const staffDetailsContent = document.getElementById('staff-details-content');
-            staffDetailsContent.innerHTML = `
-                <div class="space-y-4">
-                    <h3 class="text-xl font-bold text-indigo-700 border-b pb-2">Details for ${staff.name}</h3>
-                    
-                    <div class="bg-gray-50 p-4 rounded-lg">
-                        <h4 class="font-semibold text-gray-800 mb-2 flex items-center">
-                            <hero-icon-solid name="key" class="h-5 w-5 mr-2 text-indigo-500"></hero-icon-solid>
-                            Login Credentials
-                        </h4>
-                        <p class="text-sm text-gray-700"><strong class="font-medium">Username:</strong> ${staff.username || 'N/A'}</p>
-                        <p class="text-sm text-gray-700"><strong class="font-medium">Password:</strong> [Hidden by design]</p>
-                    </div>
-
-                    <p class="text-sm text-gray-700 pt-2"><strong class="font-medium">Duty Notes:</strong> No notes recorded.</p>
-                    
-                </div>
-            `;
-            showModal('staff-details-modal');
-        }
-
-
-        // --- FORM SUBMISSION LOGIC (Finalized Fix) ---
-        addStaffForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const rawData = new FormData(addStaffForm); 
-            
-            // --- 1. Resolve Role and Place Values ---
-            // If manual input is present (meaning "Other" was selected), use the manual input field's value ('role'/'place').
-            // Otherwise, use the dropdown value ('role_dropdown_value'/'place_dropdown_value').
-            const assignedRole = rawData.get('role') || rawData.get('role_dropdown_value');
-            const assignedPlace = rawData.get('place') || rawData.get('place_dropdown_value');
-            
-            // ✅ Explicit Client-side validation check
-            if (!rawData.get('name') || !rawData.get('username') || !rawData.get('password') || !assignedRole || assignedRole === 'Other' || !assignedPlace || assignedPlace === 'Other') {
-                showError('Error: Name, Username, Password, Position/Role, and Duty Area are all required. Please ensure you select a specific role/area or fill out the manual "Other" field.');
-                return;
-            }
-            // If the resolved values are still 'Other', it means the user selected the option but didn't fill the manual text box.
-            // This is already checked above, but let's be safe.
-            if (assignedRole === 'Other' || assignedPlace === 'Other') {
-                 showError('Error: You selected "Other" but did not provide a manual entry.');
-                 return;
+        // --- FORM SUBMISSION ---
+        addStaffForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const rawData = new FormData(addStaffForm); 
+            const assignedRole = rawData.get('role') || rawData.get('role_dropdown_value');
+            const assignedPlace = rawData.get('place') || rawData.get('place_dropdown_value');
+            
+            if (!rawData.get('name') || !rawData.get('username') || !rawData.get('password') || !assignedRole || assignedRole === 'Other' || !assignedPlace || assignedPlace === 'Other') {
+                showError('Please fill in all required fields.');
+                return;
             }
 
-            // 1. Create a NEW FormData object for the server
-            const formDataToSubmit = new FormData();
+            const formDataToSubmit = new FormData();
+            formDataToSubmit.append('name', rawData.get('name'));
+            formDataToSubmit.append('username', rawData.get('username'));
+            formDataToSubmit.append('password', rawData.get('password'));
+            formDataToSubmit.append('joiningDate', new Date().toISOString()); 
+            formDataToSubmit.append('phone', rawData.get('phone') || ''); 
+            formDataToSubmit.append('email', rawData.get('email') || '');
+            formDataToSubmit.append('role', assignedRole); 
+            formDataToSubmit.append('place', assignedPlace); 
+            formDataToSubmit.append('status', 'Active'); 
+            
+            const imageFile = staffImageInput.files[0];
+            if (imageFile) formDataToSubmit.append('profileImage', imageFile);
+            
+            addStaffMember(formDataToSubmit);
+        });
 
-            // 2. Append all fields, ensuring mandatory ones are included
-            formDataToSubmit.append('name', rawData.get('name'));
-            formDataToSubmit.append('username', rawData.get('username'));
-            formDataToSubmit.append('password', rawData.get('password'));
-            
-            // ✅ FIX: Add joiningDate to satisfy backend validation
-            formDataToSubmit.append('joiningDate', new Date().toISOString()); 
+        async function addStaffMember(formData) {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="animate-spin inline-block h-4 w-4 border-2 border-white border-t-transparent rounded-full mr-2"></span>Saving...';
 
-            formDataToSubmit.append('phone', rawData.get('phone') || ''); 
-            formDataToSubmit.append('email', rawData.get('email') || '');
-            
-            // Append the resolved, guaranteed-valid role and place values
-            formDataToSubmit.append('role', assignedRole); 
-            formDataToSubmit.append('place', assignedPlace); 
-            
-            // Append the remaining default/optional fields
-            formDataToSubmit.append('notes', ''); 
-            formDataToSubmit.append('status', 'Active'); 
-            
-            // 3. Append the file. Multer uses the fieldname 'profileImage'.
-            const imageFile = staffImageInput.files[0];
-            if (imageFile) {
-                formDataToSubmit.append('profileImage', imageFile);
-            }
-            
-            // 4. Submit the clean FormData object
-            addStaffMember(formDataToSubmit);
-        });
+            try {
+                const res = await fetch('/api/staff', { method: 'POST', body: formData });
+                const data = await res.json();
+                
+                if (data.success) {
+                    showSuccess(`Staff added!`);
+                    addStaffForm.reset();
+                    staffImageInput.value = ''; 
+                    initRoleField(); 
+                    initPlaceField();
+                    loadStaffRoster();
+                } else {
+                    throw new Error(data.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showError(error.message || 'Failed to add staff.');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Create Staff Account';
+            }
+        }
 
-        // Listeners for action buttons on the cards
-        staffRosterContainer.addEventListener('click', (e) => {
-            const removeBtn = e.target.closest('.remove-staff-btn');
-            const viewBtn = e.target.closest('.view-staff-details-btn');
+        async function deleteStaffMember(staffId, staffName) {
+            if (!confirm(`Remove ${staffName}?`)) return;
 
-            if (removeBtn) {
-                const staffId = removeBtn.dataset.staffId;
-                const staffName = removeBtn.dataset.staffName;
-                deleteStaffMember(staffId, staffName);
-            }
-            
-            if (viewBtn) {
-                const staffId = viewBtn.dataset.staffId;
-                const staff = findStaffById(staffId);
-                if (staff) {
-                    showStaffDetails(staff);
-                }
-            }
-        });
+            try {
+                const res = await fetch(`/api/staff/${staffId}`, { method: 'DELETE' });
+                const data = await res.json();
+                if (data.success) {
+                    loadStaffRoster(); 
+                } else {
+                    alert('Failed to delete.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
 
-        // --- GENERIC MODAL LOGIC (Unchanged) ---
-        function showModal(modalId) {
-            const modal = document.getElementById(modalId);
-            if (!modal) return;
-            modal.classList.remove('hidden');
-            void modal.offsetWidth; 
-            requestAnimationFrame(() => {
-                modal.classList.add('active');
-            });
-        }
+        // --- FORM DYNAMICS ---
+        function initRoleField() {
+            staffRoleWrapper.innerHTML = `
+                <label for="staff-role-select" class="form-label">Role *</label>
+                <select id="staff-role-select" class="mt-1 block w-full form-input bg-gray-50" required name="role_dropdown_value">
+                    <option value="" disabled selected>-- Select Role --</option>
+                    ${CORE_ROLES.map(role => `<option value="${role}">${role}</option>`).join('')}
+                    <option value="Other">Other (Manual Entry)</option>
+                </select>`;
+            document.getElementById('staff-role-select').addEventListener('change', handleRoleChange);
+        }
 
-        function hideModal(modalId) {
-            const modal = document.getElementById(modalId);
-            if (!modal) return;
-            modal.classList.remove('active');
-            setTimeout(() => {
-                modal.classList.add('hidden');
-            }, 300); 
-        }
+        function handleRoleChange(e) {
+            const val = e.target.value;
+            if (val === 'Other') {
+                staffRoleWrapper.innerHTML = `
+                    <label class="form-label text-indigo-600">Custom Role Name *</label>
+                    <div class="flex gap-2">
+                        <input type="text" name="role" class="mt-1 block w-full form-input border-indigo-300 ring-2 ring-indigo-100" placeholder="e.g. Head Cook" required autofocus>
+                        <button type="button" onclick="initRoleField()" class="mt-1 px-3 bg-gray-200 rounded-md hover:bg-gray-300 text-gray-600">Cancel</button>
+                    </div>`;
+            }
+        }
 
-        document.addEventListener('click', (e) => {
-            if (e.target.dataset.modalHide) {
-                hideModal(e.target.dataset.modalHide);
-            }
-        });
-        
-        // --- INITIALIZATION ---
-        async function initApp() {
-            await loadAvailableBlocks();
-            await loadStaffRoster();
-            
-            // Initialize dynamic form fields and listeners
-            initRoleField();
-            initPlaceField();
-        }
-        initApp();
-    });
-</script>
+        function initPlaceField() {
+            const opts = availableBlocks.map(b => `<option value="${b.blockName}">${b.blockName}</option>`).join('');
+            staffPlaceWrapper.innerHTML = `
+                <label for="staff-place-select" class="form-label">Assigned Area *</label>
+                <select id="staff-place-select" class="mt-1 block w-full form-input bg-gray-50" required name="place_dropdown_value">
+                    <option value="" disabled selected>-- Select Area --</option>
+                    ${opts}
+                    <option value="Other">Other (Manual Entry)</option>
+                </select>`;
+            document.getElementById('staff-place-select').addEventListener('change', handlePlaceChange);
+        }
+
+        function handlePlaceChange(e) {
+            const val = e.target.value;
+            if (val === 'Other') {
+                staffPlaceWrapper.innerHTML = `
+                    <label class="form-label text-indigo-600">Custom Area Name *</label>
+                     <div class="flex gap-2">
+                        <input type="text" name="place" class="mt-1 block w-full form-input border-indigo-300 ring-2 ring-indigo-100" placeholder="e.g. Main Gate" required autofocus>
+                        <button type="button" onclick="initPlaceField()" class="mt-1 px-3 bg-gray-200 rounded-md hover:bg-gray-300 text-gray-600">Cancel</button>
+                    </div>`;
+            }
+        }
+        
+        // --- MODAL & CLICK HANDLERS ---
+        staffRosterContainer.addEventListener('click', (e) => {
+            const removeBtn = e.target.closest('.remove-staff-btn');
+            const viewBtn = e.target.closest('.view-staff-details-btn');
+
+            if (removeBtn) deleteStaffMember(removeBtn.dataset.staffId, removeBtn.dataset.staffName);
+            if (viewBtn) {
+                const staff = findStaffById(viewBtn.dataset.staffId);
+                if (staff) showStaffDetails(staff);
+            }
+        });
+
+        function showStaffDetails(staff) {
+            const content = document.getElementById('staff-details-content');
+            content.innerHTML = `
+                <div class="flex items-center space-x-4 mb-6">
+                    <img src="${getImageUrl(staff)}" class="h-16 w-16 rounded-full border-4 border-gray-100 shadow-sm object-cover">
+                    <div>
+                        <h4 class="text-xl font-bold text-gray-900">${staff.name}</h4>
+                        <span class="inline-block bg-indigo-100 text-indigo-800 text-xs px-2 py-0.5 rounded-full font-semibold border border-indigo-200">${staff.role}</span>
+                    </div>
+                </div>
+                
+                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
+                    <h5 class="text-xs font-bold text-yellow-800 uppercase tracking-wide mb-2 flex items-center">
+                        <hero-icon-solid name="lock-closed" class="h-3 w-3 mr-1"></hero-icon-solid> Credentials
+                    </h5>
+                    <div class="grid grid-cols-1 gap-2 text-sm">
+                        <div class="flex justify-between border-b border-yellow-200/50 pb-1">
+                            <span class="text-yellow-700">Username:</span>
+                            <span class="font-mono font-medium text-gray-900 bg-white px-2 rounded">${staff.username}</span>
+                        </div>
+                        <div class="flex justify-between pt-1">
+                            <span class="text-yellow-700">Password:</span>
+                            <span class="font-mono text-gray-400 italic">••••••••</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-2 text-sm text-gray-600">
+                    <p class="flex justify-between"><span class="font-medium">Joined:</span> <span>${new Date(staff.createdAt || Date.now()).toLocaleDateString()}</span></p>
+                    <p class="flex justify-between"><span class="font-medium">Status:</span> <span class="text-green-600 font-bold">Active</span></p>
+                </div>
+            `;
+            const modal = document.getElementById('staff-details-modal');
+            modal.classList.remove('hidden');
+            setTimeout(() => modal.classList.add('active'), 10);
+        }
+
+        document.querySelectorAll('[data-modal-hide]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const modal = document.getElementById('staff-details-modal');
+                modal.classList.remove('active');
+                setTimeout(() => modal.classList.add('hidden'), 300);
+            });
+        });
+
+        // --- INIT ---
+        initApp();
+        async function initApp() {
+            await loadAvailableBlocks();
+            await loadStaffRoster();
+            initRoleField();
+            initPlaceField();
+        }
+    });
+  </script>
 </body>
 </html>
