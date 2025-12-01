@@ -58,27 +58,9 @@
             </button>
         </div>
 
-        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="grid-header">
-                        <tr>
-                            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Name / ID</th>
-                            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Position</th>
-                            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Contact Info</th>
-                            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Duty Area (Place)</th>
-                            <th class="px-6 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
-                            <th class="px-6 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="staff-roster-container" class="bg-white divide-y divide-gray-200">
-                        <tr>
-                            <td colspan="6" class="text-center text-gray-500 py-4">
-                                🔄 Loading staff data...
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+        <div id="staff-roster-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div class="col-span-full text-center text-gray-500 py-4">
+                🔄 Loading staff data...
             </div>
         </div>
         <p id="no-staff-message" class="text-center text-gray-500 mt-10 hidden">No staff members have been added yet.</p>
@@ -133,7 +115,7 @@
                     </div>
                     <div id="staff-place-wrapper">
                         <label for="staff-place-manual" class="block text-sm font-semibold text-gray-700">Duty Area / Place *</label>
-                        <input type="text" id="staff-place-manual" name="placeManual" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm" placeholder="e.g., Canteen, Block D, Main Gate" required>
+                        <input type="text" id="staff-place-manual" name="place" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm" placeholder="e.g., Canteen, Block D, Main Gate" required>
                     </div>
                 </div>
 
@@ -163,6 +145,17 @@
             </form>
         </div>
     </div>
+
+    <div id="staff-details-modal" class="modal hidden fixed inset-0 z-30 flex items-center justify-center">
+        <div class="modal-backdrop fixed inset-0" data-modal-hide="staff-details-modal"></div>
+        <div class="modal-content bg-white p-8 rounded-xl shadow-2xl z-40 w-full max-w-lg mx-4">
+            <div id="staff-details-content">
+                </div>
+            <div class="flex justify-end pt-6 border-t mt-6">
+                <button type="button" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300" data-modal-hide="staff-details-modal">Close</button>
+            </div>
+        </div>
+    </div>
     
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -178,6 +171,8 @@
             const staffPlaceWrapper = document.getElementById('staff-place-wrapper');
             const staffImageInput = document.getElementById('staff-profile-image');
             const submitBtn = document.getElementById('add-staff-submit-btn');
+            const staffDetailsModal = document.getElementById('staff-details-modal');
+            const staffDetailsContent = document.getElementById('staff-details-content');
 
 
             // --- UTILITY FUNCTIONS ---
@@ -192,13 +187,35 @@
             }
 
             function getImageUrl(staff) {
-                // Use the backend-provided URL (_id based) or a default avatar
+                // Use the backend-provided URL, the temporary imageDataURL (for immediate view), or a default avatar
                 return staff.profileImageUrl || staff.imageDataURL || 'https://via.placeholder.com/150/A5B4FC/374151?text=Staff'; 
+            }
+            
+            function getRoleColor(role) {
+                const map = {
+                    'Warden': 'bg-red-600',
+                    'Security': 'bg-yellow-600',
+                    'Cleaning': 'bg-green-600',
+                    'Maintenance': 'bg-blue-600',
+                    'Office': 'bg-purple-600',
+                    'Other': 'bg-gray-600',
+                };
+                return map[role] || 'bg-indigo-600';
+            }
+
+            function getStatusColor(status) {
+                return status === 'Active' ? 'text-green-600 bg-green-100' : 'text-yellow-600 bg-yellow-100';
+            }
+
+            function findStaffById(staffId) {
+                return staffRoster.find(s => (s._id || s.id) == staffId);
             }
 
             // Function to display/hide the "No staff" message
             function toggleNoStaffMessage() {
-                if (staffRoster.length === 0) {
+                // Check if the container actually contains staff cards or just the loading message
+                const isLoaded = staffRosterContainer.innerHTML.indexOf('Loading staff data') === -1;
+                if (isLoaded && staffRoster.length === 0) {
                     noStaffMessage.classList.remove('hidden');
                 } else {
                     noStaffMessage.classList.add('hidden');
@@ -213,33 +230,31 @@
                     if (!res.ok) throw new Error(\`HTTP error! status: \${res.status}\`);
                     const data = await res.json();
                     if (data.success) {
+                        // Assuming the block objects have keys like { _id, blockName }
                         availableBlocks = data.blocks;
-                        console.log('✅ Available Blocks loaded:', availableBlocks);
                     } else {
                         throw new Error(data.message || 'Failed to load blocks.');
                     }
                 } catch (error) {
                     console.error('❌ Error loading blocks:', error);
-                    showError('Failed to load hostel blocks for assignment.');
                 }
             }
 
             async function loadStaffRoster() {
-                staffRosterContainer.innerHTML = '<tr><td colspan="6" class="text-center text-gray-500 py-4">🔄 Loading staff data...</td></tr>';
+                staffRosterContainer.innerHTML = '<div class="col-span-full text-center text-gray-500 py-4">🔄 Loading staff data...</div>';
                 try {
                     const res = await fetch('/api/staff');
                     if (!res.ok) throw new Error(\`HTTP error! status: \${res.status}\`);
                     const data = await res.json();
                     if (data.success) {
                         staffRoster = data.staff;
-                        console.log('✅ Staff Roster loaded:', staffRoster);
                         renderStaffRoster();
                     } else {
                         throw new Error(data.message || 'Failed to load staff roster.');
                     }
                 } catch (error) {
                     console.error('❌ Error loading staff:', error);
-                    staffRosterContainer.innerHTML = '<tr><td colspan="6" class="text-center text-red-500 py-4">❌ Failed to load staff roster. Check backend connection.</td></tr>';
+                    staffRosterContainer.innerHTML = '<div class="col-span-full text-center text-red-500 py-4">❌ Failed to load staff roster. Check backend connection.</div>';
                     toggleNoStaffMessage();
                 }
             }
@@ -249,6 +264,7 @@
                 submitBtn.textContent = 'Saving...';
 
                 try {
+                    // Send JSON data to the backend
                     const res = await fetch('/api/staff', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
@@ -263,8 +279,9 @@
                         showSuccess(\`Staff member \${staffData.name} added successfully!\`);
                         hideModal('add-staff-modal');
                         addStaffForm.reset();
-                        updateStaffPlaceInput(); // Reset view
-                        loadStaffRoster(); // Reload the list
+                        staffImageInput.value = ''; 
+                        updateStaffPlaceInput(); 
+                        loadStaffRoster();
                     } else {
                         throw new Error(data.message || 'Server failed to add staff.');
                     }
@@ -289,7 +306,7 @@
                     const data = await res.json();
                     if (data.success) {
                         showSuccess(\`🗑️ \${staffName} removed successfully.\`);
-                        loadStaffRoster(); // Reload the list
+                        loadStaffRoster(); 
                     } else {
                         throw new Error(data.message || 'Server failed to delete staff.');
                     }
@@ -307,7 +324,7 @@
                 if (selectedRole === 'Warden') {
                     // Render Block Dropdown
                     let options = availableBlocks.map(block => 
-                        `<option value="\${block.name}" data-block-id="\${block._id}">\${block.blockName}</option>`
+                        `<option value="\${block.blockName}" data-block-id="\${block._id}">\${block.blockName}</option>`
                     ).join('');
                     
                     let placeholder = availableBlocks.length > 0 ? '-- Select Block --' : 'No Blocks Available';
@@ -332,7 +349,7 @@
                 }
             }
 
-            // --- GRID RENDERING ---
+            // --- CARD RENDERING ---
             function renderStaffRoster() {
                 staffRosterContainer.innerHTML = '';
 
@@ -342,65 +359,91 @@
                 }
                 
                 staffRoster.forEach(staff => {
-                    // Assume 'status' is provided by the backend, or default to Active
-                    const staffStatus = staff.status || 'Active';
-                    const statusColor = staffStatus === 'Active' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700';
-                    const roleColor = {
-                        'Warden': 'bg-red-500', 'Security': 'bg-yellow-500', 'Cleaning': 'bg-green-500',
-                        'Maintenance': 'bg-blue-500', 'Office': 'bg-purple-500', 'Other': 'bg-gray-500',
-                    }[staff.role] || 'bg-indigo-500';
-                    
-                    // The staff._id is necessary for the API DELETE call
-                    const staffId = staff._id || staff.id; 
+                    const staffId = staff._id || staff.id;
+                    const roleColorClass = getRoleColor(staff.role);
+                    const statusColorClass = getStatusColor(staff.status || 'Active');
 
-                    const rowHTML = `
-                        <tr class="hover:bg-gray-50">
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="flex items-center">
-                                    <img class="h-10 w-10 rounded-full staff-avatar" src="${getImageUrl(staff)}" alt="${staff.name}">
-                                    <div class="ml-4">
-                                        <div class="text-sm font-medium text-gray-900">${staff.name}</div>
-                                        <div class="text-xs text-gray-500">ID: ${staff.username || 'N/A'}</div>
-                                    </div>
+                    const cardHTML = `
+                        <div class="bg-white rounded-xl shadow-lg border-t-8 border-indigo-600 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 relative">
+                            <button class="remove-staff-btn absolute top-3 right-3 p-1 text-red-500 hover:bg-red-100 rounded-full transition-colors duration-200 z-10" data-staff-id="${staffId}" data-staff-name="${staff.name}" title="Remove Staff">
+                                <hero-icon-solid name="x-circle" class="h-6 w-6"></hero-icon-solid>
+                            </button>
+
+                            <div class="p-6 flex items-center border-b pb-4">
+                                <img src="${getImageUrl(staff)}" alt="${staff.name}" class="staff-avatar h-16 w-16 rounded-full mr-4 ring-2 ring-indigo-200">
+                                <div>
+                                    <h3 class="text-xl font-bold text-gray-900">${staff.name}</h3>
+                                    <span class="text-sm font-semibold text-white px-3 py-1 rounded-full mt-1 inline-block ${roleColorClass}">${staff.role}</span>
                                 </div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="text-xs font-semibold px-3 py-1 text-white rounded-full ${roleColor}">${staff.role}</span>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                                <div><hero-icon-solid name="phone" class="h-4 w-4 inline mr-1 text-indigo-500"></hero-icon-solid> ${staff.phone || 'N/A'}</div>
-                                <div><hero-icon-solid name="envelope" class="h-4 w-4 inline mr-1 text-indigo-500"></hero-icon-solid> ${staff.email || 'N/A'}</div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">
-                                ${staff.place}
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-center">
-                                <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${statusColor}">
-                                    ${staffStatus}
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium space-x-2">
-                                <button class="view-staff-details-btn px-3 py-1 bg-indigo-500 text-white text-xs font-medium rounded-md shadow-sm hover:bg-indigo-600" data-staff-id="${staffId}">
-                                    View Notes
+                            </div>
+
+                            <div class="p-6 space-y-3 text-sm">
+                                <p class="flex items-start text-gray-700">
+                                    <hero-icon-solid name="map-pin" class="h-5 w-5 mr-3 text-indigo-500 flex-shrink-0"></hero-icon-solid>
+                                    <span class="font-medium text-gray-900">Duty Area:</span> ${staff.place}
+                                </p>
+                                <p class="flex items-start text-gray-700">
+                                    <hero-icon-solid name="envelope" class="h-5 w-5 mr-3 text-indigo-500 flex-shrink-0"></hero-icon-solid>
+                                    <span class="font-medium text-gray-900">Email:</span> ${staff.email || 'N/A'}
+                                </p>
+                                <p class="flex items-start text-gray-700">
+                                    <hero-icon-solid name="phone" class="h-5 w-5 mr-3 text-indigo-500 flex-shrink-0"></hero-icon-solid>
+                                    <span class="font-medium text-gray-900">Phone:</span> ${staff.phone || 'N/A'}
+                                </p>
+                                <p class="flex items-start text-gray-700">
+                                    <hero-icon-solid name="check-circle" class="h-5 w-5 mr-3 flex-shrink-0 ${statusColorClass.split(' ')[0]}"></hero-icon-solid>
+                                    <span class="font-medium text-gray-900">Status:</span> 
+                                    <span class="font-semibold px-2 py-0.5 rounded-full text-xs ml-1 ${statusColorClass}">${staff.status || 'Active'}</span>
+                                </p>
+                            </div>
+
+                            <div class="p-4 border-t text-center">
+                                <button class="view-staff-details-btn text-indigo-600 hover:text-indigo-800 text-sm font-medium" data-staff-id="${staffId}">
+                                    View Login Info & Notes &rarr;
                                 </button>
-                                <button class="remove-staff-btn px-3 py-1 bg-red-500 text-white text-xs font-medium rounded-md shadow-sm hover:bg-red-600" data-staff-id="${staffId}" data-staff-name="${staff.name}">
-                                    Remove
-                                </button>
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     `;
-                    staffRosterContainer.innerHTML += rowHTML;
+                    staffRosterContainer.innerHTML += cardHTML;
                 });
                 toggleNoStaffMessage();
             }
+            
+            // Displays detailed notes and login info in a modal
+            function showStaffDetails(staff) {
+                staffDetailsContent.innerHTML = `
+                    <div class="space-y-4">
+                        <h3 class="text-xl font-bold text-indigo-700 border-b pb-2">Details for ${staff.name}</h3>
+                        
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-gray-800 mb-2 flex items-center">
+                                <hero-icon-solid name="key" class="h-5 w-5 mr-2 text-indigo-500"></hero-icon-solid>
+                                Login Credentials
+                            </h4>
+                            <p class="text-sm text-gray-700"><strong class="font-medium">Username:</strong> ${staff.username || 'N/A'}</p>
+                            <p class="text-sm text-gray-700"><strong class="font-medium">Password:</strong> [Hidden by design]</p>
+                        </div>
 
-            // --- FORM SUBMISSION HANDLER ---
+                        <div class="p-4 rounded-lg border border-gray-200">
+                            <h4 class="font-semibold text-gray-800 mb-2 flex items-center">
+                                <hero-icon-solid name="document-text" class="h-5 w-5 mr-2 text-indigo-500"></hero-icon-solid>
+                                Notes & Duty Hours
+                            </h4>
+                            <p class="text-sm text-gray-700">${staff.notes || 'No specific notes recorded.'}</p>
+                        </div>
+                    </div>
+                `;
+                showModal('staff-details-modal');
+            }
+
+
+            // --- FORM SUBMISSION & ACTION HANDLERS ---
             addStaffForm.addEventListener('submit', (e) => {
                 e.preventDefault();
                 
                 const data = new FormData(addStaffForm);
                 const role = data.get('role');
-                const place = data.get('place'); // Field name is consistent thanks to updateStaffPlaceInput()
+                const place = data.get('place');
 
                 const imageFile = staffImageInput.files[0];
                 
@@ -419,7 +462,6 @@
                     email: data.get('email'),
                     notes: data.get('notes'),
                     status: 'Active',
-                    // profileImageUrl: will be set by backend after saving image
                 };
 
                 // Handle Profile Picture (read as Base64 for JSON submission)
@@ -439,7 +481,6 @@
                 }
             });
 
-            // --- ACTION BUTTON HANDLERS ---
             staffRoleSelect.addEventListener('change', updateStaffPlaceInput);
 
             staffRosterContainer.addEventListener('click', (e) => {
@@ -454,24 +495,14 @@
                 
                 if (viewBtn) {
                     const staffId = viewBtn.dataset.staffId;
-                    const staff = staffRoster.find(s => (s._id || s.id) === staffId);
+                    const staff = findStaffById(staffId);
                     if (staff) {
-                         alert(\`Full Details for \${staff.name} (\${staff.role}):\\n
-                         -- Login --
-                         Username: \${staff.username}\\n
-                         Password: \${staff.password ? '[Hidden]' : 'N/A'}\\n
-                         -- Contact --
-                         Email: \${staff.email || 'N/A'}\\n
-                         Phone: \${staff.phone || 'N/A'}\\n
-                         -- Duty --
-                         Role: \${staff.role}\\n
-                         Duty Area: \${staff.place}\\n
-                         Notes: \${staff.notes || 'No notes.'}\`);
+                        showStaffDetails(staff);
                     }
                 }
             });
 
-            // --- MODAL LOGIC ---
+            // --- GENERIC MODAL LOGIC ---
             function showModal(modalId) {
                 const modal = document.getElementById(modalId);
                 if (!modal) return;
@@ -508,7 +539,6 @@
             async function initApp() {
                 await loadAvailableBlocks();
                 await loadStaffRoster();
-                // Call updateStaffPlaceInput again to ensure the dropdown renders with fetched blocks
                 updateStaffPlaceInput();
             }
             initApp();
