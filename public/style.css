@@ -1,0 +1,30 @@
+body {
+    /* Applied Inter font stack */
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: #1f2937; /* Dark Gray for text */
+}
+/* Style to force uniform (tabular) number alignment for dashboard stats */
+#stat-total-capacity, #stat-occupancy-percent, #stat-open-complaints, #stat-attendance-percent, 
+#stat-fees-pending, #stat-visitors-today, #stat-occupancy-label, 
+#detail-stat-capacity, #detail-stat-occupancy, #detail-stat-available, .text-3xl {
+    /* Force tabular numbers (aligns figures vertically regardless of width) */
+    font-feature-settings: "tnum";
+    font-variant-numeric: tabular-nums;
+}
+
+.progress-ring-text { font-size: 0.75rem; font-weight: 600; }
+.modal-backdrop { background-color: rgba(0, 0, 0, 0.5); transition: opacity 0.3s ease-in-out; }
+.modal-content { transition: all 0.3s ease-in-out; transform: translateY(-20px); opacity: 0; }
+.modal.active .modal-backdrop { opacity: 1; }
+.modal.active .modal-content { transform: translateY(0); opacity: 1; }
+.progress-bar { background-color: #e9ecef; border-radius: 9999px; overflow: hidden; height: 8px; }
+.progress-bar-inner { height: 100%; border-radius: 9999px; transition: width 0.3s ease; }
+.progress-ring-circle { transition: stroke-dashoffset 0.5s ease-out; transform: rotate(-90deg); transform-origin: 50% 50%; }
+.progress-ring-text { font-size: 1rem; font-weight: 600; }
+.activity-card-image {
+    height: 150px;
+    object-fit: cover;
+    width: 100%;
+}
+/* Custom style to maintain space where the emoji/letter placeholder was */
+.icon-space { display: inline-block; width: 0.5em; overflow: hidden; }
