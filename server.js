@@ -1,7 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const fsp = require('fs').promises; // ✅ Use fsp for PROMISE-BASED file operations (like async read/write)
-const fs = require('fs');           // ✅ Use fs for STANDARD/SYNCHRONOUS file operations (like existsSync)
+const fsp = require('fs').promises; // Promise-based file operations
+const fs = require('fs');           // Standard/Synchronous file operations (for existsSync)
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const open = require("open");
@@ -31,9 +31,14 @@ const PORT = 5000;
 // --- MIDDLEWARE (Order is very important) ---
 // 1. CORS
 app.use(cors());
-app.use(express.json());
+
+// ✅ FIX: Increased payload size limits to prevent 413 error from large JSON bodies
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ limit: '10mb', extended: true }));
 // 2. JSON/Body Parser
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '10mb' }));
+app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
+
 // 3. Static Files (This fixes your 404 error)
 // This line serves ALL files from your 'public' folder (like .html, .js, .css)
 app.use(express.static(path.join(__dirname, 'public')));
@@ -50,8 +55,8 @@ app.use('/api/staff', staffRoutes);
 
 // --- Multer Configuration ---
 const uploadDir = 'public/uploads';
-if (!fs.existsSync(uploadDir)) { // ✅ FIXED: Using fs (synchronous)
-    fs.mkdirSync(uploadDir, { recursive: true }); // ✅ FIXED: Using fs (synchronous)
+if (!fs.existsSync(uploadDir)) { 
+    fs.mkdirSync(uploadDir, { recursive: true }); 
 }
 
 const storage = multer.diskStorage({

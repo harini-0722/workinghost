@@ -119,9 +119,9 @@
                         <div>
                             <label for="staff-profile-image" class="form-label">Profile Photo</label>
                             <input type="file" id="staff-profile-image" name="profileImage" class="mt-1 block w-full text-xs text-gray-500
-                                    file:mr-2 file:py-1 file:px-3 file:rounded-full file:border-0
-                                    file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700
-                                    hover:file:bg-indigo-100" accept="image/*">
+                                         file:mr-2 file:py-1 file:px-3 file:rounded-full file:border-0
+                                         file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700
+                                         hover:file:bg-indigo-100" accept="image/*">
                         </div>
                     </div>
                     
@@ -220,7 +220,7 @@
             }
         }
         
-        // --- API CALLS (Unchanged) ---
+        // --- API CALLS ---
         async function loadAvailableBlocks() {
             try {
                 const res = await fetch('/api/blocks');
@@ -258,23 +258,37 @@
             }
         }
 
-        async function addStaffMember(staffData) {
+        // ✅ MODIFIED: Function to handle FormData submission
+        async function addStaffMember(formData) {
             submitBtn.disabled = true;
             submitBtn.textContent = 'Saving...';
 
             try {
+                // IMPORTANT: When sending FormData, DO NOT set Content-Type header
                 const res = await fetch('/api/staff', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(staffData)
+                    body: formData // Send FormData directly
                 });
 
-                const data = await res.json();
+                // --- Improved Error Handling for 413, 500, etc. ---
+                let data;
+                try {
+                    data = await res.json();
+                } catch (jsonError) {
+                    const errorText = await res.text();
+                    // Check if server returned an HTML error page (starts with <)
+                    if (errorText.startsWith('<!DOCTYPE')) {
+                         throw new Error(`Server request failed with status ${res.status}. (Possible file size limit exceeded: 413)`);
+                    }
+                    throw new Error(`Failed to parse server response. Status: ${res.status}`);
+                }
+                // --- End Error Handling ---
+                
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'Save Staff';
                 
                 if (data.success) {
-                    showSuccess(`Staff member ${staffData.name} added successfully!`);
+                    showSuccess(`Staff member ${data.staff.name || 'added'} added successfully!`);
                     addStaffForm.reset();
                     staffImageInput.value = ''; 
                     initRoleField(); // Re-initialize fields
@@ -314,7 +328,7 @@
             }
         }
 
-        // --- DYNAMIC FORM LOGIC FIXES ---
+        // --- DYNAMIC FORM LOGIC FIXES (Minor adjustments) ---
 
         // 1. Position/Role Logic
         function initRoleField() {
@@ -348,22 +362,18 @@
                     manualInput.placeholder = 'Type custom role here (e.g., Senior Electrician)';
                     manualInput.required = true;
                     
-                    // Add a hidden field to identify that a manual input was used
                     const hiddenType = document.createElement('input');
                     hiddenType.type = 'hidden';
                     hiddenType.name = 'role_type';
                     hiddenType.value = 'manual';
 
-                    // Hide the original select and insert the manual input
                     selectElement.style.display = 'none';
                     staffRoleWrapper.appendChild(manualInput);
                     staffRoleWrapper.appendChild(hiddenType);
                 }
             } else {
-                // Revert to dropdown if we switch back from Other
                 if (manualInput) {
                     manualInput.remove();
-                    // Also remove the hidden field if present
                     const hiddenField = staffRoleWrapper.querySelector('input[name="role_type"]');
                     if (hiddenField) hiddenField.remove();
                 }
@@ -407,7 +417,6 @@
                     manualInput.placeholder = 'Type custom place here (e.g., Canteen, Main Gate)';
                     manualInput.required = true;
 
-                    // Add a hidden field to identify that a manual input was used
                     const hiddenType = document.createElement('input');
                     hiddenType.type = 'hidden';
                     hiddenType.name = 'place_type';
@@ -510,13 +519,13 @@
         }
 
 
-        // --- FORM SUBMISSION LOGIC ---
-        addStaffForm.addEventListener('submit', (e) => {
+        // --- FORM SUBMISSION LOGIC (The main fix) ---
+        addStaffForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            const data = new FormData(addStaffForm);
-            const imageFile = staffImageInput.files[0];
-
+            // Collect form data using the constructor
+            const data = new FormData(addStaffForm); 
+            
             // --- Determine Role and Place values based on which field is visible ---
             let assignedRole;
             if (staffRoleWrapper.querySelector('#staff-role-manual')) {
@@ -536,41 +545,31 @@
                 assignedPlace = data.get('place_dropdown_value');
             }
             
-            if (!assignedRole || assignedRole === 'Other') {
-                 showError('Error: Please enter a specific Position/Role.');
-                 return;
-            }
-            if (!assignedPlace || assignedPlace === 'Other') {
-                 showError('Error: Please select a Duty Area/Place.');
-                 return;
+            if (!assignedRole || assignedRole === 'Other' || !assignedPlace || assignedPlace === 'Other') {
+                showError('Error: Please specify a valid Position/Role and Duty Area/Place.');
+                return;
             }
             
-            const staffData = {
-                name: data.get('name'),
-                username: data.get('username'),
-                password: data.get('password'),
-                role: assignedRole, // Corrected value
-                place: assignedPlace, // Corrected value
-                phone: data.get('phone'),
-                email: data.get('email'),
-                notes: '', 
-                status: 'Active',
-            };
+            // 1. Create a NEW FormData object for the server
+            const formDataToSubmit = new FormData();
 
+            // 2. Append the required data fields with their resolved values
+            formDataToSubmit.append('name', data.get('name'));
+            formDataToSubmit.append('username', data.get('username'));
+            formDataToSubmit.append('password', data.get('password'));
+            formDataToSubmit.append('phone', data.get('phone'));
+            formDataToSubmit.append('email', data.get('email'));
+            formDataToSubmit.append('role', assignedRole); 
+            formDataToSubmit.append('place', assignedPlace); 
+            
+            // 3. Append the file. Multer uses the fieldname 'profileImage'.
+            const imageFile = staffImageInput.files[0];
             if (imageFile) {
-                const reader = new FileReader();
-                reader.onloadend = () => {
-                    staffData.imageDataURL = reader.result; 
-                    addStaffMember(staffData);
-                };
-                reader.onerror = () => {
-                    showError('Failed to read image file.');
-                    addStaffMember(staffData); 
-                };
-                reader.readAsDataURL(imageFile);
-            } else {
-                addStaffMember(staffData); 
+                formDataToSubmit.append('profileImage', imageFile);
             }
+            
+            // 4. Submit the clean FormData object
+            addStaffMember(formDataToSubmit);
         });
 
         // Listeners for action buttons on the cards
