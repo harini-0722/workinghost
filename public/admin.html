@@ -11,17 +11,22 @@
     
     <link rel="stylesheet" href="style.css">
     <style>
-        /* Custom UI Theme: Mild Cyan/Teal Blue */
+        /* Custom UI Theme: Clean & Energetic Gradient Background */
         :root {
-            /* Cyan 50 - Very light blue/cyan for the background */
-            --color-background: #e0f7fa; 
-            /* Dark Cyan for main text/headers */
-            --color-text-dark: #006064; 
+            /* Define the colors from the palette you liked */
+            --color-light-cyan: #84CEEB; 
+            --color-pale-lilac: #C1C8E4;
+            --color-text-dark: #006064; /* Dark Cyan for main text/headers */
         }
 
-        /* Apply the custom background color to the body */
+        /* Apply a linear gradient background to the body */
         body {
-            background-color: var(--color-background);
+            /* Gradient: Starts bottom-left with Lilac, blends up to Light Cyan */
+            background: linear-gradient(to top right, var(--color-pale-lilac), var(--color-light-cyan));
+            
+            /* Ensure the gradient covers the entire height */
+            min-height: 100vh;
+            background-attachment: fixed; /* Ensures the gradient stays fixed on scroll */
             font-family: 'Inter', sans-serif;
         }
 
@@ -470,7 +475,7 @@
                 </div>
             </div>
         </div>
-        </main>
+        </main>
     <footer class="mt-12 py-6 border-t border-gray-200 bg-white">
         <div class="w-full mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <p class="text-sm text-gray-500">
@@ -702,15 +707,15 @@
             <div class="p-6 overflow-y-auto space-y-6">
                 <div class="bg-white p-4 rounded-lg shadow-sm">
                     <div class="flex gap-4 text-center">
-                        <div class="flex-1">
+                        <div>
                             <span class="text-sm text-gray-500"><span class="icon-space"> </span>Capacity</span>
                             <p class="text-2xl font-bold text-gray-800" id="modal-room-capacity">2</p>
                         </div>
-                        <div class="flex-1">
+                        <div>
                             <span class="text-sm text-gray-500"><span class="icon-space"> </span>Occupancy</span>
                             <p class="text-2xl font-bold text-blue-600" id="modal-room-occupancy">2</p>
                         </div>
-                        <div class="flex-1">
+                        <div>
                             <span class="text-sm text-gray-500"><span class="icon-space"> </span>Available Beds: </span>
                             <p class="text-2xl font-bold text-green-600" id="modal-room-available">0</p>
                         </div>
