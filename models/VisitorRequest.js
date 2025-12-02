@@ -24,8 +24,17 @@ const visitorRequestSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ['Pending', 'Approved', 'Rejected'],
+        // UPDATED: Added 'Checked In' and 'Checked Out' to the allowed values
+        enum: ['Pending', 'Approved', 'Rejected', 'Checked In', 'Checked Out'],
         default: 'Pending'
+    },
+    // NEW FIELD: To track when they actually arrive
+    checkInTime: {
+        type: Date
+    },
+    // NEW FIELD: To track when they actually leave
+    checkOutTime: {
+        type: Date
     },
     submissionDate: {
         type: Date,

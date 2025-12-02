@@ -159,7 +159,6 @@ document.addEventListener('DOMContentLoaded', () => {
     async function loadVisitorLogs() {
         try {
             console.log('🔄 Loading visitor logs from database...');
-            // FIX: Corrected URL to match server.js setup (app.use('/api/visitor-request', visitorRoutes))
             const res = await fetch('/api/visitor-request'); 
             
             if (!res.ok) {
@@ -169,7 +168,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await res.json();
             
             if (data.success) {
-                // Assuming the backend returns logs in a 'logs' property
                 appState.visitorLogs = data.logs || []; 
                 console.log('✅ Visitor logs loaded from server:', appState.visitorLogs);
                 
@@ -188,7 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('❌ Failed to load visitor logs data:', error);
             // Show error in the log container if the view is open
             if (!visitorsView.classList.contains('hidden')) {
-                visitorLogContainer.innerHTML = `<tr><td colspan="6" class="text-center text-red-500 py-6">Error: Failed to load visitor logs. Check server status.</td></tr>`;
+                visitorLogContainer.innerHTML = `<tr><td colspan="7" class="text-center text-red-500 py-6">Error: Failed to load visitor logs. Check server status.</td></tr>`;
             }
         }
     }
@@ -196,9 +194,182 @@ document.addEventListener('DOMContentLoaded', () => {
     // Function to update the visitor count card on the dashboard
     function updateVisitorCount() {
         const today = new Date().toISOString().split('T')[0];
-        // Use the loaded data in appState.visitorLogs
-        const visitorsToday = appState.visitorLogs.filter(v => v.date === today).length;
+        // Use rawDate if available for more accuracy, otherwise date
+        const visitorsToday = appState.visitorLogs.filter(v => (v.rawDate ? v.rawDate.split('T')[0] : v.date) === today).length;
         statVisitorsToday.textContent = `${visitorsToday} Today`;
+    }
+
+    // --- UPDATED VISITOR VIEW LOGIC ---
+    function renderVisitorsView() {
+        const searchTerm = visitorSearchInput.value.toLowerCase();
+        const dateFilter = visitorDateFilter.value;
+        visitorLogContainer.innerHTML = '';
+        
+        const logsToFilter = appState.visitorLogs; 
+        
+        const filteredLogs = logsToFilter.filter(log => {
+            const searchMatch = (log.visitorName?.toLowerCase().includes(searchTerm)) ||
+                                (log.studentName?.toLowerCase().includes(searchTerm)) ||
+                                (log.roomNumber?.toLowerCase().includes(searchTerm));
+            
+            // Handle date matching securely
+            const logDate = log.rawDate ? new Date(log.rawDate).toISOString().split('T')[0] : log.date;
+            const dateMatch = (!dateFilter) || (logDate === dateFilter);
+            
+            return searchMatch && dateMatch;
+        });
+        
+        if (filteredLogs.length === 0) {
+            visitorLogContainer.innerHTML = `<tr><td colspan="7" class="text-center text-gray-500 py-6">No visitor logs match the criteria.</td></tr>`;
+            return;
+        }
+
+        // Sort: Pending first, then by date
+        filteredLogs.sort((a, b) => {
+            if (a.status === 'Pending' && b.status !== 'Pending') return -1;
+            if (a.status !== 'Pending' && b.status === 'Pending') return 1;
+            const dateA = a.rawDate ? new Date(a.rawDate) : new Date(a.date);
+            const dateB = b.rawDate ? new Date(b.rawDate) : new Date(b.date);
+            return dateB - dateA; // Newest first
+        });
+
+        filteredLogs.forEach(log => {
+            let statusClass = '';
+            let actionButtons = '';
+
+            // 1. Determine Status Color
+            switch(log.status) {
+                case 'Approved': statusClass = 'bg-blue-100 text-blue-700'; break;
+                case 'Rejected': statusClass = 'bg-red-100 text-red-700'; break;
+                case 'Checked In': statusClass = 'bg-green-100 text-green-700'; break;
+                case 'Checked Out': statusClass = 'bg-gray-100 text-gray-700'; break;
+                default: statusClass = 'bg-yellow-100 text-yellow-700'; // Pending
+            }
+
+            // 2. Generate Buttons based on Status
+            const viewBtn = `<button class="view-visitor-btn text-gray-500 hover:text-blue-600 ml-2" data-id="${log.id}" title="View Details"><hero-icon-solid name="eye" class="h-5 w-5"></hero-icon-solid></button>`;
+
+            if (log.status === 'Pending') {
+                actionButtons = `
+                    <button class="update-visitor-btn bg-green-500 text-white px-2 py-1 rounded text-xs hover:bg-green-600 transition" data-id="${log.id}" data-action="Approved">Approve</button>
+                    <button class="update-visitor-btn bg-red-500 text-white px-2 py-1 rounded text-xs hover:bg-red-600 ml-1 transition" data-id="${log.id}" data-action="Rejected">Reject</button>
+                `;
+            } else if (log.status === 'Approved') {
+                actionButtons = `
+                    <button class="update-visitor-btn bg-indigo-500 text-white px-2 py-1 rounded text-xs hover:bg-indigo-600 transition" data-id="${log.id}" data-action="Checked In">Check In</button>
+                `;
+            } else if (log.status === 'Checked In') {
+                actionButtons = `
+                    <button class="update-visitor-btn bg-orange-500 text-white px-2 py-1 rounded text-xs hover:bg-orange-600 transition" data-id="${log.id}" data-action="Checked Out">Check Out</button>
+                `;
+            } else {
+                actionButtons = `<span class="text-xs text-gray-400 mr-2">Completed</span>`;
+            }
+
+            const rowHTML = `
+                <tr class="hover:bg-gray-50 transition-colors border-b">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${log.visitorName}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                        <div class="font-medium">${log.studentName}</div>
+                        <div class="text-xs text-gray-500">${log.roomNumber}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                        ${log.startDate}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${statusClass}">
+                            ${log.status}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-xs text-gray-500">
+                        <div><span class="font-semibold">In:</span> ${log.timeIn}</div>
+                        <div><span class="font-semibold">Out:</span> ${log.timeOut}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
+                        <div class="flex items-center justify-center">
+                            ${actionButtons}
+                            ${viewBtn}
+                        </div>
+                    </td>
+                </tr>
+            `;
+            visitorLogContainer.innerHTML += rowHTML;
+        });
+    }
+
+    // --- NEW: Handle Visitor Actions (Approve, Reject, Check In/Out) ---
+    async function handleVisitorAction(id, action) {
+        if(!confirm(`Are you sure you want to mark this request as ${action}?`)) return;
+
+        try {
+            const res = await fetch(`/api/visitor-request/${id}/status`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status: action })
+            });
+
+            const data = await res.json();
+            
+            if (data.success) {
+                showSuccess(`Visitor status updated to ${action}`);
+                await loadVisitorLogs(); // Reload table to show new status/buttons
+            } else {
+                throw new Error(data.message);
+            }
+        } catch (error) {
+            console.error('Error updating visitor status:', error);
+            showError(error.message);
+        }
+    }
+
+    // --- NEW: Show Visitor Details Modal ---
+    function showVisitorDetailsModal(id) {
+        const log = appState.visitorLogs.find(l => l.id === id);
+        if(!log) return;
+
+        const content = document.getElementById('visitor-details-content');
+        if (!content) {
+            console.error("visitor-details-content element not found");
+            return;
+        }
+
+        content.innerHTML = `
+            <div class="grid grid-cols-2 gap-4 text-sm">
+                <div class="col-span-2 flex justify-between items-center border-b pb-2">
+                    <h3 class="text-lg font-bold text-gray-800">${log.visitorName}</h3>
+                    <span class="px-3 py-1 rounded-full text-xs font-bold bg-blue-50 text-blue-700">${log.status}</span>
+                </div>
+                <div>
+                    <span class="text-xs text-gray-500 uppercase tracking-wide">Student Host</span>
+                    <p class="font-semibold text-gray-800">${log.studentName}</p>
+                </div>
+                <div>
+                    <span class="text-xs text-gray-500 uppercase tracking-wide">Room Number</span>
+                    <p class="font-semibold text-gray-800">${log.roomNumber}</p>
+                </div>
+                <div>
+                    <span class="text-xs text-gray-500 uppercase tracking-wide">Start Date</span>
+                    <p class="text-gray-800">${log.startDate}</p>
+                </div>
+                <div>
+                    <span class="text-xs text-gray-500 uppercase tracking-wide">End Date</span>
+                    <p class="text-gray-800">${log.endDate}</p>
+                </div>
+                <div>
+                    <span class="text-xs text-gray-500 uppercase tracking-wide">Check-In Time</span>
+                    <p class="text-green-700 font-medium">${log.timeIn}</p>
+                </div>
+                <div>
+                    <span class="text-xs text-gray-500 uppercase tracking-wide">Check-Out Time</span>
+                    <p class="text-red-700 font-medium">${log.timeOut}</p>
+                </div>
+                <div class="col-span-2 bg-gray-50 p-4 rounded-lg mt-2">
+                    <span class="text-xs text-gray-500 uppercase tracking-wide block mb-1">Purpose of Visit</span>
+                    <p class="text-gray-700 italic">"${log.reason || 'No reason provided'}"</p>
+                </div>
+            </div>
+        `;
+        showModal('visitor-details-modal');
     }
 
     // --- COMPLAINT MANAGEMENT FUNCTIONS ---
@@ -941,57 +1112,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
-    // UPDATED: Use appState.visitorLogs
-    function renderVisitorsView() {
-        const searchTerm = visitorSearchInput.value.toLowerCase();
-        const dateFilter = visitorDateFilter.value;
-        visitorLogContainer.innerHTML = '';
-        
-        // --- USING appState.visitorLogs ---
-        const logsToFilter = appState.visitorLogs; 
-        
-        const filteredLogs = logsToFilter.filter(log => {
-            // Note: The backend now provides a simpler structure in logs.
-            const searchMatch = (log.visitorName?.toLowerCase().includes(searchTerm)) ||
-                                 (log.studentName?.toLowerCase().includes(searchTerm)) ||
-                                 (log.roomNumber?.toLowerCase().includes(searchTerm));
-            const dateMatch = (!dateFilter) || (log.date === dateFilter);
-            return searchMatch && dateMatch;
-        });
-        
-        if (filteredLogs.length === 0) {
-            visitorLogContainer.innerHTML = `<tr><td colspan="7" class="text-center text-gray-500 py-6">No visitor logs match the criteria.</td></tr>`;
-            return;
-        }
-
-        // Sort by date (newest first)
-        filteredLogs.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-        filteredLogs.forEach(log => {
-            const statusClass = log.status === 'Approved' ? 'bg-green-100 text-green-700' :
-                                log.status === 'Rejected' ? 'bg-red-100 text-red-700' :
-                                'bg-yellow-100 text-yellow-700';
-
-            const rowHTML = `
-                <tr class="hover:bg-gray-50">
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${log.visitorName}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${log.studentName}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${log.roomNumber}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${log.date}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${log.timeIn || 'N/A'}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${log.timeOut || 'N/A'}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${statusClass}">
-                            ${log.status}
-                        </span>
-                    </td>
-                </tr>
-            `;
-            // Note: Added an extra column to the table for 'Status' to show the request status.
-            visitorLogContainer.innerHTML += rowHTML;
-        });
-    }
-
     // --- 5. MODAL & VIEW-SWITCHING LOGIC ---
     function showModal(modalId) {
         const modal = document.getElementById(modalId);
@@ -1619,6 +1739,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('complaint-response').value = '';
                 showComplaintDetails(complaintId);
             }
+        }
+    });
+
+    // NEW: Visitor Log Actions
+    visitorLogContainer.addEventListener('click', (e) => {
+        // Handle Action Buttons (Approve, Reject, Check In/Out)
+        const actionBtn = e.target.closest('.update-visitor-btn');
+        if (actionBtn) {
+            const id = actionBtn.dataset.id;
+            const action = actionBtn.dataset.action;
+            handleVisitorAction(id, action);
+        }
+
+        // Handle View Details (Eye Icon)
+        const viewBtn = e.target.closest('.view-visitor-btn');
+        if (viewBtn) {
+            const id = viewBtn.dataset.id;
+            showVisitorDetailsModal(id);
         }
     });
 
