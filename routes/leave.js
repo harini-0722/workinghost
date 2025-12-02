@@ -7,6 +7,10 @@ router.post('/', async (req, res) => {
     try {
         const { studentId, startDate, endDate, reason } = req.body;
 
+        if (!studentId || !startDate || !endDate || !reason) {
+            return res.status(400).json({ success: false, message: "All fields are required" });
+        }
+
         const newLeave = new LeaveRequest({
             studentId,
             startDate,

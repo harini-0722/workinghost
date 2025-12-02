@@ -19,33 +19,23 @@
             theme: {
                 extend: {
                     colors: {
-                        // --- IIT Executive Palette ---
-                        'primary-blue': '#2563EB',      // Main brand color (Blue 600)
-                        'secondary-accent': '#F9C74F',  // Vibrant Yellow/Gold
-                        
-                        'accent-dark': '#1F2937',       // Deep Charcoal/Navy for Headers/Strong Text
-                        
-                        'accent-green': '#059669',      // Success/Paid/Present (Emerald 600)
-                        'accent-red': '#DC2626',        // Danger/Due/Critical (Red 600)
-                        'info-yellow': '#FBBF24',       // Warning (Amber 500)
-                        
-                        'complaint-theme': '#EA580C',   
-                        
-                        // Structure
-                        'secondary-gray': '#6B7280',    // Muted Text/Subtitles
-                        'light-bg': '#F9FAFB',          // Very Light Gray (Internal distinctions like table headers)
-                        'card-bg': '#FFFFFF',           // PURE WHITE for all main content boxes/cards
-                        'text-muted': '#E5E7EB',        // Light divider/border
-                        
-                        'page-bg': '#eff6ff'            // MILD BLUE
+                        'primary-blue': '#2563EB',
+                        'secondary-accent': '#F9C74F',
+                        'accent-dark': '#1F2937',
+                        'accent-green': '#059669',
+                        'accent-red': '#DC2626',
+                        'info-yellow': '#FBBF24',
+                        'complaint-theme': '#EA580C', 
+                        'secondary-gray': '#6B7280',
+                        'light-bg': '#F9FAFB',
+                        'card-bg': '#FFFFFF',
+                        'text-muted': '#E5E7EB',
+                        'page-bg': '#eff6ff'
                     },
                     boxShadow: {
                         'soft': '0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.02)',
                         'lift': '0 5px 15px -3px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.05)',
                         'deep': '0 10px 25px -5px rgba(0, 0, 0, 0.2), 0 3px 5px -2px rgba(0, 0, 0, 0.08)',
-                    },
-                    transitionTimingFunction: {
-                        'sophisticated': 'cubic-bezier(0.25, 0.8, 0.25, 1)',
                     }
                 }
             }
@@ -522,12 +512,14 @@
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-secondary-gray mb-1">Reason for Leave</label>
-                                <select id="leave-reason" class="w-full p-3 border border-text-muted rounded-lg focus:ring-primary-blue focus:border-primary-blue bg-light-bg">
-                                    <option>Family Emergency</option>
-                                    <option>Home Trip / Vacation</option>
-                                    <option>Academic / Conference Trip</option>
-                                    <option>Medical Appointment</option>
+                                <select id="leave-reason" onchange="toggleLeaveReason()" class="w-full p-3 border border-text-muted rounded-lg focus:ring-primary-blue focus:border-primary-blue bg-light-bg">
+                                    <option value="Family Emergency">Family Emergency</option>
+                                    <option value="Home Trip / Vacation">Home Trip / Vacation</option>
+                                    <option value="Academic / Conference Trip">Academic / Conference Trip</option>
+                                    <option value="Medical Appointment">Medical Appointment</option>
+                                    <option value="Other">Other (Specify manually)</option>
                                 </select>
+                                <input type="text" id="leave-reason-manual" class="hidden w-full mt-2 p-3 border border-text-muted rounded-lg focus:ring-primary-blue focus:border-primary-blue bg-light-bg" placeholder="Please specify your reason...">
                             </div>
                             <button type="submit" class="btn-classy-lift bg-info-yellow text-accent-dark w-full py-3 rounded-lg shadow-lift hover:bg-amber-400">
                                 Submit Leave Request
@@ -548,14 +540,13 @@
                                     </tr>
                                 </thead>
                                 <tbody id="student-leave-history" class="bg-card-bg divide-y divide-text-muted">
-                                            </tbody>
+                                </tbody>
                             </table>
                         </div>
                     </div>
-                    
                 </div>
             </div>
-            
+
             <div id="student-details-view" class="view hidden">
                 <button onclick="showView('student-dashboard-view')" class="btn-classy-lift flex items-center space-x-2 text-primary-blue hover:text-blue-700 font-semibold mb-6">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">

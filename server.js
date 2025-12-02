@@ -15,6 +15,7 @@ const gymkhanaRoutes = require('./routes/gymkhana');
 const complaintRoutes = require('./routes/complaintRoutes');
 const visitorRoutes = require('./routes/visitorRoutes');
 const staffRoutes = require('./routes/staffRoutes');
+const leaveRoutes = require('./routes/leaveRoutes');
 // --- IMPORT MODELS ---
 const Room = require('./models/Room');
 const Block = require('./models/Block');
@@ -25,6 +26,7 @@ const Asset = require('./models/Asset');
 const User = require('./models/user'); 
 const Complaint = require('./models/Complaint');
 const Staff = require('./models/Staff');
+const LeaveRequest = require('./models/LeaveRequest');
 const app = express();
 const PORT = 5000;
 
@@ -38,7 +40,7 @@ app.use(express.urlencoded({ limit: '10mb', extended: true }));
 // 2. JSON/Body Parser
 app.use(bodyParser.json({ limit: '10mb' }));
 app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
-
+app.use('/api/leave', leaveRoutes);
 // 3. Static Files (This fixes your 404 error)
 // This line serves ALL files from your 'public' folder (like .html, .js, .css)
 app.use(express.static(path.join(__dirname, 'public')));

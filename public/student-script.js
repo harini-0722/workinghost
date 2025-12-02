@@ -76,8 +76,7 @@ async function loadStudentData() {
         g_roommates = data.roommates || [];    
         g_attendance = data.attendance || [];
         g_complaints = data.complaints || [];
-        g_visitorRequests = data.visitorRequests || []; 
-
+        
         // Fetch Visitor History explicitly
         try {
             const vRes = await fetch(`/api/visitor-request/history/${studentId}`);
@@ -107,7 +106,6 @@ async function loadStudentData() {
         }
 
         console.log('✅ Student data loaded');
-        
         return true;    
     } catch (error) {
         console.error('❌ Failed to load student data:', error);
@@ -231,6 +229,19 @@ async function submitVisitorRequest() {
 
 // --- NEW LEAVE FUNCTIONALITY ---
 
+function toggleLeaveReason() {
+    const reasonSelect = document.getElementById('leave-reason');
+    const manualInput = document.getElementById('leave-reason-manual');
+    if (reasonSelect.value === 'Other') {
+        manualInput.classList.remove('hidden');
+        manualInput.required = true;
+    } else {
+        manualInput.classList.add('hidden');
+        manualInput.required = false;
+        manualInput.value = '';
+    }
+}
+
 async function submitLeave() {
     const start = document.getElementById('leave-start').value;
     const end = document.getElementById('leave-end').value;
@@ -239,7 +250,7 @@ async function submitLeave() {
     
     // Check if "Other" is selected and get text value
     if (reason === 'Other') {
-        const manualReason = document.getElementById('leave-reason-manual').value;
+        const manualReason = document.getElementById('leave-reason-manual').value.trim();
         if (!manualReason) {
             alert('Please type your reason for leave.');
             return;
@@ -286,7 +297,7 @@ async function submitLeave() {
             // Reset form
             document.getElementById('leave-start').value = '';
             document.getElementById('leave-end').value = '';
-            document.getElementById('leave-reason').value = 'Family Emergency'; // Default
+            reasonSelect.value = 'Family Emergency'; 
             
             // Reset "Other" input
             const manualInput = document.getElementById('leave-reason-manual');
@@ -302,6 +313,33 @@ async function submitLeave() {
         console.error('Leave Submission Error:', error);
         alert(`Failed to submit leave request: ${error.message}`);
     }
+}
+
+function populateStudentLeaveHistory() {
+    const tableBody = document.getElementById('student-leave-history');
+    tableBody.innerHTML = '';
+    
+    // Use the real fetched data in g_leaveHistory
+    const sortedLeaves = g_leaveHistory
+        .sort((a, b) => new Date(b.startDate) - new Date(a.startDate)); // Sort by start date (newest first)
+
+    if (sortedLeaves.length === 0) {
+        tableBody.innerHTML = `<tr><td colspan="4" class="py-4 px-6 text-center text-secondary-gray">No leave history found.</td></tr>`;
+        return;
+    }
+
+    sortedLeaves.forEach(l => {
+        let statusColorClass = l.status === 'Approved' ? 'text-accent-green' : (l.status === 'Pending' ? 'text-info-yellow' : 'text-accent-red');
+
+        tableBody.innerHTML += `
+            <tr class="hover:bg-light-bg transition duration-150">
+                <td class="py-3 px-6 whitespace-nowrap text-sm text-accent-dark">${formatDate(l.startDate)}</td>
+                <td class="py-3 px-6 whitespace-nowrap text-sm text-accent-dark">${formatDate(l.endDate)}</td>
+                <td class="py-3 px-6 text-sm text-secondary-gray">${l.reason}</td>
+                <td class="py-3 px-6 whitespace-nowrap text-sm font-medium ${statusColorClass}">${l.status}</td>
+            </tr>
+        `;
+    });
 }
 
 // =========================================================================
@@ -747,14 +785,14 @@ function populateStudentLeaveHistory() {
     const tableBody = document.getElementById('student-leave-history');
     tableBody.innerHTML = '';
     
-    // Use the real fetched data in g_leaveHistory
-    const sortedLeaves = g_leaveHistory
-        .sort((a, b) => new Date(b.startDate) - new Date(a.startDate)); // Sort by start date (newest first)
-
-    if (sortedLeaves.length === 0) {
+    // Use the fetched g_leaveHistory
+    if (!g_leaveHistory || g_leaveHistory.length === 0) {
         tableBody.innerHTML = `<tr><td colspan="4" class="py-4 px-6 text-center text-secondary-gray">No leave history found.</td></tr>`;
         return;
     }
+
+    // Sort newest first
+    const sortedLeaves = g_leaveHistory.sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
 
     sortedLeaves.forEach(l => {
         let statusColorClass = l.status === 'Approved' ? 'text-accent-green' : (l.status === 'Pending' ? 'text-info-yellow' : 'text-accent-red');
