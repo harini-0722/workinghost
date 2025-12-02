@@ -4,12 +4,11 @@ document.addEventListener('DOMContentLoaded', () => {
         blocks: [], 
         assets: [],
         complaints: [],
-        // ADDED: Container for fetched visitor data
-        visitorLogs: []
+        visitorLogs: [],
+        // NEW: Container for fetched leave requests
+        leaveRequests: []
     }; 
     
-    // NOTE: Original static visitorLogData array removed or assumed to be unused now.
-
     let eventData = [
         { id: 1, title: 'Inter-Hostel Cricket Match', type: 'Sports', date: '2025-11-10', description: 'Finals between Men\'s Hostel and Women\'s Hostel.' },
         { id: 2, title: 'Mess Committee Meeting', type: 'Announcement', date: '2025-11-05', description: 'Discussing the new menu for next month.' }
@@ -48,6 +47,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const statOpenComplaints = document.getElementById('stat-open-complaints');
     const complaintDetailsModal = document.getElementById('complaint-details-modal');
     const complaintDetailsContent = document.getElementById('complaint-details-content');
+    
+    // NEW: Leave Request Elements
+    const leaveView = document.getElementById('leave-view');
+    const showLeaveViewBtn = document.getElementById('show-leave-view-btn');
+    const backToDashboardFromLeaveBtn = document.getElementById('back-to-dashboard-from-leave-btn');
+    const leaveRequestContainer = document.getElementById('leave-request-container');
+    const leaveSearchInput = document.getElementById('leave-search-input');
+    const leaveStatusFilter = document.getElementById('leave-status-filter');
+    const refreshLeavesBtn = document.getElementById('refresh-leaves-btn');
+    const statLeavePending = document.getElementById('stat-leave-pending');
+    const leaveDetailsModal = document.getElementById('leave-details-modal');
+    const leaveDetailsContent = document.getElementById('leave-details-content');
     
     const hostelBlockContainer = document.getElementById('hostel-block-container');
     const statTotalCapacity = document.getElementById('stat-total-capacity');
@@ -105,13 +116,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const addStudentAssetRowBtn = document.getElementById('add-student-asset-row-btn');
     const studentAssetAssignmentContainer = document.getElementById('student-asset-assignment-container');
 
-    // --- 3. THEME/HELPER DATA ---
+    // --- 3. THEME/HELPER DATA & UTILITY FUNCTIONS ---
     const themes = { 
         pink: { border: 'border-pink-500', bg: 'bg-pink-100', text: 'text-pink-600', icon: 'user-group' },
         blue: { border: 'border-blue-500', bg: 'bg-blue-100', text: 'text-blue-600', icon: 'user-group' },
         green: { border: 'border-green-500', bg: 'bg-green-100', text: 'text-green-600', icon: 'building-office' },
         purple: { border: 'border-purple-500', bg: 'bg-purple-100', text: 'text-purple-600', icon: 'academic-cap' },
         yellow: { border: 'border-yellow-500', bg: 'bg-yellow-100', text: 'text-yellow-600', icon: 'beaker' },
+        orange: { border: 'border-orange-500', bg: 'bg-orange-100', text: 'text-orange-600', icon: 'paper-airplane' }, // ADDED: Orange Theme
     };
     const eventThemes = { 
         'Sports': { border: 'border-green-500', bg: 'bg-green-100', text: 'text-green-700' },
@@ -153,9 +165,206 @@ document.addEventListener('DOMContentLoaded', () => {
         alert('❌ ' + message);
     }
     
-    // --- VISITOR MANAGEMENT FUNCTIONS ---
+    function formatDate(dateString) {
+        if (!dateString) return 'N/A';
+        return new Date(dateString).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+        });
+    }
 
-    // Function to load visitor logs from the backend API
+    // --- NEW: LEAVE MANAGEMENT FUNCTIONS ---
+
+    // Function to load all leave requests from the backend API
+    async function loadLeaveRequests() {
+        try {
+            console.log('🔄 Loading leave requests from database...');
+            const res = await fetch('/api/leave'); 
+            
+            if (!res.ok) {
+                throw new Error(`HTTP error! status: ${res.status}`);
+            }
+            
+            const data = await res.json();
+            
+            if (data.success) {
+                appState.leaveRequests = data.leaves || []; 
+                console.log('✅ Leave requests loaded from server:', appState.leaveRequests);
+                
+                // Update the dashboard stat for pending leaves
+                updateLeaveCount();
+
+                // Re-render if we're currently viewing the leaves
+                if (!leaveView.classList.contains('hidden')) {
+                    renderLeaveView();
+                }
+
+            } else {
+                throw new Error(data.message || 'Failed to load leave requests');
+            }
+        } catch (error) {
+            console.error('❌ Failed to load leave requests data:', error);
+            if (!leaveView.classList.contains('hidden')) {
+                leaveRequestContainer.innerHTML = `<tr><td colspan="6" class="text-center text-red-500 py-6">Error: Failed to load leave requests. Check server status.</td></tr>`;
+            }
+        }
+    }
+
+    // Function to update the pending leave count card on the dashboard
+    function updateLeaveCount() {
+        const pendingLeaves = appState.leaveRequests.filter(l => l.status === 'Pending').length;
+        statLeavePending.textContent = `${pendingLeaves} Pending`;
+    }
+
+    // Function to render the Leave Request Management View
+    function renderLeaveView() {
+        const searchTerm = leaveSearchInput.value.toLowerCase();
+        const statusFilter = leaveStatusFilter.value;
+        leaveRequestContainer.innerHTML = '';
+        
+        const filteredLeaves = appState.leaveRequests.filter(leave => {
+            const statusMatch = (statusFilter === 'All') || (leave.status === statusFilter);
+            const searchMatch = (leave.studentName?.toLowerCase().includes(searchTerm)) ||
+                                (leave.roomNumber?.toLowerCase().includes(searchTerm));
+            
+            return statusMatch && searchMatch;
+        });
+        
+        if (filteredLeaves.length === 0) {
+            leaveRequestContainer.innerHTML = `<tr><td colspan="6" class="text-center text-gray-500 py-6">No leave requests match the criteria.</td></tr>`;
+            return;
+        }
+
+        // Sort: Pending first, then by applied date (newest first)
+        filteredLeaves.sort((a, b) => {
+            if (a.status === 'Pending' && b.status !== 'Pending') return -1;
+            if (a.status !== 'Pending' && b.status === 'Pending') return 1;
+            return new Date(b.appliedDate) - new Date(a.appliedDate);
+        });
+
+        filteredLeaves.forEach(leave => {
+            let statusClass = '';
+            let actionButtons = '';
+            
+            switch(leave.status) {
+                case 'Approved': statusClass = 'bg-green-100 text-green-700'; break;
+                case 'Rejected': statusClass = 'bg-red-100 text-red-700'; break;
+                default: statusClass = 'bg-yellow-100 text-yellow-700'; // Pending
+            }
+
+            const viewBtn = `<button class="view-leave-btn text-gray-500 hover:text-blue-600 ml-2" data-id="${leave._id}" title="View Details"><hero-icon-solid name="eye" class="h-5 w-5"></hero-icon-solid></button>`;
+
+            if (leave.status === 'Pending') {
+                actionButtons = `
+                    <button class="update-leave-btn bg-green-500 text-white px-3 py-1 rounded text-xs hover:bg-green-600 transition" data-id="${leave._id}" data-action="Approved">Approve</button>
+                    <button class="update-leave-btn bg-red-500 text-white px-3 py-1 rounded text-xs hover:bg-red-600 ml-1 transition" data-id="${leave._id}" data-action="Rejected">Reject</button>
+                `;
+            } else {
+                actionButtons = `<span class="text-xs text-gray-400 mr-2">Actioned</span>`;
+            }
+
+            const rowHTML = `
+                <tr class="hover:bg-gray-50 transition-colors border-b">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <div class="font-medium">${leave.studentName}</div>
+                        <div class="text-xs text-gray-500">Room: ${leave.roomNumber}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                        ${formatDate(leave.startDate)} - ${formatDate(leave.endDate)}
+                    </td>
+                    <td class="px-6 py-4 text-sm text-gray-700 max-w-xs">
+                        <div class="truncate" title="${leave.reason}">${leave.reason}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-xs text-gray-500">
+                        ${formatDate(leave.appliedDate)}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${statusClass}">
+                            ${leave.status}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
+                        <div class="flex items-center justify-center">
+                            ${actionButtons}
+                            ${viewBtn}
+                        </div>
+                    </td>
+                </tr>
+            `;
+            leaveRequestContainer.innerHTML += rowHTML;
+        });
+    }
+
+    // Handle Admin Action (Approve/Reject) on Leave Request
+    async function handleLeaveAction(id, action) {
+        if(!confirm(`Are you sure you want to ${action} this leave request?`)) return;
+
+        try {
+            const res = await fetch(`/api/leave/${id}/status`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status: action })
+            });
+
+            const data = await res.json();
+            
+            if (data.success) {
+                showSuccess(`Leave request status updated to ${action}`);
+                await loadLeaveRequests(); // Reload data and re-render view
+            } else {
+                throw new Error(data.message);
+            }
+        } catch (error) {
+            console.error('Error updating leave status:', error);
+            showError(`Failed to update leave status: ${error.message}`);
+        }
+    }
+
+    // Show Leave Details Modal
+    function showLeaveDetailsModal(id) {
+        const leave = appState.leaveRequests.find(l => l._id === id);
+        if(!leave) return;
+
+        leaveDetailsContent.innerHTML = `
+            <div class="grid grid-cols-2 gap-4 text-sm">
+                <div class="col-span-2 flex justify-between items-center border-b pb-2">
+                    <h3 class="text-lg font-bold text-gray-800">${leave.studentName}'s Request</h3>
+                    <span class="px-3 py-1 rounded-full text-xs font-bold ${leave.status === 'Approved' ? 'bg-green-100 text-green-700' : leave.status === 'Rejected' ? 'bg-red-100 text-red-700' : 'bg-yellow-100 text-yellow-700'}">${leave.status}</span>
+                </div>
+                <div>
+                    <span class="text-xs text-gray-500 uppercase tracking-wide">Student ID</span>
+                    <p class="font-semibold text-gray-800">${leave.studentId}</p>
+                </div>
+                <div>
+                    <span class="text-xs text-gray-500 uppercase tracking-wide">Room Number</span>
+                    <p class="font-semibold text-gray-800">${leave.roomNumber}</p>
+                </div>
+                <div>
+                    <span class="text-xs text-gray-500 uppercase tracking-wide">Start Date</span>
+                    <p class="text-gray-800">${formatDate(leave.startDate)}</p>
+                </div>
+                <div>
+                    <span class="text-xs text-gray-500 uppercase tracking-wide">End Date</span>
+                    <p class="text-gray-800">${formatDate(leave.endDate)}</p>
+                </div>
+                <div class="col-span-2 bg-gray-50 p-4 rounded-lg mt-2">
+                    <span class="text-xs text-gray-500 uppercase tracking-wide block mb-1">Reason for Leave</span>
+                    <p class="text-gray-700 italic">"${leave.reason}"</p>
+                </div>
+                <div class="col-span-2 bg-blue-50 p-4 rounded-lg mt-2">
+                    <span class="text-xs text-gray-500 uppercase tracking-wide block mb-1">Applied On</span>
+                    <p class="text-blue-700 font-medium">${new Date(leave.appliedDate).toLocaleString()}</p>
+                </div>
+            </div>
+        `;
+        showModal('leave-details-modal');
+    }
+    // --- END LEAVE MANAGEMENT FUNCTIONS ---
+
+
+    // --- VISITOR MANAGEMENT FUNCTIONS (Unchanged, retained for context) ---
+
     async function loadVisitorLogs() {
         try {
             console.log('🔄 Loading visitor logs from database...');
@@ -171,10 +380,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 appState.visitorLogs = data.logs || []; 
                 console.log('✅ Visitor logs loaded from server:', appState.visitorLogs);
                 
-                // Update the dashboard stat for visitors today
                 updateVisitorCount();
 
-                // Re-render if we're currently viewing the logs
                 if (!visitorsView.classList.contains('hidden')) {
                     renderVisitorsView();
                 }
@@ -184,22 +391,18 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch (error) {
             console.error('❌ Failed to load visitor logs data:', error);
-            // Show error in the log container if the view is open
             if (!visitorsView.classList.contains('hidden')) {
                 visitorLogContainer.innerHTML = `<tr><td colspan="7" class="text-center text-red-500 py-6">Error: Failed to load visitor logs. Check server status.</td></tr>`;
             }
         }
     }
 
-    // Function to update the visitor count card on the dashboard
     function updateVisitorCount() {
         const today = new Date().toISOString().split('T')[0];
-        // Use rawDate if available for more accuracy, otherwise date
         const visitorsToday = appState.visitorLogs.filter(v => (v.rawDate ? v.rawDate.split('T')[0] : v.date) === today).length;
         statVisitorsToday.textContent = `${visitorsToday} Today`;
     }
 
-    // --- UPDATED VISITOR VIEW LOGIC ---
     function renderVisitorsView() {
         const searchTerm = visitorSearchInput.value.toLowerCase();
         const dateFilter = visitorDateFilter.value;
@@ -212,7 +415,6 @@ document.addEventListener('DOMContentLoaded', () => {
                                 (log.studentName?.toLowerCase().includes(searchTerm)) ||
                                 (log.roomNumber?.toLowerCase().includes(searchTerm));
             
-            // Handle date matching securely
             const logDate = log.rawDate ? new Date(log.rawDate).toISOString().split('T')[0] : log.date;
             const dateMatch = (!dateFilter) || (logDate === dateFilter);
             
@@ -224,7 +426,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Sort: Pending first, then by date
         filteredLogs.sort((a, b) => {
             if (a.status === 'Pending' && b.status !== 'Pending') return -1;
             if (a.status !== 'Pending' && b.status === 'Pending') return 1;
@@ -237,7 +438,6 @@ document.addEventListener('DOMContentLoaded', () => {
             let statusClass = '';
             let actionButtons = '';
 
-            // 1. Determine Status Color
             switch(log.status) {
                 case 'Approved': statusClass = 'bg-blue-100 text-blue-700'; break;
                 case 'Rejected': statusClass = 'bg-red-100 text-red-700'; break;
@@ -246,7 +446,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 default: statusClass = 'bg-yellow-100 text-yellow-700'; // Pending
             }
 
-            // 2. Generate Buttons based on Status
             const viewBtn = `<button class="view-visitor-btn text-gray-500 hover:text-blue-600 ml-2" data-id="${log.id}" title="View Details"><hero-icon-solid name="eye" class="h-5 w-5"></hero-icon-solid></button>`;
 
             if (log.status === 'Pending') {
@@ -297,7 +496,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- NEW: Handle Visitor Actions (Approve, Reject, Check In/Out) ---
     async function handleVisitorAction(id, action) {
         if(!confirm(`Are you sure you want to mark this request as ${action}?`)) return;
 
@@ -312,7 +510,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if (data.success) {
                 showSuccess(`Visitor status updated to ${action}`);
-                await loadVisitorLogs(); // Reload table to show new status/buttons
+                await loadVisitorLogs(); 
             } else {
                 throw new Error(data.message);
             }
@@ -322,7 +520,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- NEW: Show Visitor Details Modal ---
     function showVisitorDetailsModal(id) {
         const log = appState.visitorLogs.find(l => l.id === id);
         if(!log) return;
@@ -372,9 +569,8 @@ document.addEventListener('DOMContentLoaded', () => {
         showModal('visitor-details-modal');
     }
 
-    // --- COMPLAINT MANAGEMENT FUNCTIONS ---
+    // --- COMPLAINT MANAGEMENT FUNCTIONS (Unchanged, retained for context) ---
 
-    // Load real complaints from database
     async function loadComplaintsData() {
         try {
             console.log('🔄 Loading complaints from database...');
@@ -390,10 +586,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 appState.complaints = data.complaints;
                 console.log('✅ Complaints loaded from server:', appState.complaints);
                 
-                // Update open complaints count
                 updateComplaintsCount();
                 
-                // Re-render if we're in complaints view
                 if (!complaintsView.classList.contains('hidden')) {
                     renderComplaintsView();
                 }
@@ -404,7 +598,6 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('❌ Failed to load complaints data:', error);
             showError('Failed to load complaints: ' + error.message);
             
-            // Update UI to show error state
             complaintsListContainer.innerHTML = `
                 <tr>
                     <td colspan="7" class="text-center text-red-500 py-6">
@@ -415,7 +608,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Update complaint status
     async function updateComplaintStatus(complaintId, newStatus, adminNotes = '') {
         try {
             console.log(`🔄 Updating complaint ${complaintId} to status: ${newStatus}`);
@@ -437,7 +629,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (data.success) {
                 console.log(`✅ Complaint ${complaintId} status updated to ${newStatus}`);
                 
-                // Update local state
                 const complaintIndex = appState.complaints.findIndex(c => c._id === complaintId);
                 if (complaintIndex !== -1) {
                     appState.complaints[complaintIndex].status = newStatus;
@@ -449,7 +640,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
                 
-                // Update counts and re-render
                 updateComplaintsCount();
                 renderComplaintsView();
                 
@@ -465,7 +655,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Add admin response to complaint
     async function addComplaintResponse(complaintId, response) {
         try {
             console.log(`🔄 Adding response to complaint ${complaintId}`);
@@ -487,7 +676,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (data.success) {
                 console.log(`✅ Response added to complaint ${complaintId}`);
                 
-                // Update local state
                 const complaintIndex = appState.complaints.findIndex(c => c._id === complaintId);
                 if (complaintIndex !== -1) {
                     if (!appState.complaints[complaintIndex].responses) {
@@ -513,7 +701,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Update complaints count on dashboard
     function updateComplaintsCount() {
         const openComplaints = appState.complaints.filter(complaint => 
             complaint.status === 'Pending' || complaint.status === 'In Progress'
@@ -521,7 +708,6 @@ document.addEventListener('DOMContentLoaded', () => {
         statOpenComplaints.textContent = openComplaints;
     }
 
-    // Render complaints view
     function renderComplaintsView() {
         const statusFilter = complaintStatusFilter.value;
         const typeFilter = complaintTypeFilter.value;
@@ -549,7 +735,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Sort by date (newest first)
         filteredComplaints.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
         filteredComplaints.forEach(complaint => {
@@ -628,7 +813,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Show complaint details modal
     function showComplaintDetails(complaintId) {
         const complaint = appState.complaints.find(c => c._id === complaintId);
         if (!complaint) {
@@ -871,8 +1055,8 @@ document.addEventListener('DOMContentLoaded', () => {
         statOccupancyRing.style.strokeDashoffset = 100 - occupancyPercent;
         
         statFeesPending.textContent = `${totalPendingFees} Pending`;
-        // Updated: Call the function to set the visitor stat based on fetched data
         updateVisitorCount(); 
+        updateLeaveCount(); // NEW: Update the leave count stat
     }
 
     function renderDetailView(blockKey) {
@@ -1139,6 +1323,7 @@ document.addEventListener('DOMContentLoaded', () => {
         feesView.classList.add('hidden');
         visitorsView.classList.add('hidden');
         complaintsView.classList.add('hidden');
+        leaveView.classList.add('hidden'); // NEW: Hide leave view
     }
 
     document.addEventListener('click', (e) => {
@@ -1166,7 +1351,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     
-    // --- 6. ASSET ASSIGNMENT LOGIC ---
+    // --- 6. ASSET ASSIGNMENT LOGIC (Unchanged, retained for context) ---
     function getAssetOptionsHTML() {
         let optionsHTML = '<option value="" disabled selected>Select asset...</option>';
         const availableAssets = appState.assets.filter(a => a.quantity > 0);
@@ -1251,7 +1436,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return assignedAssets;
     }
 
-    // --- 7. FORM & DATA HANDLERS ---
+    // --- 7. FORM & DATA HANDLERS (Unchanged, retained for context) ---
     addBlockForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const blockName = document.getElementById('block-name').value;
@@ -1477,7 +1662,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- 8. DETAIL VIEW & MODAL LISTENERS ---
+    // --- 8. DETAIL VIEW & MODAL LISTENERS (Unchanged, retained for context) ---
     function filterAndSearchRooms() {
         const searchTerm = roomSearchInput.value.toLowerCase();
         const filterTerm = roomFilterSelect.value;
@@ -1536,7 +1721,7 @@ document.addEventListener('DOMContentLoaded', () => {
     modalOccupantContainer.addEventListener('click', async (e) => {
         const button = e.target.closest('.remove-student-btn');
         if (button) {
-            e.preventDefault();
+            e.preventDefault(); 
             e.stopPropagation();
             const studentId = button.dataset.studentId;
             if (confirm(`Are you sure you want to remove this student?\nTheir assets will be returned to stock.`)) {
@@ -1568,7 +1753,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     
-    // --- 9. DELETE HANDLERS (for cards) ---
+    // --- 9. DELETE HANDLERS (for cards) (Unchanged, retained for context) ---
     hostelBlockContainer.addEventListener('click', async (e) => {
         const button = e.target.closest('.remove-block-btn');
         if (button) {
@@ -1628,7 +1813,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- 10. "SHOW MODAL" BUTTON LISTENERS ---
+    // --- 10. "SHOW MODAL" BUTTON LISTENERS & VIEW NAVIGATION ---
     showAddBlockModalBtn.addEventListener('click', () => showModal('add-block-modal'));
     
     showAddRoomModalBtn.addEventListener('click', () => {
@@ -1660,13 +1845,10 @@ document.addEventListener('DOMContentLoaded', () => {
         renderDashboard();
     });
     
-    // UPDATED: Call loadVisitorLogs on click
     showVisitorsViewBtn.addEventListener('click', () => {
         hideAllViews();
         visitorsView.classList.remove('hidden');
-        // Set today's date filter by default
         visitorDateFilter.value = new Date().toISOString().split('T')[0]; 
-        // Load fresh data, which will call renderVisitorsView() on success
         loadVisitorLogs(); 
     });
     
@@ -1687,6 +1869,18 @@ document.addEventListener('DOMContentLoaded', () => {
         dashboardView.classList.remove('hidden');
     });
 
+    // NEW: Leave View Listeners
+    showLeaveViewBtn.addEventListener('click', () => {
+        hideAllViews();
+        leaveView.classList.remove('hidden');
+        loadLeaveRequests();
+    });
+    
+    backToDashboardFromLeaveBtn.addEventListener('click', () => {
+        hideAllViews();
+        dashboardView.classList.remove('hidden');
+    });
+
     // Complaints filtering and search
     complaintSearchInput.addEventListener('input', renderComplaintsView);
     complaintStatusFilter.addEventListener('change', renderComplaintsView);
@@ -1696,6 +1890,16 @@ document.addEventListener('DOMContentLoaded', () => {
     refreshComplaintsBtn.addEventListener('click', () => {
         loadComplaintsData();
         showSuccess('Complaints refreshed');
+    });
+
+    // NEW: Leave filtering and search
+    leaveSearchInput.addEventListener('input', renderLeaveView);
+    leaveStatusFilter.addEventListener('change', renderLeaveView);
+
+    // NEW: Refresh leaves
+    refreshLeavesBtn.addEventListener('click', () => {
+        loadLeaveRequests();
+        showSuccess('Leave requests refreshed');
     });
 
     // Complaint actions
@@ -1742,9 +1946,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // NEW: Visitor Log Actions
+    // Visitor Log Actions (Unchanged, retained for context)
     visitorLogContainer.addEventListener('click', (e) => {
-        // Handle Action Buttons (Approve, Reject, Check In/Out)
         const actionBtn = e.target.closest('.update-visitor-btn');
         if (actionBtn) {
             const id = actionBtn.dataset.id;
@@ -1752,7 +1955,6 @@ document.addEventListener('DOMContentLoaded', () => {
             handleVisitorAction(id, action);
         }
 
-        // Handle View Details (Eye Icon)
         const viewBtn = e.target.closest('.view-visitor-btn');
         if (viewBtn) {
             const id = viewBtn.dataset.id;
@@ -1760,7 +1962,25 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- 11. OTHER LISTENERS ---
+    // NEW: Leave Request Actions
+    leaveRequestContainer.addEventListener('click', (e) => {
+        // Handle Action Buttons (Approve, Reject)
+        const actionBtn = e.target.closest('.update-leave-btn');
+        if (actionBtn) {
+            const id = actionBtn.dataset.id;
+            const action = actionBtn.dataset.action;
+            handleLeaveAction(id, action);
+        }
+
+        // Handle View Details (Eye Icon)
+        const viewBtn = e.target.closest('.view-leave-btn');
+        if (viewBtn) {
+            const id = viewBtn.dataset.id;
+            showLeaveDetailsModal(id);
+        }
+    });
+
+    // --- 11. OTHER LISTENERS (Unchanged, retained for context) ---
     adminLogoutBtn.addEventListener('click', () => {
         if (confirm('Are you sure you want to log out?')) {
             window.location.href = '/login.html';
@@ -1770,7 +1990,6 @@ document.addEventListener('DOMContentLoaded', () => {
     feesSearchInput.addEventListener('input', renderFeesView);
     feesFilterSelect.addEventListener('change', renderFeesView);
     
-    // UPDATED: Call renderVisitorsView when filters/search change
     visitorSearchInput.addEventListener('input', renderVisitorsView);
     visitorDateFilter.addEventListener('change', renderVisitorsView);
     
@@ -1794,7 +2013,8 @@ document.addEventListener('DOMContentLoaded', () => {
         loadClubActivities();
         loadAssetData();
         loadComplaintsData();
-        loadVisitorLogs(); // ADDED: Load initial visitor data
+        loadVisitorLogs(); 
+        loadLeaveRequests(); // NEW: Load initial leave request data
         renderEvents();
     }
     initApp();
