@@ -10,15 +10,11 @@ let g_attendance = [];
 let g_complaints = [];
 let g_visitorRequests = []; 
 let g_clubActivities = []; 
+let g_leaveHistory = []; // ADDED: Store leave history
 
 let g_attendanceStatus = { status: 'Checked Out', lastActionTime: null };
 
-// --- Mock data ---
-const mockLeaveHistory = [
-    { id: 1, studentId: 1, start: '2025-09-01', end: '2025-09-05', reason: 'Home Trip', status: 'Approved' },
-    { id: 2, studentId: 1, start: '2025-11-20', end: '2025-11-25', reason: 'Family Emergency', status: 'Pending' }
-];
-
+// --- Mock data (Only for Lost & Found and Announcements now) ---
 const mockLostFound = [
     { id: 'F001', item: 'Blue Umbrella', dateFound: '2025-10-20', location: 'Hostel Lobby', status: 'Available' },
     { id: 'F002', item: 'Physics Textbook', dateFound: '2025-10-18', location: 'Common Room', status: 'Available' },
@@ -48,7 +44,7 @@ async function loadStudentData() {
     }
 
     try {
-        // Fetch student profile, room, roommates, attendance, complaints, AND visitorRequests
+        // Fetch student profile, room, roommates, attendance, complaints
         const response = await fetch(`/api/student/${studentId}`);
         if (!response.ok) {
             const errData = await response.json();
@@ -91,6 +87,15 @@ async function loadStudentData() {
             }
         } catch(err) { console.error("Visitor history fetch failed", err); }
 
+        // Fetch Leave History explicitly
+        try {
+            const lRes = await fetch(`/api/leave/history/${studentId}`);
+            const lData = await lRes.json();
+            if(lData.success) {
+                g_leaveHistory = lData.leaves;
+            }
+        } catch(err) { console.error("Leave history fetch failed", err); }
+
         // Get current attendance status
         const statusResponse = await fetch(`/api/attendance/status/${studentId}`);
         if (statusResponse.ok) {
@@ -101,13 +106,7 @@ async function loadStudentData() {
             }
         }
 
-        console.log('✅ Student data loaded and mapped:', {
-            student: g_student,
-            room: g_room,
-            block: g_block,
-            roommates: g_roommates, 
-            attendance: g_attendance
-        });
+        console.log('✅ Student data loaded');
         
         return true;    
     } catch (error) {
@@ -227,6 +226,81 @@ async function submitVisitorRequest() {
     } catch (error) {
         console.error('Submission Error:', error);
         alert(`Failed to submit request: ${error.message}`);
+    }
+}
+
+// --- NEW LEAVE FUNCTIONALITY ---
+
+async function submitLeave() {
+    const start = document.getElementById('leave-start').value;
+    const end = document.getElementById('leave-end').value;
+    const reasonSelect = document.getElementById('leave-reason');
+    let reason = reasonSelect.value;
+    
+    // Check if "Other" is selected and get text value
+    if (reason === 'Other') {
+        const manualReason = document.getElementById('leave-reason-manual').value;
+        if (!manualReason) {
+            alert('Please type your reason for leave.');
+            return;
+        }
+        reason = manualReason;
+    }
+
+    if (!start || !end || !reason) {
+        alert('Please select start date, end date, and reason.');
+        return;
+    }
+    if (new Date(end) < new Date(start)) {
+        alert('Return date must be after the departure date.');
+        return;
+    }
+
+    const leaveData = {
+        studentId: g_student._id,
+        startDate: start,
+        endDate: end,
+        reason: reason
+    };
+
+    try {
+        const response = await fetch('/api/leave', { 
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(leaveData)
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+            alert(`Leave request submitted successfully!`);
+            
+            // Refresh leave data and UI
+            const lRes = await fetch(`/api/leave/history/${g_student._id}`);
+            const lData = await lRes.json();
+            if(lData.success) {
+                g_leaveHistory = lData.leaves;
+                populateStudentLeaveHistory();
+            }
+            
+            // Reset form
+            document.getElementById('leave-start').value = '';
+            document.getElementById('leave-end').value = '';
+            document.getElementById('leave-reason').value = 'Family Emergency'; // Default
+            
+            // Reset "Other" input
+            const manualInput = document.getElementById('leave-reason-manual');
+            if(manualInput) {
+                manualInput.value = '';
+                manualInput.classList.add('hidden');
+            }
+        } else {
+            throw new Error(data.message || 'Failed to submit leave request.');
+        }
+
+    } catch (error) {
+        console.error('Leave Submission Error:', error);
+        alert(`Failed to submit leave request: ${error.message}`);
     }
 }
 
@@ -672,9 +746,10 @@ function populateStudentComplaintHistory() {
 function populateStudentLeaveHistory() {
     const tableBody = document.getElementById('student-leave-history');
     tableBody.innerHTML = '';
-    const sortedLeaves = mockLeaveHistory
-        .filter(l => l.studentId === g_student._id || l.studentId === 1)    
-        .sort((a, b) => new Date(b.start) - new Date(a.start));
+    
+    // Use the real fetched data in g_leaveHistory
+    const sortedLeaves = g_leaveHistory
+        .sort((a, b) => new Date(b.startDate) - new Date(a.startDate)); // Sort by start date (newest first)
 
     if (sortedLeaves.length === 0) {
         tableBody.innerHTML = `<tr><td colspan="4" class="py-4 px-6 text-center text-secondary-gray">No leave history found.</td></tr>`;
@@ -686,8 +761,8 @@ function populateStudentLeaveHistory() {
 
         tableBody.innerHTML += `
             <tr class="hover:bg-light-bg transition duration-150">
-                <td class="py-3 px-6 whitespace-nowrap text-sm text-accent-dark">${l.start}</td>
-                <td class="py-3 px-6 whitespace-nowrap text-sm text-accent-dark">${l.end}</td>
+                <td class="py-3 px-6 whitespace-nowrap text-sm text-accent-dark">${formatDate(l.startDate)}</td>
+                <td class="py-3 px-6 whitespace-nowrap text-sm text-accent-dark">${formatDate(l.endDate)}</td>
                 <td class="py-3 px-6 text-sm text-secondary-gray">${l.reason}</td>
                 <td class="py-3 px-6 whitespace-nowrap text-sm font-medium ${statusColorClass}">${l.status}</td>
             </tr>
@@ -709,18 +784,38 @@ function updateDashboardComplaintCount() {
     }
 }
 
-function submitLeave() {
-    const start = document.getElementById('leave-start').value;
-    const end = document.getElementById('leave-end').value;
-    if (!start || !end) {
-        alert('Please select both start and end dates.');
-        return;
+// --- Dynamic "Other" Reason UI Setup ---
+function setupLeaveForm() {
+    const reasonSelect = document.getElementById('leave-reason');
+    if (!reasonSelect) return;
+
+    // Add "Other" option if not present
+    if (!reasonSelect.querySelector('option[value="Other"]')) {
+        const otherOpt = document.createElement('option');
+        otherOpt.value = 'Other';
+        otherOpt.text = 'Other (Type Manually)';
+        reasonSelect.appendChild(otherOpt);
     }
-    if (new Date(end) < new Date(start)) {
-        alert('Return date must be after the departure date.');
-        return;
-    }
-    alert(`Leave request submitted for ${start} to ${end}. Status is Pending Review.`);
+
+    // Create hidden text input
+    const manualInput = document.createElement('input');
+    manualInput.type = 'text';
+    manualInput.id = 'leave-reason-manual';
+    manualInput.className = 'w-full p-3 border border-text-muted rounded-lg focus:ring-primary-blue focus:border-primary-blue bg-light-bg mt-2 hidden';
+    manualInput.placeholder = 'Please type your reason here...';
+    
+    reasonSelect.parentNode.insertBefore(manualInput, reasonSelect.nextSibling);
+
+    // Toggle listener
+    reasonSelect.addEventListener('change', function() {
+        if (this.value === 'Other') {
+            manualInput.classList.remove('hidden');
+            manualInput.required = true;
+        } else {
+            manualInput.classList.add('hidden');
+            manualInput.required = false;
+        }
+    });
 }
 
 function showStudentDetails() {
@@ -1053,6 +1148,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     const success = await loadStudentData();    
     
     if (success) {
+        // Initialize dynamic UI elements
+        setupLeaveForm();
+
         // Load club activities
         await loadClubActivities();
         
