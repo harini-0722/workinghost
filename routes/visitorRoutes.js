@@ -1,7 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const VisitorRequest = require('../models/VisitorRequest'); 
-const Student = require('../models/Student'); // Needed for population
+const Student = require('../models/Student'); 
+const Room = require('../models/Room'); 
+
+// Helper function to format ISO date string to a simple time string (if needed, though standard ISO is better for API)
+// const formatTime = (date) => date ? new Date(date).toLocaleTimeString('en-US', {hour: '2-digit', minute:'2-digit'}) : null;
 
 // 1. POST: Submit a new visitor request (for Student Dashboard)
 router.post('/', async (req, res) => {
@@ -14,7 +18,7 @@ router.post('/', async (req, res) => {
             startDate,
             endDate,
             reason,
-            status: 'Pending' // Default status
+            status: 'Pending'
         });
 
         await newRequest.save();
@@ -31,37 +35,36 @@ router.post('/', async (req, res) => {
 });
 
 // 2. GET: Fetch ALL visitor requests (for Admin Dashboard)
-// This handles the GET /api/visitor-request call from the frontend.
 router.get('/', async (req, res) => {
     try {
-        // Fetch all requests, and populate student details to display name/room in admin panel
         const requests = await VisitorRequest.find()
                                            .populate({
                                                 path: 'studentId',
-                                                select: 'name room', // Select student name and room ID
+                                                select: 'name room', 
                                                 populate: {
                                                     path: 'room',
-                                                    select: 'roomNumber' // Select room number from the room document
+                                                    select: 'roomNumber' 
                                                 }
                                            })
                                            .sort({ submissionDate: -1 }); 
 
-        // Map the data into the structure the frontend expects to display in the table
         const formattedLogs = requests.map(req => ({
             id: req._id,
             visitorName: req.visitorName,
-            // Assuming the frontend structure expects these fields:
             studentName: req.studentId?.name || 'Unknown Student',
             roomNumber: req.studentId?.room?.roomNumber || 'N/A',
-            date: new Date(req.startDate).toISOString().split('T')[0], // Use start date as log date
-            timeIn: 'N/A', // Assuming log check-in/out is tracked separately or handled in a different status flow
-            timeOut: 'N/A',
+            date: new Date(req.submissionDate).toISOString().split('T')[0], // Submission date
+            startDate: req.startDate, // Requested Start Date
+            endDate: req.endDate,     // Requested End Date
+            reason: req.reason,
+            timeIn: req.timeIn ? new Date(req.timeIn).toISOString() : null,
+            timeOut: req.timeOut ? new Date(req.timeOut).toISOString() : null,
             status: req.status
         }));
         
         res.status(200).json({ 
             success: true, 
-            logs: formattedLogs // The frontend (script.js) looks for data.logs
+            logs: formattedLogs 
         });
     } catch (error) {
         console.error("Error fetching all visitor requests:", error);
@@ -70,11 +73,10 @@ router.get('/', async (req, res) => {
 });
 
 
-// 4. GET: Fetch visitor history for a specific student (for Student Page)
+// 3. GET: Fetch visitor history for a specific student (for Student Page)
 router.get('/history/:studentId', async (req, res) => {
     try {
         const studentId = req.params.studentId;
-        // Fetch requests matching the studentId, sorted by newest first (_id contains timestamp)
         const requests = await VisitorRequest.find({ studentId: studentId })
                                              .sort({ _id: -1 });
         
@@ -87,5 +89,104 @@ router.get('/history/:studentId', async (req, res) => {
         res.status(500).json({ success: false, message: error.message });
     }
 });
+
+// 4. PATCH: Update Visitor Request Status (Approve/Reject)
+router.patch('/:id/status', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { status } = req.body; 
+
+        if (!['Approved', 'Rejected'].includes(status)) {
+            return res.status(400).json({ success: false, message: 'Invalid status provided.' });
+        }
+        
+        // Reset times if status changes from approved/pending to rejected
+        const updateFields = { status: status };
+        if (status === 'Rejected') {
+            updateFields.timeIn = null;
+            updateFields.timeOut = null;
+        }
+
+
+        const updatedRequest = await VisitorRequest.findByIdAndUpdate(
+            id,
+            updateFields,
+            { new: true } 
+        );
+
+        if (!updatedRequest) {
+            return res.status(404).json({ success: false, message: 'Visitor request not found.' });
+        }
+
+        res.status(200).json({ 
+            success: true, 
+            message: `Request status updated to ${status}.`,
+            request: updatedRequest 
+        });
+    } catch (error) {
+        console.error("Error updating request status:", error);
+        res.status(500).json({ success: false, message: error.message });
+    }
+});
+
+// 5. PATCH: Record Check-in Time
+router.patch('/:id/checkin', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const now = new Date(); 
+
+        const updatedRequest = await VisitorRequest.findByIdAndUpdate(
+            id,
+            { 
+                timeIn: now, 
+                status: 'Approved' // Ensure status is approved before check-in
+            },
+            { new: true } 
+        );
+
+        if (!updatedRequest) {
+            return res.status(404).json({ success: false, message: 'Visitor request not found.' });
+        }
+
+        res.status(200).json({ 
+            success: true, 
+            message: 'Visitor checked in successfully.',
+            request: updatedRequest 
+        });
+    } catch (error) {
+        console.error("Error recording check-in:", error);
+        res.status(500).json({ success: false, message: error.message });
+    }
+});
+
+// 6. PATCH: Record Check-out Time
+router.patch('/:id/checkout', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const now = new Date(); 
+
+        const updatedRequest = await VisitorRequest.findByIdAndUpdate(
+            id,
+            { 
+                timeOut: now,
+            },
+            { new: true } 
+        );
+
+        if (!updatedRequest) {
+            return res.status(404).json({ success: false, message: 'Visitor request not found.' });
+        }
+
+        res.status(200).json({ 
+            success: true, 
+            message: 'Visitor checked out successfully.',
+            request: updatedRequest 
+        });
+    } catch (error) {
+        console.error("Error recording check-out:", error);
+        res.status(500).json({ success: false, message: error.message });
+    }
+});
+
 
 module.exports = router;
