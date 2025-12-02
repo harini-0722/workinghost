@@ -3,17 +3,18 @@ document.addEventListener('DOMContentLoaded', () => {
     let appState = { 
         blocks: [], 
         assets: [],
-        complaints: []
+        complaints: [],
+        // ADDED: Container for fetched visitor data
+        visitorLogs: []
     }; 
+    
+    // NOTE: visitorLogData STATIC ARRAY REMOVED (will be fetched)
+
     let eventData = [
         { id: 1, title: 'Inter-Hostel Cricket Match', type: 'Sports', date: '2025-11-10', description: 'Finals between Men\'s Hostel and Women\'s Hostel.' },
         { id: 2, title: 'Mess Committee Meeting', type: 'Announcement', date: '2025-11-05', description: 'Discussing the new menu for next month.' }
     ];
-    let visitorLogData = [
-        { id: 1, visitorName: 'Ramesh Kumar', studentName: 'Priya Sharma', roomNumber: 'A-101', date: '2025-11-05', timeIn: '09:00 AM', timeOut: '10:30 AM' },
-        { id: 2, visitorName: 'Sita Devi', studentName: 'Rohan Verma', roomNumber: 'B-205', date: '2025-11-05', timeIn: '10:00 AM', timeOut: '11:00 AM' },
-        { id: 3, visitorName: 'Arjun Singh', studentName: 'Vikram Singh', roomNumber: 'B-202', date: '2025-11-04', timeIn: '04:00 PM', timeOut: '05:00 PM' }
-    ];
+
     let currentRoomData = null; 
 
     // --- 2. DOM Elements ---
@@ -141,6 +142,65 @@ document.addEventListener('DOMContentLoaded', () => {
         return null;
     }
 
+    // Utility functions for notifications
+    function showSuccess(message) {
+        console.log('✅ ' + message);
+        alert('✅ ' + message);
+    }
+
+    function showError(message) {
+        console.error('❌ ' + message);
+        alert('❌ ' + message);
+    }
+    
+    // --- VISITOR MANAGEMENT FUNCTIONS (NEWLY ADDED) ---
+
+    // Function to load visitor logs from the backend API
+    async function loadVisitorLogs() {
+        try {
+            console.log('🔄 Loading visitor logs from database...');
+            // NOTE: This endpoint must exist on your server and return the logs
+            const res = await fetch('/api/visitors'); 
+            
+            if (!res.ok) {
+                throw new Error(`HTTP error! status: ${res.status}`);
+            }
+            
+            const data = await res.json();
+            
+            if (data.success) {
+                // Assuming the backend returns logs in a 'logs' property
+                appState.visitorLogs = data.logs || []; 
+                console.log('✅ Visitor logs loaded from server:', appState.visitorLogs);
+                
+                // Update the dashboard stat for visitors today
+                updateVisitorCount();
+
+                // Re-render if we're currently viewing the logs
+                if (!visitorsView.classList.contains('hidden')) {
+                    renderVisitorsView();
+                }
+
+            } else {
+                throw new Error(data.message || 'Failed to load visitor logs');
+            }
+        } catch (error) {
+            console.error('❌ Failed to load visitor logs data:', error);
+            // Show error in the log container if the view is open
+            if (!visitorsView.classList.contains('hidden')) {
+                visitorLogContainer.innerHTML = `<tr><td colspan="6" class="text-center text-red-500 py-6">Error: Failed to load visitor logs. Check server status.</td></tr>`;
+            }
+        }
+    }
+
+    // Function to update the visitor count card on the dashboard
+    function updateVisitorCount() {
+        const today = new Date().toISOString().split('T')[0];
+        // Use the loaded data in appState.visitorLogs
+        const visitorsToday = appState.visitorLogs.filter(v => v.date === today).length;
+        statVisitorsToday.textContent = `${visitorsToday} Today`;
+    }
+
     // --- COMPLAINT MANAGEMENT FUNCTIONS ---
 
     // Load real complaints from database
@@ -246,7 +306,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
                 body: JSON.stringify({ 
                     response: response,
-                    respondedAt: new Date().toISOString()
+                    respondedAt: new Date().toISOString(),
+                    respondedBy: 'Admin'
                 })
             });
             
@@ -301,8 +362,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const statusMatch = (statusFilter === 'All') || (complaint.status === statusFilter);
             const typeMatch = (typeFilter === 'All') || (complaint.complaintType === typeFilter);
             const searchMatch = (complaint.studentName.toLowerCase().includes(searchTerm)) ||
-                                   (complaint.roomNumber.toLowerCase().includes(searchTerm)) ||
-                                   (complaint.description.toLowerCase().includes(searchTerm));
+                                 (complaint.roomNumber.toLowerCase().includes(searchTerm)) ||
+                                 (complaint.description.toLowerCase().includes(searchTerm));
             return statusMatch && typeMatch && searchMatch;
         });
 
@@ -509,17 +570,6 @@ document.addEventListener('DOMContentLoaded', () => {
         showModal('complaint-details-modal');
     }
 
-    // Utility functions for notifications
-    function showSuccess(message) {
-        console.log('✅ ' + message);
-        alert('✅ ' + message);
-    }
-
-    function showError(message) {
-        console.error('❌ ' + message);
-        alert('❌ ' + message);
-    }
-
     // --- 4. RENDER FUNCTIONS ---
     async function loadHostelData() {
         try {
@@ -650,9 +700,8 @@ document.addEventListener('DOMContentLoaded', () => {
         statOccupancyRing.style.strokeDashoffset = 100 - occupancyPercent;
         
         statFeesPending.textContent = `${totalPendingFees} Pending`;
-        const today = new Date().toISOString().split('T')[0];
-        const visitorsToday = visitorLogData.filter(v => v.date === today).length;
-        statVisitorsToday.textContent = `${visitorsToday} Today`;
+        // Updated: Call the function to set the visitor stat based on fetched data
+        updateVisitorCount(); 
     }
 
     function renderDetailView(blockKey) {
@@ -839,7 +888,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const filteredStudents = allStudents.filter(student => {
             const statusMatch = (statusFilter === 'All') || (student.feeStatus === statusFilter);
             const searchMatch = (student.name.toLowerCase().includes(searchTerm)) || 
-                                   (student.rollNumber.toLowerCase().includes(searchTerm));
+                                 (student.rollNumber.toLowerCase().includes(searchTerm));
             return statusMatch && searchMatch;
         });
 
@@ -892,14 +941,18 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
+    // UPDATED: Use appState.visitorLogs
     function renderVisitorsView() {
         const searchTerm = visitorSearchInput.value.toLowerCase();
         const dateFilter = visitorDateFilter.value;
         visitorLogContainer.innerHTML = '';
         
-        const filteredLogs = visitorLogData.filter(log => {
+        // --- USING appState.visitorLogs ---
+        const logsToFilter = appState.visitorLogs; 
+        
+        const filteredLogs = logsToFilter.filter(log => {
             const searchMatch = (log.visitorName.toLowerCase().includes(searchTerm)) ||
-                                   (log.studentName.toLowerCase().includes(searchTerm));
+                                 (log.studentName.toLowerCase().includes(searchTerm));
             const dateMatch = (!dateFilter) || (log.date === dateFilter);
             return searchMatch && dateMatch;
         });
@@ -917,7 +970,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${log.roomNumber}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${log.date}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${log.timeIn}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${log.timeOut}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${log.timeOut || 'Pending'}</td>
                 </tr>
             `;
             visitorLogContainer.innerHTML += rowHTML;
@@ -1472,11 +1525,14 @@ document.addEventListener('DOMContentLoaded', () => {
         renderDashboard();
     });
     
+    // UPDATED: Call loadVisitorLogs instead of just renderVisitorsView
     showVisitorsViewBtn.addEventListener('click', () => {
         hideAllViews();
         visitorsView.classList.remove('hidden');
-        visitorDateFilter.value = new Date().toISOString().split('T')[0];
-        renderVisitorsView();
+        // Set today's date filter by default
+        visitorDateFilter.value = new Date().toISOString().split('T')[0]; 
+        // Load fresh data, which will call renderVisitorsView() on success
+        loadVisitorLogs(); 
     });
     
     backToDashboardFromVisitorsBtn.addEventListener('click', () => {
@@ -1561,6 +1617,7 @@ document.addEventListener('DOMContentLoaded', () => {
     feesSearchInput.addEventListener('input', renderFeesView);
     feesFilterSelect.addEventListener('change', renderFeesView);
     
+    // UPDATED: Call renderVisitorsView when filters/search change
     visitorSearchInput.addEventListener('input', renderVisitorsView);
     visitorDateFilter.addEventListener('change', renderVisitorsView);
     
@@ -1584,6 +1641,7 @@ document.addEventListener('DOMContentLoaded', () => {
         loadClubActivities();
         loadAssetData();
         loadComplaintsData();
+        loadVisitorLogs(); // ADDED: Load initial visitor data
         renderEvents();
     }
     initApp();
