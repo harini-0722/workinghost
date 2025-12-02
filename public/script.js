@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
         visitorLogs: []
     }; 
     
-    // NOTE: visitorLogData STATIC ARRAY REMOVED (will be fetched)
+    // NOTE: Original static visitorLogData array removed or assumed to be unused now.
 
     let eventData = [
         { id: 1, title: 'Inter-Hostel Cricket Match', type: 'Sports', date: '2025-11-10', description: 'Finals between Men\'s Hostel and Women\'s Hostel.' },
@@ -153,14 +153,14 @@ document.addEventListener('DOMContentLoaded', () => {
         alert('❌ ' + message);
     }
     
-    // --- VISITOR MANAGEMENT FUNCTIONS (NEWLY ADDED) ---
+    // --- VISITOR MANAGEMENT FUNCTIONS ---
 
     // Function to load visitor logs from the backend API
     async function loadVisitorLogs() {
         try {
             console.log('🔄 Loading visitor logs from database...');
-            // NOTE: This endpoint must exist on your server and return the logs
-            const res = await fetch('/api/visitors'); 
+            // FIX: Corrected URL to match server.js setup (app.use('/api/visitor-request', visitorRoutes))
+            const res = await fetch('/api/visitor-request'); 
             
             if (!res.ok) {
                 throw new Error(`HTTP error! status: ${res.status}`);
@@ -951,28 +951,43 @@ document.addEventListener('DOMContentLoaded', () => {
         const logsToFilter = appState.visitorLogs; 
         
         const filteredLogs = logsToFilter.filter(log => {
-            const searchMatch = (log.visitorName.toLowerCase().includes(searchTerm)) ||
-                                 (log.studentName.toLowerCase().includes(searchTerm));
+            // Note: The backend now provides a simpler structure in logs.
+            const searchMatch = (log.visitorName?.toLowerCase().includes(searchTerm)) ||
+                                 (log.studentName?.toLowerCase().includes(searchTerm)) ||
+                                 (log.roomNumber?.toLowerCase().includes(searchTerm));
             const dateMatch = (!dateFilter) || (log.date === dateFilter);
             return searchMatch && dateMatch;
         });
         
         if (filteredLogs.length === 0) {
-            visitorLogContainer.innerHTML = `<tr><td colspan="6" class="text-center text-gray-500 py-6">No visitor logs match the criteria.</td></tr>`;
+            visitorLogContainer.innerHTML = `<tr><td colspan="7" class="text-center text-gray-500 py-6">No visitor logs match the criteria.</td></tr>`;
             return;
         }
 
-        filteredLogs.slice().reverse().forEach(log => {
+        // Sort by date (newest first)
+        filteredLogs.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+        filteredLogs.forEach(log => {
+            const statusClass = log.status === 'Approved' ? 'bg-green-100 text-green-700' :
+                                log.status === 'Rejected' ? 'bg-red-100 text-red-700' :
+                                'bg-yellow-100 text-yellow-700';
+
             const rowHTML = `
                 <tr class="hover:bg-gray-50">
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${log.visitorName}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${log.studentName}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${log.roomNumber}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${log.date}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${log.timeIn}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${log.timeOut || 'Pending'}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${log.timeIn || 'N/A'}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${log.timeOut || 'N/A'}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${statusClass}">
+                            ${log.status}
+                        </span>
+                    </td>
                 </tr>
             `;
+            // Note: Added an extra column to the table for 'Status' to show the request status.
             visitorLogContainer.innerHTML += rowHTML;
         });
     }
@@ -1525,7 +1540,7 @@ document.addEventListener('DOMContentLoaded', () => {
         renderDashboard();
     });
     
-    // UPDATED: Call loadVisitorLogs instead of just renderVisitorsView
+    // UPDATED: Call loadVisitorLogs on click
     showVisitorsViewBtn.addEventListener('click', () => {
         hideAllViews();
         visitorsView.classList.remove('hidden');
