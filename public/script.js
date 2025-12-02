@@ -4,9 +4,12 @@ document.addEventListener('DOMContentLoaded', () => {
         blocks: [], 
         assets: [],
         complaints: [],
-        visitorLogs: [] // Container for fetched visitor data
+        // ADDED: Container for fetched visitor data
+        visitorLogs: []
     }; 
     
+    // NOTE: visitorLogData STATIC ARRAY REMOVED (will be fetched)
+
     let eventData = [
         { id: 1, title: 'Inter-Hostel Cricket Match', type: 'Sports', date: '2025-11-10', description: 'Finals between Men\'s Hostel and Women\'s Hostel.' },
         { id: 2, title: 'Mess Committee Meeting', type: 'Announcement', date: '2025-11-05', description: 'Discussing the new menu for next month.' }
@@ -33,6 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const visitorDateFilter = document.getElementById('visitor-date-filter');
     const statVisitorsToday = document.getElementById('stat-visitors-today');
     
+    // Complaints View Elements
     const complaintsView = document.getElementById('complaints-view');
     const showComplaintsViewBtn = document.getElementById('show-complaints-view-btn');
     const backToDashboardFromComplaintsBtn = document.getElementById('back-to-dashboard-from-complaints-btn');
@@ -82,10 +86,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalOccupantContainer = document.getElementById('modal-occupant-container');
     const modalIssuesContainer = document.getElementById('modal-issues-container');
     const modalDeleteRoomBtn = document.getElementById('modal-delete-room-btn'); 
-    
-    // Visitor Detail Modal Elements
-    const visitorDetailsModal = document.getElementById('visitor-details-modal');
-    const visitorDetailsContent = document.getElementById('visitor-details-content');
 
     // Club Activity Elements
     const clubActivityContainer = document.getElementById('club-activity-container');
@@ -153,13 +153,14 @@ document.addEventListener('DOMContentLoaded', () => {
         alert('❌ ' + message);
     }
     
-    // --- VISITOR MANAGEMENT FUNCTIONS ---
+    // --- VISITOR MANAGEMENT FUNCTIONS (NEWLY ADDED) ---
 
     // Function to load visitor logs from the backend API
     async function loadVisitorLogs() {
         try {
             console.log('🔄 Loading visitor logs from database...');
-            const res = await fetch('/api/visitor-request'); 
+            // NOTE: This endpoint must exist on your server and return the logs
+            const res = await fetch('/api/visitors'); 
             
             if (!res.ok) {
                 throw new Error(`HTTP error! status: ${res.status}`);
@@ -168,11 +169,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await res.json();
             
             if (data.success) {
+                // Assuming the backend returns logs in a 'logs' property
                 appState.visitorLogs = data.logs || []; 
                 console.log('✅ Visitor logs loaded from server:', appState.visitorLogs);
                 
+                // Update the dashboard stat for visitors today
                 updateVisitorCount();
 
+                // Re-render if we're currently viewing the logs
                 if (!visitorsView.classList.contains('hidden')) {
                     renderVisitorsView();
                 }
@@ -182,8 +186,9 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch (error) {
             console.error('❌ Failed to load visitor logs data:', error);
+            // Show error in the log container if the view is open
             if (!visitorsView.classList.contains('hidden')) {
-                visitorLogContainer.innerHTML = `<tr><td colspan="7" class="text-center text-red-500 py-6">Error: Failed to load visitor logs. Check server status.</td></tr>`;
+                visitorLogContainer.innerHTML = `<tr><td colspan="6" class="text-center text-red-500 py-6">Error: Failed to load visitor logs. Check server status.</td></tr>`;
             }
         }
     }
@@ -191,9 +196,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Function to update the visitor count card on the dashboard
     function updateVisitorCount() {
         const today = new Date().toISOString().split('T')[0];
-        const visitorsToday = appState.visitorLogs.filter(v => 
-            v.date === today && (v.status === 'Approved' || v.status === 'Pending')
-        ).length;
+        // Use the loaded data in appState.visitorLogs
+        const visitorsToday = appState.visitorLogs.filter(v => v.date === today).length;
         statVisitorsToday.textContent = `${visitorsToday} Today`;
     }
 
@@ -943,172 +947,667 @@ document.addEventListener('DOMContentLoaded', () => {
         const dateFilter = visitorDateFilter.value;
         visitorLogContainer.innerHTML = '';
         
+        // --- USING appState.visitorLogs ---
         const logsToFilter = appState.visitorLogs; 
         
         const filteredLogs = logsToFilter.filter(log => {
-            const searchMatch = (log.visitorName?.toLowerCase().includes(searchTerm)) ||
-                                 (log.studentName?.toLowerCase().includes(searchTerm)) ||
-                                 (log.roomNumber?.toLowerCase().includes(searchTerm));
+            const searchMatch = (log.visitorName.toLowerCase().includes(searchTerm)) ||
+                                 (log.studentName.toLowerCase().includes(searchTerm));
             const dateMatch = (!dateFilter) || (log.date === dateFilter);
             return searchMatch && dateMatch;
         });
         
         if (filteredLogs.length === 0) {
-            visitorLogContainer.innerHTML = `<tr><td colspan="7" class="text-center text-gray-500 py-6">No visitor logs match the criteria.</td></tr>`;
+            visitorLogContainer.innerHTML = `<tr><td colspan="6" class="text-center text-gray-500 py-6">No visitor logs match the criteria.</td></tr>`;
             return;
         }
 
-        // Sort by date (newest first)
-        filteredLogs.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-        filteredLogs.forEach(log => {
-            const statusClass = log.status === 'Approved' ? 'bg-green-100 text-green-700' :
-                                log.status === 'Rejected' ? 'bg-red-100 text-red-700' :
-                                log.status === 'Pending' ? 'bg-yellow-100 text-yellow-700' :
-                                'bg-gray-100 text-gray-700';
-            
-            // Format requested period from start/end dates
-            const startDateStr = new Date(log.startDate).toLocaleDateString('en-US');
-            const endDateStr = new Date(log.endDate).toLocaleDateString('en-US');
-            const requestedPeriod = `${startDateStr} - ${endDateStr}`;
-
-            let actionButtonsHTML = '';
-            if (log.status === 'Pending') {
-                actionButtonsHTML = `
-                    <button class="action-btn approve-btn px-2 py-1 bg-green-600 text-white text-xs font-medium rounded-md shadow-sm hover:bg-green-700" data-id="${log.id}" data-action="Approved">Approve</button>
-                    <button class="action-btn reject-btn px-2 py-1 bg-red-600 text-white text-xs font-medium rounded-md shadow-sm hover:bg-red-700" data-id="${log.id}" data-action="Rejected">Reject</button>
-                `;
-            } else if (log.status === 'Approved') {
-                if (!log.timeIn) {
-                    actionButtonsHTML = `
-                        <button class="action-btn check-in-btn px-2 py-1 bg-blue-600 text-white text-xs font-medium rounded-md shadow-sm hover:bg-blue-700" data-id="${log.id}">Check In</button>
-                    `;
-                } else if (!log.timeOut) {
-                    actionButtonsHTML = `
-                        <button class="action-btn check-out-btn px-2 py-1 bg-amber-600 text-white text-xs font-medium rounded-md shadow-sm hover:bg-amber-700" data-id="${log.id}">Check Out</button>
-                    `;
-                } else {
-                    actionButtonsHTML = `<span class="text-gray-500 text-xs">Completed</span>`;
-                }
-            } else { // Rejected 
-                 actionButtonsHTML = `<span class="text-gray-500 text-xs">No Action</span>`;
-            }
-            
-            const timeInDisplay = log.timeIn ? new Date(log.timeIn).toLocaleTimeString('en-US', {hour: '2-digit', minute:'2-digit'}) : 'N/A';
-            const timeOutDisplay = log.timeOut ? new Date(log.timeOut).toLocaleTimeString('en-US', {hour: '2-digit', minute:'2-digit'}) : 'N/A';
-
+        filteredLogs.slice().reverse().forEach(log => {
             const rowHTML = `
-                <tr class="hover:bg-gray-50 visitor-row" data-id="${log.id}">
+                <tr class="hover:bg-gray-50">
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${log.visitorName}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                        <div>${log.studentName}</div>
-                        <div class="text-xs text-gray-500">${log.roomNumber}</div>
-                    </td>
-                    <td class="px-6 py-4 text-sm text-gray-700 max-w-xs">
-                        <div class="text-xs text-gray-500">
-                            ${requestedPeriod}
-                        </div>
-                        <div class="truncate font-medium" title="Reason: ${log.reason}">Reason: ${log.reason}</div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${statusClass}">
-                            ${log.status}
-                        </span>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        <div>In: ${timeInDisplay}</div>
-                        <div>Out: ${timeOutDisplay}</div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium space-x-1 flex flex-col justify-center items-center">
-                        <button class="action-btn view-details-btn px-2 py-1 bg-blue-500 text-white text-xs font-medium rounded-md shadow-sm hover:bg-blue-600 mb-1" data-id="${log.id}">View</button>
-                        <div class="flex flex-wrap justify-center gap-1">${actionButtonsHTML}</div>
-                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${log.studentName}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${log.roomNumber}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${log.date}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${log.timeIn}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${log.timeOut || 'Pending'}</td>
                 </tr>
             `;
             visitorLogContainer.innerHTML += rowHTML;
         });
     }
 
-    // Function to handle all visitor actions (Approve, Reject, Check-in, Check-out)
-    async function updateVisitorRequest(id, action, timeType = null) {
-        if (!confirm(`Confirm action: ${action} for request ID: ${id}?`)) return;
-        
-        let updateData = {};
-        let method = 'PATCH';
-        let apiPath = '';
+    // --- 5. MODAL & VIEW-SWITCHING LOGIC ---
+    function showModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (!modal) return;
+        modal.classList.remove('hidden', 'active');
+        void modal.offsetWidth;
+        modal.classList.remove('hidden');
+        requestAnimationFrame(() => {
+            modal.classList.add('active');
+        });
+    }
 
-        if (action === 'Approved' || action === 'Rejected') {
-            updateData = { status: action };
-            apiPath = `/api/visitor-request/${id}/status`;
-        } else if (timeType === 'checkIn') {
-            updateData = { timeIn: new Date().toISOString() };
-            apiPath = `/api/visitor-request/${id}/checkin`;
-        } else if (timeType === 'checkOut') {
-            updateData = { timeOut: new Date().toISOString() };
-            apiPath = `/api/visitor-request/${id}/checkout`;
-        } else {
-             return; // Should not happen
+    function hideModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (!modal) return;
+        modal.classList.remove('active');
+        setTimeout(() => {
+            modal.classList.add('hidden');
+        }, 300); 
+    }
+    
+    function hideAllViews() {
+        dashboardView.classList.add('hidden');
+        detailView.classList.add('hidden');
+        feesView.classList.add('hidden');
+        visitorsView.classList.add('hidden');
+        complaintsView.classList.add('hidden');
+    }
+
+    document.addEventListener('click', (e) => {
+        if (e.target.dataset.modalHide) {
+            hideModal(e.target.dataset.modalHide);
         }
+    });
+
+    backToDashboardBtn.addEventListener('click', () => {
+        hideAllViews();
+        dashboardView.classList.remove('hidden');
+        detailView.dataset.currentHostelKey = '';
+        currentRoomData = null;
+        loadHostelData();
+    });
+
+    hostelBlockContainer.addEventListener('click', (e) => {
+        const link = e.target.closest('.block-link');
+        if (link) {
+            e.preventDefault();
+            const blockKey = link.dataset.hostelKey;
+            renderDetailView(blockKey);
+            hideAllViews();
+            detailView.classList.remove('hidden');
+        }
+    });
+    
+    // --- 6. ASSET ASSIGNMENT LOGIC ---
+    function getAssetOptionsHTML() {
+        let optionsHTML = '<option value="" disabled selected>Select asset...</option>';
+        const availableAssets = appState.assets.filter(a => a.quantity > 0);
+        if(availableAssets.length === 0) {
+            return '<option value="" disabled>No assets in stock</option>';
+        }
+        availableAssets.forEach(asset => {
+            optionsHTML += `<option value="${asset.name}">${asset.name} (Stock: ${asset.quantity})</option>`;
+        });
+        return optionsHTML;
+    }
+
+    function addAssetAssignmentRow(container) {
+        const assetOptions = getAssetOptionsHTML();
+        
+        const noAssetsMsg = container.querySelector('.no-assets-msg');
+        if(noAssetsMsg) noAssetsMsg.remove();
+
+        if (assetOptions.includes("No assets")) {
+            if (!container.querySelector('.asset-assignment-row')) {
+                container.innerHTML = '<p class="text-sm text-gray-500 no-assets-msg">No assets in stock to assign.</p>';
+            }
+            return;
+        }
+        
+        const row = document.createElement('div');
+        row.className = 'asset-assignment-row grid grid-cols-3 gap-2 items-center';
+        row.innerHTML = `
+            <select name="assignedAssetName" class="asset-select col-span-2 block w-full rounded-md border-gray-300 shadow-sm text-sm">
+                ${assetOptions}
+            </select>
+            <input type="number" name="assignedAssetQty" value="1" min="1" class="asset-qty block w-full rounded-md border-gray-300 shadow-sm text-sm" placeholder="Qty">
+            <button type="button" class="remove-asset-row-btn text-red-500 hover:text-red-700">
+                <hero-icon-solid name="x-circle" class="h-5 w-5"></hero-icon-solid>
+            </button>
+        `;
+        
+        row.querySelector('.remove-asset-row-btn').addEventListener('click', () => {
+            row.remove();
+            if (!container.querySelector('.asset-assignment-row') && assetOptions.includes("No assets")) {
+                container.innerHTML = '<p class="text-sm text-gray-500 no-assets-msg">No assets in stock to assign.</p>';
+            }
+        });
+        
+        container.appendChild(row);
+    }
+
+    addRoomAssetRowBtn.addEventListener('click', () => addAssetAssignmentRow(roomAssetAssignmentContainer));
+    addStudentAssetRowBtn.addEventListener('click', () => addAssetAssignmentRow(studentAssetAssignmentContainer));
+
+    function processAssetAssignments(container) {
+        const assignmentRows = container.querySelectorAll('.asset-assignment-row');
+        const assignedAssets = [];
+        const tempStockCheck = {}; 
+
+        for (const row of assignmentRows) {
+            const assetName = row.querySelector('.asset-select').value;
+            const quantity = parseInt(row.querySelector('.asset-qty').value, 10);
+            
+            if (!assetName || !quantity || quantity <= 0) {
+                continue; 
+            }
+
+            const assetInStock = appState.assets.find(a => a.name === assetName);
+            if (!assetInStock) {
+                alert(`Error: Asset "${assetName}" not found in inventory.`);
+                return null; 
+            }
+
+            const currentStock = assetInStock.quantity;
+            const alreadyAssigned = tempStockCheck[assetName] || 0;
+            
+            if (quantity > (currentStock - alreadyAssigned)) {
+                alert(`Error: Not enough "${assetName}" in stock. Available: ${currentStock}, Requested: ${quantity + alreadyAssigned}`);
+                return null; 
+            }
+
+            tempStockCheck[assetName] = alreadyAssigned + quantity;
+            assignedAssets.push({ name: assetName, quantity: quantity });
+        }
+        
+        return assignedAssets;
+    }
+
+    // --- 7. FORM & DATA HANDLERS ---
+    addBlockForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const blockName = document.getElementById('block-name').value;
+        const blockKey = document.getElementById('block-key').value.toLowerCase().replace(/\s+/g, '-');
+        const blockTheme = document.getElementById('block-theme').value;
+        if (!blockName || !blockKey) return;
 
         try {
-            const res = await fetch(apiPath, {
-                method: method,
+            const res = await fetch('/api/blocks', {
+                method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(updateData)
+                body: JSON.stringify({ blockName, blockKey, blockTheme })
             });
-
             const data = await res.json();
-            
             if (data.success) {
-                showSuccess(`Request status updated to ${action}!`);
-                await loadVisitorLogs(); // Refresh the list
+                await loadHostelData(); 
+                hideModal('add-block-modal');
+                addBlockForm.reset();
             } else {
-                showError(`Failed to perform action: ${data.message}`);
+                throw new Error(data.message);
             }
         } catch (error) {
-            console.error('Action failed:', error);
-            showError('A server error occurred during the visitor action.');
+            alert(`Error adding block: ${error.message}`);
         }
-    }
+    });
+
+    addRoomForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const assignedAssets = processAssetAssignments(roomAssetAssignmentContainer);
+        if (assignedAssets === null) {
+            return; 
+        }
+
+        const blockKey = detailView.dataset.currentHostelKey;
+        if (!blockKey) {
+            alert('Error: No block selected.');
+            return;
+        }
+        
+        const formData = new FormData();
+        formData.append('roomNumber', document.getElementById('room-id').value);
+        formData.append('floor', document.getElementById('room-floor').value);
+        formData.append('capacity', document.getElementById('room-capacity').value);
+        formData.append('assets', JSON.stringify(assignedAssets)); 
+        
+        const imageFile = document.getElementById('room-image-file').files[0];
+        if (imageFile) {
+            formData.append('roomImage', imageFile);
+        }
+        
+        const submitBtn = addRoomForm.querySelector('button[type="submit"]');
+
+        try {
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Saving...';
+            
+            const res = await fetch(`/api/blocks/${blockKey}/rooms`, {
+                method: 'POST',
+                body: formData 
+            });
+
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Add Room';
+
+            const data = await res.json();
+            if (data.success) {
+                await loadHostelData(); 
+                await loadAssetData(); 
+                hideModal('add-room-modal');
+                addRoomForm.reset();
+                roomAssetAssignmentContainer.innerHTML = ''; 
+            } else {
+                throw new Error(data.message);
+            }
+        } catch (error) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Add Room';
+            alert(`Error adding room: ${error.message}`);
+        }
+    });
+
+    addStudentForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const assignedAssets = processAssetAssignments(studentAssetAssignmentContainer);
+        if (assignedAssets === null) {
+            return; 
+        }
+        
+        const blockKey = detailView.dataset.currentHostelKey;
+        const formData = new FormData(addStudentForm);
+        formData.append('blockKey', blockKey);
+        formData.append('assets', JSON.stringify(assignedAssets)); 
+
+        try {
+            const submitBtn = addStudentForm.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Uploading...';
+            
+            const res = await fetch('/api/students', {
+                method: 'POST',
+                body: formData
+            });
+
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Add Student';
+
+            const data = await res.json();
+            if (data.success) {
+                await loadHostelData(); 
+                await loadAssetData(); 
+                hideModal('add-student-modal');
+                addStudentForm.reset();
+                studentAssetAssignmentContainer.innerHTML = ''; 
+            } else {
+                throw new Error(data.message);
+            }
+        } catch (error) {
+            alert(`Error adding student: ${error.message}`);
+            const submitBtn = addStudentForm.querySelector('button[type="submit"]');
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Add Student';
+        }
+    });
+
+    addEventForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const newEvent = {
+            id: Date.now(),
+            title: document.getElementById('event-title').value,
+            type: document.getElementById('event-type').value,
+            date: document.getElementById('event-date').value,
+            description: document.getElementById('event-description').value,
+        };
+        eventData.push(newEvent);
+        renderEvents();
+        hideModal('add-event-modal');
+        addEventForm.reset();
+    });
+
+    addClubActivityForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData(addClubActivityForm);
+        
+        try {
+            const submitBtn = addClubActivityForm.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Uploading...';
+
+            const res = await fetch('/api/activities', {
+                method: 'POST',
+                body: formData 
+            });
+
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Post Activity';
+
+            const data = await res.json();
+            if (data.success) {
+                await loadClubActivities();
+                hideModal('add-club-activity-modal');
+                addClubActivityForm.reset();
+            } else {
+                throw new Error(data.message);
+            }
+        } catch (error) {
+            alert(`Error adding activity: ${error.message}`);
+            const submitBtn = addClubActivityForm.querySelector('button[type="submit"]');
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Post Activity';
+        }
+    });
     
-    // Function to display the full visitor details in a modal
-    function showVisitorDetails(log) {
-        const timeInDisplay = log.timeIn ? new Date(log.timeIn).toLocaleString() : 'N/A';
-        const timeOutDisplay = log.timeOut ? new Date(log.timeOut).toLocaleString() : 'N/A';
-        const submissionDateDisplay = new Date(log.date).toLocaleDateString();
+    addAssetForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const type = assetTypeSelect.value;
+        const otherName = document.getElementById('asset-name-other').value;
 
-        visitorDetailsContent.innerHTML = `
-            <div class="space-y-4">
-                <div class="grid grid-cols-2 gap-y-3 gap-x-4 border-b pb-3">
-                    <div><label class="block text-sm font-medium text-gray-500">Visitor Name</label><p class="font-semibold text-lg text-gray-900">${log.visitorName}</p></div>
-                    <div><label class="block text-sm font-medium text-gray-500">Student Visited</label><p class="font-medium text-gray-900">${log.studentName} (Room ${log.roomNumber})</p></div>
-                </div>
-                
-                <div class="grid grid-cols-2 gap-y-3 gap-x-4">
-                    <div><label class="block text-sm font-medium text-gray-500">Submitted On</label><p>${submissionDateDisplay}</p></div>
-                    <div><label class="block text-sm font-medium text-gray-500">Request ID</label><p class="text-xs truncate">${log.id}</p></div>
-                    <div><label class="block text-sm font-medium text-gray-500">Requested Start Date</label><p class="font-medium text-blue-600">${new Date(log.startDate).toLocaleDateString()}</p></div>
-                    <div><label class="block text-sm font-medium text-gray-500">Requested End Date</label><p class="font-medium text-blue-600">${new Date(log.endDate).toLocaleDateString()}</p></div>
-                </div>
-                
-                <div class="border-t pt-3">
-                    <label class="block text-sm font-medium text-gray-500">Reason for Visit</label>
-                    <p class="bg-gray-100 p-3 rounded text-gray-800">${log.reason}</p>
-                </div>
-                
-                <div class="grid grid-cols-2 gap-4 border-t pt-3">
-                    <div><label class="block text-sm font-medium text-gray-500">Time In (Actual)</label><p class="font-medium text-green-600">${timeInDisplay}</p></div>
-                    <div><label class="block text-sm font-medium text-gray-500">Time Out (Actual)</label><p class="font-medium text-red-600">${timeOutDisplay}</p></div>
-                </div>
-                
-            </div>
-        `;
-        showModal('visitor-details-modal');
+        if (type === 'Other' && !otherName) {
+            alert('Please specify the asset name when selecting "Other".');
+            return;
+        }
+        
+        const formData = new FormData(addAssetForm);
+        
+        const submitBtn = addAssetForm.querySelector('button[type="submit"]');
+
+        try {
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Saving...';
+            
+            const res = await fetch('/api/assets', {
+                method: 'POST',
+                body: formData
+            });
+
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Save Asset';
+
+            const data = await res.json();
+            if (data.success) {
+                await loadAssetData(); 
+                hideModal('add-asset-modal');
+                addAssetForm.reset();
+                assetNameOtherWrapper.classList.add('hidden');
+            } else {
+                throw new Error(data.message);
+            }
+        } catch (error) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Save Asset';
+            alert(`Error adding asset: ${error.message}`);
+        }
+    });
+
+    assetTypeSelect.addEventListener('change', () => {
+        if (assetTypeSelect.value === 'Other') {
+            assetNameOtherWrapper.classList.remove('hidden');
+        } else {
+            assetNameOtherWrapper.classList.add('hidden');
+        }
+    });
+
+    // --- 8. DETAIL VIEW & MODAL LISTENERS ---
+    function filterAndSearchRooms() {
+        const searchTerm = roomSearchInput.value.toLowerCase();
+        const filterTerm = roomFilterSelect.value;
+        const roomCards = roomListContainer.querySelectorAll('.room-card');
+
+        roomCards.forEach(card => {
+            const roomId = card.dataset.roomId.toLowerCase();
+            const roomStatus = card.dataset.roomStatus;
+            const searchMatch = roomId.includes(searchTerm);
+            const filterMatch = (filterTerm === 'All') || (filterTerm === 'Full' && roomStatus === 'Full') || (filterTerm === 'Available' && roomStatus === 'Available');
+            card.style.display = (searchMatch && filterMatch) ? 'block' : 'none';
+        });
     }
+    roomSearchInput.addEventListener('input', filterAndSearchRooms);
+    roomFilterSelect.addEventListener('change', filterAndSearchRooms);
 
+    roomListContainer.addEventListener('click', (e) => {
+        const card = e.target.closest('.room-card');
+        if (card) {
+            const roomId = card.dataset.roomId;
+            const blockKey = detailView.dataset.currentHostelKey;
+            const block = appState.blocks.find(b => b.blockKey === blockKey);
+            if (!block) return;
+            const room = block.rooms.find(r => r.roomNumber === roomId);
+            if (!room) return;
+            
+            renderRoomDetailsModal(room, block);
+            showModal('room-details-modal');
+        }
+    });
+
+    modalDeleteRoomBtn.addEventListener('click', async () => {
+        if (!currentRoomData || !currentRoomData._id) return;
+        const blockKey = detailView.dataset.currentHostelKey;
+        const roomId = currentRoomData._id;
+
+        if (confirm(`Are you sure you want to delete room ${currentRoomData.roomNumber}?\nThis will also remove all students in it and return all assets to stock.`)) {
+            try {
+                const res = await fetch(`/api/blocks/${blockKey}/rooms/${roomId}`, {
+                    method: 'DELETE'
+                });
+                const data = await res.json();
+                if (data.success) {
+                    await loadHostelData(); 
+                    await loadAssetData(); 
+                    hideModal('room-details-modal');
+                } else {
+                    throw new Error(data.message);
+                }
+            } catch (error) {
+                alert(`Error deleting room: ${error.message}`);
+            }
+        }
+    });
+
+    modalOccupantContainer.addEventListener('click', async (e) => {
+        const button = e.target.closest('.remove-student-btn');
+        if (button) {
+            e.preventDefault();
+            e.stopPropagation();
+            const studentId = button.dataset.studentId;
+            if (confirm(`Are you sure you want to remove this student?\nTheir assets will be returned to stock.`)) {
+                try {
+                    const res = await fetch(`/api/students/${studentId}`, {
+                        method: 'DELETE'
+                    });
+                    const data = await res.json();
+                    if (data.success) {
+                        await loadHostelData(); 
+                        await loadAssetData(); 
+
+                        const blockKey = detailView.dataset.currentHostelKey;
+                        const block = appState.blocks.find(b => b.blockKey === blockKey);
+                        const updatedRoom = block.rooms.find(r => r._id === currentRoomData._id);
+                        if (updatedRoom) {
+                            renderRoomDetailsModal(updatedRoom, block);
+                            console.log('✅ Student removed, modal updated.');
+                        } else {
+                            hideModal('room-details-modal');
+                        }
+                    } else {
+                        throw new Error(data.message);
+                    }
+                } catch (error) {
+                    alert(`Error removing student: ${error.message}`);
+                }
+            }
+        }
+    });
+    
+    // --- 9. DELETE HANDLERS (for cards) ---
+    hostelBlockContainer.addEventListener('click', async (e) => {
+        const button = e.target.closest('.remove-block-btn');
+        if (button) {
+            e.preventDefault(); e.stopPropagation();
+            const blockId = button.dataset.blockId;
+            const blockName = button.dataset.blockName;
+            if (confirm(`Are you sure you want to delete the block "${blockName}"?\nThis action is permanent and will delete all associated rooms, students, and return their assets.`)) {
+                try {
+                    const res = await fetch(`/api/blocks/${blockId}`, { method: 'DELETE' });
+                    const data = await res.json();
+                    if (data.success) {
+                        await loadHostelData();
+                        await loadAssetData(); 
+                    } else { throw new Error(data.message); }
+                } catch (error) { alert(`Error deleting block: ${error.message}`); }
+            }
+        }
+    });
+    
+    clubActivityContainer.addEventListener('click', async (e) => {
+        const button = e.target.closest('.remove-activity-btn');
+        if (button) {
+            e.preventDefault(); e.stopPropagation();
+            const activityId = button.dataset.activityId;
+            const activityTitle = button.dataset.activityTitle;
+            if (confirm(`Are you sure you want to delete the activity "${activityTitle}"?`)) {
+                try {
+                    const res = await fetch(`/api/activities/${activityId}`, { method: 'DELETE' });
+                    const data = await res.json();
+                    if (data.success) {
+                        await loadClubActivities();
+                    } else { throw new Error(data.message); }
+                } catch (error) { alert(`Error deleting activity: ${error.message}`); }
+            }
+        }
+    });
+
+    assetInventoryContainer.addEventListener('click', async (e) => {
+        const button = e.target.closest('.remove-asset-btn');
+        if (button) {
+            e.preventDefault(); e.stopPropagation();
+            const assetId = button.dataset.assetId;
+            const assetName = button.dataset.assetName;
+            if (confirm(`Are you sure you want to delete "${assetName}" from the inventory?`)) {
+                try {
+                    const res = await fetch(`/api/assets/${assetId}`, { method: 'DELETE' });
+                    const data = await res.json();
+                    if (data.success) {
+                        await loadAssetData(); 
+                    } else {
+                        throw new Error(data.message);
+                    }
+                } catch (error) {
+                    alert(`Error deleting asset: ${error.message}`);
+                }
+            }
+        }
+    });
+
+    // --- 10. "SHOW MODAL" BUTTON LISTENERS ---
+    showAddBlockModalBtn.addEventListener('click', () => showModal('add-block-modal'));
+    
+    showAddRoomModalBtn.addEventListener('click', () => {
+        roomAssetAssignmentContainer.innerHTML = ''; 
+        addAssetAssignmentRow(roomAssetAssignmentContainer); 
+        showModal('add-room-modal');
+    });
+
+    showAddStudentModalBtn.addEventListener('click', () => {
+        studentAssetAssignmentContainer.innerHTML = ''; 
+        addAssetAssignmentRow(studentAssetAssignmentContainer); 
+        showModal('add-student-modal');
+    });
+    
+    showAddEventModalBtn.addEventListener('click', () => showModal('add-event-modal'));
+    showAddClubActivityModalBtn.addEventListener('click', () => showModal('add-club-activity-modal'));
+    showAddAssetModalBtn.addEventListener('click', () => showModal('add-asset-modal')); 
+
+    // View navigation listeners
+    showFeesViewBtn.addEventListener('click', () => {
+        hideAllViews();
+        feesView.classList.remove('hidden');
+        renderFeesView();
+    });
+    
+    backToDashboardFromFeesBtn.addEventListener('click', () => {
+        hideAllViews();
+        dashboardView.classList.remove('hidden');
+        renderDashboard();
+    });
+    
+    // UPDATED: Call loadVisitorLogs instead of just renderVisitorsView
+    showVisitorsViewBtn.addEventListener('click', () => {
+        hideAllViews();
+        visitorsView.classList.remove('hidden');
+        // Set today's date filter by default
+        visitorDateFilter.value = new Date().toISOString().split('T')[0]; 
+        // Load fresh data, which will call renderVisitorsView() on success
+        loadVisitorLogs(); 
+    });
+    
+    backToDashboardFromVisitorsBtn.addEventListener('click', () => {
+        hideAllViews();
+        dashboardView.classList.remove('hidden');
+    });
+
+    // Complaints View Listeners
+    showComplaintsViewBtn.addEventListener('click', () => {
+        hideAllViews();
+        complaintsView.classList.remove('hidden');
+        loadComplaintsData();
+    });
+    
+    backToDashboardFromComplaintsBtn.addEventListener('click', () => {
+        hideAllViews();
+        dashboardView.classList.remove('hidden');
+    });
+
+    // Complaints filtering and search
+    complaintSearchInput.addEventListener('input', renderComplaintsView);
+    complaintStatusFilter.addEventListener('change', renderComplaintsView);
+    complaintTypeFilter.addEventListener('change', renderComplaintsView);
+
+    // Refresh complaints
+    refreshComplaintsBtn.addEventListener('click', () => {
+        loadComplaintsData();
+        showSuccess('Complaints refreshed');
+    });
+
+    // Complaint actions
+    complaintsListContainer.addEventListener('click', async (e) => {
+        const viewBtn = e.target.closest('.view-complaint-details-btn');
+        const statusBtn = e.target.closest('.update-complaint-status-btn');
+        
+        if (viewBtn) {
+            const complaintId = viewBtn.dataset.complaintId;
+            showComplaintDetails(complaintId);
+        }
+        
+        if (statusBtn) {
+            const complaintId = statusBtn.dataset.complaintId;
+            const newStatus = statusBtn.dataset.newStatus;
+            
+            let adminNotes = '';
+            if (newStatus === 'Resolved') {
+                adminNotes = prompt('Enter resolution notes:');
+                if (adminNotes === null) return;
+            }
+            
+            if (await updateComplaintStatus(complaintId, newStatus, adminNotes)) {
+                renderComplaintsView();
+            }
+        }
+    });
+
+    // Add response to complaint
+    complaintDetailsContent.addEventListener('click', async (e) => {
+        if (e.target.id === 'submit-complaint-response') {
+            const complaintId = e.target.dataset.complaintId;
+            const responseText = document.getElementById('complaint-response').value.trim();
+            
+            if (!responseText) {
+                showError('Please enter a response');
+                return;
+            }
+            
+            if (await addComplaintResponse(complaintId, responseText)) {
+                document.getElementById('complaint-response').value = '';
+                showComplaintDetails(complaintId);
+            }
+        }
+    });
 
     // --- 11. OTHER LISTENERS ---
-    
     adminLogoutBtn.addEventListener('click', () => {
         if (confirm('Are you sure you want to log out?')) {
             window.location.href = '/login.html';
@@ -1135,28 +1634,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Listener for Visitor Log Actions (Approve, Reject, Check-in, Check-out, View)
-    visitorLogContainer.addEventListener('click', (e) => {
-        const target = e.target.closest('.action-btn');
-        const id = target?.dataset.id;
-        if (!id) return;
-
-        if (target.classList.contains('approve-btn')) {
-            updateVisitorRequest(id, 'Approved');
-        } else if (target.classList.contains('reject-btn')) {
-            updateVisitorRequest(id, 'Rejected');
-        } else if (target.classList.contains('check-in-btn')) {
-            updateVisitorRequest(id, 'Check-in', 'checkIn');
-        } else if (target.classList.contains('check-out-btn')) {
-            updateVisitorRequest(id, 'Check-out', 'checkOut');
-        } else if (target.classList.contains('view-details-btn')) {
-            const log = appState.visitorLogs.find(l => l.id === id);
-            if (log) {
-                showVisitorDetails(log);
-            }
-        }
-    });
-
     // --- 12. INITIALIZE APP ---
     function initApp() {
         console.log('🚀 Initializing Admin Dashboard...');
@@ -1164,7 +1641,7 @@ document.addEventListener('DOMContentLoaded', () => {
         loadClubActivities();
         loadAssetData();
         loadComplaintsData();
-        loadVisitorLogs(); 
+        loadVisitorLogs(); // ADDED: Load initial visitor data
         renderEvents();
     }
     initApp();
