@@ -11,6 +11,30 @@
     
     <link rel="stylesheet" href="style.css">
     <style>
+        /* Custom UI Theme: Mild Cyan/Teal Blue */
+        :root {
+            /* Cyan 50 - Very light blue/cyan for the background */
+            --color-background: #e0f7fa; 
+            /* Dark Cyan for main text/headers */
+            --color-text-dark: #006064; 
+        }
+
+        /* Apply the custom background color to the body */
+        body {
+            background-color: var(--color-background);
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Ensure Navbar remains white (as requested) */
+        nav {
+            background-color: white;
+        }
+        
+        /* Apply dark cyan color to the main title in the header */
+        .hostel-title {
+            color: var(--color-text-dark);
+        }
+
         .modal.active { opacity: 1; pointer-events: auto; }
         .modal { transition: opacity 0.3s ease; opacity: 0; pointer-events: none; }
         .modal-backdrop { @apply absolute inset-0 bg-gray-900 bg-opacity-75; }
@@ -27,12 +51,12 @@
         .room-card .activity-card-image { transition: transform 0.3s ease-in-out; }
     </style>
 </head>
-<body class="bg-blue-50 min-h-screen flex flex-col">
-    <nav class="bg-white shadow-sm sticky top-0 z-20">
+<body class="min-h-screen flex flex-col">
+    <nav class="shadow-sm sticky top-0 z-20">
         <div class="w-full mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
                 <div class="flex-shrink-0 flex items-center">
-                    <h1 class="text-xl font-bold text-blue-600"><span class="icon-space"> </span>HOSTEL MANAGEMENT</h1>
+                    <h1 class="text-xl font-bold hostel-title"><span class="icon-space"> </span>HOSTEL MANAGEMENT</h1>
                     <span class="ml-2 text-gray-500 font-medium hidden sm:inline">| Indian Institute of Technology</span>
                 </div>
                 <div class="flex items-center">
@@ -446,7 +470,7 @@
                 </div>
             </div>
         </div>
-        </main>
+        </main>
     <footer class="mt-12 py-6 border-t border-gray-200 bg-white">
         <div class="w-full mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <p class="text-sm text-gray-500">
@@ -513,12 +537,12 @@
                 <div>
                     <label for="room-image-file" class="block text-sm font-medium text-gray-700"><span class="icon-space"> </span>Upload Room Image</label>
                     <input type="file" id="room-image-file" name="roomImage" class="mt-1 block w-full text-sm text-gray-500
-                                file:mr-4 file:py-2 file:px-4
-                                file:rounded-full file:border-0
-                                file:text-sm file:font-semibold
-                                file:bg-blue-50 file:text-blue-700
-                                hover:file:bg-blue-100"
-                                accept="image/*">
+                                 file:mr-4 file:py-2 file:px-4
+                                 file:rounded-full file:border-0
+                                 file:text-sm file:font-semibold
+                                 file:bg-blue-50 file:text-blue-700
+                                 hover:file:bg-blue-100"
+                                 accept="image/*">
                     <p class="mt-1 text-xs text-gray-500">Upload an image of the room (PNG, JPG, etc.).</p>
                 </div>
                 <div class="flex justify-end space-x-3 pt-4">
@@ -604,17 +628,17 @@
                 <div>
                     <label for="student-profile-image" class="block text-sm font-medium text-gray-700"><span class="icon-space"> </span>Upload Profile Photo</label>
                     <input type="file" id="student-profile-image" name="profileImage" class="mt-1 block w-full text-sm text-gray-500
-                                file:mr-4 file:py-2 file:px-4
-                                file:rounded-full file:border-0
-                                file:text-sm file:font-semibold
-                                file:bg-blue-50 file:text-blue-700
-                                hover:file:bg-blue-100"
-                                accept="image/*">
+                                 file:mr-4 file:py-2 file:px-4
+                                 file:rounded-full file:border-0
+                                 file:text-sm file:font-semibold
+                                 file:bg-blue-50 file:text-blue-700
+                                 hover:file:bg-blue-100"
+                                 accept="image/*">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700"><span class="icon-space"> </span>Assign Assets to Student</label>
                     <div id="student-asset-assignment-container" class="mt-2 space-y-3">
-                                </div>
+                                 </div>
                     <button type="button" id="add-student-asset-row-btn" class="mt-2 text-sm font-medium text-blue-600 hover:text-blue-800 flex items-center">
                         <hero-icon-solid name="plus-circle" class="h-5 w-5 mr-1"></hero-icon-solid>
                         Add Asset
@@ -747,12 +771,12 @@
                 <div>
                     <label for="club-activity-image-file" class="block text-sm font-medium text-gray-700"><span class="icon-space"> </span>Upload Image</label>
                     <input type="file" id="club-activity-image-file" name="clubActivityImage" class="mt-1 block w-full text-sm text-gray-500
-                                file:mr-4 file:py-2 file:px-4
-                                file:rounded-full file:border-0
-                                file:text-sm file:font-semibold
-                                file:bg-blue-50 file:text-blue-700
-                                hover:file:bg-blue-100"
-                                accept="image/*">
+                                 file:mr-4 file:py-2 file:px-4
+                                 file:rounded-full file:border-0
+                                 file:text-sm file:font-semibold
+                                 file:bg-blue-50 file:text-blue-700
+                                 hover:file:bg-blue-100"
+                                 accept="image/*">
                     <p class="mt-1 text-xs text-gray-500">Upload an image from your device (PNG, JPG, etc.).</p>
                 </div>
                 <div class="flex justify-end space-x-3 pt-4">
@@ -796,12 +820,12 @@
                 <div>
                     <label for="asset-image-file" class="block text-sm font-medium text-gray-700"><span class="icon-space"> </span>Upload Asset Image</label>
                     <input type="file" id="asset-image-file" name="assetImage" class="mt-1 block w-full text-sm text-gray-500
-                                file:mr-4 file:py-2 file:px-4
-                                file:rounded-full file:border-0
-                                file:text-sm file:font-semibold
-                                file:bg-blue-50 file:text-blue-700
-                                hover:file:bg-blue-100"
-                                accept="image/*">
+                                 file:mr-4 file:py-2 file:px-4
+                                 file:rounded-full file:border-0
+                                 file:text-sm file:font-semibold
+                                 file:bg-blue-50 file:text-blue-700
+                                 hover:file:bg-blue-100"
+                                 accept="image/*">
                 </div>
                 <div class="flex justify-end space-x-3 pt-4">
                     <button type="button" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300" data-modal-hide="add-asset-modal"><span class="icon-space"> </span>Cancel</button>
