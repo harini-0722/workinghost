@@ -36,7 +36,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const statVisitorsToday = document.getElementById('stat-visitors-today');
     
     // Complaints View Elements
-    const complaintsView = document.getElementById('complaints-view');
+    const complaints
+    
+    
+    
+    = document.getElementById('complaints-view');
     const showComplaintsViewBtn = document.getElementById('show-complaints-view-btn');
     const backToDashboardFromComplaintsBtn = document.getElementById('back-to-dashboard-from-complaints-btn');
     const complaintsListContainer = document.getElementById('complaints-list-container');
@@ -218,84 +222,111 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Function to render the Leave Request Management View
-    function renderLeaveView() {
-        const searchTerm = leaveSearchInput.value.toLowerCase();
-        const statusFilter = leaveStatusFilter.value;
-        leaveRequestContainer.innerHTML = '';
-        
-        const filteredLeaves = appState.leaveRequests.filter(leave => {
-            const statusMatch = (statusFilter === 'All') || (leave.status === statusFilter);
-            const searchMatch = (leave.studentName?.toLowerCase().includes(searchTerm)) ||
-                                (leave.roomNumber?.toLowerCase().includes(searchTerm));
-            
-            return statusMatch && searchMatch;
-        });
-        
-        if (filteredLeaves.length === 0) {
-            leaveRequestContainer.innerHTML = `<tr><td colspan="6" class="text-center text-gray-500 py-6">No leave requests match the criteria.</td></tr>`;
-            return;
+    // Function to render the Leave Request Management View
+function renderLeaveView() {
+    const searchTerm = leaveSearchInput.value.toLowerCase();
+    const statusFilter = leaveStatusFilter.value;
+    leaveRequestContainer.innerHTML = '';
+
+    // --- FIX START: Enrich data before filtering ---
+    // The API gives us studentId, but we need names and room numbers.
+    // We map over the requests to fill in missing details from appState.blocks
+    appState.leaveRequests.forEach(leave => {
+        if (!leave.studentName || !leave.roomNumber) {
+            // Try to find the student in our loaded hostel data
+            for (const block of appState.blocks) {
+                if (block.rooms) {
+                    for (const room of block.rooms) {
+                        if (room.students) {
+                            const student = room.students.find(s => s._id === leave.studentId);
+                            if (student) {
+                                leave.studentName = student.name; // Assign Name
+                                leave.roomNumber = room.roomNumber; // Assign Room
+                                return; // Stop searching for this specific leave
+                            }
+                        }
+                    }
+                }
+            }
         }
+    });
+    // --- FIX END ---
 
-        // Sort: Pending first, then by applied date (newest first)
-        filteredLeaves.sort((a, b) => {
-            if (a.status === 'Pending' && b.status !== 'Pending') return -1;
-            if (a.status !== 'Pending' && b.status === 'Pending') return 1;
-            return new Date(b.appliedDate) - new Date(a.appliedDate);
-        });
+    const filteredLeaves = appState.leaveRequests.filter(leave => {
+        // Use 'Unknown' if data is still missing to prevent crashes
+        const sName = (leave.studentName || '').toLowerCase();
+        const rNum = (leave.roomNumber || '').toLowerCase();
 
-        filteredLeaves.forEach(leave => {
-            let statusClass = '';
-            let actionButtons = '';
-            
-            switch(leave.status) {
-                case 'Approved': statusClass = 'bg-green-100 text-green-700'; break;
-                case 'Rejected': statusClass = 'bg-red-100 text-red-700'; break;
-                default: statusClass = 'bg-yellow-100 text-yellow-700'; // Pending
-            }
+        const statusMatch = (statusFilter === 'All') || (leave.status === statusFilter);
+        const searchMatch = (sName.includes(searchTerm)) || (rNum.includes(searchTerm));
 
-            const viewBtn = `<button class="view-leave-btn text-gray-500 hover:text-blue-600 ml-2" data-id="${leave._id}" title="View Details"><hero-icon-solid name="eye" class="h-5 w-5"></hero-icon-solid></button>`;
+        return statusMatch && searchMatch;
+    });
 
-            if (leave.status === 'Pending') {
-                actionButtons = `
-                    <button class="update-leave-btn bg-green-500 text-white px-3 py-1 rounded text-xs hover:bg-green-600 transition" data-id="${leave._id}" data-action="Approved">Approve</button>
-                    <button class="update-leave-btn bg-red-500 text-white px-3 py-1 rounded text-xs hover:bg-red-600 ml-1 transition" data-id="${leave._id}" data-action="Rejected">Reject</button>
-                `;
-            } else {
-                actionButtons = `<span class="text-xs text-gray-400 mr-2">Actioned</span>`;
-            }
-
-            const rowHTML = `
-                <tr class="hover:bg-gray-50 transition-colors border-b">
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        <div class="font-medium">${leave.studentName}</div>
-                        <div class="text-xs text-gray-500">Room: ${leave.roomNumber}</div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                        ${formatDate(leave.startDate)} - ${formatDate(leave.endDate)}
-                    </td>
-                    <td class="px-6 py-4 text-sm text-gray-700 max-w-xs">
-                        <div class="truncate" title="${leave.reason}">${leave.reason}</div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-xs text-gray-500">
-                        ${formatDate(leave.appliedDate)}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${statusClass}">
-                            ${leave.status}
-                        </span>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
-                        <div class="flex items-center justify-center">
-                            ${actionButtons}
-                            ${viewBtn}
-                        </div>
-                    </td>
-                </tr>
-            `;
-            leaveRequestContainer.innerHTML += rowHTML;
-        });
+    if (filteredLeaves.length === 0) {
+        leaveRequestContainer.innerHTML = `<tr><td colspan="6" class="text-center text-gray-500 py-6">No leave requests match the criteria.</td></tr>`;
+        return;
     }
 
+    // Sort: Pending first, then by applied date (newest first)
+    filteredLeaves.sort((a, b) => {
+        if (a.status === 'Pending' && b.status !== 'Pending') return -1;
+        if (a.status !== 'Pending' && b.status === 'Pending') return 1;
+        return new Date(b.appliedDate) - new Date(a.appliedDate);
+    });
+
+    filteredLeaves.forEach(leave => {
+        let statusClass = '';
+        let actionButtons = '';
+
+        switch (leave.status) {
+            case 'Approved': statusClass = 'bg-green-100 text-green-700'; break;
+            case 'Rejected': statusClass = 'bg-red-100 text-red-700'; break;
+            default: statusClass = 'bg-yellow-100 text-yellow-700'; // Pending
+        }
+
+        const viewBtn = `<button class="view-leave-btn text-gray-500 hover:text-blue-600 ml-2" data-id="${leave._id}" title="View Details"><hero-icon-solid name="eye" class="h-5 w-5"></hero-icon-solid></button>`;
+
+        if (leave.status === 'Pending') {
+            actionButtons = `
+                <button class="update-leave-btn bg-green-500 text-white px-3 py-1 rounded text-xs hover:bg-green-600 transition" data-id="${leave._id}" data-action="Approved">Approve</button>
+                <button class="update-leave-btn bg-red-500 text-white px-3 py-1 rounded text-xs hover:bg-red-600 ml-1 transition" data-id="${leave._id}" data-action="Rejected">Reject</button>
+            `;
+        } else {
+            actionButtons = `<span class="text-xs text-gray-400 mr-2">Actioned</span>`;
+        }
+
+        const rowHTML = `
+            <tr class="hover:bg-gray-50 transition-colors border-b">
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <div class="font-medium">${leave.studentName || 'Unknown ID: ' + leave.studentId.substring(0,6)+'...'}</div>
+                    <div class="text-xs text-gray-500">Room: ${leave.roomNumber || 'N/A'}</div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                    ${formatDate(leave.startDate)} - ${formatDate(leave.endDate)}
+                </td>
+                <td class="px-6 py-4 text-sm text-gray-700 max-w-xs">
+                    <div class="truncate" title="${leave.reason}">${leave.reason}</div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-xs text-gray-500">
+                    ${formatDate(leave.appliedDate)}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${statusClass}">
+                        ${leave.status}
+                    </span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
+                    <div class="flex items-center justify-center">
+                        ${actionButtons}
+                        ${viewBtn}
+                    </div>
+                </td>
+            </tr>
+        `;
+        leaveRequestContainer.innerHTML += rowHTML;
+    });
+}
     // Handle Admin Action (Approve/Reject) on Leave Request
     async function handleLeaveAction(id, action) {
         if(!confirm(`Are you sure you want to ${action} this leave request?`)) return;
