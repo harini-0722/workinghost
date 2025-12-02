@@ -36,11 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const statVisitorsToday = document.getElementById('stat-visitors-today');
     
     // Complaints View Elements
-    const complaints
-    
-    
-    
-    = document.getElementById('complaints-view');
+    const complaintsView = document.getElementById('complaints-view');
     const showComplaintsViewBtn = document.getElementById('show-complaints-view-btn');
     const backToDashboardFromComplaintsBtn = document.getElementById('back-to-dashboard-from-complaints-btn');
     const complaintsListContainer = document.getElementById('complaints-list-container');
