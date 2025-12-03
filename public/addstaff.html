@@ -9,10 +9,22 @@
     <script type="module" src="https://unpkg.com/heroicons@2.1.1/dist/solid/index.js"></script>
     <script type="module" src="https://unpkg.com/heroicons@2.1.1/dist/outline/index.js"></script>
     <style>
+        /* Define Mild Background Colors */
+        :root {
+            --color-mild-bg-start: #E8F5FF; /* Very light blue/white */
+            --color-mild-bg-end: #CDE8F9;   /* Very pale cyan/blue */
+        }
+        
         body {
             font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-            background-color: #f3f4f6;
             color: #1f2937;
+            
+            /* Background: Applied the mild gradient from the student portal */
+            background-color: var(--color-mild-bg-start);
+            background-image: 
+                linear-gradient(to bottom right, var(--color-mild-bg-start), var(--color-mild-bg-end));
+            background-attachment: fixed;
+            min-height: 100vh;
         }
         
         /* Custom Scrollbar */
@@ -131,7 +143,7 @@
                                 <label class="form-label">Role</label>
                                 <div class="input-group">
                                     <hero-icon-outline name="briefcase" class="input-icon"></hero-icon-outline>
-                                    <select id="staff-role-select" class="form-input w-full bg-white" required>
+                                    <select id="staff-role-select" class="form-input w-full bg-white" required name="role_dropdown_value">
                                         <option value="" disabled selected>Select Role</option>
                                         <option value="Warden">Warden</option>
                                         <option value="Security">Security</option>
@@ -147,7 +159,7 @@
                                 <label class="form-label">Assigned Area</label>
                                 <div class="input-group">
                                     <hero-icon-outline name="location-marker" class="input-icon"></hero-icon-outline>
-                                    <select id="staff-place-select" class="form-input w-full bg-white" required>
+                                    <select id="staff-place-select" class="form-input w-full bg-white" required name="place_dropdown_value">
                                         <option value="" disabled selected>Loading Blocks...</option>
                                     </select>
                                 </div>
@@ -318,18 +330,18 @@
                         
                         <div class="h-24 bg-gradient-to-r from-indigo-500 to-purple-600 relative">
                              <button class="absolute top-3 right-3 p-1.5 bg-white/20 hover:bg-red-500 text-white rounded-full backdrop-blur-sm transition-all shadow-sm z-20" 
-                                onclick="deleteStaffMember('${staffId}', '${staff.name}')" 
-                                title="Remove Staff">
-                                <hero-icon-solid name="x-mark" class="h-5 w-5"></hero-icon-solid>
-                            </button>
+                                 onclick="deleteStaffMember('${staffId}', '${staff.name}')" 
+                                 title="Remove Staff">
+                                 <hero-icon-solid name="x-mark" class="h-5 w-5"></hero-icon-solid>
+                             </button>
                         </div>
 
                         <div class="px-6 flex justify-between items-end -mt-12 mb-4 relative z-10">
                             <div class="relative">
                                 <img src="${getImageUrl(staff)}" 
-                                     onerror="this.onerror=null;this.src='${fallbackAvatar}';" 
-                                     alt="${staff.name}" 
-                                     class="h-24 w-24 rounded-2xl object-cover border-4 border-white shadow-md bg-white">
+                                    onerror="this.onerror=null;this.src='${fallbackAvatar}';" 
+                                    alt="${staff.name}" 
+                                    class="h-24 w-24 rounded-2xl object-cover border-4 border-white shadow-md bg-white">
                                 <span class="absolute -bottom-1 -right-1 h-5 w-5 bg-green-500 border-2 border-white rounded-full" title="Active"></span>
                             </div>
                             <button class="view-staff-details-btn px-4 py-2 bg-indigo-50 text-indigo-700 text-xs font-bold rounded-lg hover:bg-indigo-100 transition-colors mb-1" data-staff-id="${staffId}">
@@ -514,8 +526,8 @@
             content.innerHTML = `
                 <div class="bg-indigo-600 p-6 text-center">
                     <img src="${getImageUrl(staff)}" 
-                         onerror="this.onerror=null;this.src='${fallbackAvatar}';"
-                         class="h-20 w-20 rounded-full border-4 border-indigo-400 shadow-lg mx-auto mb-3 object-cover">
+                        onerror="this.onerror=null;this.src='${fallbackAvatar}';"
+                        class="h-20 w-20 rounded-full border-4 border-indigo-400 shadow-lg mx-auto mb-3 object-cover">
                     <h3 class="text-white font-bold text-xl">${staff.name}</h3>
                     <span class="inline-block bg-indigo-500/50 text-indigo-100 text-xs px-2 py-0.5 rounded-full mt-1">${staff.role}</span>
                 </div>
