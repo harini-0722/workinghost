@@ -14,6 +14,37 @@
     
     <link rel="stylesheet" href="student-style.css">
 
+    <style>
+        /* --- Clean and Energetic Gradient Styles (Copied from Admin Page) --- */
+        :root {
+            /* Shared Colors for Gradient */
+            --color-dark-blue: #5680E9; 
+            --color-light-cyan: #84CEEB; 
+            --color-mid-blue: #5AB9EA; 
+            --color-pale-lilac: #C1C8E4; 
+            --color-dark-purple: #8860D0;
+        }
+
+        body {
+            /* Gradient: Matches the airy feel of the image using multiple layers */
+            background-color: var(--color-pale-lilac) !important; /* Overrides Tailwind bg-blue-50 fallback */
+            background-image: 
+                /* Subtle dark purple corner effect for depth */
+                radial-gradient(at 10% 10%, var(--color-dark-purple) 0%, transparent 40%),
+                /* Subtle dark blue corner effect for depth */
+                radial-gradient(at 90% 90%, var(--color-dark-blue) 0%, transparent 40%),
+                /* Main clean gradient sweep */
+                linear-gradient(135deg, var(--color-light-cyan) 0%, var(--color-pale-lilac) 50%, var(--color-mid-blue) 100%);
+            
+            background-attachment: fixed;
+        }
+
+        .navbar {
+            background-color: #ffffff; /* Ensure Navbar stays white/light */
+        }
+        /* --- END Gradient Styles --- */
+    </style>
+
     <script>
         tailwind.config = {
             theme: {
@@ -401,20 +432,20 @@
                         <div class="lg:col-span-2">
                             <h3 class="text-xl font-bold text-accent-dark mb-5">My Complaint History</h3>
                             <div class="bg-card-bg rounded-xl shadow-lift overflow-x-auto">
-                                   <table class="min-w-full divide-y divide-text-muted">
-                                        <thead class="bg-light-bg">
-                                            <tr>
-                                                <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">ID</th>
-                                                <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Date</th>
-                                                <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Type</th>
-                                                <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Location</th>
-                                                <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Priority</th>
-                                                <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Status</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="student-complaint-history" class="bg-card-bg divide-y divide-text-muted">
-                                        </tbody>
-                                   </table>
+                                       <table class="min-w-full divide-y divide-text-muted">
+                                            <thead class="bg-light-bg">
+                                                <tr>
+                                                    <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">ID</th>
+                                                    <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Date</th>
+                                                    <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Type</th>
+                                                    <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Location</th>
+                                                    <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Priority</th>
+                                                    <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Status</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="student-complaint-history" class="bg-card-bg divide-y divide-text-muted">
+                                            </tbody>
+                                       </table>
                             </div>
                         </div>
                     </div>
@@ -722,7 +753,7 @@
                     <button onclick="closeAnnouncementsModal()" class="text-secondary-gray hover:text-accent-dark">&times;</button>
                 </div>
                 <div id="announcement-list-container" class="p-6 space-y-4 overflow-y-auto" style="max-height: 70vh;">
-                        </div>
+                            </div>
             </div>
 
             <div id="announcement-detail-view" class="hidden">
