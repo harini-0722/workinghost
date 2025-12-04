@@ -236,8 +236,8 @@
             <section class="relative h-[85vh] min-h-[600px] flex items-center justify-center text-center text-white overflow-hidden">
                 <div class="absolute inset-0">
                     <img src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&q=80&w=1920&h=1080" 
-                                alt="IIT Indore Campus" 
-                                class="w-full h-full object-cover">
+                                 alt="IIT Indore Campus" 
+                                 class="w-full h-full object-cover">
                     <div class="absolute inset-0 bg-indigo-900 bg-opacity-60"></div>
                 </div>
                 
@@ -395,8 +395,8 @@
                     <div class="flex flex-col md:flex-row items-center gap-16">
                         <div class="md:w-1/2">
                             <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1200&q=80" 
-                                        alt="Students" 
-                                        class="rounded-2xl shadow-xl w-full h-auto object-cover">
+                                            alt="Students" 
+                                            class="rounded-2xl shadow-xl w-full h-auto object-cover">
                         </div>
                         <div class="md:w-1/2">
                             <h2 class="text-base text-indigo-600 font-semibold tracking-wide uppercase">Who We Are</h2>
@@ -481,8 +481,8 @@
             <section class="relative h-[60vh] min-h-[400px] flex items-center justify-center text-center text-white overflow-hidden">
                 <div class="absolute inset-0">
                     <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1920&q=80" 
-                                alt="SciTech Background" 
-                                class="w-full h-full object-cover">
+                                 alt="SciTech Background" 
+                                 class="w-full h-full object-cover">
                     <div class="absolute inset-0 bg-indigo-900 bg-opacity-70"></div>
                 </div>
                 <div class="relative z-10 p-4">
@@ -517,8 +517,8 @@
             <section class="relative h-[60vh] min-h-[400px] flex items-center justify-center text-center text-white overflow-hidden">
                 <div class="absolute inset-0">
                     <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=1920&q=80" 
-                                alt="Cultural Background" 
-                                class="w-full h-full object-cover">
+                                 alt="Cultural Background" 
+                                 class="w-full h-full object-cover">
                     <div class="absolute inset-0 bg-rose-900 bg-opacity-70"></div>
                 </div>
                 <div class="relative z-10 p-4">
@@ -553,8 +553,8 @@
             <section class="relative h-[60vh] min-h-[400px] flex items-center justify-center text-center text-white overflow-hidden">
                 <div class="absolute inset-0">
                     <img src="https://images.unsplash.com/photo-1579952363873-27f3bade9f55?auto=format&fit=crop&w=1920&q=80" 
-                                alt="Sports Background" 
-                                class="w-full h-full object-cover">
+                                 alt="Sports Background" 
+                                 class="w-full h-full object-cover">
                     <div class="absolute inset-0 bg-green-900 bg-opacity-70"></div>
                 </div>
                 <div class="relative z-10 p-4">
@@ -589,8 +589,8 @@
             <section class="relative h-[60vh] min-h-[400px] flex items-center justify-center text-center text-white overflow-hidden">
                 <div class="absolute inset-0">
                     <img src="https://images.unsplash.com/photo-1488998427799-e3362cec87c3?auto=format&fit=crop&w=1920&q=80" 
-                                alt="Academic Background" 
-                                class="w-full h-full object-cover">
+                                 alt="Academic Background" 
+                                 class="w-full h-full object-cover">
                     <div class="absolute inset-0 bg-amber-900 bg-opacity-70"></div>
                 </div>
                 <div class="relative z-10 p-4">
@@ -625,8 +625,8 @@
             <section class="relative h-[60vh] min-h-[400px] flex items-center justify-center text-center text-white overflow-hidden">
                 <div class="absolute inset-0">
                     <img src="https://images.unsplash.com/photo-1527529482837-4698179dc6ce?auto=format&fit=crop&w=1920&q=80" 
-                                alt="Campus Events" 
-                                class="w-full h-full object-cover">
+                                 alt="Campus Events" 
+                                 class="w-full h-full object-cover">
                     <div class="absolute inset-0 bg-indigo-900 bg-opacity-70"></div>
                 </div>
                 <div class="relative z-10 p-4">
@@ -651,8 +651,8 @@
             <section class="relative h-[55vh] min-h-[400px] flex items-center justify-center text-center text-white overflow-hidden">
                 <div class="absolute inset-0">
                     <img src="https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?auto=format&fit=crop&w=1920&q=80" 
-                            alt="Elections Background" 
-                            class="w-full h-full object-cover">
+                                 alt="Elections Background" 
+                                 class="w-full h-full object-cover">
                     <div class="absolute inset-0 bg-gray-900 bg-opacity-70"></div>
                 </div>
                 <div class="relative z-10 p-4">
@@ -999,7 +999,7 @@
     // Store the active page ID
     let currentPage = 'home';
 
-    // --- GLOBAL DATA STORES ---
+    // --- GLOBAL DATA STORES (Defined globally) ---
     let globalData = {
         events: [],
         members: [],
@@ -1013,7 +1013,6 @@
     };
     
     // --- MOCK SCHEDULE DATA (Used for Status Timing Logic) ---
-    // This is static timeline data for context display, separate from the dynamic post deadlines.
     const MOCK_SCHEDULE_DATA = [
         { title: "Nomination Filing Starts", date: "2025-04-01", status: "completed" },
         { title: "Last Date for Nomination", date: "2025-04-05", status: "current" },
@@ -1084,22 +1083,18 @@
         }
     };
 
-    // --- CRITICAL FIX: loadAllData is now a global function ---
     async function loadAllData() {
-        // Load data for Home Page components
         globalData.events = await fetchData('/events');
         globalData.members = await fetchData('/members');
         globalData.clubs = await fetchData('/clubs');
         globalData.heads = await fetchData('/heads');
         
-        // Load data for Election components
         globalData.posts = await fetchData('/elections/posts');
         globalData.candidates = await fetchData('/elections/candidates');
         globalData.announcements = await fetchData('/elections/announcements');
         globalData.fullResults = await fetchData('/elections/full-results');
         globalData.settings = await fetchData('/settings');
 
-        // Default null results to empty array/object
         globalData.events = globalData.events || [];
         globalData.members = globalData.members || [];
         globalData.clubs = globalData.clubs || [];
@@ -1114,17 +1109,20 @@
         renderClubDetails(); 
     }
 
+
     // -------------------------------------------------------------
     // --- RENDERING FUNCTIONS (Main UI Logic) ---
     // -------------------------------------------------------------
 
     function renderHomePageContent() {
+        // 1. About Section
         const aboutTextContainer = document.getElementById('home-about-text');
         const aboutText = globalData.settings.about_us_text || 
                         '<p>The Student Gymkhana is the central body driving student life at IIT Indore. Please ask the Admin to update the content in the Site Settings page.</p>';
         
         aboutTextContainer.innerHTML = `<p>${aboutText}</p>`;
         
+        // 2. Home Page Member Grid
         const homeMembersGrid = document.getElementById('home-members-grid');
         homeMembersGrid.innerHTML = '';
         
@@ -1573,21 +1571,11 @@
         switchView('info-view');
     }
 
-    function initializePublicView() {
-        // This function handles the initial data load and rendering of the home page elements
+    // --- CRITICAL INITIALIZATION FIX: loadAllData runs immediately inside DOMContentLoaded ---
+    document.addEventListener('DOMContentLoaded', () => {
+        // Start data loading and show the home page
         loadAllData();
         showPage('home');
-    }
-
-    // --- DOMContentLoaded Hook ---
-
-    document.addEventListener('DOMContentLoaded', () => {
-        // Start the process
-        initializePublicView();
     });
     
 </script>
-  
-
-</body>
-</html>
