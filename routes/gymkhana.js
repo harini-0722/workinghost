@@ -118,17 +118,45 @@ router.post('/clubs', async (req, res) => {
 // -------------------------------------------------------------
 
 // --- ELECTION POSTS (Election Details Setup) ---
+// --- ELECTION POSTS (Election Details Setup) ---
 router.post('/elections/posts', async (req, res) => {
     try {
-        const newItem = new ElectionPost(req.body);
+        const { position, block, nominationDate } = req.body;
+        
+        // 1. Basic Validation
+        if (!position || !block || !nominationDate) {
+            return res.status(400).json({ success: false, message: 'Missing required fields: Position, Block, or Nomination Date.' });
+        }
+        
+        // 2. Date conversion/validation
+        const parsedDate = new Date(nominationDate);
+        if (isNaN(parsedDate)) {
+             return res.status(400).json({ success: false, message: 'Invalid nomination date format.' });
+        }
+
+        const newItem = new ElectionPost({ 
+            position, 
+            block, 
+            nominationDate: parsedDate 
+        });
+
         await newItem.save();
-        // Frontend expects 'position' name to update the dropdowns
+        
         res.status(201).json({ 
             success: true, 
-            data: { id: newItem._id, position: newItem.position, block: newItem.block, nominationDate: newItem.nominationDate.toISOString().split('T')[0] }
+            data: { 
+                id: newItem._id, 
+                position: newItem.position, 
+                block: newItem.block, 
+                nominationDate: newItem.nominationDate.toISOString().split('T')[0] 
+            }
         });
     } catch (e) {
-        res.status(500).json({ success: false, message: e.message });
+        if (e.code === 11000) {
+            return res.status(409).json({ success: false, message: 'Error: Position name already exists.' });
+        }
+        console.error("Mongoose Error in POST /elections/posts:", e);
+        res.status(500).json({ success: false, message: 'Server Error: Failed to save post. Details: ' + e.message });
     }
 });
 
@@ -294,11 +322,11 @@ router.get('/elections/winners', async (req, res) => {
 
 
 // --- VIEW RESULTS (Complex Aggregation Endpoint) ---
+// --- VIEW RESULTS (Complex Aggregation Endpoint) ---
 router.get('/elections/full-results', async (req, res) => {
     try {
         // 1. Calculate Candidate Vote Counts by Position/Block
         const results = await Candidate.aggregate([
-            // Join Candidate with ElectionPost
             {
                 $lookup: {
                     from: 'electionposts',
@@ -308,7 +336,6 @@ router.get('/elections/full-results', async (req, res) => {
                 }
             },
             { $unwind: '$postDetails' },
-            // Group by post/block to structure the output
             {
                 $group: {
                     _id: {
@@ -320,7 +347,7 @@ router.get('/elections/full-results', async (req, res) => {
                         $push: {
                             id: '$_id',
                             name: '$name',
-                            votes: '$voteCount' // Using the pre-calculated voteCount for simplicity
+                            votes: '$voteCount'
                         }
                     },
                     winnerCandidateId: { $first: '$postDetails.winnerCandidateId' }
@@ -328,8 +355,8 @@ router.get('/elections/full-results', async (req, res) => {
             }
         ]);
         
-        // 2. Calculate Overall Stats (Assuming total possible voters is hardcoded or fetched from another model)
-        const totalVoters = 3000; // Placeholder: Replace with actual logic to count registered voters
+        // 2. Calculate Overall Stats
+        const totalVoters = 3000; 
         const totalVotes = await Candidate.aggregate([
             { $group: { _id: null, total: { $sum: '$voteCount' } } }
         ]);
@@ -346,15 +373,11 @@ router.get('/elections/full-results', async (req, res) => {
         const resultsByBlock = results.reduce((acc, group) => {
             const blockName = group._id.block;
             
-            // Determine winner status and sort candidates
             const candidates = group.candidates.map(c => ({
                 name: c.name,
                 votes: c.votes,
                 status: group.winnerCandidateId && group.winnerCandidateId.equals(c.id) ? 'Winner' : ''
             }));
-
-            // Handle NOTA manually if needed, or filter it if already in candidates
-            // For now, we assume NOTA is a candidate in the DB.
             
             if (!acc[blockName]) {
                 acc[blockName] = [];
@@ -368,19 +391,20 @@ router.get('/elections/full-results', async (req, res) => {
             return acc;
         }, {});
         
-        // 4. Add Placeholder/Summary for "Other Hostels"
-        // This is complex logic. For simplicity, we create a placeholder:
+        // 4. Add Placeholder/Summary for "Other Hostels" (Static Data)
         resultsByBlock["Other Hostels Summary"] = [
             { hostel_name: "APJ Hostel", total_votes: 148, total_positions: 3 },
             { hostel_name: "HJB Hostel", total_votes: 226, total_positions: 4 }
         ];
 
 
-        // 5. Send the final structured JSON
+        // 5. Send the final structured JSON, wrapped in 'data'
         res.json({
             success: true,
-            overall_stats: overallStats,
-            results_by_block: resultsByBlock
+            data: { // <-- CRITICAL: Wrapped in 'data'
+                overall_stats: overallStats,
+                results_by_block: resultsByBlock
+            }
         });
 
     } catch (e) {
@@ -388,8 +412,6 @@ router.get('/elections/full-results', async (req, res) => {
         res.status(500).json({ success: false, message: e.message });
     }
 });
-
-
 // -------------------------------------------------------------
 //                   OTHER GENERAL ROUTES
 // -------------------------------------------------------------

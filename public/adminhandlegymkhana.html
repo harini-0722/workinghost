@@ -134,7 +134,7 @@
                         <div class="lg:col-span-2">
                             <h2 class="text-xl font-bold text-gray-900 mb-4">Current Events</h2>
                             <div id="events-list" class="space-y-4">
-                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -168,7 +168,7 @@
                         <div class="lg:col-span-2">
                             <h2 class="text-xl font-bold text-gray-900 mb-4">Current Members</h2>
                             <div id="members-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -203,7 +203,7 @@
                         <div class="lg:col-span-2">
                             <h2 class="text-xl font-bold text-gray-900 mb-4">Current Clubs</h2>
                             <div id="clubs-list" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -242,7 +242,7 @@
                         <div class="lg:col-span-2">
                             <h2 class="text-xl font-bold text-gray-900 mb-4">Current Council Heads</h2>
                             <div id="heads-list" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -266,7 +266,7 @@
                     </div>
 
                     <div id="election-tab-manage" class="election-tab-content active">
-                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <div class="grid grid-cols-1 lg:col-span-3 gap-8">
                             <div class="lg:col-span-1 space-y-8">
 
                                 <form id="add-election-detail-form" class="bg-indigo-50 p-6 rounded-lg shadow-lg space-y-4">
@@ -397,7 +397,7 @@
                     </div>
 
                     <div id="election-tab-declare" class="election-tab-content">
-                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <div class="grid grid-cols-1 lg:col-span-3 gap-8">
                             <div class="lg:col-span-1">
                                 <form id="declare-winner-form" class="bg-white p-6 rounded-lg shadow-lg space-y-4 sticky top-28">
                                     <h2 class="text-xl font-bold text-gray-900 flex items-center">
@@ -441,7 +441,7 @@
                 </div>
 
                 <div id="page-content-settings" class="page-content">
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="grid grid-cols-1 lg:col-span-2 gap-8">
                         <div class="bg-white p-6 rounded-lg shadow-lg">
                             <form id="settings-about-form">
                                 <h2 class="text-xl font-bold text-gray-900">Edit "About Us" Section</h2>
@@ -517,16 +517,87 @@
     const pageTitle = document.getElementById('page-title');
 
     // --- GLOBAL DATA STORES (Initialized Empty, will be filled by API calls) ---
+    // Note: These must be 'let' so they can be reassigned.
+    let eventData = [];
+    let memberData = [];
+    let clubData = [];
+    let headData = [];
     let electionPositions = []; 
     let candidatesData = [];
     let announcementsData = [];
     let declaredWinners = []; 
 
+    // --- UTILITY FUNCTION: Fetch API Data Safely ---
+    const fetchData = async (url) => {
+        try {
+            const response = await fetch(url);
+            if (!response.ok) {
+                const errorText = await response.text();
+                // Throwing an error here prevents subsequent rendering and catches the issue early
+                throw new Error(`HTTP error! Status: ${response.status}. Details: ${errorText.substring(0, 100)}...`);
+            }
+            const body = await response.json();
+            
+            // Check if the body contains the final result object (like /full-results) or a standard { success: true, data: [...] } structure
+            if (body.success && body.data) {
+                 return body.data; // This covers most CRUD endpoints
+            } else if (body.overall_stats && body.results_by_block) {
+                 return body; // This covers /elections/full-results
+            } else {
+                 return []; // Default to empty array for rendering loops if data structure is unexpected
+            }
+
+        } catch (error) {
+            console.error(`Error fetching from ${url}:`, error);
+            // Return null on failure to prevent subsequent TypeErrors in global assignment
+            return null;
+        }
+    };
+
+    // --- CORE RENDERING FUNCTIONS ---
+
+    const renderEvents = (events = eventData) => {
+        const list = document.getElementById('events-list');
+        list.innerHTML = '';
+        if (!Array.isArray(events) || events.length === 0) {
+            list.innerHTML = `<p class="text-gray-500">No events found.</p>`;
+            return;
+        }
+        events.forEach(item => {
+            list.innerHTML += `
+                <div class="bg-white p-4 rounded-lg shadow-md flex items-start space-x-4">
+                    <img src="${item.imageUrl}" class="w-16 h-16 object-cover rounded" onerror="this.onerror=null;this.src='/placeholder.jpg'">
+                    <div>
+                        <p class="font-bold text-gray-900">${item.name}</p>
+                        <p class="text-sm text-indigo-600">${item.dateTag}</p>
+                    </div>
+                </div>
+            `;
+        });
+    };
+    
+    const renderMembers = (members = memberData) => {
+        const list = document.getElementById('members-list');
+        list.innerHTML = '';
+        if (!Array.isArray(members) || members.length === 0) {
+            list.innerHTML = `<p class="col-span-full text-gray-500">No members found.</p>`;
+            return;
+        }
+        members.forEach(item => {
+            list.innerHTML += `
+                <div class="bg-white p-4 rounded-lg shadow-sm text-center">
+                    <img src="${item.imageUrl}" class="w-20 h-20 object-cover rounded-full mx-auto" onerror="this.onerror=null;this.src='/placeholder.jpg'">
+                    <p class="font-bold text-gray-900 mt-2">${item.name}</p>
+                    <p class="text-sm text-indigo-600">${item.position}</p>
+                </div>
+            `;
+        });
+    };
+    
+    // Add minimal rendering logic for clubs/heads here...
+
     // --- ELECTION TAB RENDERING FUNCTIONS ---
 
-    /**
-     * Renders the list of active election posts/positions.
-     */
     const renderPositions = (positions = electionPositions) => {
         const positionsList = document.getElementById('election-details-list');
         const positionSelect = document.getElementById('candidate-post');
@@ -537,7 +608,7 @@
         positionSelect.innerHTML = '<option value="">-- Select Election Post --</option>';
         winnerPositionSelect.innerHTML = '<option value="">-- Select Position --</option>';
 
-        if (positions.length === 0) {
+        if (!Array.isArray(positions) || positions.length === 0) {
             positionsList.innerHTML = `<p class="text-gray-500" id="no-positions-msg">No positions added yet. Use the form on the left.</p>`;
             postSelectionNote.style.display = 'block';
             return;
@@ -546,7 +617,6 @@
         postSelectionNote.style.display = 'none';
 
         positions.forEach(pos => {
-            // Add to the Position List View
             const li = document.createElement('div');
             li.className = 'flex justify-between items-center bg-indigo-100 p-3 rounded-md border-l-4 border-indigo-600';
             li.innerHTML = `
@@ -559,28 +629,19 @@
             `;
             positionsList.appendChild(li);
 
-            // Add to Candidate Dropdown
             const option = document.createElement('option');
             option.value = pos.position;
             option.textContent = pos.position;
-            positionSelect.appendChild(option);
-
-            // Add to Winner Declaration Dropdown
-            const winnerOption = document.createElement('option');
-            winnerOption.value = pos.position;
-            winnerOption.textContent = pos.position;
-            winnerPositionSelect.appendChild(winnerOption);
+            positionSelect.appendChild(option.cloneNode(true));
+            winnerPositionSelect.appendChild(option);
         });
     };
     
-    /**
-     * Renders the list of candidates.
-     */
     const renderCandidates = (candidates = candidatesData) => {
         const candidatesList = document.getElementById('candidates-list');
         candidatesList.innerHTML = '';
         
-        if (candidates.length === 0) {
+        if (!Array.isArray(candidates) || candidates.length === 0) {
             candidatesList.innerHTML = `<p class="col-span-full text-gray-500">No candidates added yet.</p>`;
             return;
         }
@@ -590,7 +651,7 @@
             candidateCard.className = 'bg-white border border-indigo-200 p-4 rounded-lg shadow-sm';
             candidateCard.innerHTML = `
                 <div class="flex items-center space-x-3">
-                    <i class="fas fa-user-circle fa-2x text-indigo-500"></i>
+                    <img src="${candidate.imageUrl}" class="w-10 h-10 object-cover rounded-full" onerror="this.onerror=null;this.src='/placeholder.jpg'">
                     <div>
                         <p class="font-bold text-gray-900">${candidate.name}</p>
                         <p class="text-xs text-gray-500">ID: ${candidate.rollno}</p>
@@ -598,19 +659,16 @@
                 </div>
                 <p class="mt-2 text-sm font-semibold text-indigo-600">${candidate.post}</p>
                 <p class="text-xs text-gray-700">${candidate.manifesto}</p>
-                `;
+            `;
             candidatesList.appendChild(candidateCard);
         });
     }
 
-    /**
-     * Renders the list of announcements.
-     */
     const renderAnnouncements = (announcements = announcementsData) => {
         const announcementsList = document.getElementById('announcements-list');
         announcementsList.innerHTML = '';
 
-        if (announcements.length === 0) {
+        if (!Array.isArray(announcements) || announcements.length === 0) {
             announcementsList.innerHTML = `<p class="text-gray-500">No announcements published yet.</p>`;
             return;
         }
@@ -621,20 +679,17 @@
             announcementCard.innerHTML = `
                 <p class="font-bold text-gray-800">${announcement.title}</p>
                 <p class="text-sm text-gray-700">${announcement.content}</p>
-                <p class="text-xs text-gray-500 mt-1">Published: ${announcement.published_at || new Date().toLocaleTimeString() + ' ' + new Date().toLocaleDateString()}</p>
-                `;
-            announcementsList.prepend(announcementCard); // Prepend to show newest first
+                <p class="text-xs text-gray-500 mt-1">Published: ${new Date(announcement.published_at).toLocaleTimeString()} ${new Date(announcement.published_at).toLocaleDateString()}</p>
+            `;
+            announcementsList.prepend(announcementCard); 
         });
     }
 
-    /**
-     * Renders the list of declared winners.
-     */
     const renderWinners = (winners = declaredWinners) => {
         const winnersList = document.getElementById('winners-list'); 
         winnersList.innerHTML = '';
 
-        if (winners.length === 0) {
+        if (!Array.isArray(winners) || winners.length === 0) {
             winnersList.innerHTML = `<p class="text-gray-500">No winners declared yet. Use the form to declare winners.</p>`;
             return;
         }
@@ -661,74 +716,29 @@
         });
     };
 
-
-    // --- MAIN API AND DATA LOADING FUNCTIONS ---
-    
-    /**
-     * Fetches all initial data for the Manage Candidates tab.
-     */
-    const fetchInitialElectionData = async () => {
-        try {
-            // API Call needed: Fetch all positions
-            const positionsResponse = await fetch('/api/elections/posts');
-            electionPositions = await positionsResponse.json();
-            
-            // API Call needed: Fetch all candidates
-            const candidatesResponse = await fetch('/api/elections/candidates');
-            candidatesData = await candidatesResponse.json();
-
-            // API Call needed: Fetch all announcements
-            const announcementsResponse = await fetch('/api/elections/announcements');
-            announcementsData = await announcementsResponse.json();
-
-            // API Call needed: Fetch declared winners (for the 'Declare Winners' tab list)
-            const winnersResponse = await fetch('/api/elections/winners');
-            declaredWinners = await winnersResponse.json();
-
-            // Render all UI elements
-            renderPositions();
-            renderCandidates();
-            renderAnnouncements();
-            renderWinners(); 
-
-        } catch (error) {
-            console.error('Error fetching initial election data:', error);
-            // Fallback for UI elements
-            document.getElementById('election-details-list').innerHTML = '<p class="text-red-500">Failed to load positions from API.</p>';
-            document.getElementById('candidates-list').innerHTML = '<p class="col-span-full text-red-500">Failed to load candidates from API.</p>';
-            document.getElementById('announcements-list').innerHTML = '<p class="text-red-500">Failed to load announcements from API.</p>';
-            document.getElementById('winners-list').innerHTML = '<p class="text-red-500">Failed to load winners from API.</p>';
-        }
-    };
-    
     /**
      * Fetches election results data and renders the View Results tab.
-     * This function uses the exact structure of your static mock for dynamic display.
      */
     window.renderElectionResults = async () => {
         const resultsTab = document.getElementById('election-tab-results');
         resultsTab.innerHTML = '<div class="text-center py-10 text-xl text-indigo-600"><i class="fas fa-spinner fa-spin mr-2"></i>Loading live results...</div>';
 
         try {
-            // API Call needed: Endpoint to get all aggregated results/stats
-            const response = await fetch('/api/elections/full-results'); 
+            const responseData = await fetchData('/api/elections/full-results');
             
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            
-            const data = await response.json();
-            
-            if (!data.overall_stats || !data.results_by_block) {
-                 throw new Error("Invalid API response structure. Missing overall_stats or results_by_block.");
+            if (!responseData || !responseData.overall_stats || !responseData.results_by_block) {
+                 throw new Error("API structure mismatch or empty data received.");
             }
 
-            // --- Start HTML generation to match desired structure ---
+            const data = responseData; 
+            
+            // --- Start HTML generation ---
             let html = '';
 
             // 1. Overall Stats Card
             const stats = data.overall_stats;
-            const totalPositions = Object.values(data.results_by_block).flat().length; 
+            const allPosts = Object.values(data.results_by_block).flat();
+            const totalPositions = allPosts.filter(p => p.position_name || p.hostel_name).length; 
             
             html += `
                 <div class="bg-white p-4 rounded-lg shadow-md mb-6">
@@ -799,7 +809,6 @@
                     posts.forEach(post => {
                         let candidateListHtml = '';
                         
-                        // Sort candidates: Winner first, then by votes descending, NOTA last.
                         const sortedCandidates = post.candidates.sort((a, b) => {
                             if (a.status === 'Winner') return -1;
                             if (b.status === 'Winner') return 1;
@@ -856,12 +865,77 @@
             console.error('Error rendering election results:', error);
             resultsTab.innerHTML = `
                 <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative my-6" role="alert">
-                    <strong class="font-bold">Backend Error!</strong>
-                    <span class="block sm:inline">Could not load live results. Check the API URL or server status.</span>
-                    <p class="text-sm mt-1">Error Details: ${error.message}</p>
+                    <strong class="font-bold">Error!</strong>
+                    <span class="block sm:inline">Could not load live results.</span>
+                    <p class="text-sm mt-1">Details: ${error.message}</p>
                 </div>`;
         }
     }
+
+
+    // --- GENERAL DATA FETCH FOR ALL PAGES (Including Events, Members, etc.) ---
+    const fetchGeneralData = async () => {
+        // Fetch data for previously working pages
+        eventData = await fetchData('/api/events');
+        memberData = await fetchData('/api/members');
+        clubData = await fetchData('/api/clubs');
+        headData = await fetchData('/api/heads');
+        
+        // Ensure data arrays are assigned even if fetchData returned null
+        eventData = eventData || [];
+        memberData = memberData || [];
+        clubData = clubData || [];
+        headData = headData || [];
+
+        // Initial render of default dashboard view
+        renderDashboardCounts();
+    };
+
+    const renderDashboardCounts = () => {
+        // Only update if data is an array
+        document.getElementById('event-count').textContent = Array.isArray(eventData) ? eventData.length : 0;
+        document.getElementById('member-count').textContent = Array.isArray(memberData) ? memberData.length : 0;
+        document.getElementById('club-count').textContent = Array.isArray(clubData) ? clubData.length : 0;
+        document.getElementById('head-count').textContent = Array.isArray(headData) ? headData.length : 0;
+        
+        // Render initial view of event/member/club lists
+        renderEvents();
+        renderMembers();
+    }
+
+
+    // --- MAIN API AND DATA LOADING FOR ELECTION TAB ---
+    const fetchInitialElectionData = async () => {
+        // Show loading states
+        document.getElementById('election-details-list').innerHTML = '<p class="text-indigo-600"><i class="fas fa-spinner fa-spin mr-2"></i>Loading positions...</p>';
+        document.getElementById('candidates-list').innerHTML = '<p class="col-span-full text-indigo-600"><i class="fas fa-spinner fa-spin mr-2"></i>Loading candidates...</p>';
+        document.getElementById('announcements-list').innerHTML = '<p class="text-indigo-600"><i class="fas fa-spinner fa-spin mr-2"></i>Loading announcements...</p>';
+        document.getElementById('winners-list').innerHTML = '<p class="text-indigo-600"><i class="fas fa-spinner fa-spin mr-2"></i>Loading declared winners...</p>';
+
+        try {
+            // Assign result (array or null) directly
+            electionPositions = await fetchData('/api/elections/posts');
+            candidatesData = await fetchData('/api/elections/candidates');
+            announcementsData = await fetchData('/api/elections/announcements');
+            declaredWinners = await fetchData('/api/elections/winners');
+            
+            // If any fetch failed (returns null), re-assign to empty array before rendering to avoid TypeError
+            electionPositions = electionPositions || [];
+            candidatesData = candidatesData || [];
+            announcementsData = announcementsData || [];
+            declaredWinners = declaredWinners || [];
+
+            // Render all UI elements
+            renderPositions();
+            renderCandidates();
+            renderAnnouncements();
+            renderWinners(); 
+
+        } catch (error) {
+            console.error('Error fetching initial election data:', error);
+            // Fallback UI remains the loading spinner with error message from inner console.error
+        }
+    };
 
 
     // --- EVENT HANDLERS (UPDATED TO USE API CALLS) ---
@@ -870,28 +944,30 @@
     document.getElementById('add-election-detail-form').addEventListener('submit', async (e) => {
         e.preventDefault();
         const form = e.target;
-        const formData = new FormData(form);
-        const postData = Object.fromEntries(formData.entries());
+        const postData = Object.fromEntries(new FormData(form).entries());
 
         try {
-            // API Call needed: Send new position data to backend
             const response = await fetch('/api/elections/posts', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(postData),
             });
 
-            if (!response.ok) throw new Error('Failed to add position to DB.');
+            if (!response.ok) {
+                 const errorBody = await response.json();
+                 throw new Error(errorBody.message || 'Failed to add position to DB.');
+            }
 
-            const newPosition = await response.json(); 
-            electionPositions.push(newPosition); // Update local cache with returned ID/data
+            const responseBody = await response.json();
+            const newPosition = responseBody.data;
+            electionPositions.push(newPosition); 
             renderPositions(); 
             form.reset();
             alert(`Election post "${newPosition.position}" added successfully!`);
 
         } catch (error) {
             console.error('Error adding position:', error);
-            alert('Error adding election position. Check console for details.');
+            alert('Error adding election position. ' + error.message);
         }
     });
     
@@ -899,7 +975,6 @@
     document.getElementById('add-candidate-form').addEventListener('submit', async (e) => {
         e.preventDefault();
         const form = e.target;
-        const formData = new FormData(form);
         const post = document.getElementById('candidate-post').value;
 
         if (!post) {
@@ -908,16 +983,19 @@
         }
 
         try {
-            // API Call needed: Send new candidate data (including file upload) to backend
-            // NOTE: For file uploads, it's often better to send FormData directly instead of JSON
+            // Use FormData directly for file upload
             const response = await fetch('/api/elections/candidates', {
                 method: 'POST',
-                body: formData, // Send FormData directly for files
+                body: new FormData(form),
             });
 
-            if (!response.ok) throw new Error('Failed to add candidate to DB.');
+            if (!response.ok) {
+                 const errorBody = await response.json();
+                 throw new Error(errorBody.message || 'Failed to add candidate to DB.');
+            }
             
-            const newCandidate = await response.json(); 
+            const responseBody = await response.json();
+            const newCandidate = responseBody.data;
             candidatesData.push(newCandidate);
             renderCandidates();
             form.reset();
@@ -925,7 +1003,7 @@
 
         } catch (error) {
             console.error('Error adding candidate:', error);
-            alert('Error adding candidate. Check console for details.');
+            alert('Error adding candidate. ' + error.message);
         }
     });
 
@@ -933,18 +1011,20 @@
     document.getElementById('add-announcement-form').addEventListener('submit', async (e) => {
         e.preventDefault();
         const form = e.target;
-        const formData = new FormData(form);
 
         try {
-            // API Call needed: Send new announcement data to backend
             const response = await fetch('/api/elections/announcements', {
                 method: 'POST',
-                body: formData, // Send FormData for text and optional file
+                body: new FormData(form),
             });
 
-            if (!response.ok) throw new Error('Failed to publish announcement.');
+            if (!response.ok) {
+                const errorBody = await response.json();
+                throw new Error(errorBody.message || 'Failed to publish announcement.');
+            }
             
-            const newAnnouncement = await response.json(); 
+            const responseBody = await response.json();
+            const newAnnouncement = responseBody.data;
             announcementsData.push(newAnnouncement);
             renderAnnouncements();
             form.reset();
@@ -952,31 +1032,31 @@
 
         } catch (error) {
             console.error('Error publishing announcement:', error);
-            alert('Error publishing announcement. Check console for details.');
+            alert('Error publishing announcement. ' + error.message);
         }
     });
-
 
     // 5. Handle WINNER DECLARATION FORM Submission (CRUD: Create Winner)
     document.getElementById('declare-winner-form').addEventListener('submit', async (e) => {
         e.preventDefault();
         const form = e.target;
-        const formData = new FormData(form);
-        const winnerData = Object.fromEntries(formData.entries());
+        const winnerData = Object.fromEntries(new FormData(form).entries());
         
         try {
-            // API Call needed: Send winner data to backend
             const response = await fetch('/api/elections/winners', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(winnerData),
             });
             
-            if (!response.ok) throw new Error('Failed to declare winner in DB.');
+            if (!response.ok) {
+                const errorBody = await response.json();
+                throw new Error(errorBody.message || 'Failed to declare winner in DB.');
+            }
 
-            const newWinner = await response.json();
-            
-            // Optional: Update local cache if API returns final structure
+            const responseBody = await response.json();
+            const newWinner = responseBody.data;
+
             declaredWinners.push(newWinner); 
             renderWinners();
             
@@ -985,39 +1065,36 @@
 
         } catch (error) {
             console.error('Error declaring winner:', error);
-            alert('Error declaring winner. Check console for details.');
+            alert('Error declaring winner. ' + error.message);
         }
     });
 
 
     // --- HELPER FUNCTIONS FOR WINNER TAB (CRUD: Update/Delete) ---
 
-    // Note: These functions require implementing API endpoints for Edit and Delete
     window.editWinner = (position) => {
-        alert(`API Call needed: Implement logic to pre-fill form for editing winner for ${position}.`);
-        // Example logic:
-        // 1. Fetch winner details by position from API (GET /api/elections/winners?position=X)
-        // 2. Update form fields: document.getElementById('winner-position').value = data.position; ...
+        alert(`Functionality: Pre-fill form for editing winner for ${position}. (API implementation needed)`);
     };
 
     window.deleteWinner = async (position) => {
         if (confirm(`Are you sure you want to remove the winner for ${position}?`)) {
              try {
-                // API Call needed: Send deletion request to backend
                 const response = await fetch(`/api/elections/winners?position=${position}`, {
                     method: 'DELETE',
                 });
 
-                if (!response.ok) throw new Error('Failed to delete winner from DB.');
+                if (!response.ok) {
+                    const errorBody = await response.json();
+                    throw new Error(errorBody.message || 'Failed to delete winner from DB.');
+                }
                 
-                // Remove from local cache and re-render
                 declaredWinners = declaredWinners.filter(w => w.position !== position);
                 renderWinners();
                 alert(`Winner for ${position} has been removed.`);
 
             } catch (error) {
                 console.error('Error deleting winner:', error);
-                alert('Error removing winner. Check console for details.');
+                alert('Error removing winner. ' + error.message);
             }
         }
     };
@@ -1025,7 +1102,6 @@
 
     // --- NAVIGATION AND INITIALIZATION ---
 
-    // Function to handle switching between election tabs (Modified)
     window.showElectionTab = (tabName) => {
         document.querySelectorAll('.election-tab-content').forEach(el => {
             el.classList.remove('active');
@@ -1047,11 +1123,9 @@
             activeBtn.classList.remove('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
         }
 
-        // Trigger dynamic data load ONLY when moving to a data-heavy tab
         if (tabName === 'results') {
             renderElectionResults();
         } else if (tabName === 'manage') {
-            // Re-render manage tab elements in case of changes/updates
             renderPositions();
             renderCandidates();
             renderAnnouncements();
@@ -1060,12 +1134,13 @@
         }
     }
 
-    // Main page navigation function (same as before)
     window.showPage = (pageName) => {
-        // ... (existing page switching logic) ...
         document.querySelectorAll('.page-content').forEach(el => el.classList.remove('active'));
-        document.getElementById(`page-content-${pageName}`).classList.add('active');
-        pageTitle.textContent = pageTitles[pageName] || 'Dashboard';
+        const pageContent = document.getElementById(`page-content-${pageName}`);
+        if (pageContent) {
+            pageContent.classList.add('active');
+            pageTitle.textContent = pageTitles[pageName] || 'Dashboard';
+        }
         
         document.querySelectorAll('.nav-btn').forEach(btn => {
             btn.classList.remove('bg-gray-700', 'text-white');
@@ -1078,14 +1153,17 @@
         }
 
         if (pageName === 'elections') {
-            // Load initial data for the whole election module on first entry
             fetchInitialElectionData();
             showElectionTab('manage');
+        } else if (pageName === 'events') {
+            renderEvents();
+        } else if (pageName === 'members') {
+            renderMembers();
         }
     }
     
-    // Show dashboard on initial load
     document.addEventListener('DOMContentLoaded', () => {
+        fetchGeneralData();
         showPage('dashboard');
     });
 </script>
