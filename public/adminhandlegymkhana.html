@@ -277,12 +277,12 @@
                                     
                                     <div>
                                         <label for="election-position" class="block text-sm font-medium text-gray-700">Position/Post Name</label>
-                                        <input type="text" id="election-position" name="position" placeholder="e.g., General Secretary, Cultural" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                        <input type="text" id="election-position" name="position" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                                     </div>
 
                                     <div>
                                         <label for="election-block" class="block text-sm font-medium text-gray-700">Block/Place</label>
-                                        <input type="text" id="election-block" name="block" placeholder="e.g., CVR Hall, Main Campus" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                        <input type="text" id="election-block" name="block" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                                     </div>
 
                                     <div>
@@ -594,95 +594,49 @@
         });
     };
     
-    // 
-    // Add Event Form Submission
-document.getElementById('add-event-form').addEventListener('submit', async (e) => {
-    e.preventDefault(); // <-- CRITICAL: Prevents default form submission and page reload
-    const form = e.target;
-    const formData = new FormData(form);
-
-    try {
-        const response = await fetch('/api/events', {
-            method: 'POST',
-            body: formData, // Send FormData directly for files
-        });
-
-        if (!response.ok) {
-            const errorBody = await response.json();
-            throw new Error(errorBody.message || 'Failed to add event.');
+    const renderClubs = (clubs = clubData) => {
+        const list = document.getElementById('clubs-list');
+        list.innerHTML = '';
+        if (!Array.isArray(clubs) || clubs.length === 0) {
+            list.innerHTML = `<p class="col-span-full text-gray-500">No clubs found.</p>`;
+            return;
         }
+        clubs.forEach(item => {
+            const iconColor = item.council.toLowerCase().includes('scitech') ? 'text-blue-500' : 'text-indigo-500';
 
-        const responseBody = await response.json();
-        eventData.push(responseBody.data);
-        renderEvents(); // Re-render the list immediately
-        form.reset();
-        alert('Event added successfully!');
-        renderDashboardCounts(); // Update dashboard count
-    } catch (error) {
-        console.error('Error adding event:', error);
-        alert('Error adding event: ' + error.message);
-    }
-});
-
-// Add Member Form Submission
-document.getElementById('add-member-form').addEventListener('submit', async (e) => {
-    e.preventDefault(); // <-- CRITICAL
-    const form = e.target;
-    const formData = new FormData(form);
-
-    try {
-        const response = await fetch('/api/members', {
-            method: 'POST',
-            body: formData, 
+            list.innerHTML += `
+                <div class="bg-white p-4 rounded-lg shadow-sm text-center border-t-4 border-indigo-200">
+                    <i class="${item.icon} fa-3x ${iconColor}"></i>
+                    <p class="font-bold text-gray-900 mt-2">${item.name}</p>
+                    <p class="text-xs text-gray-500">${item.council}</p>
+                </div>
+            `;
         });
+    };
 
-        if (!response.ok) {
-            const errorBody = await response.json();
-            throw new Error(errorBody.message || 'Failed to add member.');
+
+    const renderHeads = (heads = headData) => {
+        const list = document.getElementById('heads-list');
+        list.innerHTML = '';
+        if (!Array.isArray(heads) || heads.length === 0) {
+            list.innerHTML = `<p class="col-span-full text-gray-500">No council heads assigned.</p>`;
+            return;
         }
-
-        const responseBody = await response.json();
-        memberData.push(responseBody.data);
-        renderMembers(); // Re-render the list
-        form.reset();
-        alert('Member added successfully!');
-        renderDashboardCounts(); // Update dashboard count
-    } catch (error) {
-        console.error('Error adding member:', error);
-        alert('Error adding member: ' + error.message);
-    }
-});
-
-// Add Club Form Submission
-document.getElementById('add-club-form').addEventListener('submit', async (e) => {
-    e.preventDefault(); // <-- CRITICAL
-    const form = e.target;
-    const clubData = Object.fromEntries(new FormData(form).entries());
-
-    try {
-        const response = await fetch('/api/clubs', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(clubData),
+        heads.forEach(item => {
+            list.innerHTML += `
+                <div class="bg-white p-4 rounded-lg shadow-sm flex items-start space-x-4 border-l-4 border-rose-500">
+                    <img src="${item.imageUrl}" class="w-16 h-16 object-cover rounded-full" onerror="this.onerror=null;this.src='/placeholder.jpg'">
+                    <div>
+                        <p class="font-bold text-gray-900">${item.name}</p>
+                        <p class="text-sm text-rose-600">${item.position}</p>
+                        <p class="text-xs text-gray-500">${item.council}</p>
+                    </div>
+                </div>
+            `;
         });
+    };
 
-        if (!response.ok) {
-            const errorBody = await response.json();
-            throw new Error(errorBody.message || 'Failed to add club.');
-        }
-
-        const responseBody = await response.json();
-        clubData.push(responseBody.data);
-        // You need a renderClubs() function here to update the UI
-        form.reset();
-        alert('Club added successfully!');
-        renderDashboardCounts(); // Update dashboard count
-    } catch (error) {
-        console.error('Error adding club:', error);
-        alert('Error adding club: ' + error.message);
-    }
-});
-
+    
     // --- ELECTION TAB RENDERING FUNCTIONS ---
 
     const renderPositions = (positions = electionPositions) => {
@@ -968,11 +922,17 @@ document.getElementById('add-club-form').addEventListener('submit', async (e) =>
         clubData = await fetchData('/api/clubs');
         headData = await fetchData('/api/heads');
         
+        // Fetch settings data for the settings page fields
+        const settings = await fetchData('/api/settings');
+
         // Ensure data arrays are assigned even if fetchData returned null
         eventData = eventData || [];
         memberData = memberData || [];
         clubData = clubData || [];
         headData = headData || [];
+
+        // Store settings globally for easy access
+        window.siteSettings = settings || {};
 
         // Initial render of default dashboard view
         renderDashboardCounts();
@@ -988,6 +948,8 @@ document.getElementById('add-club-form').addEventListener('submit', async (e) =>
         // Render initial view of event/member/club lists
         renderEvents();
         renderMembers();
+        renderClubs();
+        renderHeads(); // Render Heads/Clubs on load so they are available immediately
     }
 
 
@@ -1000,19 +962,16 @@ document.getElementById('add-club-form').addEventListener('submit', async (e) =>
         document.getElementById('winners-list').innerHTML = '<p class="text-indigo-600"><i class="fas fa-spinner fa-spin mr-2"></i>Loading declared winners...</p>';
 
         try {
-            // Assign result (array or null) directly
             electionPositions = await fetchData('/api/elections/posts');
             candidatesData = await fetchData('/api/elections/candidates');
             announcementsData = await fetchData('/api/elections/announcements');
             declaredWinners = await fetchData('/api/elections/winners');
             
-            // If any fetch failed (returns null), re-assign to empty array before rendering to avoid TypeError
             electionPositions = electionPositions || [];
             candidatesData = candidatesData || [];
             announcementsData = announcementsData || [];
             declaredWinners = declaredWinners || [];
 
-            // Render all UI elements
             renderPositions();
             renderCandidates();
             renderAnnouncements();
@@ -1020,278 +979,171 @@ document.getElementById('add-club-form').addEventListener('submit', async (e) =>
 
         } catch (error) {
             console.error('Error fetching initial election data:', error);
-            // Fallback UI remains the loading spinner with error message from inner console.error
         }
     };
 
 
-    // --- EVENT HANDLERS (UPDATED TO USE API CALLS) ---
+    // --- EVENT HANDLERS (POST & DELETE) ---
 
-    // 2. Handle ELECTION DETAILS FORM Submission (CRUD: Create Position)
-    document.getElementById('add-election-detail-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
+    // Event POST
+    document.getElementById('add-event-form').addEventListener('submit', async (e) => {
+        e.preventDefault(); 
         const form = e.target;
-        const postData = Object.fromEntries(new FormData(form).entries());
+        const formData = new FormData(form);
 
         try {
-            const response = await fetch('/api/elections/posts', {
+            const response = await fetch('/api/events', { method: 'POST', body: formData });
+            if (!response.ok) {
+                const errorBody = await response.json();
+                throw new Error(errorBody.message || 'Failed to add event.');
+            }
+            const responseBody = await response.json();
+            eventData.push(responseBody.data);
+            renderEvents(); 
+            form.reset();
+            alert('Event added successfully!');
+            renderDashboardCounts();
+        } catch (error) {
+            console.error('Error adding event:', error);
+            alert('Error adding event: ' + error.message);
+        }
+    });
+
+    // Member POST
+    document.getElementById('add-member-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const form = e.target;
+        const formData = new FormData(form);
+
+        try {
+            const response = await fetch('/api/members', { method: 'POST', body: formData });
+            if (!response.ok) {
+                const errorBody = await response.json();
+                throw new Error(errorBody.message || 'Failed to add member.');
+            }
+            const responseBody = await response.json();
+            memberData.push(responseBody.data);
+            renderMembers(); 
+            form.reset();
+            alert('Member added successfully!');
+            renderDashboardCounts(); 
+        } catch (error) {
+            console.error('Error adding member:', error);
+            alert('Error adding member: ' + error.message);
+        }
+    });
+
+    // Club POST
+    document.getElementById('add-club-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const form = e.target;
+        const clubDataPayload = Object.fromEntries(new FormData(form).entries());
+
+        try {
+            const response = await fetch('/api/clubs', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(postData),
-            });
-
-            if (!response.ok) {
-                 const errorBody = await response.json();
-                 throw new Error(errorBody.message || 'Failed to add position to DB.');
-            }
-
-            const responseBody = await response.json();
-            const newPosition = responseBody.data;
-            electionPositions.push(newPosition); 
-            renderPositions(); 
-            form.reset();
-            alert(`Election post "${newPosition.position}" added successfully!`);
-
-        } catch (error) {
-            console.error('Error adding position:', error);
-            alert('Error adding election position. ' + error.message);
-        }
-    });
-    
-    // 3. Handle CANDIDATE FORM Submission (CRUD: Create Candidate)
-    document.getElementById('add-candidate-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const form = e.target;
-        const post = document.getElementById('candidate-post').value;
-
-        if (!post) {
-            alert("Please select a valid Running For Post.");
-            return;
-        }
-
-        try {
-            // Use FormData directly for file upload
-            const response = await fetch('/api/elections/candidates', {
-                method: 'POST',
-                body: new FormData(form),
-            });
-
-            if (!response.ok) {
-                 const errorBody = await response.json();
-                 throw new Error(errorBody.message || 'Failed to add candidate to DB.');
-            }
-            
-            const responseBody = await response.json();
-            const newCandidate = responseBody.data;
-            candidatesData.push(newCandidate);
-            renderCandidates();
-            form.reset();
-            alert(`Candidate ${newCandidate.name} for ${newCandidate.post} successfully added!`);
-
-        } catch (error) {
-            console.error('Error adding candidate:', error);
-            alert('Error adding candidate. ' + error.message);
-        }
-    });
-
-    // 4. Handle ANNOUNCEMENT FORM Submission (CRUD: Create Announcement)
-    document.getElementById('add-announcement-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const form = e.target;
-
-        try {
-            const response = await fetch('/api/elections/announcements', {
-                method: 'POST',
-                body: new FormData(form),
+                body: JSON.stringify(clubDataPayload),
             });
 
             if (!response.ok) {
                 const errorBody = await response.json();
-                throw new Error(errorBody.message || 'Failed to publish announcement.');
+                throw new Error(errorBody.message || 'Failed to add club.');
             }
-            
-            const responseBody = await response.json();
-            const newAnnouncement = responseBody.data;
-            announcementsData.push(newAnnouncement);
-            renderAnnouncements();
-            form.reset();
-            alert(`Announcement "${newAnnouncement.title}" published!`);
 
+            const responseBody = await response.json();
+            clubData.push(responseBody.data);
+            renderClubs(); // <-- RE-RENDER
+            form.reset();
+            alert('Club added successfully!');
+            renderDashboardCounts();
         } catch (error) {
-            console.error('Error publishing announcement:', error);
-            alert('Error publishing announcement. ' + error.message);
+            console.error('Error adding club:', error);
+            alert('Error adding club: ' + error.message);
         }
     });
 
-    // 5. Handle WINNER DECLARATION FORM Submission (CRUD: Create Winner)
-    document.getElementById('declare-winner-form').addEventListener('submit', async (e) => {
+    // Head POST
+    document.getElementById('add-head-form').addEventListener('submit', async (e) => {
         e.preventDefault();
         const form = e.target;
-        const winnerData = Object.fromEntries(new FormData(form).entries());
-        
+        const formData = new FormData(form);
+
         try {
-            const response = await fetch('/api/elections/winners', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(winnerData),
-            });
-            
+            const response = await fetch('/api/heads', { method: 'POST', body: formData });
             if (!response.ok) {
                 const errorBody = await response.json();
-                throw new Error(errorBody.message || 'Failed to declare winner in DB.');
+                throw new Error(errorBody.message || 'Failed to add council head.');
             }
 
             const responseBody = await response.json();
-            const newWinner = responseBody.data;
-
-            declaredWinners.push(newWinner); 
-            renderWinners();
-            
+            headData.push(responseBody.data);
+            renderHeads(); // <-- RE-RENDER
             form.reset();
-            alert(`Winner for ${newWinner.position} declared successfully!`);
-
+            alert('Council Head added successfully!');
+            renderDashboardCounts();
         } catch (error) {
-            console.error('Error declaring winner:', error);
-            alert('Error declaring winner. ' + error.message);
+            console.error('Error adding head:', error);
+            alert('Error adding head: ' + error.message);
         }
     });
 
+    // Settings POST (About Us)
+    document.getElementById('settings-about-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const text = document.getElementById('settings-about-text').value;
 
-    // --- HELPER FUNCTIONS FOR WINNER TAB (CRUD: Update/Delete) ---
+        try {
+            const response = await fetch('/api/settings', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ key: 'about_us_text', value: text }),
+            });
 
-    window.editWinner = (position) => {
-        alert(`Functionality: Pre-fill form for editing winner for ${position}. (API implementation needed)`);
-    };
+            if (!response.ok) throw new Error('Failed to save settings.');
 
-    window.deleteWinner = async (position) => {
-        if (confirm(`Are you sure you want to remove the winner for ${position}?`)) {
-             try {
-                const response = await fetch(`/api/elections/winners?position=${position}`, {
-                    method: 'DELETE',
-                });
+            alert('About Us section saved successfully!');
 
-                if (!response.ok) {
-                    const errorBody = await response.json();
-                    throw new Error(errorBody.message || 'Failed to delete winner from DB.');
-                }
-                
-                declaredWinners = declaredWinners.filter(w => w.position !== position);
-                renderWinners();
-                alert(`Winner for ${position} has been removed.`);
+        } catch (error) {
+            console.error('Error saving settings:', error);
+            alert('Error saving settings: ' + error.message);
+        }
+    });
 
-            } catch (error) {
-                console.error('Error deleting winner:', error);
-                alert('Error removing winner. ' + error.message);
+    // Settings Data Loader
+    const fetchSettingsData = async () => {
+        try {
+            const settingsMap = window.siteSettings;
+            if (settingsMap) {
+                document.getElementById('settings-about-text').value = settingsMap.about_us_text || '';
+                // Add logic here to load other setting fields if needed
             }
+        } catch (error) {
+            console.error('Could not load settings:', error);
         }
     };
-// --- ADD HEAD POST HANDLER ---
-document.getElementById('add-head-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const form = e.target;
-    const formData = new FormData(form);
 
-    try {
-        const response = await fetch('/api/heads', { // Matches the POST /heads route in gymkhana.js
-            method: 'POST',
-            body: formData, 
-        });
-
-        if (!response.ok) {
-            const errorBody = await response.json();
-            throw new Error(errorBody.message || 'Failed to add council head.');
-        }
-
-        const responseBody = await response.json();
-        headData.push(responseBody.data);
-        // You need a renderHeads() function here to update the UI
-        form.reset();
-        alert('Council Head added successfully!');
-        renderDashboardCounts(); // Update dashboard count
-    } catch (error) {
-        console.error('Error adding head:', error);
-        alert('Error adding head: ' + error.message);
-    }
-});
-
-// --- ADD SETTINGS SAVE HANDLER ---
-document.getElementById('settings-about-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const text = document.getElementById('settings-about-text').value;
-
-    try {
-        const response = await fetch('/api/settings', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ key: 'about_us_text', value: text }),
-        });
-
-        if (!response.ok) throw new Error('Failed to save settings.');
-
-        alert('About Us section saved successfully!');
-
-    } catch (error) {
-        console.error('Error saving settings:', error);
-        alert('Error saving settings: ' + error.message);
-    }
-});
-
-// --- ADD SETTINGS LOAD FUNCTIONALITY ---
-const fetchSettingsData = async () => {
-    try {
-        const settingsMap = await fetchData('/api/settings'); // fetchData returns data
-        if (settingsMap) {
-            document.getElementById('settings-about-text').value = settingsMap.about_us_text || '';
-            // Load other settings fields here if needed
-        }
-    } catch (error) {
-        console.error('Could not load settings:', error);
-    }
-};
-
-// Update showPage to call fetchSettingsData
-window.showPage = (pageName) => {
-    // ... (existing nav and page show logic) ...
-
-    if (pageName === 'settings') {
-        fetchSettingsData(); // Load data specifically for the settings page
-    }
-    
-    // ... (rest of showPage logic) ...
-};
 
     // --- NAVIGATION AND INITIALIZATION ---
 
     window.showElectionTab = (tabName) => {
-        document.querySelectorAll('.election-tab-content').forEach(el => {
-            el.classList.remove('active');
-        });
-        
+        document.querySelectorAll('.election-tab-content').forEach(el => { el.classList.remove('active'); });
         const activeContent = document.getElementById(`election-tab-${tabName}`);
-        if (activeContent) {
-            activeContent.classList.add('active');
-        }
+        if (activeContent) { activeContent.classList.add('active'); }
         
         document.querySelectorAll('.election-tab').forEach(btn => {
             btn.classList.remove('border-indigo-500', 'text-indigo-600');
             btn.classList.add('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
         });
-        
         const activeBtn = document.getElementById(`tab-${tabName}`);
         if (activeBtn) {
             activeBtn.classList.add('border-indigo-500', 'text-indigo-600');
             activeBtn.classList.remove('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
         }
 
-        if (tabName === 'results') {
-            renderElectionResults();
-        } else if (tabName === 'manage') {
-            renderPositions();
-            renderCandidates();
-            renderAnnouncements();
-        } else if (tabName === 'declare') {
-            renderWinners();
-        }
+        if (tabName === 'results') { renderElectionResults(); } 
+        else if (tabName === 'manage') { renderPositions(); renderCandidates(); renderAnnouncements(); } 
+        else if (tabName === 'declare') { renderWinners(); }
     }
 
     window.showPage = (pageName) => {
@@ -1312,14 +1164,15 @@ window.showPage = (pageName) => {
             activeBtn.classList.remove('text-gray-300', 'hover:bg-gray-700', 'hover:text-white');
         }
 
+        // Trigger render/fetch based on page
         if (pageName === 'elections') {
             fetchInitialElectionData();
             showElectionTab('manage');
-        } else if (pageName === 'events') {
-            renderEvents();
-        } else if (pageName === 'members') {
-            renderMembers();
-        }
+        } else if (pageName === 'events') { renderEvents(); } 
+        else if (pageName === 'members') { renderMembers(); }
+        else if (pageName === 'clubs') { renderClubs(); }
+        else if (pageName === 'heads') { renderHeads(); }
+        else if (pageName === 'settings') { fetchSettingsData(); }
     }
     
     document.addEventListener('DOMContentLoaded', () => {

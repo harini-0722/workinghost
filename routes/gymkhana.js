@@ -28,27 +28,9 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 // ----------------------------
-// Add this renderHeads function to your <script> in the HTML file:
-const renderHeads = (heads = headData) => {
-    const list = document.getElementById('heads-list');
-    list.innerHTML = '';
-    if (!Array.isArray(heads) || heads.length === 0) {
-        list.innerHTML = `<p class="col-span-full text-gray-500">No council heads assigned.</p>`;
-        return;
-    }
-    heads.forEach(item => {
-        list.innerHTML += `
-            <div class="bg-white p-4 rounded-lg shadow-sm text-center border-t-4 border-rose-500">
-                <img src="${item.imageUrl}" class="w-24 h-24 object-cover rounded-full mx-auto" onerror="this.onerror=null;this.src='/placeholder.jpg'">
-                <p class="font-bold text-gray-900 mt-2">${item.name}</p>
-                <p class="text-sm text-rose-600">${item.position}</p>
-                <p class="text-xs text-gray-500">${item.council}</p>
-            </div>
-        `;
-    });
-};
 
-// --- Helper function for non-election CRUD (NO CHANGE) ---
+
+// --- Helper function for non-election CRUD ---
 const createCrudEndpoints = (model, modelName) => {
     // GET all
     router.get(`/${modelName}s`, async (req, res) => {
@@ -69,16 +51,16 @@ const createCrudEndpoints = (model, modelName) => {
         }
     });
 };
-createCrudEndpoints(Event, 'event'); // creates /events
-createCrudEndpoints(Member, 'member'); // creates /members
-createCrudEndpoints(Club, 'club'); // creates /clubs
-createCrudEndpoints(Head, 'head'); // creates /heads
+createCrudEndpoints(Event, 'event');
+createCrudEndpoints(Member, 'member');
+createCrudEndpoints(Club, 'club');
+createCrudEndpoints(Head, 'head');
 // We call ElectionPost directly below to handle complex POST logic
 // We call Announcement directly below to handle complex POST logic
 
 
 // -------------------------------------------------------------
-//                GYMKHANA MODULE POST ROUTES
+//                GYMKHANA MODULE POST ROUTES
 // -------------------------------------------------------------
 
 router.post('/events', upload.single('imageUrl'), async (req, res) => {
@@ -132,10 +114,9 @@ router.post('/clubs', async (req, res) => {
 
 
 // -------------------------------------------------------------
-//                   ELECTION MODULE ROUTES
+//                   ELECTION MODULE ROUTES
 // -------------------------------------------------------------
 
-// --- ELECTION POSTS (Election Details Setup) ---
 // --- ELECTION POSTS (Election Details Setup) ---
 router.post('/elections/posts', async (req, res) => {
     try {
@@ -196,18 +177,19 @@ router.get('/elections/posts', async (req, res) => {
 
 
 // --- CANDIDATES ---
-// Note: Frontend Candidate form needs to send 'postId' from the dropdown value.
 router.post('/elections/candidates', upload.single('imageUrl'), async (req, res) => {
     try {
         const { post, name, rollno, manifesto } = req.body;
         
-        // 'post' is the position name from the dropdown. We need the ID.
-        const electionPost = await ElectionPost.findOne({ position: post });
-        if (!electionPost) {
-            return res.status(404).json({ success: false, message: 'Election post not found' });
+        // Basic Validation
+        if (!post || !name || !rollno || !req.file) {
+             return res.status(400).json({ success: false, message: 'Missing required fields: Post, Name, Roll No, or Image.' });
         }
         
-        // This is where you would validate 'rollno' against a 'users' collection
+        const electionPost = await ElectionPost.findOne({ position: post });
+        if (!electionPost) {
+            return res.status(409).json({ success: false, message: 'Election post not found in DB. Add it first.' });
+        }
         
         const imageUrlPath = req.file ? '/uploads/' + req.file.filename : null;
         
@@ -217,22 +199,22 @@ router.post('/elections/candidates', upload.single('imageUrl'), async (req, res)
             rollno,
             manifesto,
             imageUrl: imageUrlPath,
-            // Initial voteCount is 0
+            voteCount: 0
         });
 
         await newItem.save();
         res.status(201).json({ 
             success: true, 
-            data: { ...newItem.toObject(), post: post } // Send back the position name for immediate rendering
+            data: { id: newItem._id, name: name, rollno: rollno, manifesto: manifesto, post: post }
         });
     } catch (e) { 
-        res.status(500).json({ success: false, message: e.message }); 
+        console.error("Mongoose Error in POST /elections/candidates:", e);
+        res.status(500).json({ success: false, message: 'Server Error: Failed to save candidate. Details: ' + e.message }); 
     }
 });
 
 router.get('/elections/candidates', async (req, res) => {
     try {
-        // Populate the postId to get the position name and block
         const items = await Candidate.find().populate('postId');
         const formattedItems = items.map(item => ({
             id: item._id,
@@ -240,7 +222,6 @@ router.get('/elections/candidates', async (req, res) => {
             rollno: item.rollno,
             manifesto: item.manifesto,
             imageUrl: item.imageUrl,
-            // Extract position name from the populated postId object
             post: item.postId ? item.postId.position : 'Unknown Post',
             block: item.postId ? item.postId.block : 'Unknown Block'
         }));
@@ -283,7 +264,6 @@ router.get('/elections/announcements', async (req, res) => {
 // --- DECLARE WINNERS (CRUD for final results) ---
 router.post('/elections/winners', async (req, res) => {
     try {
-        // You'll need to update this logic to find the candidate by name/rollno
         const { position, candidate, votes } = req.body; 
 
         // 1. Find the Post ID
@@ -292,7 +272,7 @@ router.post('/elections/winners', async (req, res) => {
             return res.status(404).json({ success: false, message: 'Position not found' });
         }
         
-        // 2. Find the Candidate ID (The simplest way is to look up the candidate by name/post combination)
+        // 2. Find the Candidate ID 
         const winningCandidate = await Candidate.findOne({ name: candidate, postId: post._id });
         if (!winningCandidate) {
             return res.status(404).json({ success: false, message: 'Candidate not found for this position' });
@@ -302,7 +282,7 @@ router.post('/elections/winners', async (req, res) => {
         post.winnerCandidateId = winningCandidate._id;
         await post.save();
         
-        // 4. Optionally update the vote count on the Candidate model (if not doing real-time counting)
+        // 4. Update the vote count on the Candidate model
         winningCandidate.voteCount = votes;
         await winningCandidate.save();
         
@@ -339,7 +319,6 @@ router.get('/elections/winners', async (req, res) => {
 });
 
 
-// --- VIEW RESULTS (Complex Aggregation Endpoint) ---
 // --- VIEW RESULTS (Complex Aggregation Endpoint) ---
 router.get('/elections/full-results', async (req, res) => {
     try {
@@ -419,7 +398,7 @@ router.get('/elections/full-results', async (req, res) => {
         // 5. Send the final structured JSON, wrapped in 'data'
         res.json({
             success: true,
-            data: { // <-- CRITICAL: Wrapped in 'data'
+            data: { 
                 overall_stats: overallStats,
                 results_by_block: resultsByBlock
             }
@@ -430,11 +409,13 @@ router.get('/elections/full-results', async (req, res) => {
         res.status(500).json({ success: false, message: e.message });
     }
 });
+
+
 // -------------------------------------------------------------
-//                   OTHER GENERAL ROUTES
+//                   OTHER GENERAL ROUTES
 // -------------------------------------------------------------
 
-// Dashboard Stats Endpoint (NO CHANGE)
+// Dashboard Stats Endpoint 
 router.get("/dashboard-stats", async (req, res) => {
     try {
         const [eventCount, memberCount, clubCount, headCount] = await Promise.all([
@@ -452,7 +433,7 @@ router.get("/dashboard-stats", async (req, res) => {
     }
 });
 
-// Settings Endpoints (NO CHANGE)
+// Settings Endpoints 
 router.get("/settings", async (req, res) => {
     try {
         const settings = await Setting.find();
@@ -480,7 +461,7 @@ router.post("/settings", async (req, res) => {
     }
 });
 
-// Public Data Endpoint (Updated to include new Election models)
+// Public Data Endpoint 
 router.get("/public-data", async (req, res) => {
     try {
         const [events, members, clubs, heads, candidates, posts, announcements, settings] = await Promise.all([
