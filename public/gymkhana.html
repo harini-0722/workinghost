@@ -994,12 +994,11 @@
             </div>
         </div>
     </footer>
-
 <script>
     // Store the active page ID
     let currentPage = 'home';
 
-    // --- GLOBAL DATA STORES ---
+    // --- GLOBAL DATA STORES (Simulated from public-gymkhana.js) ---
     let globalData = {
         events: [],
         members: [],
@@ -1012,7 +1011,7 @@
         fullResults: {},
     };
     
-    // --- MOCK SCHEDULE DATA (Used for Status Timing Logic) ---
+    // --- MOCK SCHEDULE DATA (Used for fixed timeline logic) ---
     const MOCK_SCHEDULE_DATA = [
         { title: "Nomination Filing Starts", date: "2025-04-01", status: "completed" },
         { title: "Last Date for Nomination", date: "2025-04-05", status: "current" },
@@ -1023,7 +1022,7 @@
 
 
     // -------------------------------------------------------------
-    // --- CORE UTILITIES AND NAVIGATION (Must be defined first) ---
+    // --- CORE UTILITIES AND NAVIGATION (Defined Globally for HTML) ---
     // -------------------------------------------------------------
 
     function closeAllMenus() {
@@ -1041,7 +1040,6 @@
         }
     }
 
-    // --- CRITICAL FIX: showPage function is moved out of DOMContentLoaded ---
     function showPage(pageId) {
         const currentPageEl = document.getElementById(currentPage);
         if (currentPageEl) {
@@ -1059,20 +1057,21 @@
         window.scrollTo(0, 0);
         closeAllMenus();
 
-        // Conditionally render dynamic content based on the destination page
+        // Trigger render based on page
         if (pageId === 'elections') {
-            initializeElectionsPage();
+            initializeElectionsPage(); // This is now callable!
         } else if (pageId === 'events') { renderEvents(); } 
         else if (pageId === 'techClubs' || pageId === 'culturalClubs' || pageId === 'sportsClubs' || pageId === 'academicClubs') { 
             renderClubDetails(); 
         }
     }
     
-    // --- UTILITY FUNCTION: Fetch API Data Safely ---
+    // --- UTILITY FUNCTION: Fetch API Data Safely (Simplified) ---
     const fetchData = async (url) => {
         try {
             const response = await fetch('/api' + url); 
             if (!response.ok) {
+                // If the error is 404, the server probably returned HTML (the SynatxError you saw).
                 console.error(`Fetch failed for ${url}: Status ${response.status}`);
                 throw new Error('API request failed.');
             }
@@ -1093,7 +1092,7 @@
     };
 
 
-    // --- CORE DATA LOADING ---
+    // --- CORE DATA LOADING (Moved outside DOMContentLoaded for clarity, logic unchanged) ---
     const loadAllData = async () => {
         // Load data for Home Page components
         globalData.events = await fetchData('/events');
@@ -1120,11 +1119,13 @@
         globalData.fullResults = globalData.fullResults || {};
         
         renderHomePageContent();
-        renderClubDetails(); // Render details once data is loaded for fast switching
+        renderClubDetails(); 
     };
 
 
-    // --- RENDERING FUNCTIONS ---
+    // -------------------------------------------------------------
+    // --- RENDERING FUNCTIONS (Main UI Logic) ---
+    // -------------------------------------------------------------
 
     function renderHomePageContent() {
         // 1. About Section
@@ -1266,6 +1267,66 @@
     
     function renderClubDetails() { /* This is the placeholder function from the Admin's side */ }
 
+    // --- ELECTION RENDERING FUNCTIONS (DYNAMIC) ---
+
+    function renderElectionSchedule() {
+        const scheduleList = document.getElementById('election-schedule-list');
+        const votingStatusEl = document.getElementById('voting-status');
+        const voteButtonEl = document.getElementById('vote-button');
+        scheduleList.innerHTML = '';
+        
+        let isVotingLive = false; 
+        let scheduleItems = [...MOCK_SCHEDULE_DATA];
+
+        if (globalData.posts && globalData.posts.length > 0) {
+             globalData.posts.forEach(item => {
+                scheduleItems.push({ 
+                    title: `Nomination Deadline: ${item.position}`, 
+                    date: item.nominationDate || 'TBD', 
+                    status: 'info' 
+                });
+            });
+        }
+        
+        scheduleItems.forEach(item => {
+            let statusClass = 'text-gray-600';
+            if (item.status === 'completed') {
+                statusClass = 'text-green-600 font-medium';
+            } else if (item.status === 'current') {
+                statusClass = 'text-orange-600 font-bold';
+            } else if (item.status === 'live') {
+                statusClass = 'text-red-600 font-bold';
+                isVotingLive = true;
+            }
+
+            scheduleList.innerHTML += `
+                <li class="flex justify-between items-start border-b pb-2">
+                    <div>
+                        <span class="font-medium text-gray-800">${item.title}</span>
+                        <p class="text-xs ${statusClass}">(${item.status ? item.status.toUpperCase() : 'INFO'})</p>
+                    </div>
+                    <span class="font-bold text-sm text-indigo-600">${item.date}</span>
+                </li>
+            `;
+        });
+
+        // Update Voting Status UI
+        if (isVotingLive) {
+            votingStatusEl.textContent = "VOTING IS LIVE NOW! Click VOTE NOW.";
+            votingStatusEl.classList.remove('text-red-600');
+            votingStatusEl.classList.add('text-green-600', 'font-bold', 'text-lg');
+            voteButtonEl.classList.remove('hidden');
+            voteButtonEl.disabled = false;
+        } else {
+            votingStatusEl.textContent = "Voting is currently CLOSED. Check schedule for date.";
+            votingStatusEl.classList.add('text-red-600');
+            voteButtonEl.classList.add('hidden');
+            voteButtonEl.disabled = true;
+        }
+    }
+
+    // --- The other rendering functions (renderAnnouncements, renderElectedResults, loadVotingCandidates) remain unchanged ---
+    
     // --- Submission/Logic Functions (Minimal for public view) ---
 
     function submitConcern(event) {
@@ -1359,40 +1420,79 @@
         dropdown.classList.toggle('hidden');
     }
 
-    function showVotingModal() {
-        loadVotingCandidates();
-        const messageEl = document.getElementById('vote-message');
-        messageEl.classList.add('hidden');
-        showModal('voting-modal');
-    }
-
-    // --- CRITICAL FIX: showPage function is moved out of DOMContentLoaded ---
-    function showPage(pageId) {
-        // Hide the current page
-        const currentPageEl = document.getElementById(currentPage);
-        if (currentPageEl) {
-            currentPageEl.classList.remove('active');
+    function closeAllMenus() {
+        const mobileMenu = document.getElementById('mobile-menu');
+        const iconOpen = document.getElementById('menu-icon-open');
+        const iconClose = document.getElementById('menu-icon-close');
+        if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
+            mobileMenu.classList.add('hidden');
+            iconOpen.classList.remove('hidden');
+            iconClose.classList.add('hidden');
         }
-        
-        // Show the new page
-        const newPageEl = document.getElementById(pageId);
-        if (newPageEl) {
-            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
-            newPageEl.classList.add('active');
-        }
-        
-        currentPage = pageId;
-        window.scrollTo(0, 0);
-        closeAllMenus();
-
-        // Trigger render for pages that need data after navigation
-        if (pageId === 'elections') {
-            initializeElectionsPage();
-        } else if (pageId === 'events') { renderEvents(); } 
-        else if (pageId === 'techClubs' || pageId === 'culturalClubs' || pageId === 'sportsClubs' || pageId === 'academicClubs') { 
-            renderClubDetails(); 
+        const desktopDropdown = document.getElementById('desktop-dropdown');
+        if (desktopDropdown && !desktopDropdown.classList.contains('hidden')) {
+            desktopDropdown.classList.add('hidden');
         }
     }
+
+    function showModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.body.classList.add('overflow-hidden'); 
+        }
+    }
+
+    function hideModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.classList.remove('flex');
+            modal.classList.add('hidden');
+            document.body.classList.remove('overflow-hidden');
+        }
+    }
+
+    function switchView(viewId) {
+        document.getElementById('tab-info').classList.remove('active');
+        document.getElementById('tab-grids').classList.remove('active');
+
+        const selectedView = document.getElementById(viewId);
+        const selectedButtonId = `tab-${viewId.split('-')[0]}`;
+        
+        if (selectedView) {
+            document.getElementById('info-view').classList.add('hidden');
+            document.getElementById('grids-view').classList.add('hidden');
+            selectedView.classList.remove('hidden');
+        }
+        
+        const selectedButton = document.getElementById(selectedButtonId);
+        if (selectedButton) selectedButton.classList.add('active');
+
+        if (viewId === 'grids-view') {
+            renderElectedResults();
+        } else if (viewId === 'info-view') {
+            renderElectionSchedule();
+            renderAnnouncements();
+        }
+    }
+
+    function initializeElectionsPage() {
+        renderElectionSchedule();
+        renderAnnouncements();
+        switchView('info-view');
+    }
+
+    // Global window functions used by onclick handlers (exposed for the HTML)
+    window.showPage = showPage;
+    window.showModal = showModal;
+    window.hideModal = hideModal;
+    window.toggleMobileMenu = toggleMobileMenu;
+    window.toggleDropdown = toggleDropdown;
+    window.submitConcern = submitConcern;
+    window.submitPeerSupport = submitPeerSupport;
+    window.switchView = switchView;
+    window.showVotingModal = showVotingModal; 
 
     // --- Initialization Hook ---
 
