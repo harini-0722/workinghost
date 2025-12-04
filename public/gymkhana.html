@@ -1013,6 +1013,7 @@
     };
     
     // --- MOCK SCHEDULE DATA (Used for Status Timing Logic) ---
+    // This is static timeline data for context display, separate from the dynamic post deadlines.
     const MOCK_SCHEDULE_DATA = [
         { title: "Nomination Filing Starts", date: "2025-04-01", status: "completed" },
         { title: "Last Date for Nomination", date: "2025-04-05", status: "current" },
@@ -1023,7 +1024,7 @@
 
 
     // -------------------------------------------------------------
-    // --- CORE UTILITIES (Must be defined first) ---
+    // --- CORE UTILITIES AND DATA FETCH (DEFINED GLOBALLY) ---
     // -------------------------------------------------------------
 
     function closeAllMenus() {
@@ -1083,11 +1084,40 @@
         }
     };
 
+    // --- CRITICAL FIX: loadAllData is now a global function ---
+    async function loadAllData() {
+        // Load data for Home Page components
+        globalData.events = await fetchData('/events');
+        globalData.members = await fetchData('/members');
+        globalData.clubs = await fetchData('/clubs');
+        globalData.heads = await fetchData('/heads');
+        
+        // Load data for Election components
+        globalData.posts = await fetchData('/elections/posts');
+        globalData.candidates = await fetchData('/elections/candidates');
+        globalData.announcements = await fetchData('/elections/announcements');
+        globalData.fullResults = await fetchData('/elections/full-results');
+        globalData.settings = await fetchData('/settings');
+
+        // Default null results to empty array/object
+        globalData.events = globalData.events || [];
+        globalData.members = globalData.members || [];
+        globalData.clubs = globalData.clubs || [];
+        globalData.heads = globalData.heads || [];
+        globalData.posts = globalData.posts || [];
+        globalData.candidates = globalData.candidates || [];
+        globalData.announcements = globalData.announcements || [];
+        globalData.settings = globalData.settings || {};
+        globalData.fullResults = globalData.fullResults || {};
+        
+        renderHomePageContent();
+        renderClubDetails(); 
+    }
 
     // -------------------------------------------------------------
-    // --- RENDERING FUNCTIONS (DEFINED GLOBALLY) ---
+    // --- RENDERING FUNCTIONS (Main UI Logic) ---
     // -------------------------------------------------------------
-    
+
     function renderHomePageContent() {
         const aboutTextContainer = document.getElementById('home-about-text');
         const aboutText = globalData.settings.about_us_text || 
@@ -1217,7 +1247,6 @@
         renderHeadsGrid('academic-heads-grid', 'academic');
     }
 
-    // ELECTION FUNCTIONS (Used by the Elections Page)
     function renderElectionSchedule() {
         const scheduleList = document.getElementById('election-schedule-list');
         const votingStatusEl = document.getElementById('voting-status');
@@ -1535,22 +1564,29 @@
         }
     }
     
+    // --- FINAL INITIALIZATION FUNCTIONS ---
+
     function initializeElectionsPage() {
+        // This function orchestrates the election view updates
         renderElectionSchedule();
         renderAnnouncements();
         switchView('info-view');
     }
 
-    // --- Initialization Hook ---
-
-    document.addEventListener('DOMContentLoaded', () => {
-        // Start data loading and show the home page
+    function initializePublicView() {
+        // This function handles the initial data load and rendering of the home page elements
         loadAllData();
         showPage('home');
+    }
+
+    // --- DOMContentLoaded Hook ---
+
+    document.addEventListener('DOMContentLoaded', () => {
+        // Start the process
+        initializePublicView();
     });
     
 </script>
-
     <script src="public-gymkhana.js" defer></script>
 
 </body>
