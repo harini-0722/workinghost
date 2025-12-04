@@ -13,6 +13,29 @@
         .page-content.active { display: block; }
         .election-tab-content { display: none; }
         .election-tab-content.active { display: block; }
+        
+        /* --- NEW STYLES FOR DELETE BUTTONS --- */
+        .grid-item { position: relative; }
+        .delete-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            color: #ef4444; /* red-500 */
+            background-color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.2s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            cursor: pointer;
+        }
+        .grid-item:hover .delete-btn { opacity: 1; }
+        /* ------------------------------------- */
+
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #f1f1f1; }
         ::-webkit-scrollbar-thumb { background: #888; border-radius: 4px; }
@@ -517,7 +540,6 @@
     const pageTitle = document.getElementById('page-title');
 
     // --- GLOBAL DATA STORES (Initialized Empty, will be filled by API calls) ---
-    // Note: These must be 'let' so they can be reassigned.
     let eventData = [];
     let memberData = [];
     let clubData = [];
@@ -533,28 +555,67 @@
             const response = await fetch(url);
             if (!response.ok) {
                 const errorText = await response.text();
-                // Throwing an error here prevents subsequent rendering and catches the issue early
                 throw new Error(`HTTP error! Status: ${response.status}. Details: ${errorText.substring(0, 100)}...`);
             }
             const body = await response.json();
             
-            // Check if the body contains the final result object (like /full-results) or a standard { success: true, data: [...] } structure
             if (body.success && body.data) {
                  return body.data; // This covers most CRUD endpoints
             } else if (body.overall_stats && body.results_by_block) {
                  return body; // This covers /elections/full-results
             } else {
-                 return []; // Default to empty array for rendering loops if data structure is unexpected
+                 return [];
             }
 
         } catch (error) {
             console.error(`Error fetching from ${url}:`, error);
-            // Return null on failure to prevent subsequent TypeErrors in global assignment
             return null;
         }
     };
+    
+    // --- DELETE ITEM LOGIC ---
+    /**
+     * Handles deletion for a general CRUD item (Event, Member, Club, Head).
+     * @param {string} type - The model name (e.g., 'event', 'member').
+     * @param {string} id - The MongoDB ID of the item to delete.
+     * @param {function} renderFunction - The function to call to re-render the list.
+     * @param {Array} dataArray - The global array to splice/update.
+     */
+    window.deleteItem = async (type, id, renderFunction, dataArray) => {
+        if (!confirm(`Are you sure you want to delete this ${type}? This action cannot be undone.`)) {
+            return;
+        }
 
-    // --- CORE RENDERING FUNCTIONS ---
+        try {
+            const response = await fetch(`/api/${type}s/${id}`, { method: 'DELETE' });
+
+            if (!response.ok) {
+                const errorBody = await response.json();
+                throw new Error(errorBody.message || `Failed to delete ${type}.`);
+            }
+
+            // Remove item from the global array immediately
+            const initialLength = dataArray.length;
+            const updatedArray = dataArray.filter(item => item._id !== id);
+            
+            // Reassign the global variable to the filtered array
+            if (type === 'event') eventData = updatedArray;
+            else if (type === 'member') memberData = updatedArray;
+            else if (type === 'club') clubData = updatedArray;
+            else if (type === 'head') headData = updatedArray;
+            
+            renderFunction(); // Re-render the UI
+            renderDashboardCounts(); // Update counts
+            alert(`${type} deleted successfully!`);
+
+        } catch (error) {
+            console.error(`Error deleting ${type}:`, error);
+            alert(`Error deleting ${type}: ` + error.message);
+        }
+    };
+
+
+    // --- CORE RENDERING FUNCTIONS (UPDATED WITH DELETE BUTTONS) ---
 
     const renderEvents = (events = eventData) => {
         const list = document.getElementById('events-list');
@@ -565,7 +626,10 @@
         }
         events.forEach(item => {
             list.innerHTML += `
-                <div class="bg-white p-4 rounded-lg shadow-md flex items-start space-x-4">
+                <div class="bg-white p-4 rounded-lg shadow-md flex items-start space-x-4 grid-item">
+                    <button class="delete-btn" onclick="deleteItem('event', '${item._id}', renderEvents, eventData)">
+                        <i class="fas fa-times fa-xs"></i>
+                    </button>
                     <img src="${item.imageUrl}" class="w-16 h-16 object-cover rounded" onerror="this.onerror=null;this.src='/placeholder.jpg'">
                     <div>
                         <p class="font-bold text-gray-900">${item.name}</p>
@@ -585,7 +649,10 @@
         }
         members.forEach(item => {
             list.innerHTML += `
-                <div class="bg-white p-4 rounded-lg shadow-sm text-center">
+                <div class="bg-white p-4 rounded-lg shadow-sm text-center grid-item">
+                    <button class="delete-btn" onclick="deleteItem('member', '${item._id}', renderMembers, memberData)">
+                        <i class="fas fa-times fa-xs"></i>
+                    </button>
                     <img src="${item.imageUrl}" class="w-20 h-20 object-cover rounded-full mx-auto" onerror="this.onerror=null;this.src='/placeholder.jpg'">
                     <p class="font-bold text-gray-900 mt-2">${item.name}</p>
                     <p class="text-sm text-indigo-600">${item.position}</p>
@@ -605,7 +672,10 @@
             const iconColor = item.council.toLowerCase().includes('scitech') ? 'text-blue-500' : 'text-indigo-500';
 
             list.innerHTML += `
-                <div class="bg-white p-4 rounded-lg shadow-sm text-center border-t-4 border-indigo-200">
+                <div class="bg-white p-4 rounded-lg shadow-sm text-center border-t-4 border-indigo-200 grid-item">
+                    <button class="delete-btn" onclick="deleteItem('club', '${item._id}', renderClubs, clubData)">
+                        <i class="fas fa-times fa-xs"></i>
+                    </button>
                     <i class="${item.icon} fa-3x ${iconColor}"></i>
                     <p class="font-bold text-gray-900 mt-2">${item.name}</p>
                     <p class="text-xs text-gray-500">${item.council}</p>
@@ -624,7 +694,10 @@
         }
         heads.forEach(item => {
             list.innerHTML += `
-                <div class="bg-white p-4 rounded-lg shadow-sm flex items-start space-x-4 border-l-4 border-rose-500">
+                <div class="bg-white p-4 rounded-lg shadow-sm flex items-start space-x-4 border-l-4 border-rose-500 grid-item">
+                    <button class="delete-btn" onclick="deleteItem('head', '${item._id}', renderHeads, headData)">
+                        <i class="fas fa-times fa-xs"></i>
+                    </button>
                     <img src="${item.imageUrl}" class="w-16 h-16 object-cover rounded-full" onerror="this.onerror=null;this.src='/placeholder.jpg'">
                     <div>
                         <p class="font-bold text-gray-900">${item.name}</p>
@@ -637,7 +710,7 @@
     };
 
     
-    // --- ELECTION TAB RENDERING FUNCTIONS ---
+    // --- ELECTION TAB RENDERING FUNCTIONS (REST REMAIN THE SAME) ---
 
     const renderPositions = (positions = electionPositions) => {
         const positionsList = document.getElementById('election-details-list');
@@ -1053,7 +1126,7 @@
 
             const responseBody = await response.json();
             clubData.push(responseBody.data);
-            renderClubs(); // <-- RE-RENDER
+            renderClubs(); 
             form.reset();
             alert('Club added successfully!');
             renderDashboardCounts();
@@ -1078,7 +1151,7 @@
 
             const responseBody = await response.json();
             headData.push(responseBody.data);
-            renderHeads(); // <-- RE-RENDER
+            renderHeads(); 
             form.reset();
             alert('Council Head added successfully!');
             renderDashboardCounts();
