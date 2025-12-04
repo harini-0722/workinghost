@@ -395,8 +395,8 @@
                     <div class="flex flex-col md:flex-row items-center gap-16">
                         <div class="md:w-1/2">
                             <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1200&q=80" 
-                                        alt="Students" 
-                                        class="rounded-2xl shadow-xl w-full h-auto object-cover">
+                                         alt="Students" 
+                                         class="rounded-2xl shadow-xl w-full h-auto object-cover">
                         </div>
                         <div class="md:w-1/2">
                             <h2 class="text-base text-indigo-600 font-semibold tracking-wide uppercase">Who We Are</h2>
@@ -651,8 +651,8 @@
             <section class="relative h-[55vh] min-h-[400px] flex items-center justify-center text-center text-white overflow-hidden">
                 <div class="absolute inset-0">
                     <img src="https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?auto=format&fit=crop&w=1920&q=80" 
-                            alt="Elections Background" 
-                            class="w-full h-full object-cover">
+                                alt="Elections Background" 
+                                class="w-full h-full object-cover">
                     <div class="absolute inset-0 bg-gray-900 bg-opacity-70"></div>
                 </div>
                 <div class="relative z-10 p-4">
@@ -1026,6 +1026,16 @@
     // --- CORE UTILITIES AND NAVIGATION (Must be defined first) ---
     // -------------------------------------------------------------
 
+    function hideModal(modalId) {
+        document.getElementById(modalId).classList.add('hidden');
+        document.getElementById(modalId).classList.remove('flex');
+    }
+    
+    function showModal(modalId) {
+        document.getElementById(modalId).classList.remove('hidden');
+        document.getElementById(modalId).classList.add('flex');
+    }
+
     function closeAllMenus() {
         const mobileMenu = document.getElementById('mobile-menu');
         const iconOpen = document.getElementById('menu-icon-open');
@@ -1130,7 +1140,7 @@
         // 1. About Section
         const aboutTextContainer = document.getElementById('home-about-text');
         const aboutText = globalData.settings.about_us_text || 
-                        '<p>The Student Gymkhana is the central body driving student life at IIT Indore. Please ask the Admin to update the content in the Site Settings page.</p>';
+                            '<p>The Student Gymkhana is the central body driving student life at IIT Indore. Please ask the Admin to update the content in the Site Settings page.</p>';
         
         aboutTextContainer.innerHTML = `<p>${aboutText}</p>`;
         
@@ -1258,13 +1268,231 @@
     }
 
     // ELECTION FUNCTIONS (Used by the Elections Page)
-    function initializeElectionsPage() {
-        renderElectionSchedule();
-        renderAnnouncements();
-        switchView('info-view');
-    }
     
-    function renderClubDetails() { /* This is the placeholder function from the Admin's side */ }
+    /**
+     * Renders the Election Schedule using the MOCK_SCHEDULE_DATA.
+     */
+    function renderElectionSchedule() {
+        const scheduleList = document.getElementById('election-schedule-list');
+        scheduleList.innerHTML = '';
+        
+        // Use the mock data defined globally
+        const scheduleData = MOCK_SCHEDULE_DATA; 
+
+        scheduleData.forEach(item => {
+            let statusClass = '';
+            let icon = 'far fa-circle';
+            if (item.status === 'completed') {
+                statusClass = 'text-green-600 font-bold';
+                icon = 'fas fa-check-circle';
+            } else if (item.status === 'current' || item.status === 'live') {
+                statusClass = 'text-red-600 font-bold';
+                icon = 'fas fa-arrow-right-to-bracket animate-pulse';
+            } else {
+                 statusClass = 'text-gray-500';
+                 icon = 'fas fa-clock';
+            }
+            
+            scheduleList.innerHTML += `
+                <li class="flex items-start space-x-3 text-gray-700">
+                    <i class="${icon} fa-fw mt-1 ${statusClass}"></i>
+                    <div>
+                        <span class="font-semibold ${statusClass}">${item.title}</span>
+                        <span class="text-sm text-gray-500 ml-2">(${item.date})</span>
+                    </div>
+                </li>
+            `;
+        });
+        
+        // --- Voting Button Status ---
+        const votingStatusEl = document.getElementById('voting-status');
+        const voteButton = document.getElementById('vote-button');
+        const liveEvent = scheduleData.find(item => item.status === 'live' || item.title.includes('Voting Day'));
+
+        if (liveEvent) {
+            voteButton.classList.remove('hidden');
+            voteButton.disabled = false;
+            votingStatusEl.textContent = 'Voting is currently LIVE!';
+            votingStatusEl.classList.add('text-green-600');
+            votingStatusEl.classList.remove('text-red-600');
+        } else {
+            voteButton.classList.add('hidden');
+            voteButton.disabled = true;
+            votingStatusEl.textContent = 'Voting is currently CLOSED.';
+            votingStatusEl.classList.remove('text-green-600');
+            votingStatusEl.classList.add('text-red-600');
+        }
+    }
+
+    /**
+     * Renders the latest announcements.
+     */
+    function renderAnnouncements() {
+        const announcementsDiv = document.getElementById('election-announcements');
+        announcementsDiv.innerHTML = '';
+
+        const announcementsToDisplay = globalData.announcements.slice().sort((a, b) => new Date(b.published_at) - new Date(a.published_at));
+
+        if (announcementsToDisplay.length === 0) {
+            announcementsDiv.innerHTML = '<p class="text-gray-500">No announcements yet.</p>';
+            return;
+        }
+
+        announcementsToDisplay.slice(0, 3).forEach(announcement => {
+            announcementsDiv.innerHTML += `
+                <div class="border-b border-yellow-200 pb-3">
+                    <p class="text-lg font-bold text-gray-900">${announcement.title}</p>
+                    <p class="text-sm text-gray-700 mt-1">${announcement.content}</p>
+                    <p class="text-xs text-gray-500 mt-1">Published: ${new Date(announcement.published_at).toLocaleDateString()}</p>
+                </div>
+            `;
+        });
+    }
+
+    /**
+     * Renders the elected members (winners) in the grids-view.
+     */
+    function renderElectedMembers() {
+        const electedMembersContainer = document.getElementById('elected-members-container');
+        electedMembersContainer.innerHTML = '';
+        
+        // Renders the list of Council Heads (assuming they are the elected officials)
+        const membersToDisplay = globalData.heads || []; 
+
+        if (membersToDisplay.length === 0) {
+            electedMembersContainer.innerHTML = '<p class="col-span-2 text-center text-red-500 font-bold p-4 bg-red-50 rounded-lg">Results are not yet published. Check back later.</p>';
+            return;
+        }
+
+        membersToDisplay.forEach(head => {
+            const initials = head.name.split(' ').map(n => n[0]).join('');
+            const placeholderImg = `https://placehold.co/100x100/4F46E5/FFFFFF?text=${initials}`;
+            const finalImgSrc = head.imageUrl ? head.imageUrl : placeholderImg;
+
+            electedMembersContainer.innerHTML += `
+                <div class="bg-white p-5 rounded-xl shadow-lg border-l-4 border-yellow-500 flex items-center space-x-4 card-hover">
+                    <img class="h-16 w-16 rounded-full object-cover shadow-md" 
+                        src="${finalImgSrc}" 
+                        alt="${head.name} Image"
+                        onerror="this.onerror=null;this.src='${placeholderImg}'">
+                    <div>
+                        <p class="text-xl font-extrabold text-gray-900">${head.name}</p>
+                        <p class="mt-1 text-base font-bold text-yellow-700">${head.position}</p>
+                        <p class="text-sm text-gray-500">${head.council}</p>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    /**
+     * Populates the Voting Modal with positions and candidates.
+     */
+    function loadVotingCandidates() {
+        const votingForm = document.getElementById('voting-form');
+        votingForm.innerHTML = '';
+        
+        if (globalData.posts.length === 0 || globalData.candidates.length === 0) {
+            votingForm.innerHTML = '<p class="text-red-500">No active positions or candidates listed. Please check the official election schedule.</p>';
+            return;
+        }
+        
+        // Group candidates by the post they are running for
+        const candidatesByPost = globalData.candidates.reduce((acc, candidate) => {
+            if (!acc[candidate.post]) {
+                acc[candidate.post] = [];
+            }
+            acc[candidate.post].push(candidate);
+            return acc;
+        }, {});
+
+        globalData.posts.forEach(post => {
+            const candidates = candidatesByPost[post.position] || [];
+            
+            let positionHtml = `
+                <div class="border border-indigo-200 p-4 rounded-lg bg-indigo-50">
+                    <h4 class="text-xl font-bold text-indigo-800 mb-4 flex items-center">
+                        <i class="fas fa-user-check mr-2"></i> ${post.position}
+                    </h4>
+                    <div class="space-y-3">
+            `;
+            
+            if (candidates.length === 0) {
+                 positionHtml += `<p class="text-gray-600">No candidates running for this post yet.</p>`;
+            } else {
+                candidates.forEach(candidate => {
+                    const initials = candidate.name.split(' ').map(n => n[0]).join('');
+                    const placeholderImg = `https://placehold.co/50x50/312E81/FFFFFF?text=${initials}`;
+                    const finalImgSrc = candidate.imageUrl ? candidate.imageUrl : placeholderImg;
+
+                    positionHtml += `
+                        <label class="flex items-center p-3 border border-gray-200 bg-white rounded-lg shadow-sm hover:bg-indigo-100 cursor-pointer transition duration-150">
+                            <input type="radio" name="${post.position}" value="${candidate._id}" class="h-5 w-5 text-indigo-600 focus:ring-indigo-500 mr-4" required>
+                            <img src="${finalImgSrc}" class="w-10 h-10 object-cover rounded-full mr-4" onerror="this.onerror=null;this.src='${placeholderImg}'">
+                            <div>
+                                <p class="text-base font-semibold text-gray-900">${candidate.name}</p>
+                                <p class="text-xs text-gray-600">${candidate.manifesto || candidate.rollno}</p>
+                            </div>
+                        </label>
+                    `;
+                });
+                
+                // Add NOTA option
+                positionHtml += `
+                    <label class="flex items-center p-3 border-2 border-red-300 bg-red-50 rounded-lg shadow-sm hover:bg-red-100 cursor-pointer transition duration-150">
+                        <input type="radio" name="${post.position}" value="NOTA" class="h-5 w-5 text-red-600 focus:ring-red-500 mr-4" required>
+                        <div class="text-red-700 font-bold">
+                            <p class="text-base">None of the Above (NOTA)</p>
+                        </div>
+                    </label>
+                `;
+            }
+            
+            positionHtml += `</div></div>`;
+            votingForm.innerHTML += positionHtml;
+        });
+        
+        // Remove previous listener to prevent duplicate submissions
+        votingForm.removeEventListener('submit', submitFinalVote);
+        // Add the event listener back. This handles the actual form submission button in the modal footer.
+        votingForm.addEventListener('submit', submitFinalVote);
+    }
+
+    /**
+     * Switches between Election Information and Results/Elected Students view.
+     */
+    function switchView(viewId) {
+        const infoView = document.getElementById('info-view');
+        const gridsView = document.getElementById('grids-view');
+        const tabInfo = document.getElementById('tab-info');
+        const tabGrids = document.getElementById('tab-grids');
+
+        if (viewId === 'info-view') {
+            infoView.classList.remove('hidden');
+            gridsView.classList.add('hidden');
+            
+            tabInfo.classList.add('text-indigo-700', 'bg-indigo-50', 'border-indigo-600', 'active');
+            tabInfo.classList.remove('text-gray-700', 'bg-white', 'border-gray-400');
+            
+            tabGrids.classList.remove('text-indigo-700', 'bg-indigo-50', 'border-indigo-600', 'active');
+            tabGrids.classList.add('text-gray-700', 'bg-white', 'border-gray-400');
+            
+            renderElectionSchedule();
+            renderAnnouncements();
+        } else if (viewId === 'grids-view') {
+            infoView.classList.add('hidden');
+            gridsView.classList.remove('hidden');
+            
+            tabGrids.classList.add('text-indigo-700', 'bg-indigo-50', 'border-indigo-600', 'active');
+            tabGrids.classList.remove('text-gray-700', 'bg-white', 'border-gray-400');
+            
+            tabInfo.classList.remove('text-indigo-700', 'bg-indigo-50', 'border-indigo-600', 'active');
+            tabInfo.classList.add('text-gray-700', 'bg-white', 'border-gray-400');
+            
+            renderElectedMembers(); // Call this function to populate the Elected Students section
+        }
+    }
+
 
     // --- Submission/Logic Functions (Minimal for public view) ---
 
@@ -1319,7 +1547,8 @@
             votes[position] = votedCandidateId || 'UNVOTED';
         });
         
-        const unvotedPositions = Object.values(votes).filter(v => v === 'UNVOTED');
+        const unvotedPositions = positionNames.filter(pos => !formData.get(pos));
+        
         if (unvotedPositions.length > 0) {
             messageEl.textContent = `ERROR: You must vote for all ${positionNames.length} positions. You missed ${unvotedPositions.length}.`;
             messageEl.classList.remove('hidden', 'bg-green-100', 'text-green-700');
@@ -1366,40 +1595,12 @@
         showModal('voting-modal');
     }
 
-    // --- CRITICAL FIX: showPage function is moved out of DOMContentLoaded ---
-    function showPage(pageId) {
-        // Hide the current page
-        const currentPageEl = document.getElementById(currentPage);
-        if (currentPageEl) {
-            currentPageEl.classList.remove('active');
-        }
-        
-        // Show the new page
-        const newPageEl = document.getElementById(pageId);
-        if (newPageEl) {
-            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
-            newPageEl.classList.add('active');
-        }
-        
-        currentPage = pageId;
-        window.scrollTo(0, 0);
-        closeAllMenus();
-
-        // Trigger render for pages that need data after navigation
-        if (pageId === 'elections') {
-            initializeElectionsPage();
-        } else if (pageId === 'events') { renderEvents(); } 
-        else if (pageId === 'techClubs' || pageId === 'culturalClubs' || pageId === 'sportsClubs' || pageId === 'academicClubs') { 
-            renderClubDetails(); 
-        }
-    }
-
     // --- Initialization Hook ---
 
     document.addEventListener('DOMContentLoaded', () => {
         // Start data loading and show the home page
         loadAllData();
-        showPage('home');
+        // showPage('home'); // Removed to prevent double calling in the original code, as the page loads with 'home' active.
     });
     
 </script>
