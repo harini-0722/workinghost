@@ -995,8 +995,7 @@
         </div>
     </footer>
 
-
-    <script>
+<script>
         // Store the active page ID
         let currentPage = 'home';
 
@@ -1059,7 +1058,7 @@
             globalData.fullResults = await fetchData('/elections/full-results');
             globalData.settings = await fetchData('/settings');
 
-            // Default null results to empty array/object to prevent TypeErrors
+            // Default null results to empty array/object
             globalData.events = globalData.events || [];
             globalData.members = globalData.members || [];
             globalData.clubs = globalData.clubs || [];
@@ -1073,6 +1072,8 @@
             // Initial content rendering for the Home Page
             renderHomePageContent();
             renderEvents();
+            renderClubDetails(); // Render club/head lists
+            renderHeadDetails();
         };
 
 
@@ -1138,6 +1139,76 @@
             });
         }
 
+        // Renders content for the individual Club/Head pages (Tech, Cultural, etc.)
+        function renderClubDetails() {
+            // NOTE: Full implementation requires fetching and grouping clubs/heads by council name
+            const clubs = globalData.clubs || [];
+            const heads = globalData.heads || [];
+
+            const renderGrid = (gridId, councilName) => {
+                const list = document.getElementById(gridId);
+                const filteredClubs = clubs.filter(c => c.council.toLowerCase() === councilName.toLowerCase());
+                
+                list.innerHTML = '';
+                if (filteredClubs.length === 0) {
+                    list.innerHTML = `<p class="col-span-full text-center text-gray-500">No ${councilName} clubs listed.</p>`;
+                    return;
+                }
+                filteredClubs.forEach(item => {
+                    const iconColor = item.council.toLowerCase().includes('scitech') ? 'text-blue-500' : 'text-indigo-500';
+                    list.innerHTML += `
+                        <div class="bg-white p-4 rounded-lg shadow-xl text-center border-t-4 border-indigo-200 card-hover">
+                            <i class="${item.icon} fa-3x ${iconColor}"></i>
+                            <p class="font-bold text-gray-900 mt-2">${item.name}</p>
+                            <p class="text-xs text-gray-500">${item.council}</p>
+                        </div>
+                    `;
+                });
+            };
+            
+            const renderHeadsGrid = (gridId, councilName) => {
+                const list = document.getElementById(gridId);
+                const filteredHeads = heads.filter(h => h.council.toLowerCase() === councilName.toLowerCase());
+                
+                list.innerHTML = '';
+                if (filteredHeads.length === 0) {
+                    list.innerHTML = `<p class="col-span-full text-center text-gray-500">No ${councilName} heads listed.</p>`;
+                    return;
+                }
+                 filteredHeads.forEach(item => {
+                    const placeholderImg = `https://placehold.co/100x100/4F46E5/FFFFFF?text=${item.name.split(' ').map(n => n[0]).join('')}`;
+                    const finalImgSrc = item.imageUrl ? item.imageUrl : placeholderImg;
+
+                    list.innerHTML += `
+                        <div class="bg-white p-5 rounded-xl shadow-lg border-b-4 border-rose-500 flex flex-col items-center text-center card-hover">
+                            <img class="h-20 w-20 rounded-full object-cover shadow-md mb-3" 
+                                src="${finalImgSrc}" 
+                                alt="${item.name} Image"
+                                onerror="this.onerror=null;this.src='${placeholderImg}'">
+                            <p class="text-xl font-extrabold text-gray-900">${item.name}</p>
+                            <p class="mt-3 text-base font-bold text-rose-700 border-t pt-3 border-gray-100">${item.position}</p>
+                            <p class="text-sm text-gray-500">Council: ${item.council}</p>
+                        </div>
+                    `;
+                });
+            };
+
+            // Map the function calls to the specific page IDs in your HTML
+            renderGrid('tech-clubs-grid', 'scitech');
+            renderHeadsGrid('tech-heads-grid', 'scitech');
+            
+            renderGrid('cultural-clubs-grid', 'cultural');
+            renderHeadsGrid('cultural-heads-grid', 'cultural');
+
+            renderGrid('sports-clubs-grid', 'sports');
+            renderHeadsGrid('sports-heads-grid', 'sports');
+            
+            renderGrid('academic-clubs-grid', 'academic');
+            renderHeadsGrid('academic-heads-grid', 'academic');
+        }
+
+        // --- ELECTION RENDERING FUNCTIONS (DYNAMIC) ---
+
         function renderElectionSchedule() {
             const scheduleList = document.getElementById('election-schedule-list');
             const votingStatusEl = document.getElementById('voting-status');
@@ -1148,7 +1219,6 @@
             let scheduleItems = [...MOCK_SCHEDULE_DATA];
 
             if (globalData.posts && globalData.posts.length > 0) {
-                 // Add dynamic nomination deadlines 
                  globalData.posts.forEach(item => {
                     scheduleItems.push({ 
                         title: `Post Deadline: ${item.position}`, 
@@ -1158,7 +1228,6 @@
                 });
             }
             
-            // Render schedule items
             scheduleItems.forEach(item => {
                 let statusClass = 'text-gray-600';
                 if (item.status === 'completed') {
@@ -1256,7 +1325,6 @@
             }
 
             electedMembers.forEach(member => {
-                // Placeholder Logic for Images (Re-using mock logic)
                 const initials = member.Name.split(' ').map(n => n[0]).join('');
                 const rollString = member.Roll_No || '0';
                 const roll_sum = [...rollString].filter(c => !isNaN(parseInt(c))).reduce((a, b) => a + parseInt(b), 0);
@@ -1475,6 +1543,9 @@
         });
         
     </script>
+
+</body>
+</html>
 
 </body>
 </html>
