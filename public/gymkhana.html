@@ -236,8 +236,8 @@
             <section class="relative h-[85vh] min-h-[600px] flex items-center justify-center text-center text-white overflow-hidden">
                 <div class="absolute inset-0">
                     <img src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&q=80&w=1920&h=1080" 
-                                 alt="IIT Indore Campus" 
-                                 class="w-full h-full object-cover">
+                                alt="IIT Indore Campus" 
+                                class="w-full h-full object-cover">
                     <div class="absolute inset-0 bg-indigo-900 bg-opacity-60"></div>
                 </div>
                 
@@ -395,8 +395,8 @@
                     <div class="flex flex-col md:flex-row items-center gap-16">
                         <div class="md:w-1/2">
                             <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1200&q=80" 
-                                            alt="Students" 
-                                            class="rounded-2xl shadow-xl w-full h-auto object-cover">
+                                        alt="Students" 
+                                        class="rounded-2xl shadow-xl w-full h-auto object-cover">
                         </div>
                         <div class="md:w-1/2">
                             <h2 class="text-base text-indigo-600 font-semibold tracking-wide uppercase">Who We Are</h2>
@@ -481,8 +481,8 @@
             <section class="relative h-[60vh] min-h-[400px] flex items-center justify-center text-center text-white overflow-hidden">
                 <div class="absolute inset-0">
                     <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1920&q=80" 
-                                 alt="SciTech Background" 
-                                 class="w-full h-full object-cover">
+                                alt="SciTech Background" 
+                                class="w-full h-full object-cover">
                     <div class="absolute inset-0 bg-indigo-900 bg-opacity-70"></div>
                 </div>
                 <div class="relative z-10 p-4">
@@ -517,8 +517,8 @@
             <section class="relative h-[60vh] min-h-[400px] flex items-center justify-center text-center text-white overflow-hidden">
                 <div class="absolute inset-0">
                     <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=1920&q=80" 
-                                 alt="Cultural Background" 
-                                 class="w-full h-full object-cover">
+                                alt="Cultural Background" 
+                                class="w-full h-full object-cover">
                     <div class="absolute inset-0 bg-rose-900 bg-opacity-70"></div>
                 </div>
                 <div class="relative z-10 p-4">
@@ -553,8 +553,8 @@
             <section class="relative h-[60vh] min-h-[400px] flex items-center justify-center text-center text-white overflow-hidden">
                 <div class="absolute inset-0">
                     <img src="https://images.unsplash.com/photo-1579952363873-27f3bade9f55?auto=format&fit=crop&w=1920&q=80" 
-                                 alt="Sports Background" 
-                                 class="w-full h-full object-cover">
+                                alt="Sports Background" 
+                                class="w-full h-full object-cover">
                     <div class="absolute inset-0 bg-green-900 bg-opacity-70"></div>
                 </div>
                 <div class="relative z-10 p-4">
@@ -589,8 +589,8 @@
             <section class="relative h-[60vh] min-h-[400px] flex items-center justify-center text-center text-white overflow-hidden">
                 <div class="absolute inset-0">
                     <img src="https://images.unsplash.com/photo-1488998427799-e3362cec87c3?auto=format&fit=crop&w=1920&q=80" 
-                                 alt="Academic Background" 
-                                 class="w-full h-full object-cover">
+                                alt="Academic Background" 
+                                class="w-full h-full object-cover">
                     <div class="absolute inset-0 bg-amber-900 bg-opacity-70"></div>
                 </div>
                 <div class="relative z-10 p-4">
@@ -625,8 +625,8 @@
             <section class="relative h-[60vh] min-h-[400px] flex items-center justify-center text-center text-white overflow-hidden">
                 <div class="absolute inset-0">
                     <img src="https://images.unsplash.com/photo-1527529482837-4698179dc6ce?auto=format&fit=crop&w=1920&q=80" 
-                                 alt="Campus Events" 
-                                 class="w-full h-full object-cover">
+                                alt="Campus Events" 
+                                class="w-full h-full object-cover">
                     <div class="absolute inset-0 bg-indigo-900 bg-opacity-70"></div>
                 </div>
                 <div class="relative z-10 p-4">
@@ -651,8 +651,8 @@
             <section class="relative h-[55vh] min-h-[400px] flex items-center justify-center text-center text-white overflow-hidden">
                 <div class="absolute inset-0">
                     <img src="https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?auto=format&fit=crop&w=1920&q=80" 
-                                 alt="Elections Background" 
-                                 class="w-full h-full object-cover">
+                            alt="Elections Background" 
+                            class="w-full h-full object-cover">
                     <div class="absolute inset-0 bg-gray-900 bg-opacity-70"></div>
                 </div>
                 <div class="relative z-10 p-4">
@@ -999,7 +999,7 @@
     // Store the active page ID
     let currentPage = 'home';
 
-    // --- GLOBAL DATA STORES (Defined globally) ---
+    // --- GLOBAL DATA STORES ---
     let globalData = {
         events: [],
         members: [],
@@ -1023,7 +1023,7 @@
 
 
     // -------------------------------------------------------------
-    // --- CORE UTILITIES AND DATA FETCH (DEFINED GLOBALLY) ---
+    // --- CORE UTILITIES AND NAVIGATION (Must be defined first) ---
     // -------------------------------------------------------------
 
     function closeAllMenus() {
@@ -1041,21 +1041,30 @@
         }
     }
 
-    function showModal(modalId) {
-        const modal = document.getElementById(modalId);
-        if (modal) {
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-            document.body.classList.add('overflow-hidden'); 
+    // --- CRITICAL FIX: showPage function is moved out of DOMContentLoaded ---
+    function showPage(pageId) {
+        const currentPageEl = document.getElementById(currentPage);
+        if (currentPageEl) {
+            currentPageEl.classList.remove('active');
         }
-    }
+        
+        const newPageEl = document.getElementById(pageId);
+        if (newPageEl) {
+            // Hide all pages, then show the new one
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            newPageEl.classList.add('active');
+        }
+        
+        currentPage = pageId;
+        window.scrollTo(0, 0);
+        closeAllMenus();
 
-    function hideModal(modalId) {
-        const modal = document.getElementById(modalId);
-        if (modal) {
-            modal.classList.remove('flex');
-            modal.classList.add('hidden');
-            document.body.classList.remove('overflow-hidden');
+        // Conditionally render dynamic content based on the destination page
+        if (pageId === 'elections') {
+            initializeElectionsPage();
+        } else if (pageId === 'events') { renderEvents(); } 
+        else if (pageId === 'techClubs' || pageId === 'culturalClubs' || pageId === 'sportsClubs' || pageId === 'academicClubs') { 
+            renderClubDetails(); 
         }
     }
     
@@ -1083,18 +1092,23 @@
         }
     };
 
-    async function loadAllData() {
+
+    // --- CORE DATA LOADING ---
+    const loadAllData = async () => {
+        // Load data for Home Page components
         globalData.events = await fetchData('/events');
         globalData.members = await fetchData('/members');
         globalData.clubs = await fetchData('/clubs');
         globalData.heads = await fetchData('/heads');
         
+        // Load data for Election components (only happens once)
         globalData.posts = await fetchData('/elections/posts');
         globalData.candidates = await fetchData('/elections/candidates');
         globalData.announcements = await fetchData('/elections/announcements');
         globalData.fullResults = await fetchData('/elections/full-results');
         globalData.settings = await fetchData('/settings');
 
+        // Default null results to empty array/object
         globalData.events = globalData.events || [];
         globalData.members = globalData.members || [];
         globalData.clubs = globalData.clubs || [];
@@ -1106,13 +1120,11 @@
         globalData.fullResults = globalData.fullResults || {};
         
         renderHomePageContent();
-        renderClubDetails(); 
-    }
+        renderClubDetails(); // Render details once data is loaded for fast switching
+    };
 
 
-    // -------------------------------------------------------------
-    // --- RENDERING FUNCTIONS (Main UI Logic) ---
-    // -------------------------------------------------------------
+    // --- RENDERING FUNCTIONS ---
 
     function renderHomePageContent() {
         // 1. About Section
@@ -1245,198 +1257,14 @@
         renderHeadsGrid('academic-heads-grid', 'academic');
     }
 
-    function renderElectionSchedule() {
-        const scheduleList = document.getElementById('election-schedule-list');
-        const votingStatusEl = document.getElementById('voting-status');
-        const voteButtonEl = document.getElementById('vote-button');
-        scheduleList.innerHTML = '';
-        
-        let isVotingLive = false; 
-        let scheduleItems = [...MOCK_SCHEDULE_DATA];
-
-        if (globalData.posts && globalData.posts.length > 0) {
-             globalData.posts.forEach(item => {
-                scheduleItems.push({ 
-                    title: `Nomination Deadline: ${item.position}`, 
-                    date: item.nominationDate || 'TBD', 
-                    status: 'info' 
-                });
-            });
-        }
-        
-        scheduleItems.forEach(item => {
-            let statusClass = 'text-gray-600';
-            if (item.status === 'completed') {
-                statusClass = 'text-green-600 font-medium';
-            } else if (item.status === 'current') {
-                statusClass = 'text-orange-600 font-bold';
-            } else if (item.status === 'live') {
-                statusClass = 'text-red-600 font-bold';
-                isVotingLive = true;
-            }
-
-            scheduleList.innerHTML += `
-                <li class="flex justify-between items-start border-b pb-2">
-                    <div>
-                        <span class="font-medium text-gray-800">${item.title}</span>
-                        <p class="text-xs ${statusClass}">(${item.status ? item.status.toUpperCase() : 'INFO'})</p>
-                    </div>
-                    <span class="font-bold text-sm text-indigo-600">${item.date}</span>
-                </li>
-            `;
-        });
-
-        // Update Voting Status UI
-        if (isVotingLive) {
-            votingStatusEl.textContent = "VOTING IS LIVE NOW! Click VOTE NOW.";
-            votingStatusEl.classList.remove('text-red-600');
-            votingStatusEl.classList.add('text-green-600', 'font-bold', 'text-lg');
-            voteButtonEl.classList.remove('hidden');
-            voteButtonEl.disabled = false;
-        } else {
-            votingStatusEl.textContent = "Voting is currently CLOSED. Check schedule for date.";
-            votingStatusEl.classList.add('text-red-600');
-            voteButtonEl.classList.add('hidden');
-            voteButtonEl.disabled = true;
-        }
-    }
-
-    function renderAnnouncements() {
-        const announcementList = document.getElementById('election-announcements');
-        announcementList.innerHTML = '';
-        
-        const announcements = globalData.announcements;
-
-        if (announcements.length === 0) {
-            announcementList.innerHTML = '<p class="text-gray-500">No announcements yet.</p>';
-            return;
-        }
-
-        announcements.forEach(announcement => {
-            const dateObj = new Date(announcement.published_at);
-            const formattedDate = `${dateObj.toLocaleDateString()} ${dateObj.toLocaleTimeString()}`;
-
-            announcementList.innerHTML += `
-                <div class="border-l-4 border-yellow-600 bg-yellow-50 p-3 rounded-lg">
-                    <p class="font-bold text-gray-900">${announcement.title}</p>
-                    <p class="text-sm text-gray-700 mt-1">${announcement.content}</p>
-                    <p class="text-xs text-gray-500 mt-2">Posted: ${formattedDate}</p>
-                </div>
-            `;
-        });
-    }
-
-    function renderElectedResults() {
-        const container = document.getElementById('elected-members-container');
-        container.innerHTML = '';
-        
-        const resultsData = globalData.fullResults;
-
-        if (!resultsData || !resultsData.results_by_block) {
-            container.innerHTML = '<p class="text-gray-500 text-lg col-span-2">Results are not yet compiled or declared.</p>';
-            return;
-        }
-        
-        const electedMembers = [];
-        Object.values(resultsData.results_by_block).forEach(postArray => {
-            postArray.forEach(post => {
-                if(Array.isArray(post.candidates)) {
-                    post.candidates.forEach(candidate => {
-                        if (candidate.status === 'Winner') {
-                            electedMembers.push({
-                                Name: candidate.name,
-                                Position: post.position_name,
-                                Votes: candidate.votes 
-                            });
-                        }
-                    });
-                }
-            });
-        });
-
-
-        if (electedMembers.length === 0) {
-            container.innerHTML = '<p class="text-gray-500 text-lg col-span-2">No official results declared yet.</p>';
-            return;
-        }
-
-        electedMembers.forEach(member => {
-            // Placeholder Logic for Images (Re-using mock logic)
-            const initials = member.Name.split(' ').map(n => n[0]).join('');
-            const rollString = member.Roll_No || '0';
-            const roll_sum = [...rollString].filter(c => !isNaN(parseInt(c))).reduce((a, b) => a + parseInt(b), 0);
-            const roll_hash = roll_sum % 5;
-            const color_map = ['4F46E5', 'D946EF', 'F43F5E', '15803D', 'B45309'];
-            const image_url = `https://placehold.co/100x100/${color_map[roll_hash]}/FFFFFF?text=${initials}`;
-
-
-            container.innerHTML += `
-                <div class="p-5 bg-white rounded-xl shadow-lg border-b-4 border-yellow-500 flex flex-col items-center text-center card-hover">
-                    <img class="h-20 w-20 rounded-full object-cover shadow-md border-2 border-yellow-500 mb-3" src="${image_url}" alt="${member.Name} Image">
-                    <p class="text-xl font-extrabold text-gray-900">${member.Name}</p>
-                    <p class="mt-3 text-base font-bold text-indigo-700 border-t pt-3 border-gray-100">${member.Position}</p>
-                    <p class="text-sm text-gray-500 mt-1">Votes: ${member.Votes}</p>
-                </div>
-            `;
-        });
+    // ELECTION FUNCTIONS (Used by the Elections Page)
+    function initializeElectionsPage() {
+        renderElectionSchedule();
+        renderAnnouncements();
+        switchView('info-view');
     }
     
-    function loadVotingCandidates() {
-        const form = document.getElementById('voting-form');
-        form.innerHTML = ''; 
-        
-        const votingPositions = globalData.posts.filter(p => p.position); 
-
-        if (votingPositions.length === 0) {
-            form.innerHTML = '<p class="text-gray-500 p-4">Voting is open, but no candidates have been registered by the administration yet.</p>';
-            return;
-        }
-        
-        const candidates = globalData.candidates || [];
-
-        votingPositions.forEach((positionData, index) => {
-            const fieldset = document.createElement('fieldset');
-            fieldset.className = 'p-4 border border-gray-300 rounded-lg bg-gray-50';
-            fieldset.innerHTML = `<legend class="text-xl font-bold text-gray-900 px-2">${positionData.position}</legend>`;
-
-            const candidatesForThisPost = globalData.candidates.filter(c => c.post === positionData.position);
-
-            // Add NOTA manually 
-            const allOptions = [...candidatesForThisPost, { 
-                id: 'NOTA-' + positionData._id, 
-                name: "None of the Above (NOTA)", 
-                imageUrl: '', 
-                rollno: 'NOTA',
-                manifesto: 'Registering dissent if no candidate is deemed suitable.'
-            }];
-
-
-            allOptions.forEach(candidate => {
-                const candidateId = `vote-${candidate.id}`;
-                const label = document.createElement('label');
-                label.className = 'flex items-center space-x-3 p-3 mt-2 border rounded-md cursor-pointer hover:bg-white transition bg-white';
-                
-                const imgSrc = candidate.imageUrl || 'https://placehold.co/100x100/E5E7EB/6B7280?text=N/A';
-                const rollText = candidate.rollno === 'NOTA' ? 'NOTA' : candidate.rollno;
-                const isNota = candidate.rollno === 'NOTA';
-
-                label.innerHTML = `
-                    <input type="radio" name="${positionData.position}" value="${candidate.id}" id="${candidateId}" required class="h-4 w-4 text-indigo-600 border-gray-300 focus:ring-indigo-500">
-                    <img class="h-8 w-8 rounded-full object-cover shadow-sm ${isNota ? 'bg-gray-400' : ''}" src="${imgSrc}" alt="${candidate.name} Image" onerror="this.onerror=null;this.src='https://placehold.co/100x100/E5E7EB/6B7280?text=N/A'">
-                    <div class="flex-1">
-                        <span class="text-base font-medium text-gray-900">${candidate.name}</span>
-                        <span class="text-xs text-gray-500">(${rollText})</span>
-                    </div>
-                `;
-                fieldset.appendChild(label);
-            });
-
-            form.appendChild(fieldset);
-        });
-
-        form.onsubmit = submitFinalVote;
-    }
-
+    function renderClubDetails() { /* This is the placeholder function from the Admin's side */ }
 
     // --- Submission/Logic Functions (Minimal for public view) ---
 
@@ -1538,40 +1366,36 @@
         showModal('voting-modal');
     }
 
-    function switchView(viewId) {
-        document.getElementById('tab-info').classList.remove('active');
-        document.getElementById('tab-grids').classList.remove('active');
-
-        const selectedView = document.getElementById(viewId);
-        const selectedButtonId = `tab-${viewId.split('-')[0]}`;
-        
-        if (selectedView) {
-            document.getElementById('info-view').classList.add('hidden');
-            document.getElementById('grids-view').classList.add('hidden');
-            selectedView.classList.remove('hidden');
+    // --- CRITICAL FIX: showPage function is moved out of DOMContentLoaded ---
+    function showPage(pageId) {
+        // Hide the current page
+        const currentPageEl = document.getElementById(currentPage);
+        if (currentPageEl) {
+            currentPageEl.classList.remove('active');
         }
         
-        const selectedButton = document.getElementById(selectedButtonId);
-        if (selectedButton) selectedButton.classList.add('active');
+        // Show the new page
+        const newPageEl = document.getElementById(pageId);
+        if (newPageEl) {
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            newPageEl.classList.add('active');
+        }
+        
+        currentPage = pageId;
+        window.scrollTo(0, 0);
+        closeAllMenus();
 
-        if (viewId === 'grids-view') {
-            renderElectedResults();
-        } else if (viewId === 'info-view') {
-            renderElectionSchedule();
-            renderAnnouncements();
+        // Trigger render for pages that need data after navigation
+        if (pageId === 'elections') {
+            initializeElectionsPage();
+        } else if (pageId === 'events') { renderEvents(); } 
+        else if (pageId === 'techClubs' || pageId === 'culturalClubs' || pageId === 'sportsClubs' || pageId === 'academicClubs') { 
+            renderClubDetails(); 
         }
     }
-    
-    // --- FINAL INITIALIZATION FUNCTIONS ---
 
-    function initializeElectionsPage() {
-        // This function orchestrates the election view updates
-        renderElectionSchedule();
-        renderAnnouncements();
-        switchView('info-view');
-    }
+    // --- Initialization Hook ---
 
-    // --- CRITICAL INITIALIZATION FIX: loadAllData runs immediately inside DOMContentLoaded ---
     document.addEventListener('DOMContentLoaded', () => {
         // Start data loading and show the home page
         loadAllData();
@@ -1579,3 +1403,8 @@
     });
     
 </script>
+
+    <script src="public-gymkhana.js" defer></script>
+
+</body>
+</html>
