@@ -28,7 +28,25 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 // ----------------------------
-
+// Add this renderHeads function to your <script> in the HTML file:
+const renderHeads = (heads = headData) => {
+    const list = document.getElementById('heads-list');
+    list.innerHTML = '';
+    if (!Array.isArray(heads) || heads.length === 0) {
+        list.innerHTML = `<p class="col-span-full text-gray-500">No council heads assigned.</p>`;
+        return;
+    }
+    heads.forEach(item => {
+        list.innerHTML += `
+            <div class="bg-white p-4 rounded-lg shadow-sm text-center border-t-4 border-rose-500">
+                <img src="${item.imageUrl}" class="w-24 h-24 object-cover rounded-full mx-auto" onerror="this.onerror=null;this.src='/placeholder.jpg'">
+                <p class="font-bold text-gray-900 mt-2">${item.name}</p>
+                <p class="text-sm text-rose-600">${item.position}</p>
+                <p class="text-xs text-gray-500">${item.council}</p>
+            </div>
+        `;
+    });
+};
 
 // --- Helper function for non-election CRUD (NO CHANGE) ---
 const createCrudEndpoints = (model, modelName) => {
@@ -51,10 +69,10 @@ const createCrudEndpoints = (model, modelName) => {
         }
     });
 };
-createCrudEndpoints(Event, 'event');
-createCrudEndpoints(Member, 'member');
-createCrudEndpoints(Club, 'club');
-createCrudEndpoints(Head, 'head');
+createCrudEndpoints(Event, 'event'); // creates /events
+createCrudEndpoints(Member, 'member'); // creates /members
+createCrudEndpoints(Club, 'club'); // creates /clubs
+createCrudEndpoints(Head, 'head'); // creates /heads
 // We call ElectionPost directly below to handle complex POST logic
 // We call Announcement directly below to handle complex POST logic
 

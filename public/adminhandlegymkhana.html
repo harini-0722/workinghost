@@ -594,7 +594,94 @@
         });
     };
     
-    // Add minimal rendering logic for clubs/heads here...
+    // 
+    // Add Event Form Submission
+document.getElementById('add-event-form').addEventListener('submit', async (e) => {
+    e.preventDefault(); // <-- CRITICAL: Prevents default form submission and page reload
+    const form = e.target;
+    const formData = new FormData(form);
+
+    try {
+        const response = await fetch('/api/events', {
+            method: 'POST',
+            body: formData, // Send FormData directly for files
+        });
+
+        if (!response.ok) {
+            const errorBody = await response.json();
+            throw new Error(errorBody.message || 'Failed to add event.');
+        }
+
+        const responseBody = await response.json();
+        eventData.push(responseBody.data);
+        renderEvents(); // Re-render the list immediately
+        form.reset();
+        alert('Event added successfully!');
+        renderDashboardCounts(); // Update dashboard count
+    } catch (error) {
+        console.error('Error adding event:', error);
+        alert('Error adding event: ' + error.message);
+    }
+});
+
+// Add Member Form Submission
+document.getElementById('add-member-form').addEventListener('submit', async (e) => {
+    e.preventDefault(); // <-- CRITICAL
+    const form = e.target;
+    const formData = new FormData(form);
+
+    try {
+        const response = await fetch('/api/members', {
+            method: 'POST',
+            body: formData, 
+        });
+
+        if (!response.ok) {
+            const errorBody = await response.json();
+            throw new Error(errorBody.message || 'Failed to add member.');
+        }
+
+        const responseBody = await response.json();
+        memberData.push(responseBody.data);
+        renderMembers(); // Re-render the list
+        form.reset();
+        alert('Member added successfully!');
+        renderDashboardCounts(); // Update dashboard count
+    } catch (error) {
+        console.error('Error adding member:', error);
+        alert('Error adding member: ' + error.message);
+    }
+});
+
+// Add Club Form Submission
+document.getElementById('add-club-form').addEventListener('submit', async (e) => {
+    e.preventDefault(); // <-- CRITICAL
+    const form = e.target;
+    const clubData = Object.fromEntries(new FormData(form).entries());
+
+    try {
+        const response = await fetch('/api/clubs', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(clubData),
+        });
+
+        if (!response.ok) {
+            const errorBody = await response.json();
+            throw new Error(errorBody.message || 'Failed to add club.');
+        }
+
+        const responseBody = await response.json();
+        clubData.push(responseBody.data);
+        // You need a renderClubs() function here to update the UI
+        form.reset();
+        alert('Club added successfully!');
+        renderDashboardCounts(); // Update dashboard count
+    } catch (error) {
+        console.error('Error adding club:', error);
+        alert('Error adding club: ' + error.message);
+    }
+});
 
     // --- ELECTION TAB RENDERING FUNCTIONS ---
 
@@ -1098,7 +1185,80 @@
             }
         }
     };
+// --- ADD HEAD POST HANDLER ---
+document.getElementById('add-head-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const formData = new FormData(form);
 
+    try {
+        const response = await fetch('/api/heads', { // Matches the POST /heads route in gymkhana.js
+            method: 'POST',
+            body: formData, 
+        });
+
+        if (!response.ok) {
+            const errorBody = await response.json();
+            throw new Error(errorBody.message || 'Failed to add council head.');
+        }
+
+        const responseBody = await response.json();
+        headData.push(responseBody.data);
+        // You need a renderHeads() function here to update the UI
+        form.reset();
+        alert('Council Head added successfully!');
+        renderDashboardCounts(); // Update dashboard count
+    } catch (error) {
+        console.error('Error adding head:', error);
+        alert('Error adding head: ' + error.message);
+    }
+});
+
+// --- ADD SETTINGS SAVE HANDLER ---
+document.getElementById('settings-about-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const text = document.getElementById('settings-about-text').value;
+
+    try {
+        const response = await fetch('/api/settings', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ key: 'about_us_text', value: text }),
+        });
+
+        if (!response.ok) throw new Error('Failed to save settings.');
+
+        alert('About Us section saved successfully!');
+
+    } catch (error) {
+        console.error('Error saving settings:', error);
+        alert('Error saving settings: ' + error.message);
+    }
+});
+
+// --- ADD SETTINGS LOAD FUNCTIONALITY ---
+const fetchSettingsData = async () => {
+    try {
+        const settingsMap = await fetchData('/api/settings'); // fetchData returns data
+        if (settingsMap) {
+            document.getElementById('settings-about-text').value = settingsMap.about_us_text || '';
+            // Load other settings fields here if needed
+        }
+    } catch (error) {
+        console.error('Could not load settings:', error);
+    }
+};
+
+// Update showPage to call fetchSettingsData
+window.showPage = (pageName) => {
+    // ... (existing nav and page show logic) ...
+
+    if (pageName === 'settings') {
+        fetchSettingsData(); // Load data specifically for the settings page
+    }
+    
+    // ... (rest of showPage logic) ...
+};
 
     // --- NAVIGATION AND INITIALIZATION ---
 
