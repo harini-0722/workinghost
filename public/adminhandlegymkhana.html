@@ -362,7 +362,7 @@
                                         <i class="fas fa-list-check mr-2"></i>Current Election Posts
                                     </h2>
                                     <div id="election-details-list" class="bg-white p-4 rounded-lg shadow-md space-y-3">
-                                        <p class="text-gray-500" id="no-positions-msg">No positions added yet. Use the form on the left.</p>
+                                        <p class="text-gray-500" id="no-positions-msg">Loading positions...</p>
                                     </div>
                                 </div>
 
@@ -373,7 +373,7 @@
                                         <i class="fas fa-users mr-2"></i>Current Electoral Candidates
                                     </h2>
                                     <div id="candidates-list" class="bg-white p-4 rounded-lg shadow-md space-y-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <p class="col-span-full text-gray-500">Candidates will appear here after they are added.</p>
+                                        <p class="col-span-full text-gray-500">Loading candidates...</p>
                                     </div>
                                 </div>
 
@@ -384,7 +384,7 @@
                                         <i class="fas fa-newspaper mr-2"></i>Recent Announcements
                                     </h2>
                                     <div id="announcements-list" class="bg-white p-4 rounded-lg shadow-md space-y-4">
-                                        <p class="text-gray-500">Announcements will appear here.</p>
+                                        <p class="text-gray-500">Loading announcements...</p>
                                     </div>
                                 </div>
 
@@ -393,267 +393,7 @@
                     </div>
 
                     <div id="election-tab-results" class="election-tab-content">
-                        <div class="bg-white p-4 rounded-lg shadow-md mb-6">
-                            <div class="flex justify-between items-start text-sm text-gray-600">
-                                <div>
-                                    <p class="text-lg font-bold text-gray-900">HORC Election-2025, IIT Indore</p>
-                                    <p class="mt-1">Overall Election Dashboard</p>
-                                </div>
-                                <div class="text-right">
-                                    <p class="font-semibold">Total Voters: <span class="text-gray-900">2891</span></p>
-                                    <p>Votes Casted: <span class="text-gray-900">1437</span></p>
-                                    <p>Voter Percentage: <span class="text-gray-900">49.71%</span></p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-                            <div class="bg-white p-4 rounded-lg shadow-lg text-center border-l-4 border-indigo-500">
-                                <p class="text-3xl font-bold text-indigo-600">2891</p>
-                                <p class="text-sm text-gray-600">Total Voters</p>
-                            </div>
-                            <div class="bg-white p-4 rounded-lg shadow-lg text-center border-l-4 border-green-500">
-                                <p class="text-3xl font-bold text-green-600">1437</p>
-                                <p class="text-sm text-gray-600">Votes Casted</p>
-                            </div>
-                            <div class="bg-white p-4 rounded-lg shadow-lg text-center border-l-4 border-blue-500">
-                                <p class="text-3xl font-bold text-blue-600">49.71%</p>
-                                <p class="text-sm text-gray-600">Voter Turnout</p>
-                            </div>
-                            <div class="bg-white p-4 rounded-lg shadow-lg text-center border-l-4 border-purple-500">
-                                <p class="text-3xl font-bold text-purple-600">15</p>
-                                <p class="text-sm text-gray-600">Positions</p>
-                            </div>
-                        </div>
-
-                        <div class="space-y-6">
-                            <div class="bg-white p-6 rounded-lg shadow-lg">
-                                <h3 class="text-2xl font-bold text-gray-900 mb-4 border-b pb-2 flex items-center">
-                                    <i class="fas fa-building mr-2 text-indigo-600"></i>CVR Hostel Results
-                                </h3>
-                                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                                    <div class="border rounded-lg p-4">
-                                        <h4 class="text-lg font-semibold text-gray-800 mb-3 bg-indigo-50 p-2 rounded">CVR: Hall Secretary</h4>
-                                        <div class="space-y-2">
-                                            <div class="flex justify-between items-center p-2 bg-green-50 rounded border border-green-200">
-                                                <span class="font-medium">Abhishek Bairwa</span>
-                                                <span class="bg-green-100 text-green-800 px-2 py-1 rounded text-sm font-bold">Winner</span>
-                                            </div>
-                                            <div class="flex justify-between p-2 hover:bg-gray-50 rounded">
-                                                <span>Hitendra Kumar Singh</span>
-                                                <span class="text-gray-600 font-medium">241</span>
-                                            </div>
-                                            <div class="flex justify-between p-2 hover:bg-gray-50 rounded">
-                                                <span>Rohit Jhajhra</span>
-                                                <span class="text-gray-600 font-medium">39</span>
-                                            </div>
-                                            <div class="flex justify-between p-2 hover:bg-gray-50 rounded">
-                                                <span>Jatin Boyat</span>
-                                                <span class="text-gray-600 font-medium">82</span>
-                                            </div>
-                                            <div class="flex justify-between p-2 hover:bg-gray-50 rounded">
-                                                <span>NITISH KUMAR</span>
-                                                <span class="text-gray-600 font-medium">15</span>
-                                            </div>
-                                            <div class="flex justify-between p-2 hover:bg-gray-50 rounded">
-                                                <span>Aryan Arya</span>
-                                                <span class="text-gray-600 font-medium">80</span>
-                                            </div>
-                                            <div class="flex justify-between p-2 bg-red-50 rounded border border-red-200">
-                                                <span class="font-medium text-red-700">NOTA</span>
-                                                <span class="text-red-600 font-bold">77</span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="border rounded-lg p-4">
-                                        <h4 class="text-lg font-semibold text-gray-800 mb-3 bg-indigo-50 p-2 rounded">CVR: Dining Secretary</h4>
-                                        <div class="space-y-2">
-                                            <div class="flex justify-between items-center p-2 bg-green-50 rounded border border-green-200">
-                                                <span class="font-medium">Suyash</span>
-                                                <span class="bg-green-100 text-green-800 px-2 py-1 rounded text-sm font-bold">Winner</span>
-                                            </div>
-                                            <div class="flex justify-between p-2 hover:bg-gray-50 rounded">
-                                                <span>Atul Yadav</span>
-                                                <span class="text-gray-600 font-medium">241</span>
-                                            </div>
-                                            <div class="flex justify-between p-2 hover:bg-gray-50 rounded">
-                                                <span>Somu Kumar Tell</span>
-                                                <span class="text-gray-600 font-medium">39</span>
-                                            </div>
-                                            <div class="flex justify-between p-2 hover:bg-gray-50 rounded">
-                                                <span>Om Patel</span>
-                                                <span class="text-gray-600 font-medium">82</span>
-                                            </div>
-                                            <div class="flex justify-between p-2 hover:bg-gray-50 rounded">
-                                                <span>Tharun</span>
-                                                <span class="text-gray-600 font-medium">15</span>
-                                            </div>
-                                            <div class="flex justify-between p-2 bg-red-50 rounded border border-red-200">
-                                                <span class="font-medium text-red-700">NOTA</span>
-                                                <span class="text-red-600 font-bold">80</span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="border rounded-lg p-4">
-                                        <h4 class="text-lg font-semibold text-gray-800 mb-3 bg-indigo-50 p-2 rounded">CVR: Cultural Secretary</h4>
-                                        <div class="space-y-2">
-                                            <div class="flex justify-between items-center p-2 bg-green-50 rounded border border-green-200">
-                                                <span class="font-medium">Manath Vinay Jain</span>
-                                                <span class="bg-green-100 text-green-800 px-2 py-1 rounded text-sm font-bold">Winner</span>
-                                            </div>
-                                            <div class="flex justify-between p-2 hover:bg-gray-50 rounded">
-                                                <span>Tamnay Kurund</span>
-                                                <span class="text-gray-600 font-medium">81</span>
-                                            </div>
-                                            <div class="flex justify-between p-2 hover:bg-gray-50 rounded">
-                                                <span>Anvit Jayesh Tambe</span>
-                                                <span class="text-gray-600 font-medium">70</span>
-                                            </div>
-                                            <div class="flex justify-between p-2 hover:bg-gray-50 rounded">
-                                                <span>Radavath Rahul</span>
-                                                <span class="text-gray-600 font-medium">183</span>
-                                            </div>
-                                            <div class="flex justify-between p-2 bg-red-50 rounded border border-red-200">
-                                                <span class="font-medium text-red-700">NOTA</span>
-                                                <span class="text-red-600 font-bold">91</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-                                    <div class="border rounded-lg p-4">
-                                        <h4 class="text-lg font-semibold text-gray-800 mb-3 bg-indigo-50 p-2 rounded">CVR: Sports Secretary</h4>
-                                        <div class="space-y-2">
-                                            <div class="flex justify-between items-center p-2 bg-green-50 rounded border border-green-200">
-                                                <span class="font-medium">Himanshu Shebhar</span>
-                                                <span class="bg-green-100 text-green-800 px-2 py-1 rounded text-sm font-bold">Winner</span>
-                                            </div>
-                                            <div class="flex justify-between p-2 hover:bg-gray-50 rounded">
-                                                <span>Aneesh Banglinti</span>
-                                                <span class="text-gray-600 font-medium">193</span>
-                                            </div>
-                                            <div class="flex justify-between p-2 hover:bg-gray-50 rounded">
-                                                <span>Abhijeet</span>
-                                                <span class="text-gray-600 font-medium">60</span>
-                                            </div>
-                                            <div class="flex justify-between p-2 hover:bg-gray-50 rounded">
-                                                <span>Tijil Sawala</span>
-                                                <span class="text-gray-600 font-medium">49</span>
-                                            </div>
-                                            <div class="flex justify-between p-2 bg-red-50 rounded border border-red-200">
-                                                <span class="font-medium text-red-700">NOTA</span>
-                                                <span class="text-red-600 font-bold">77</span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="border rounded-lg p-4">
-                                        <h4 class="text-lg font-semibold text-gray-800 mb-3 bg-indigo-50 p-2 rounded">CVR: Technical Secretary</h4>
-                                        <div class="space-y-2">
-                                            <div class="flex justify-between items-center p-2 bg-green-50 rounded border border-green-200">
-                                                <span class="font-medium">Digvijay Singh Goll</span>
-                                                <span class="bg-green-100 text-green-800 px-2 py-1 rounded text-sm font-bold">Winner</span>
-                                            </div>
-                                            <div class="flex justify-between p-2 hover:bg-gray-50 rounded">
-                                                <span>Rathod Akhinay</span>
-                                                <span class="text-gray-600 font-medium">193</span>
-                                            </div>
-                                            <div class="flex justify-between p-2 hover:bg-gray-50 rounded">
-                                                <span>Parth Galbwad</span>
-                                                <span class="text-gray-600 font-medium">65</span>
-                                            </div>
-                                            <div class="flex justify-between p-2 hover:bg-gray-50 rounded">
-                                                <span>Advitt Tiwari</span>
-                                                <span class="text-gray-600 font-medium">44</span>
-                                            </div>
-                                            <div class="flex justify-between p-2 bg-red-50 rounded border border-red-200">
-                                                <span class="font-medium text-red-700">NOTA</span>
-                                                <span class="text-red-600 font-bold">67</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="bg-white p-6 rounded-lg shadow-lg">
-                                <h3 class="text-2xl font-bold text-gray-900 mb-4 border-b pb-2 flex items-center">
-                                    <i class="fas fa-building mr-2 text-green-600"></i>DA Hostel Results
-                                </h3>
-                                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                                    <div class="border rounded-lg p-4">
-                                        <h4 class="text-lg font-semibold text-gray-800 mb-3 bg-green-50 p-2 rounded">DA: Hall Secretary</h4>
-                                        <div class="space-y-2">
-                                            <div class="flex justify-between items-center p-2 bg-green-50 rounded border border-green-200">
-                                                <span class="font-medium">Isha Sharma</span>
-                                                <span class="bg-green-100 text-green-800 px-2 py-1 rounded text-sm font-bold">Winner</span>
-                                            </div>
-                                            <div class="flex justify-between p-2 bg-red-50 rounded border border-red-200">
-                                                <span class="font-medium text-red-700">NOTA</span>
-                                                <span class="text-red-600 font-bold">39</span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="border rounded-lg p-4">
-                                        <h4 class="text-lg font-semibold text-gray-800 mb-3 bg-green-50 p-2 rounded">DA: Dining Secretary</h4>
-                                        <div class="space-y-2">
-                                            <div class="flex justify-between items-center p-2 bg-green-50 rounded border border-green-200">
-                                                <span class="font-medium">Pranalli Ran</span>
-                                                <span class="bg-green-100 text-green-800 px-2 py-1 rounded text-sm font-bold">Winner</span>
-                                            </div>
-                                            <div class="flex justify-between p-2 bg-red-50 rounded border border-red-200">
-                                                <span class="font-medium text-red-700">NOTA</span>
-                                                <span class="text-red-600 font-bold">42</span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="border rounded-lg p-4">
-                                        <h4 class="text-lg font-semibold text-gray-800 mb-3 bg-green-50 p-2 rounded">DA: Cultural Secretary</h4>
-                                        <div class="space-y-2">
-                                            <div class="flex justify-between items-center p-2 bg-green-50 rounded border border-green-200">
-                                                <span class="font-medium">Tanisha</span>
-                                                <span class="bg-green-100 text-green-800 px-2 py-1 rounded text-sm font-bold">Winner</span>
-                                            </div>
-                                            <div class="flex justify-between p-2 bg-red-50 rounded border border-red-200">
-                                                <span class="font-medium text-red-700">NOTA</span>
-                                                <span class="text-red-600 font-bold">134</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="bg-white p-6 rounded-lg shadow-lg">
-                                <h3 class="text-2xl font-bold text-gray-900 mb-4 border-b pb-2 flex items-center">
-                                    <i class="fas fa-university mr-2 text-purple-600"></i>Other Hostels Summary
-                                </h3>
-                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                                    <div class="text-center p-4 border rounded-lg bg-indigo-50">
-                                        <h4 class="font-semibold text-gray-800">APJ Hostel</h4>
-                                        <p class="text-2xl font-bold text-indigo-600">148 Votes</p>
-                                        <p class="text-sm text-gray-600">3 Positions</p>
-                                    </div>
-                                    <div class="text-center p-4 border rounded-lg bg-green-50">
-                                        <h4 class="font-semibold text-gray-800">HJB Hostel</h4>
-                                        <p class="text-2xl font-bold text-green-600">226 Votes</p>
-                                        <p class="text-sm text-gray-600">4 Positions</p>
-                                    </div>
-                                    <div class="text-center p-4 border rounded-lg bg-blue-50">
-                                        <h4 class="font-semibold text-gray-800">VSB Hostel</h4>
-                                        <p class="text-2xl font-bold text-blue-600">228 Votes</p>
-                                        <p class="text-sm text-gray-600">3 Positions</p>
-                                    </div>
-                                    <div class="text-center p-4 border rounded-lg bg-purple-50">
-                                        <h4 class="font-semibold text-gray-800">PM AJAY</h4>
-                                        <p class="text-2xl font-bold text-purple-600">607 Votes</p>
-                                        <p class="text-sm text-gray-600">5 Positions</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <div class="text-center py-10 text-xl text-indigo-600"><i class="fas fa-spinner fa-spin mr-2"></i>Click 'View Results' to load live data...</div>
                     </div>
 
                     <div id="election-tab-declare" class="election-tab-content">
@@ -669,15 +409,7 @@
                                         <label for="winner-position" class="block text-sm font-medium text-gray-700">Position</label>
                                         <select id="winner-position" name="position" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                                             <option value="">-- Select Position --</option>
-                                            <option value="CVR: Hall Secretary">CVR: Hall Secretary</option>
-                                            <option value="CVR: Dining Secretary">CVR: Dining Secretary</option>
-                                            <option value="CVR: Cultural Secretary">CVR: Cultural Secretary</option>
-                                            <option value="CVR: Sports Secretary">CVR: Sports Secretary</option>
-                                            <option value="CVR: Technical Secretary">CVR: Technical Secretary</option>
-                                            <option value="DA: Hall Secretary">DA: Hall Secretary</option>
-                                            <option value="DA: Dining Secretary">DA: Dining Secretary</option>
-                                            <option value="DA: Cultural Secretary">DA: Cultural Secretary</option>
-                                        </select>
+                                            </select>
                                     </div>
 
                                     <div>
@@ -701,7 +433,7 @@
                                     <i class="fas fa-list-check mr-2"></i>Declared Winners
                                 </h2>
                                 <div id="winners-list" class="bg-white p-4 rounded-lg shadow-md space-y-4">
-                                    <p class="text-gray-500">No winners declared yet. Use the form to declare winners.</p>
+                                    <p class="text-gray-500">Loading declared winners...</p>
                                 </div>
                             </div>
                         </div>
@@ -772,305 +504,591 @@
         </div>
     </div>
 
-    <script>
-        const pageTitles = {
-            dashboard: 'Dashboard',
-            events: 'Manage Events',
-            members: 'Manage Members',
-            clubs: 'Manage Clubs',
-            heads: 'Manage Council Heads',
-            elections: 'Manage Elections',
-            settings: 'Site Settings'
-        };
-        const pageTitle = document.getElementById('page-title');
+<script>
+    const pageTitles = {
+        dashboard: 'Dashboard',
+        events: 'Manage Events',
+        members: 'Manage Members',
+        clubs: 'Manage Clubs',
+        heads: 'Manage Council Heads',
+        elections: 'Manage Elections',
+        settings: 'Site Settings'
+    };
+    const pageTitle = document.getElementById('page-title');
 
-        // Function to handle switching between election tabs
-        window.showElectionTab = (tabName) => {
-            // Hide all election tab contents
-            document.querySelectorAll('.election-tab-content').forEach(el => {
-                el.classList.remove('active');
-            });
-            
-            // Show the selected election tab content
-            const activeContent = document.getElementById(`election-tab-${tabName}`);
-            if (activeContent) {
-                activeContent.classList.add('active');
-            }
-            
-            // Update the tab buttons
-            document.querySelectorAll('.election-tab').forEach(btn => {
-                btn.classList.remove('border-indigo-500', 'text-indigo-600');
-                btn.classList.add('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
-            });
-            
-            const activeBtn = document.getElementById(`tab-${tabName}`);
-            if (activeBtn) {
-                activeBtn.classList.add('border-indigo-500', 'text-indigo-600');
-                activeBtn.classList.remove('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
-            }
+    // --- GLOBAL DATA STORES (Initialized Empty, will be filled by API calls) ---
+    let electionPositions = []; 
+    let candidatesData = [];
+    let announcementsData = [];
+    let declaredWinners = []; 
+
+    // --- ELECTION TAB RENDERING FUNCTIONS ---
+
+    /**
+     * Renders the list of active election posts/positions.
+     */
+    const renderPositions = (positions = electionPositions) => {
+        const positionsList = document.getElementById('election-details-list');
+        const positionSelect = document.getElementById('candidate-post');
+        const winnerPositionSelect = document.getElementById('winner-position');
+        const postSelectionNote = document.getElementById('post-selection-note');
+
+        positionsList.innerHTML = '';
+        positionSelect.innerHTML = '<option value="">-- Select Election Post --</option>';
+        winnerPositionSelect.innerHTML = '<option value="">-- Select Position --</option>';
+
+        if (positions.length === 0) {
+            positionsList.innerHTML = `<p class="text-gray-500" id="no-positions-msg">No positions added yet. Use the form on the left.</p>`;
+            postSelectionNote.style.display = 'block';
+            return;
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            // 1. Initialize data storage
-            let electionPositions = [];
-            let declaredWinners = []; // Moved initialization inside DOMContentLoaded
+        postSelectionNote.style.display = 'none';
 
-            const electionDetailForm = document.getElementById('add-election-detail-form');
-            const positionSelect = document.getElementById('candidate-post');
-            const positionsList = document.getElementById('election-details-list');
-            const noPositionsMsg = document.getElementById('no-positions-msg');
-            const postSelectionNote = document.getElementById('post-selection-note');
-            const winnersList = document.getElementById('winners-list'); // Get element for rendering winners
+        positions.forEach(pos => {
+            // Add to the Position List View
+            const li = document.createElement('div');
+            li.className = 'flex justify-between items-center bg-indigo-100 p-3 rounded-md border-l-4 border-indigo-600';
+            li.innerHTML = `
+                <div>
+                    <p class="font-semibold text-gray-800">${pos.position}</p>
+                    <p class="text-xs text-gray-600">Block: ${pos.block}</p>
+                    <p class="text-xs text-gray-600">Nomination Due: ${pos.nominationDate}</p>
+                </div>
+                <i class="fas fa-circle-check text-green-500"></i>
+            `;
+            positionsList.appendChild(li);
+
+            // Add to Candidate Dropdown
+            const option = document.createElement('option');
+            option.value = pos.position;
+            option.textContent = pos.position;
+            positionSelect.appendChild(option);
+
+            // Add to Winner Declaration Dropdown
+            const winnerOption = document.createElement('option');
+            winnerOption.value = pos.position;
+            winnerOption.textContent = pos.position;
+            winnerPositionSelect.appendChild(winnerOption);
+        });
+    };
+    
+    /**
+     * Renders the list of candidates.
+     */
+    const renderCandidates = (candidates = candidatesData) => {
+        const candidatesList = document.getElementById('candidates-list');
+        candidatesList.innerHTML = '';
+        
+        if (candidates.length === 0) {
+            candidatesList.innerHTML = `<p class="col-span-full text-gray-500">No candidates added yet.</p>`;
+            return;
+        }
+
+        candidates.forEach(candidate => {
+            const candidateCard = document.createElement('div');
+            candidateCard.className = 'bg-white border border-indigo-200 p-4 rounded-lg shadow-sm';
+            candidateCard.innerHTML = `
+                <div class="flex items-center space-x-3">
+                    <i class="fas fa-user-circle fa-2x text-indigo-500"></i>
+                    <div>
+                        <p class="font-bold text-gray-900">${candidate.name}</p>
+                        <p class="text-xs text-gray-500">ID: ${candidate.rollno}</p>
+                    </div>
+                </div>
+                <p class="mt-2 text-sm font-semibold text-indigo-600">${candidate.post}</p>
+                <p class="text-xs text-gray-700">${candidate.manifesto}</p>
+                `;
+            candidatesList.appendChild(candidateCard);
+        });
+    }
+
+    /**
+     * Renders the list of announcements.
+     */
+    const renderAnnouncements = (announcements = announcementsData) => {
+        const announcementsList = document.getElementById('announcements-list');
+        announcementsList.innerHTML = '';
+
+        if (announcements.length === 0) {
+            announcementsList.innerHTML = `<p class="text-gray-500">No announcements published yet.</p>`;
+            return;
+        }
+
+        announcements.forEach(announcement => {
+            const announcementCard = document.createElement('div');
+            announcementCard.className = 'bg-yellow-100 p-3 rounded-md border-l-4 border-yellow-600';
+            announcementCard.innerHTML = `
+                <p class="font-bold text-gray-800">${announcement.title}</p>
+                <p class="text-sm text-gray-700">${announcement.content}</p>
+                <p class="text-xs text-gray-500 mt-1">Published: ${announcement.published_at || new Date().toLocaleTimeString() + ' ' + new Date().toLocaleDateString()}</p>
+                `;
+            announcementsList.prepend(announcementCard); // Prepend to show newest first
+        });
+    }
+
+    /**
+     * Renders the list of declared winners.
+     */
+    const renderWinners = (winners = declaredWinners) => {
+        const winnersList = document.getElementById('winners-list'); 
+        winnersList.innerHTML = '';
+
+        if (winners.length === 0) {
+            winnersList.innerHTML = `<p class="text-gray-500">No winners declared yet. Use the form to declare winners.</p>`;
+            return;
+        }
+
+        winners.forEach(winner => {
+            const winnerCard = document.createElement('div');
+            winnerCard.className = 'flex justify-between items-center bg-yellow-50 p-4 rounded-lg border border-yellow-200';
+            winnerCard.innerHTML = `
+                <div>
+                    <p class="font-bold text-gray-900">${winner.position}</p>
+                    <p class="text-sm text-gray-700">Winner: ${winner.candidate}</p>
+                    <p class="text-xs text-gray-600">Votes: ${winner.votes}</p>
+                </div>
+                <div class="flex space-x-2">
+                    <button onclick="editWinner('${winner.position}')" class="text-blue-600 hover:text-blue-800">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button onclick="deleteWinner('${winner.position}')" class="text-red-600 hover:text-red-800">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            `;
+            winnersList.appendChild(winnerCard);
+        });
+    };
+
+
+    // --- MAIN API AND DATA LOADING FUNCTIONS ---
+    
+    /**
+     * Fetches all initial data for the Manage Candidates tab.
+     */
+    const fetchInitialElectionData = async () => {
+        try {
+            // API Call needed: Fetch all positions
+            const positionsResponse = await fetch('/api/elections/posts');
+            electionPositions = await positionsResponse.json();
             
-            // Function to render the position list and update the dropdown
-            const renderPositions = () => {
-                // Clear previous entries
-                positionsList.innerHTML = '';
-                positionSelect.innerHTML = '<option value="">-- Select Election Post --</option>';
+            // API Call needed: Fetch all candidates
+            const candidatesResponse = await fetch('/api/elections/candidates');
+            candidatesData = await candidatesResponse.json();
 
-                if (electionPositions.length === 0) {
-                    positionsList.innerHTML = `<p class="text-gray-500" id="no-positions-msg">No positions added yet. Use the form on the left.</p>`;
-                    postSelectionNote.style.display = 'block';
-                    return;
-                }
+            // API Call needed: Fetch all announcements
+            const announcementsResponse = await fetch('/api/elections/announcements');
+            announcementsData = await announcementsResponse.json();
 
-                postSelectionNote.style.display = 'none';
+            // API Call needed: Fetch declared winners (for the 'Declare Winners' tab list)
+            const winnersResponse = await fetch('/api/elections/winners');
+            declaredWinners = await winnersResponse.json();
 
-                electionPositions.forEach(pos => {
-                    // Add to the Position List View
-                    const li = document.createElement('div');
-                    li.className = 'flex justify-between items-center bg-indigo-100 p-3 rounded-md border-l-4 border-indigo-600';
-                    li.innerHTML = `
-                        <div>
-                            <p class="font-semibold text-gray-800">${pos.position}</p>
-                            <p class="text-xs text-gray-600">Block: ${pos.block}</p>
-                            <p class="text-xs text-gray-600">Nomination Due: ${pos.nominationDate}</p>
-                        </div>
-                        <i class="fas fa-circle-check text-green-500"></i>
-                    `;
-                    positionsList.appendChild(li);
+            // Render all UI elements
+            renderPositions();
+            renderCandidates();
+            renderAnnouncements();
+            renderWinners(); 
 
-                    // Add to the Candidate Dropdown
-                    const option = document.createElement('option');
-                    option.value = pos.position;
-                    option.textContent = pos.position;
-                    positionSelect.appendChild(option);
-                });
-            };
+        } catch (error) {
+            console.error('Error fetching initial election data:', error);
+            // Fallback for UI elements
+            document.getElementById('election-details-list').innerHTML = '<p class="text-red-500">Failed to load positions from API.</p>';
+            document.getElementById('candidates-list').innerHTML = '<p class="col-span-full text-red-500">Failed to load candidates from API.</p>';
+            document.getElementById('announcements-list').innerHTML = '<p class="text-red-500">Failed to load announcements from API.</p>';
+            document.getElementById('winners-list').innerHTML = '<p class="text-red-500">Failed to load winners from API.</p>';
+        }
+    };
+    
+    /**
+     * Fetches election results data and renders the View Results tab.
+     * This function uses the exact structure of your static mock for dynamic display.
+     */
+    window.renderElectionResults = async () => {
+        const resultsTab = document.getElementById('election-tab-results');
+        resultsTab.innerHTML = '<div class="text-center py-10 text-xl text-indigo-600"><i class="fas fa-spinner fa-spin mr-2"></i>Loading live results...</div>';
 
-            // Function to render declared winners
-            const renderWinners = () => {
-                winnersList.innerHTML = '';
-
-                if (declaredWinners.length === 0) {
-                    winnersList.innerHTML = `<p class="text-gray-500">No winners declared yet. Use the form to declare winners.</p>`;
-                    return;
-                }
-
-                declaredWinners.forEach(winner => {
-                    const winnerCard = document.createElement('div');
-                    winnerCard.className = 'flex justify-between items-center bg-yellow-50 p-4 rounded-lg border border-yellow-200';
-                    winnerCard.innerHTML = `
-                        <div>
-                            <p class="font-bold text-gray-900">${winner.position}</p>
-                            <p class="text-sm text-gray-700">Winner: ${winner.candidate}</p>
-                            <p class="text-xs text-gray-600">Votes: ${winner.votes}</p>
-                        </div>
-                        <div class="flex space-x-2">
-                            <button onclick="editWinner('${winner.position}')" class="text-blue-600 hover:text-blue-800">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button onclick="deleteWinner('${winner.position}')" class="text-red-600 hover:text-red-800">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                    `;
-                    winnersList.appendChild(winnerCard);
-                });
-            };
-
-            // 2. Handle ELECTION DETAILS FORM Submission
-            electionDetailForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                
-                const position = document.getElementById('election-position').value;
-                const block = document.getElementById('election-block').value;
-                const date = document.getElementById('election-nomination-date').value;
-
-                // Check for duplicates before adding
-                if (electionPositions.some(p => p.position === position)) {
-                    alert(`The position "${position}" has already been added.`);
-                    return;
-                }
-
-                const newPosition = { position: position, block: block, nominationDate: date };
-                electionPositions.push(newPosition);
-
-                renderPositions();
-                
-                // Clear form fields
-                electionDetailForm.reset();
-                alert(`Election post "${position}" added successfully!`);
-                // *** NOTE on DB/Backend: To save data permanently, you must add 'fetch' logic here 
-                // to send 'newPosition' data to your server-side API endpoint. ***
-            });
+        try {
+            // API Call needed: Endpoint to get all aggregated results/stats
+            const response = await fetch('/api/elections/full-results'); 
             
-            // 3. Handle CANDIDATE FORM Submission
-            const candidateForm = document.getElementById('add-candidate-form');
-            const candidatesList = document.getElementById('candidates-list');
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
             
-            candidateForm.addEventListener('submit', (e) => {
-                e.preventDefault();
+            const data = await response.json();
+            
+            if (!data.overall_stats || !data.results_by_block) {
+                 throw new Error("Invalid API response structure. Missing overall_stats or results_by_block.");
+            }
 
-                const post = document.getElementById('candidate-post').value;
-                const name = document.getElementById('candidate-name').value;
-                const rollno = document.getElementById('candidate-roll-no').value;
-                
-                if (!post) {
-                    alert("Please select a valid Running For Post.");
-                    return;
-                }
+            // --- Start HTML generation to match desired structure ---
+            let html = '';
 
-                // Display the candidate card (Front-end mock)
-                const candidateCard = document.createElement('div');
-                candidateCard.className = 'bg-white border border-indigo-200 p-4 rounded-lg shadow-sm';
-                candidateCard.innerHTML = `
-                    <div class="flex items-center space-x-3">
-                        <i class="fas fa-user-circle fa-2x text-indigo-500"></i>
+            // 1. Overall Stats Card
+            const stats = data.overall_stats;
+            const totalPositions = Object.values(data.results_by_block).flat().length; 
+            
+            html += `
+                <div class="bg-white p-4 rounded-lg shadow-md mb-6">
+                    <div class="flex justify-between items-start text-sm text-gray-600">
                         <div>
-                            <p class="font-bold text-gray-900">${name}</p>
-                            <p class="text-xs text-gray-500">ID: ${rollno}</p>
+                            <p class="text-lg font-bold text-gray-900">HORC Election-2025, IIT Indore</p>
+                            <p class="mt-1">Overall Election Dashboard</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-semibold">Total Voters: <span class="text-gray-900">${stats.total_voters || 0}</span></p>
+                            <p>Votes Casted: <span class="text-gray-900">${stats.votes_casted || 0}</span></p>
+                            <p>Voter Percentage: <span class="text-gray-900">${stats.turnout_percentage || '0.00%'}</span></p>
                         </div>
                     </div>
-                    <p class="mt-2 text-sm font-semibold text-indigo-600">${post}</p>
-                    <p class="text-xs text-gray-700">${document.getElementById('candidate-manifesto').value}</p>
-                    <p class="text-xs text-green-500 mt-2">Candidate data ready for election DB.</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+                    <div class="bg-white p-4 rounded-lg shadow-lg text-center border-l-4 border-indigo-500">
+                        <p class="text-3xl font-bold text-indigo-600">${stats.total_voters || 0}</p>
+                        <p class="text-sm text-gray-600">Total Voters</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow-lg text-center border-l-4 border-green-500">
+                        <p class="text-3xl font-bold text-green-600">${stats.votes_casted || 0}</p>
+                        <p class="text-sm text-gray-600">Votes Casted</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow-lg text-center border-l-4 border-blue-500">
+                        <p class="text-3xl font-bold text-blue-600">${stats.turnout_percentage || '0.00%'}</p>
+                        <p class="text-sm text-gray-600">Voter Turnout</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow-lg text-center border-l-4 border-purple-500">
+                        <p class="text-3xl font-bold text-purple-600">${totalPositions}</p>
+                        <p class="text-sm text-gray-600">Total Positions</p>
+                    </div>
+                </div>
+                
+                <div class="space-y-6">
+            `;
+            
+            // 2. Iterate through each Hostel Block (CVR, DA, etc.)
+            for (const [blockName, posts] of Object.entries(data.results_by_block)) {
+                // Determine a color for the block card
+                const blockColor = blockName.toLowerCase().includes('cvr') ? 'indigo' : 
+                                 blockName.toLowerCase().includes('da') ? 'green' : 
+                                 blockName.toLowerCase().includes('summary') ? 'purple' : 'blue';
+                
+                // Create the main block container
+                html += `
+                    <div class="bg-white p-6 rounded-lg shadow-lg">
+                        <h3 class="text-2xl font-bold text-gray-900 mb-4 border-b pb-2 flex items-center">
+                            <i class="fas fa-building mr-2 text-${blockColor}-600"></i>${blockName} Results
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 `;
-                
-                // Remove placeholder if present
-                if (candidatesList.querySelector('p.col-span-full')) {
-                    candidatesList.innerHTML = '';
-                }
-                candidatesList.appendChild(candidateCard);
-                
-                candidateForm.reset();
-                alert(`Candidate ${name} for ${post} successfully added!`);
-                // *** NOTE on DB/Backend: Add 'fetch' logic here to save the candidate data to your server. ***
-            });
 
-            // 4. Handle ANNOUNCEMENT FORM Submission
-            const announcementForm = document.getElementById('add-announcement-form');
-            const announcementsList = document.getElementById('announcements-list');
-
-            announcementForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                
-                const title = document.getElementById('announcement-title').value;
-                const content = document.getElementById('announcement-content').value;
-                
-                // Create an announcement card (Front-end mock)
-                const announcementCard = document.createElement('div');
-                announcementCard.className = 'bg-yellow-100 p-3 rounded-md border-l-4 border-yellow-600';
-                announcementCard.innerHTML = `
-                    <p class="font-bold text-gray-800">${title}</p>
-                    <p class="text-sm text-gray-700">${content}</p>
-                    <p class="text-xs text-gray-500 mt-1">Published: ${new Date().toLocaleTimeString()} ${new Date().toLocaleDateString()}</p>
-                `;
-                
-                // Remove placeholder if present
-                if (announcementsList.querySelector('p.text-gray-500')) {
-                    announcementsList.innerHTML = '';
-                }
-
-                announcementsList.prepend(announcementCard);
-                
-                announcementForm.reset();
-                alert(`Announcement "${title}" published!`);
-                // *** NOTE on DB/Backend: Add 'fetch' logic here to save the announcement data to your server. ***
-            });
-
-            // 5. Handle WINNER DECLARATION FORM Submission
-            const winnerForm = document.getElementById('declare-winner-form');
-
-            winnerForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                
-                const position = document.getElementById('winner-position').value;
-                const candidate = document.getElementById('winner-candidate').value;
-                const votes = document.getElementById('winner-votes').value;
-                
-                const existingWinnerIndex = declaredWinners.findIndex(w => w.position === position);
-                if (existingWinnerIndex !== -1) {
-                    declaredWinners[existingWinnerIndex] = { position, candidate, votes };
+                if (blockName.toLowerCase().includes('summary') || blockName.toLowerCase().includes('other hostels')) {
+                    // Render smaller summary cards
+                    posts.forEach(summaryPost => {
+                         html += `
+                            <div class="text-center p-4 border rounded-lg bg-${blockColor}-50">
+                                <h4 class="font-semibold text-gray-800">${summaryPost.hostel_name}</h4>
+                                <p class="text-2xl font-bold text-${blockColor}-600">${summaryPost.total_votes} Votes</p>
+                                <p class="text-sm text-gray-600">${summaryPost.total_positions} Positions</p>
+                            </div>
+                        `;
+                    });
                 } else {
-                    declaredWinners.push({ position, candidate, votes });
-                }
+                    // Render detailed candidate results
+                    posts.forEach(post => {
+                        let candidateListHtml = '';
+                        
+                        // Sort candidates: Winner first, then by votes descending, NOTA last.
+                        const sortedCandidates = post.candidates.sort((a, b) => {
+                            if (a.status === 'Winner') return -1;
+                            if (b.status === 'Winner') return 1;
+                            if (a.name === 'NOTA') return 1;
+                            if (b.name === 'NOTA') return -1;
+                            return b.votes - a.votes; 
+                        });
 
-                renderWinners();
+                        sortedCandidates.forEach(candidate => {
+                            let candidateClass = 'flex justify-between p-2 hover:bg-gray-50 rounded';
+                            let statusSpan = `<span class="text-gray-600 font-medium">${candidate.votes}</span>`;
+
+                            if (candidate.status === 'Winner') {
+                                candidateClass = 'p-2 bg-green-50 rounded border border-green-200 flex justify-between items-center';
+                                statusSpan = `<span class="bg-green-100 text-green-800 px-2 py-1 rounded text-sm font-bold">Winner</span>`;
+                            } else if (candidate.name === 'NOTA') {
+                                candidateClass = 'p-2 bg-red-50 rounded border border-red-200 flex justify-between items-center';
+                                statusSpan = `<span class="text-red-600 font-bold">${candidate.votes}</span>`;
+                            }
+                            
+                            candidateListHtml += `
+                                <div class="${candidateClass}">
+                                    <span class="font-medium ${candidate.status === 'Winner' ? '' : candidate.name === 'NOTA' ? 'text-red-700' : ''}">
+                                        ${candidate.name}
+                                    </span>
+                                    ${statusSpan}
+                                </div>
+                            `;
+                        });
+
+                        // Add the individual position card
+                        html += `
+                            <div class="border rounded-lg p-4">
+                                <h4 class="text-lg font-semibold text-gray-800 mb-3 bg-${blockColor}-50 p-2 rounded">${post.position_name}</h4>
+                                <div class="space-y-2">
+                                    ${candidateListHtml}
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
                 
-                winnerForm.reset();
-                alert(`Winner for ${position} declared successfully!`);
-                // *** NOTE on DB/Backend: Add 'fetch' logic here to save the winner data to your server. ***
-            });
-
-            // Make the editWinner and deleteWinner functions globally accessible for the button onclicks
-            window.editWinner = (position) => {
-                const winner = declaredWinners.find(w => w.position === position);
-                if (winner) {
-                    document.getElementById('winner-position').value = winner.position;
-                    document.getElementById('winner-candidate').value = winner.candidate;
-                    document.getElementById('winner-votes').value = winner.votes;
-                    document.getElementById('declare-winner-form').scrollIntoView({ behavior: 'smooth' });
-                }
-            };
-
-            window.deleteWinner = (position) => {
-                if (confirm(`Are you sure you want to remove the winner for ${position}?`)) {
-                    declaredWinners = declaredWinners.filter(w => w.position !== position);
-                    renderWinners();
-                    alert(`Winner for ${position} has been removed.`);
-                }
-            };
-
-            // Initial render calls
-            renderPositions();
-            renderWinners();
-        });
-
-        // Main page navigation function (kept outside DOMContentLoaded to be global)
-        window.showPage = (pageName) => {
-            // Hide all pages
-            document.querySelectorAll('.page-content').forEach(el => el.classList.remove('active'));
-            // Show the selected page
-            document.getElementById(`page-content-${pageName}`).classList.add('active');
-            
-            // Update the header title
-            pageTitle.textContent = pageTitles[pageName] || 'Dashboard';
-            
-            // Update active state in sidebar
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('bg-gray-700', 'text-white');
-                btn.classList.add('text-gray-300', 'hover:bg-gray-700', 'hover:text-white');
-            });
-            const activeBtn = document.getElementById(`nav-btn-${pageName}`);
-            if (activeBtn) {
-                activeBtn.classList.add('bg-gray-700', 'text-white');
-                activeBtn.classList.remove('text-gray-300', 'hover:bg-gray-700', 'hover:text-white');
+                // Close block container
+                html += `</div></div>`;
             }
 
-            // Initialize election tabs when elections page is shown
-            if (pageName === 'elections') {
-                showElectionTab('manage');
+            // Close main content div
+            html += `</div>`; 
+
+            // Insert the generated HTML into the results tab
+            resultsTab.innerHTML = html;
+
+        } catch (error) {
+            console.error('Error rendering election results:', error);
+            resultsTab.innerHTML = `
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative my-6" role="alert">
+                    <strong class="font-bold">Backend Error!</strong>
+                    <span class="block sm:inline">Could not load live results. Check the API URL or server status.</span>
+                    <p class="text-sm mt-1">Error Details: ${error.message}</p>
+                </div>`;
+        }
+    }
+
+
+    // --- EVENT HANDLERS (UPDATED TO USE API CALLS) ---
+
+    // 2. Handle ELECTION DETAILS FORM Submission (CRUD: Create Position)
+    document.getElementById('add-election-detail-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const form = e.target;
+        const formData = new FormData(form);
+        const postData = Object.fromEntries(formData.entries());
+
+        try {
+            // API Call needed: Send new position data to backend
+            const response = await fetch('/api/elections/posts', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(postData),
+            });
+
+            if (!response.ok) throw new Error('Failed to add position to DB.');
+
+            const newPosition = await response.json(); 
+            electionPositions.push(newPosition); // Update local cache with returned ID/data
+            renderPositions(); 
+            form.reset();
+            alert(`Election post "${newPosition.position}" added successfully!`);
+
+        } catch (error) {
+            console.error('Error adding position:', error);
+            alert('Error adding election position. Check console for details.');
+        }
+    });
+    
+    // 3. Handle CANDIDATE FORM Submission (CRUD: Create Candidate)
+    document.getElementById('add-candidate-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const form = e.target;
+        const formData = new FormData(form);
+        const post = document.getElementById('candidate-post').value;
+
+        if (!post) {
+            alert("Please select a valid Running For Post.");
+            return;
+        }
+
+        try {
+            // API Call needed: Send new candidate data (including file upload) to backend
+            // NOTE: For file uploads, it's often better to send FormData directly instead of JSON
+            const response = await fetch('/api/elections/candidates', {
+                method: 'POST',
+                body: formData, // Send FormData directly for files
+            });
+
+            if (!response.ok) throw new Error('Failed to add candidate to DB.');
+            
+            const newCandidate = await response.json(); 
+            candidatesData.push(newCandidate);
+            renderCandidates();
+            form.reset();
+            alert(`Candidate ${newCandidate.name} for ${newCandidate.post} successfully added!`);
+
+        } catch (error) {
+            console.error('Error adding candidate:', error);
+            alert('Error adding candidate. Check console for details.');
+        }
+    });
+
+    // 4. Handle ANNOUNCEMENT FORM Submission (CRUD: Create Announcement)
+    document.getElementById('add-announcement-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const form = e.target;
+        const formData = new FormData(form);
+
+        try {
+            // API Call needed: Send new announcement data to backend
+            const response = await fetch('/api/elections/announcements', {
+                method: 'POST',
+                body: formData, // Send FormData for text and optional file
+            });
+
+            if (!response.ok) throw new Error('Failed to publish announcement.');
+            
+            const newAnnouncement = await response.json(); 
+            announcementsData.push(newAnnouncement);
+            renderAnnouncements();
+            form.reset();
+            alert(`Announcement "${newAnnouncement.title}" published!`);
+
+        } catch (error) {
+            console.error('Error publishing announcement:', error);
+            alert('Error publishing announcement. Check console for details.');
+        }
+    });
+
+
+    // 5. Handle WINNER DECLARATION FORM Submission (CRUD: Create Winner)
+    document.getElementById('declare-winner-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const form = e.target;
+        const formData = new FormData(form);
+        const winnerData = Object.fromEntries(formData.entries());
+        
+        try {
+            // API Call needed: Send winner data to backend
+            const response = await fetch('/api/elections/winners', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(winnerData),
+            });
+            
+            if (!response.ok) throw new Error('Failed to declare winner in DB.');
+
+            const newWinner = await response.json();
+            
+            // Optional: Update local cache if API returns final structure
+            declaredWinners.push(newWinner); 
+            renderWinners();
+            
+            form.reset();
+            alert(`Winner for ${newWinner.position} declared successfully!`);
+
+        } catch (error) {
+            console.error('Error declaring winner:', error);
+            alert('Error declaring winner. Check console for details.');
+        }
+    });
+
+
+    // --- HELPER FUNCTIONS FOR WINNER TAB (CRUD: Update/Delete) ---
+
+    // Note: These functions require implementing API endpoints for Edit and Delete
+    window.editWinner = (position) => {
+        alert(`API Call needed: Implement logic to pre-fill form for editing winner for ${position}.`);
+        // Example logic:
+        // 1. Fetch winner details by position from API (GET /api/elections/winners?position=X)
+        // 2. Update form fields: document.getElementById('winner-position').value = data.position; ...
+    };
+
+    window.deleteWinner = async (position) => {
+        if (confirm(`Are you sure you want to remove the winner for ${position}?`)) {
+             try {
+                // API Call needed: Send deletion request to backend
+                const response = await fetch(`/api/elections/winners?position=${position}`, {
+                    method: 'DELETE',
+                });
+
+                if (!response.ok) throw new Error('Failed to delete winner from DB.');
+                
+                // Remove from local cache and re-render
+                declaredWinners = declaredWinners.filter(w => w.position !== position);
+                renderWinners();
+                alert(`Winner for ${position} has been removed.`);
+
+            } catch (error) {
+                console.error('Error deleting winner:', error);
+                alert('Error removing winner. Check console for details.');
             }
         }
-        
-        // Show dashboard on initial load
-        document.addEventListener('DOMContentLoaded', () => {
-            showPage('dashboard');
-        });
-    </script>
+    };
 
-    <script src="admin-gymkhana.js" defer></script>
+
+    // --- NAVIGATION AND INITIALIZATION ---
+
+    // Function to handle switching between election tabs (Modified)
+    window.showElectionTab = (tabName) => {
+        document.querySelectorAll('.election-tab-content').forEach(el => {
+            el.classList.remove('active');
+        });
+        
+        const activeContent = document.getElementById(`election-tab-${tabName}`);
+        if (activeContent) {
+            activeContent.classList.add('active');
+        }
+        
+        document.querySelectorAll('.election-tab').forEach(btn => {
+            btn.classList.remove('border-indigo-500', 'text-indigo-600');
+            btn.classList.add('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
+        });
+        
+        const activeBtn = document.getElementById(`tab-${tabName}`);
+        if (activeBtn) {
+            activeBtn.classList.add('border-indigo-500', 'text-indigo-600');
+            activeBtn.classList.remove('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
+        }
+
+        // Trigger dynamic data load ONLY when moving to a data-heavy tab
+        if (tabName === 'results') {
+            renderElectionResults();
+        } else if (tabName === 'manage') {
+            // Re-render manage tab elements in case of changes/updates
+            renderPositions();
+            renderCandidates();
+            renderAnnouncements();
+        } else if (tabName === 'declare') {
+            renderWinners();
+        }
+    }
+
+    // Main page navigation function (same as before)
+    window.showPage = (pageName) => {
+        // ... (existing page switching logic) ...
+        document.querySelectorAll('.page-content').forEach(el => el.classList.remove('active'));
+        document.getElementById(`page-content-${pageName}`).classList.add('active');
+        pageTitle.textContent = pageTitles[pageName] || 'Dashboard';
+        
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.classList.remove('bg-gray-700', 'text-white');
+            btn.classList.add('text-gray-300', 'hover:bg-gray-700', 'hover:text-white');
+        });
+        const activeBtn = document.getElementById(`nav-btn-${pageName}`);
+        if (activeBtn) {
+            activeBtn.classList.add('bg-gray-700', 'text-white');
+            activeBtn.classList.remove('text-gray-300', 'hover:bg-gray-700', 'hover:text-white');
+        }
+
+        if (pageName === 'elections') {
+            // Load initial data for the whole election module on first entry
+            fetchInitialElectionData();
+            showElectionTab('manage');
+        }
+    }
+    
+    // Show dashboard on initial load
+    document.addEventListener('DOMContentLoaded', () => {
+        showPage('dashboard');
+    });
+</script>
 
 </body>
 </html>
