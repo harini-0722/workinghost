@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hostel Utilities: Lost & Found | Feedback</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="module" src="https://unpkg.com/heroicons@2.1.1/dist/solid/index.js"></script>
+    <script type="module" src="https://unpkg.com/heroicons@2.1.1/dist/outline/index.js"></script>
+    
+    <style>
+        /* Custom UI Theme: Mild Cyan/Teal Blue */
+        :root {
+            --color-primary: #00bcd4; /* Cyan 500 */
+            --color-background: #e0f7fa; /* Cyan 50 */
+            --color-header-bg: #FFFFFF; /* White Header */
+            --color-text-dark: #006064; /* Dark Cyan */
+            --color-card-bg: #ffffff;
+        }
+
+        body {
+            background-color: var(--color-background);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .navbar {
+            background-color: var(--color-header-bg); /* Use White background */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-title {
+            color: var(--color-text-dark);
+            font-weight: 800;
+        }
+
+        .card-container {
+            background-color: var(--color-card-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+        }
+
+        .status-new {
+            background-color: #ffcdd2; /* Red 100 for New/Unread */
+            color: #c62828; /* Red 800 */
+        }
+        .status-claimed, .status-read {
+            background-color: #c8e6c9; /* Green 100 for Claimed/Read */
+            color: #2e7d32; /* Green 800 */
+        }
+
+        .btn-primary {
+            background-color: var(--color-primary);
+            color: white;
+            transition: background-color 0.2s;
+        }
+        .btn-primary:hover {
+            background-color: #0097a7; /* Darker Cyan */
+        }
+        
+        .section-header {
+            border-bottom: 2px solid #4dd0e1; /* Using Cyan 400 for separator */
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <nav class="navbar sticky top-0 z-10">
+        <div class="w-full mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex-shrink-0 flex items-center">
+                    <h1 class="text-xl header-title">HOSTEL UTILITIES</h1>
+                    <span class="ml-4 text-gray-700 font-medium hidden sm:inline">| Lost & Found and Feedback</span>
+                </div>
+                <a href="admin.html" class="flex items-center px-4 py-2 bg-blue-600 text-white font-medium rounded-lg shadow-md hover:bg-blue-700 transition-all duration-300">
+                    <hero-icon-solid name="home" class="h-5 w-5 mr-2"></hero-icon-solid>
+                    Back to Dashboard
+                </a>
+            </div>
+        </div>
+    </nav>
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
+
+        <div id="lost-found-view" class="card-container">
+            <div class="section-header flex justify-between items-center">
+                <h2 class="text-2xl font-bold text-gray-900 flex items-center">
+                    <hero-icon-outline name="archive-box" class="h-6 w-6 mr-3" style="color: var(--color-text-dark);"></hero-icon-outline>
+                    Lost & Found Items
+                </h2>
+                <button id="refresh-lost-found-btn" class="btn-primary flex items-center px-4 py-2 text-sm font-medium rounded-lg shadow-md">
+                    <hero-icon-solid name="arrow-path" class="h-5 w-5 mr-2"></hero-icon-solid>
+                    Refresh
+                </button>
+            </div>
+            
+            <div class="overflow-x-auto border border-gray-200 rounded-lg">
+                <table class="w-full min-w-max">
+                    <thead class="bg-gray-50 border-b border-gray-200">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Item Details</th>
+                            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Date/Location</th>
+                            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
+                            <th class="px-6 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="lost-found-list-container" class="divide-y divide-gray-200">
+                        <tr><td colspan="4" class="text-center text-gray-400 py-6">Loading Lost & Found items...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="feedback-view" class="card-container">
+            <div class="section-header flex justify-between items-center">
+                <h2 class="text-2xl font-bold text-gray-900 flex items-center">
+                    <hero-icon-outline name="chat-bubble-bottom-text" class="h-6 w-6 mr-3" style="color: var(--color-text-dark);"></hero-icon-outline>
+                    Student Feedback Submissions
+                </h2>
+                <div class="flex gap-4 items-center">
+                    <input type="text" id="feedback-search-input" placeholder="Search by name, room or topic..." class="px-3 py-2 border border-gray-300 rounded-lg shadow-sm text-sm">
+                    <select id="feedback-status-filter" class="px-3 py-2 border border-gray-300 rounded-lg shadow-sm text-sm">
+                        <option value="All">All Feedback</option>
+                        <option value="New">New</option>
+                        <option value="Read">Read</option>
+                    </select>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="feedback-cards-container">
+                <div class="md:col-span-2 text-center text-gray-400 py-6">Loading feedback...</div>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- 1. MOCK DATA & STATE ---
+            let lostFoundItems = [
+                { id: 101, item: "Laptop Charger (Dell)", location: "Library Common Area", dateFound: "2025-11-28", status: "New", claimedBy: null },
+                { id: 102, item: "ID Card (Roll: 23CS50005)", location: "Mess Hall", dateFound: "2025-11-27", status: "Claimed", claimedBy: "Student 23CS50005" },
+                { id: 103, item: "Blue Water Bottle", location: "Gymkhana Sports Field", dateFound: "2025-11-25", status: "New", claimedBy: null },
+                { id: 104, item: "Hostel Key Sarojini A-101", location: "Near Gate", dateFound: "2025-12-01", status: "New", claimedBy: null },
+            ];
+
+            let feedbackSubmissions = [
+                { id: 201, studentName: "Anjali K.", room: "Sarojini-A102", topic: "Mess Food Quality", status: "New", date: "2025-12-01", content: "The dinner menu is great, but the breakfast options have been repetitive lately. Could we add oats or fresh fruit regularly? This is a serious concern for many students." },
+                { id: 202, studentName: "Ravi S.", room: "Radhakrishnan-B201", topic: "Internet Speed", status: "Read", date: "2025-11-28", content: "The Wi-Fi speed in my room drops significantly in the evenings. Is there any way to boost the signal? It makes online classes difficult." },
+                { id: 203, studentName: "Priya V.", room: "Sarojini-A103", topic: "Maintenance", status: "New", date: "2025-11-29", content: "The lights in the common bathroom on the first floor are flickering. It needs to be checked soon. It's a safety hazard." },
+            ];
+
+            // --- 2. DOM ELEMENTS ---
+            const lostFoundListContainer = document.getElementById('lost-found-list-container');
+            const refreshLostFoundBtn = document.getElementById('refresh-lost-found-btn');
+            const feedbackCardsContainer = document.getElementById('feedback-cards-container');
+            const feedbackSearchInput = document.getElementById('feedback-search-input');
+            const feedbackStatusFilter = document.getElementById('feedback-status-filter');
+            
+            // Utility functions for notifications
+            function showSuccess(message) {
+                console.log('✅ ' + message);
+                alert('✅ ' + message);
+            }
+
+            // --- 3. LOST AND FOUND LOGIC ---
+
+            function renderLostFoundView() {
+                lostFoundListContainer.innerHTML = '';
+
+                if (lostFoundItems.length === 0) {
+                    lostFoundListContainer.innerHTML = `<tr><td colspan="4" class="text-center text-gray-500 py-6">No items currently logged in Lost & Found.</td></tr>`;
+                    return;
+                }
+
+                lostFoundItems.forEach(item => {
+                    const isClaimed = item.status === 'Claimed';
+                    const statusClass = isClaimed ? 'status-claimed' : 'status-new';
+
+                    const actionButtons = isClaimed 
+                        ? `<span class="text-xs text-gray-500" title="Claimed by: ${item.claimedBy}">Claimed</span>`
+                        : `<button class="claim-item-btn btn-primary flex items-center px-3 py-1 text-xs font-medium rounded-md shadow-sm" data-id="${item.id}">
+                            <hero-icon-solid name="check" class="h-4 w-4 mr-1"></hero-icon-solid>Mark Claimed
+                          </button>`;
+
+                    const rowHTML = `
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <td class="px-6 py-4 text-sm font-medium text-gray-900">${item.item}</td>
+                            <td class="px-6 py-4 text-xs text-gray-700">
+                                <div><span class="font-semibold text-gray-500">Date:</span> ${item.dateFound}</div>
+                                <div><span class="font-semibold text-gray-500">Loc:</span> ${item.location}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${statusClass}">
+                                    ${item.status}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
+                                <div class="flex items-center justify-center claim-container" data-id="${item.id}">
+                                    ${actionButtons}
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                    lostFoundListContainer.innerHTML += rowHTML;
+                });
+            }
+
+            function handleLostFoundClaim(itemId) {
+                const item = lostFoundItems.find(i => i.id == itemId);
+                if (item && item.status === 'New') {
+                    const claimant = prompt(`Enter the name/Roll No. of the student claiming the item: ${item.item}`);
+                    if (claimant) {
+                        item.status = 'Claimed';
+                        item.claimedBy = claimant;
+                        showSuccess(`Item claimed by ${claimant}.`);
+                        renderLostFoundView();
+                    }
+                }
+            }
+
+            // --- 4. FEEDBACK LOGIC ---
+
+            function renderFeedbackView() {
+                feedbackCardsContainer.innerHTML = '';
+                const searchTerm = feedbackSearchInput.value.toLowerCase();
+                const statusFilter = feedbackStatusFilter.value;
+
+                const filteredFeedback = feedbackSubmissions.filter(f => {
+                    const statusMatch = (statusFilter === 'All') || (f.status === statusFilter);
+                    const searchMatch = (f.studentName.toLowerCase().includes(searchTerm)) || 
+                                        (f.topic.toLowerCase().includes(searchTerm)) ||
+                                        (f.room.toLowerCase().includes(searchTerm)) ||
+                                        (f.content.toLowerCase().includes(searchTerm));
+                    return statusMatch && searchMatch;
+                });
+
+                if (filteredFeedback.length === 0) {
+                    feedbackCardsContainer.innerHTML = `<p class="text-gray-500 col-span-full py-6 text-center">No feedback found matching the criteria.</p>`;
+                    return;
+                }
+
+                // Sort: New feedback first
+                filteredFeedback.sort((a, b) => {
+                    if (a.status === 'New' && b.status !== 'New') return -1;
+                    if (a.status !== 'New' && b.status === 'New') return 1;
+                    return 0;
+                });
+
+                filteredFeedback.forEach(feedback => {
+                    const isNew = feedback.status === 'New';
+                    const statusClass = isNew ? 'status-new' : 'status-read';
+                    const iconColor = isNew ? '#c62828' : '#2e7d32';
+
+                    const cardHTML = `
+                        <div class="feedback-card bg-white p-5 rounded-lg shadow-md border-t-4 border-b-4 ${isNew ? 'border-red-500' : 'border-green-500'} relative hover:shadow-lg transition-shadow duration-200">
+                            <div class="flex justify-between items-start mb-3">
+                                <h3 class="text-lg font-bold text-gray-800">${feedback.topic}</h3>
+                                <div class="flex-shrink-0 flex items-center">
+                                    <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${statusClass} mr-2">${feedback.status}</span>
+                                    <button class="mark-read-btn" data-id="${feedback.id}" title="Mark as Read">
+                                        <hero-icon-solid name="check-circle" class="h-6 w-6" style="color: ${iconColor};"></hero-icon-solid>
+                                    </button>
+                                </div>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-3">
+                                <span class="font-semibold">${feedback.studentName} (${feedback.room})</span> | Date: ${feedback.date}
+                            </p>
+                            <p class="text-sm text-gray-700 bg-gray-50 p-3 rounded-lg border-l-4 border-gray-300">
+                                "${feedback.content}"
+                            </p>
+                        </div>
+                    `;
+                    feedbackCardsContainer.innerHTML += cardHTML;
+                });
+            }
+
+            function handleMarkRead(feedbackId) {
+                const feedback = feedbackSubmissions.find(f => f.id == feedbackId);
+                if (feedback && feedback.status === 'New') {
+                    feedback.status = 'Read';
+                    showSuccess(`Feedback from ${feedback.studentName} marked as Read.`);
+                    renderFeedbackView();
+                }
+            }
+
+
+            // --- 5. EVENT LISTENERS & INITIALIZATION ---
+
+            function initializePage() {
+                renderLostFoundView();
+                renderFeedbackView();
+
+                // Lost and Found Listeners
+                lostFoundListContainer.addEventListener('click', (e) => {
+                    const btn = e.target.closest('.claim-item-btn');
+                    if (btn) {
+                        handleLostFoundClaim(btn.dataset.id);
+                    }
+                });
+
+                refreshLostFoundBtn.addEventListener('click', () => {
+                    renderLostFoundView();
+                    showSuccess('Lost and Found List Refreshed.');
+                });
+
+                // Feedback Listeners
+                feedbackCardsContainer.addEventListener('click', (e) => {
+                    const btn = e.target.closest('.mark-read-btn');
+                    if (btn) {
+                        handleMarkRead(btn.dataset.id);
+                    }
+                });
+
+                feedbackSearchInput.addEventListener('input', renderFeedbackView);
+                feedbackStatusFilter.addEventListener('change', renderFeedbackView);
+            }
+
+            initializePage();
+        });
+    </script>
+</body>
+</html>
