@@ -243,65 +243,72 @@
     </div>
     
     <script>
-        async function login(event) {
-            event.preventDefault(); // Prevent default form submission
+    async function login(event) {
+        event.preventDefault(); // Prevent default form submission
 
-            const username = document.getElementById("username").value;
-            const password = document.getElementById("password").value;
-            const role = document.getElementById("role").value; // Get role value
-            const msgEl = document.getElementById("msg");
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
+        const role = document.getElementById("role").value; // Get role value
+        const msgEl = document.getElementById("msg");
 
-            // Clear previous message and hide it
-            msgEl.innerText = "";
-            msgEl.style.visibility = "hidden";
-            msgEl.style.color = "red"; // Reset color
+        // Clear previous message and hide it
+        msgEl.innerText = "";
+        msgEl.style.visibility = "hidden";
+        msgEl.style.color = "red"; // Reset color
 
-            try {
-                const res = await fetch("https://workinghost.onrender.com/login", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ username, password, role }),
-                });
-                const data = await res.json();
+        try {
+            const res = await fetch("https://workinghost.onrender.com/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ username, password, role }),
+            });
+            const data = await res.json();
 
-                if (res.ok) {
-                    // Handle studentId storage
-                    if (data.studentId) {
-                        localStorage.setItem('currentStudentId', data.studentId);
-                    } else {
-                        localStorage.removeItem('currentStudentId');
-                    }
-                    
-                    // Show success message before redirecting
-                    msgEl.style.color = "green";
-                    msgEl.innerText = "Login successful! Redirecting...";
-                    msgEl.style.visibility = "visible";
-                    
-                    setTimeout(() => {
-                        window.location.href = data.redirect;
-                    }, 1000); // Small delay so user sees the message
-
+            if (res.ok) {
+                // Handle studentId storage
+                if (data.studentId) {
+                    localStorage.setItem('currentStudentId', data.studentId);
                 } else {
-                    // Handle login failure
-                    msgEl.style.color = "red";
-                    msgEl.innerText = data.message || "Invalid credentials.";
-                    msgEl.style.visibility = "visible";
+                    localStorage.removeItem('currentStudentId');
                 }
-            } catch (error) {
-                console.error("Login error:", error);
+                
+                // Show success message before redirecting
+                msgEl.style.color = "green";
+                msgEl.innerText = "Login successful! Redirecting...";
+                msgEl.style.visibility = "visible";
+                
+                setTimeout(() => {
+                    // --- FIX APPLIED HERE ---
+                    if (role === 'admin') {
+                        // Redirect admin to the main Hostel Admin Dashboard file
+                        window.location.href = 'my admin page.html'; 
+                    } else {
+                        // Use the default redirect provided by the server for students
+                        window.location.href = data.redirect;
+                    }
+                }, 1000); // Small delay so user sees the message
+
+            } else {
+                // Handle login failure
                 msgEl.style.color = "red";
-                msgEl.innerText = "An error occurred. Please try again.";
+                msgEl.innerText = data.message || "Invalid credentials.";
                 msgEl.style.visibility = "visible";
             }
+        } catch (error) {
+            console.error("Login error:", error);
+            msgEl.style.color = "red";
+            msgEl.innerText = "An error occurred. Please try again.";
+            msgEl.style.visibility = "visible";
         }
+    }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const loginForm = document.getElementById('loginForm');
-            if (loginForm) {
-                // Attach the login function to the form's submit event
-                loginForm.addEventListener('submit', login);
-            }
-        });
-    </script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const loginForm = document.getElementById('loginForm');
+        if (loginForm) {
+            // Attach the login function to the form's submit event
+            loginForm.addEventListener('submit', login);
+        }
+    });
+</script>
 </body>
 </html>
