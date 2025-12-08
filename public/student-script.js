@@ -15,10 +15,7 @@ let g_leaveHistory = []; // ADDED: Store leave history
 let g_attendanceStatus = { status: 'Checked Out', lastActionTime: null };
 
 // --- Mock data (Only for Lost & Found and Announcements now) ---
-const mockLostFound = [
-    { id: 'F001', item: 'Blue Umbrella', dateFound: '2025-10-20', location: 'Hostel Lobby', status: 'Available' },
-    { id: 'F002', item: 'Physics Textbook', dateFound: '2025-10-18', location: 'Common Room', status: 'Available' },
-];
+
 
 const mockAnnouncements = [
     {
@@ -410,7 +407,7 @@ function showView(viewId) {
     } else if (viewId === 'student-reports-view') {
         showReportTab('complaints');
         populateStudentComplaintHistory();
-        populateLostAndFound();
+       
     } else if (viewId === 'student-leave-view') {
         populateStudentLeaveHistory();
     } else if (viewId === 'student-attendance-view') {
@@ -431,26 +428,26 @@ function hideMobileMenu() {
 }
 
 function showReportTab(tabName) {
-    // Hide all contents
+    // 1. Hide all tab contents
     document.querySelectorAll('.report-tab-content').forEach(content => {
         content.classList.add('hidden');
     });
-    // Reset tab styles
+    // 2. Reset tab styling
     document.querySelectorAll('.report-tab').forEach(tab => {
         tab.classList.remove('active', 'border-primary-blue', 'text-primary-blue');
     });
     
-    // Show selected content
+    // 3. Show the selected content
     document.getElementById(`report-tab-content-${tabName}`).classList.remove('hidden');
     const activeTab = document.getElementById(`tab-${tabName}`);
     activeTab.classList.add('active', 'border-primary-blue', 'text-primary-blue');
 
-    // Fetch Data based on tab
+    // 4. FETCH REAL DATA FROM DB
     if (tabName === 'feedback') {
-        fetchStudentFeedbackHistory();
+        fetchStudentFeedbackHistory(); // Calls the DB
     } else if (tabName === 'lost-found') {
-        fetchMyLostReports();
-        fetchFoundItems(); // General found items
+        fetchMyLostReports(); // Calls the DB
+        fetchFoundItems();    // Calls the DB
     }
 }
 
@@ -1275,25 +1272,7 @@ function populateVisitorRequestHistory() {
     });
 }
 
-function populateLostAndFound() {
-    const tableBody = document.getElementById('lost-found-body');
-    tableBody.innerHTML = '';
-    if (mockLostFound.length === 0) {
-            tableBody.innerHTML = `<tr><td colspan="4" class="py-4 px-6 text-center text-secondary-gray">No items reported found.</td></tr>`;
-            return;
-    }
-    mockLostFound.forEach(item => {
-        const statusClass = item.status === 'Available' ? 'text-accent-green' : 'text-secondary-gray';
-        tableBody.innerHTML += `
-            <tr class="hover:bg-light-bg transition duration-150">
-                <td class="py-3 px-6 whitespace-nowrap text-sm text-accent-dark">${item.item}</td>
-                <td class="py-3 px-6 whitespace-nowrap text-sm text-secondary-gray">${item.dateFound}</td>
-                <td class="py-3 px-6 whitespace-nowrap text-sm text-secondary-gray">${item.location}</td>
-                <td class="py-3 px-6 whitespace-nowrap text-sm font-medium ${statusClass}">${item.status}</td>
-            </tr>
-        `;
-    });
-}
+
 
 // --- Announcement Modal Functions ---
 function openAnnouncementsModal() {
