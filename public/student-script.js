@@ -431,16 +431,27 @@ function hideMobileMenu() {
 }
 
 function showReportTab(tabName) {
+    // Hide all contents
     document.querySelectorAll('.report-tab-content').forEach(content => {
         content.classList.add('hidden');
     });
+    // Reset tab styles
     document.querySelectorAll('.report-tab').forEach(tab => {
         tab.classList.remove('active', 'border-primary-blue', 'text-primary-blue');
     });
     
+    // Show selected content
     document.getElementById(`report-tab-content-${tabName}`).classList.remove('hidden');
     const activeTab = document.getElementById(`tab-${tabName}`);
     activeTab.classList.add('active', 'border-primary-blue', 'text-primary-blue');
+
+    // Fetch Data based on tab
+    if (tabName === 'feedback') {
+        fetchStudentFeedbackHistory();
+    } else if (tabName === 'lost-found') {
+        fetchMyLostReports();
+        fetchFoundItems(); // General found items
+    }
 }
 
 function logout() {
@@ -863,139 +874,109 @@ async function submitFeedback() {
         alert('Failed to submit feedback.');
     }
 }
-async function submitLostItemReport() {
-    if (!g_student || !g_student._id) {
-        alert('Student data not available. Please try logging in again.');
-        return;
-    }
-    const studentId = g_student._id;
-    
-    // In your HTML, the form inside #report-tab-content-lost-found doesn't have an ID.
-    // The inputs are id="lost-item-name" and "lost-item-location"
-    
-    const itemName = document.getElementById('lost-item-name').value;
-    const lastSeenLocation = document.getElementById('lost-item-location').value;
-
-    if (!itemName.trim()) {
-        alert('Please enter the name of the lost item.');
-        return;
-    }
+async function fetchStudentFeedbackHistory() {
+    const tbody = document.getElementById('feedback-history-body');
+    tbody.innerHTML = '<tr><td colspan="4" class="text-center py-4">Loading...</td></tr>';
 
     try {
-        const response = await fetch('/api/lost-found/report-lost', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ studentId, itemName, lastSeenLocation }),
-        });
+        // Assuming endpoint: /api/feedback/history/:studentId
+        const response = await fetch(`/api/feedback/history/${g_student._id}`);
+        const data = await response.json();
 
-        const result = await response.json();
+        if (data.success && data.feedback.length > 0) {
+            tbody.innerHTML = '';
+            // Sort newest first
+            const sorted = data.feedback.sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            sorted.forEach(fb => {
+                const date = new Date(fb.date).toLocaleDateString();
+                const typeBadge = fb.isAnonymous 
+                    ? '<span class="text-xs bg-gray-200 text-gray-700 px-2 py-1 rounded">Anonymous</span>' 
+                    : '<span class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">Named</span>';
 
-        if (response.ok && result.success) {
-            alert(result.message);
-            // Clear inputs
-            document.getElementById('lost-item-name').value = '';
-            document.getElementById('lost-item-location').value = '';
+                tbody.innerHTML += `
+                    <tr class="hover:bg-light-bg">
+                        <td class="py-3 px-6 text-sm text-accent-dark">${date}</td>
+                        <td class="py-3 px-6 text-sm font-medium text-accent-dark">${fb.category}</td>
+                        <td class="py-3 px-6 text-sm text-secondary-gray truncate max-w-xs">${fb.description}</td>
+                        <td class="py-3 px-6">${typeBadge}</td>
+                    </tr>
+                `;
+            });
         } else {
-            throw new Error(result.message || 'Server error');
+            tbody.innerHTML = '<tr><td colspan="4" class="text-center py-4 text-secondary-gray">No feedback history found.</td></tr>';
         }
     } catch (error) {
-        console.error('Error reporting lost item:', error);
-        alert('Failed to submit report.');
+        console.error("Error fetching feedback:", error);
+        tbody.innerHTML = '<tr><td colspan="4" class="text-center py-4 text-red-500">Error loading data.</td></tr>';
     }
 }
-async function fetchFoundItems() {
-    const lostFoundBody = document.getElementById('lost-found-body');
-    if (!lostFoundBody) return;
-
-    lostFoundBody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-secondary-gray">Loading...</td></tr>`;
+// 1. Fetch User's Own Reports
+async function fetchMyLostReports() {
+    const tbody = document.getElementById('my-lost-reports-body');
+    tbody.innerHTML = '<tr><td colspan="3" class="text-center py-4">Loading...</td></tr>';
 
     try {
-        const response = await fetch('/api/lost-found/found-items');
-        const result = await response.json();
+        // Assuming endpoint: /api/lost-found/history/:studentId
+        const response = await fetch(`/api/lost-found/history/${g_student._id}`);
+        const data = await response.json();
 
-        if (response.ok && result.success) {
-            const items = result.foundItems; // Correctly maps to backend key
-            lostFoundBody.innerHTML = '';
-
-            if (items.length === 0) {
-                lostFoundBody.innerHTML = `<tr><td colspan="4" class="py-4 px-6 text-center text-accent-green">No found items reported yet.</td></tr>`;
-                return;
-            }
-
-            items.forEach(item => {
-                const date = new Date(item.submissionDate).toLocaleDateString('en-IN', {
-                    day: 'numeric', month: 'short', year: 'numeric'
-                });
+        if (data.success && data.reports.length > 0) {
+            tbody.innerHTML = '';
+            data.reports.forEach(item => {
+                const date = new Date(item.dateReported).toLocaleDateString();
+                let statusColor = item.status === 'Found' ? 'text-accent-green' : 'text-accent-red';
                 
-                // Color coding for status
-                let statusColor = 'text-info-yellow'; // Pending
-                if(item.status === 'Retrieved') statusColor = 'text-accent-green';
-                if(item.status === 'Closed') statusColor = 'text-secondary-gray';
-
-                lostFoundBody.innerHTML += `
-                    <tr class="hover:bg-light-bg transition-colors">
+                tbody.innerHTML += `
+                    <tr class="hover:bg-light-bg">
                         <td class="py-3 px-6 text-sm font-medium text-accent-dark">${item.itemName}</td>
                         <td class="py-3 px-6 text-sm text-secondary-gray">${date}</td>
-                        <td class="py-3 px-6 text-sm text-secondary-gray">${item.location}</td>
-                        <td class="py-3 px-6 text-sm font-semibold ${statusColor}">
-                            ${item.status}
-                        </td>
+                        <td class="py-3 px-6 text-sm font-bold ${statusColor}">${item.status}</td>
                     </tr>
                 `;
             });
+        } else {
+            tbody.innerHTML = '<tr><td colspan="3" class="text-center py-4 text-secondary-gray">You haven\'t reported any lost items.</td></tr>';
         }
     } catch (error) {
-        console.error('Error fetching found items:', error);
-        lostFoundBody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-accent-red">Error loading data.</td></tr>`;
+        console.error("Error fetching lost reports:", error);
+        tbody.innerHTML = '<tr><td colspan="3" class="text-center py-4 text-red-500">Error loading reports.</td></tr>';
     }
 }
-async function fetchFoundItems() {
-    const lostFoundBody = document.getElementById('lost-found-body');
-    if (!lostFoundBody) return;
 
-    lostFoundBody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-secondary-gray">Loading...</td></tr>`;
+// 2. Fetch General Found Items (Items found by others)
+async function fetchFoundItems() {
+    const tbody = document.getElementById('found-items-body'); // Note: ID updated in HTML above
+    tbody.innerHTML = '<tr><td colspan="4" class="text-center py-4">Loading...</td></tr>';
 
     try {
+        // Assuming endpoint: /api/lost-found/found-items
         const response = await fetch('/api/lost-found/found-items');
-        const result = await response.json();
+        const data = await response.json();
 
-        if (response.ok && result.success) {
-            const items = result.foundItems; // Correctly maps to backend key
-            lostFoundBody.innerHTML = '';
+        if (data.success && data.foundItems.length > 0) {
+            tbody.innerHTML = '';
+            data.foundItems.forEach(item => {
+                const date = new Date(item.dateFound).toLocaleDateString();
+                const statusColor = item.status === 'Available' ? 'text-accent-green' : 'text-secondary-gray';
 
-            if (items.length === 0) {
-                lostFoundBody.innerHTML = `<tr><td colspan="4" class="py-4 px-6 text-center text-accent-green">No found items reported yet.</td></tr>`;
-                return;
-            }
-
-            items.forEach(item => {
-                const date = new Date(item.submissionDate).toLocaleDateString('en-IN', {
-                    day: 'numeric', month: 'short', year: 'numeric'
-                });
-                
-                // Color coding for status
-                let statusColor = 'text-info-yellow'; // Pending
-                if(item.status === 'Retrieved') statusColor = 'text-accent-green';
-                if(item.status === 'Closed') statusColor = 'text-secondary-gray';
-
-                lostFoundBody.innerHTML += `
-                    <tr class="hover:bg-light-bg transition-colors">
+                tbody.innerHTML += `
+                    <tr class="hover:bg-light-bg">
                         <td class="py-3 px-6 text-sm font-medium text-accent-dark">${item.itemName}</td>
                         <td class="py-3 px-6 text-sm text-secondary-gray">${date}</td>
                         <td class="py-3 px-6 text-sm text-secondary-gray">${item.location}</td>
-                        <td class="py-3 px-6 text-sm font-semibold ${statusColor}">
-                            ${item.status}
-                        </td>
+                        <td class="py-3 px-6 text-sm font-bold ${statusColor}">${item.status}</td>
                     </tr>
                 `;
             });
+        } else {
+            tbody.innerHTML = '<tr><td colspan="4" class="text-center py-4 text-secondary-gray">No items found recently.</td></tr>';
         }
     } catch (error) {
-        console.error('Error fetching found items:', error);
-        lostFoundBody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-accent-red">Error loading data.</td></tr>`;
+        console.error("Error fetching found items:", error);
+        tbody.innerHTML = '<tr><td colspan="4" class="text-center py-4 text-red-500">Error loading items.</td></tr>';
     }
 }
-
 // --- Dynamic "Other" Reason UI Setup ---
 function setupLeaveForm() {
     const reasonSelect = document.getElementById('leave-reason');
