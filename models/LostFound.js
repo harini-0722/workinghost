@@ -1,38 +1,32 @@
-// models/LostFound.js
 const mongoose = require('mongoose');
 
 const lostFoundSchema = new mongoose.Schema({
-    reporterStudent: {
+    studentId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Student', // Links to the Student who reported the item as lost
-        required: true,
-    },
-    reporterName: {
-        type: String,
-        required: true,
-    },
-    itemType: {
-        type: String,
-        required: true,
-        default: 'Lost', // We assume students only file 'Lost' reports on the portal
-        enum: ['Lost', 'Found'], 
+        ref: 'Student',
+        required: false // Optional, because an admin might post a found item
     },
     itemName: {
         type: String,
-        required: true,
+        required: true
     },
-    lastSeenLocation: {
+    location: { 
+        type: String, // Maps to 'lastSeenLocation' or 'foundLocation'
+        required: true 
+    },
+    type: {
         type: String,
-        required: false,
-    },
-    submissionDate: {
-        type: Date,
-        default: Date.now,
+        enum: ['Lost', 'Found'], // Distinguishes between items students lost and items staff found
+        required: true
     },
     status: {
         type: String,
-        default: 'Pending', // Pending, Retrieved, Closed
         enum: ['Pending', 'Retrieved', 'Closed'],
+        default: 'Pending'
+    },
+    submissionDate: {
+        type: Date,
+        default: Date.now
     }
 });
 

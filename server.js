@@ -16,6 +16,8 @@ const complaintRoutes = require('./routes/complaintRoutes');
 const visitorRoutes = require('./routes/visitorRoutes');
 const staffRoutes = require('./routes/staffRoutes');
 const leaveRoutes = require('./routes/leaveRoutes');
+const feedbackRoutes = require('./routes/feedback');
+const lostFoundRoutes = require('./routes/lostFound');
 // --- IMPORT MODELS ---
 const Room = require('./models/Room');
 const Block = require('./models/Block');
@@ -55,6 +57,8 @@ app.use('/api', gymkhanaRoutes); // <-- THE CRITICAL FIX IS HERE
 app.use('/api', complaintRoutes);
 app.use('/api/visitor-request', visitorRoutes);
 app.use('/api/staff', staffRoutes);
+app.use('/api/feedback', feedbackRoutes);
+app.use('/api/lost-found', lostFoundRoutes);
 // ----------------------------------------------------
 
 // --- Multer Configuration (This block appears twice in your original code, which isn't ideal but we'll leave it for now) ---

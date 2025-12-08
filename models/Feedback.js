@@ -1,34 +1,27 @@
-// models/Feedback.js
 const mongoose = require('mongoose');
 
 const feedbackSchema = new mongoose.Schema({
-    student: {
+    studentId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Student', // Links to the Student who submitted the feedback
-        required: true,
-    },
-    studentName: {
-        type: String,
-        required: true,
+        ref: 'Student', // Assuming your student model is named 'Student'
+        required: true
     },
     category: {
         type: String,
-        required: true,
-        enum: ['Mess & Food Quality', 'Staff & Warden Behavior', 'Hostel Facilities', 'Events & Activities', 'Other Suggestions'],
+        required: true
     },
     description: {
         type: String,
-        required: true,
-        maxlength: 500,
+        required: true
     },
     isAnonymous: {
         type: Boolean,
-        default: false,
+        default: false
     },
-    submissionDate: {
+    date: {
         type: Date,
-        default: Date.now,
-    },
+        default: Date.now
+    }
 });
 
 module.exports = mongoose.model('Feedback', feedbackSchema);
