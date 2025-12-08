@@ -15,7 +15,10 @@ let g_leaveHistory = []; // ADDED: Store leave history
 let g_attendanceStatus = { status: 'Checked Out', lastActionTime: null };
 
 // --- Mock data (Only for Lost & Found and Announcements now) ---
-
+const mockLostFound = [
+    { id: 'F001', item: 'Blue Umbrella', dateFound: '2025-10-20', location: 'Hostel Lobby', status: 'Available' },
+    { id: 'F002', item: 'Physics Textbook', dateFound: '2025-10-18', location: 'Common Room', status: 'Available' },
+];
 
 const mockAnnouncements = [
     {
@@ -407,7 +410,7 @@ function showView(viewId) {
     } else if (viewId === 'student-reports-view') {
         showReportTab('complaints');
         populateStudentComplaintHistory();
-       
+        populateLostAndFound();
     } else if (viewId === 'student-leave-view') {
         populateStudentLeaveHistory();
     } else if (viewId === 'student-attendance-view') {
@@ -428,27 +431,16 @@ function hideMobileMenu() {
 }
 
 function showReportTab(tabName) {
-    // 1. Hide all tab contents
     document.querySelectorAll('.report-tab-content').forEach(content => {
         content.classList.add('hidden');
     });
-    // 2. Reset tab styling
     document.querySelectorAll('.report-tab').forEach(tab => {
         tab.classList.remove('active', 'border-primary-blue', 'text-primary-blue');
     });
     
-    // 3. Show the selected content
     document.getElementById(`report-tab-content-${tabName}`).classList.remove('hidden');
     const activeTab = document.getElementById(`tab-${tabName}`);
     activeTab.classList.add('active', 'border-primary-blue', 'text-primary-blue');
-
-    // 4. FETCH REAL DATA FROM DB
-    if (tabName === 'feedback') {
-        fetchStudentFeedbackHistory(); // Calls the DB
-    } else if (tabName === 'lost-found') {
-        fetchMyLostReports(); // Calls the DB
-        fetchFoundItems();    // Calls the DB
-    }
 }
 
 function logout() {
@@ -829,151 +821,7 @@ function updateDashboardComplaintCount() {
         openRequestsText.textContent = 'No open complaints.';
     }
 }
-async function submitFeedback() {
-    if (!g_student || !g_student._id) {
-        alert('Student data not available. Please try logging in again.');
-        return;
-    }
-    const studentId = g_student._id;
-    const form = document.getElementById('feedback-form'); // Make sure form ID matches HTML (form doesn't have ID in HTML, add id="feedback-form" to the <form> tag in HTML)
-    // NOTE: In your HTML, the form inside #report-tab-content-feedback does not have an ID.
-    // ACTION: Add id="feedback-form" to that <form> tag in student.html
-    
-    const category = document.getElementById('feedback-category').value;
-    const description = document.getElementById('feedback-description').value;
-    const isAnonymous = document.getElementById('feedback-anonymous').checked;
 
-    if (!category || !description.trim()) {
-        alert('Please fill out all required fields.');
-        return;
-    }
-
-    try {
-        const response = await fetch('/api/feedback', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ studentId, category, description, isAnonymous }),
-        });
-
-        const result = await response.json();
-
-        if (response.ok && result.success) {
-            alert(result.message);
-            // Reset form fields manually since we might not have the form ID perfectly set yet
-            document.getElementById('feedback-category').value = 'Mess & Food Quality'; // Reset to first option
-            document.getElementById('feedback-description').value = '';
-            document.getElementById('feedback-anonymous').checked = false;
-        } else {
-            throw new Error(result.message || 'Server error');
-        }
-    } catch (error) {
-        console.error('Error submitting feedback:', error);
-        alert('Failed to submit feedback.');
-    }
-}
-async function fetchStudentFeedbackHistory() {
-    const tbody = document.getElementById('feedback-history-body');
-    tbody.innerHTML = '<tr><td colspan="4" class="text-center py-4">Loading...</td></tr>';
-
-    try {
-        // Assuming endpoint: /api/feedback/history/:studentId
-        const response = await fetch(`/api/feedback/history/${g_student._id}`);
-        const data = await response.json();
-
-        if (data.success && data.feedback.length > 0) {
-            tbody.innerHTML = '';
-            // Sort newest first
-            const sorted = data.feedback.sort((a, b) => new Date(b.date) - new Date(a.date));
-            
-            sorted.forEach(fb => {
-                const date = new Date(fb.date).toLocaleDateString();
-                const typeBadge = fb.isAnonymous 
-                    ? '<span class="text-xs bg-gray-200 text-gray-700 px-2 py-1 rounded">Anonymous</span>' 
-                    : '<span class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">Named</span>';
-
-                tbody.innerHTML += `
-                    <tr class="hover:bg-light-bg">
-                        <td class="py-3 px-6 text-sm text-accent-dark">${date}</td>
-                        <td class="py-3 px-6 text-sm font-medium text-accent-dark">${fb.category}</td>
-                        <td class="py-3 px-6 text-sm text-secondary-gray truncate max-w-xs">${fb.description}</td>
-                        <td class="py-3 px-6">${typeBadge}</td>
-                    </tr>
-                `;
-            });
-        } else {
-            tbody.innerHTML = '<tr><td colspan="4" class="text-center py-4 text-secondary-gray">No feedback history found.</td></tr>';
-        }
-    } catch (error) {
-        console.error("Error fetching feedback:", error);
-        tbody.innerHTML = '<tr><td colspan="4" class="text-center py-4 text-red-500">Error loading data.</td></tr>';
-    }
-}
-// 1. Fetch User's Own Reports
-async function fetchMyLostReports() {
-    const tbody = document.getElementById('my-lost-reports-body');
-    tbody.innerHTML = '<tr><td colspan="3" class="text-center py-4">Loading...</td></tr>';
-
-    try {
-        // Assuming endpoint: /api/lost-found/history/:studentId
-        const response = await fetch(`/api/lost-found/history/${g_student._id}`);
-        const data = await response.json();
-
-        if (data.success && data.reports.length > 0) {
-            tbody.innerHTML = '';
-            data.reports.forEach(item => {
-                const date = new Date(item.dateReported).toLocaleDateString();
-                let statusColor = item.status === 'Found' ? 'text-accent-green' : 'text-accent-red';
-                
-                tbody.innerHTML += `
-                    <tr class="hover:bg-light-bg">
-                        <td class="py-3 px-6 text-sm font-medium text-accent-dark">${item.itemName}</td>
-                        <td class="py-3 px-6 text-sm text-secondary-gray">${date}</td>
-                        <td class="py-3 px-6 text-sm font-bold ${statusColor}">${item.status}</td>
-                    </tr>
-                `;
-            });
-        } else {
-            tbody.innerHTML = '<tr><td colspan="3" class="text-center py-4 text-secondary-gray">You haven\'t reported any lost items.</td></tr>';
-        }
-    } catch (error) {
-        console.error("Error fetching lost reports:", error);
-        tbody.innerHTML = '<tr><td colspan="3" class="text-center py-4 text-red-500">Error loading reports.</td></tr>';
-    }
-}
-
-// 2. Fetch General Found Items (Items found by others)
-async function fetchFoundItems() {
-    const tbody = document.getElementById('found-items-body'); // Note: ID updated in HTML above
-    tbody.innerHTML = '<tr><td colspan="4" class="text-center py-4">Loading...</td></tr>';
-
-    try {
-        // Assuming endpoint: /api/lost-found/found-items
-        const response = await fetch('/api/lost-found/found-items');
-        const data = await response.json();
-
-        if (data.success && data.foundItems.length > 0) {
-            tbody.innerHTML = '';
-            data.foundItems.forEach(item => {
-                const date = new Date(item.dateFound).toLocaleDateString();
-                const statusColor = item.status === 'Available' ? 'text-accent-green' : 'text-secondary-gray';
-
-                tbody.innerHTML += `
-                    <tr class="hover:bg-light-bg">
-                        <td class="py-3 px-6 text-sm font-medium text-accent-dark">${item.itemName}</td>
-                        <td class="py-3 px-6 text-sm text-secondary-gray">${date}</td>
-                        <td class="py-3 px-6 text-sm text-secondary-gray">${item.location}</td>
-                        <td class="py-3 px-6 text-sm font-bold ${statusColor}">${item.status}</td>
-                    </tr>
-                `;
-            });
-        } else {
-            tbody.innerHTML = '<tr><td colspan="4" class="text-center py-4 text-secondary-gray">No items found recently.</td></tr>';
-        }
-    } catch (error) {
-        console.error("Error fetching found items:", error);
-        tbody.innerHTML = '<tr><td colspan="4" class="text-center py-4 text-red-500">Error loading items.</td></tr>';
-    }
-}
 // --- Dynamic "Other" Reason UI Setup ---
 function setupLeaveForm() {
     const reasonSelect = document.getElementById('leave-reason');
@@ -1272,7 +1120,25 @@ function populateVisitorRequestHistory() {
     });
 }
 
-
+function populateLostAndFound() {
+    const tableBody = document.getElementById('lost-found-body');
+    tableBody.innerHTML = '';
+    if (mockLostFound.length === 0) {
+            tableBody.innerHTML = `<tr><td colspan="4" class="py-4 px-6 text-center text-secondary-gray">No items reported found.</td></tr>`;
+            return;
+    }
+    mockLostFound.forEach(item => {
+        const statusClass = item.status === 'Available' ? 'text-accent-green' : 'text-secondary-gray';
+        tableBody.innerHTML += `
+            <tr class="hover:bg-light-bg transition duration-150">
+                <td class="py-3 px-6 whitespace-nowrap text-sm text-accent-dark">${item.item}</td>
+                <td class="py-3 px-6 whitespace-nowrap text-sm text-secondary-gray">${item.dateFound}</td>
+                <td class="py-3 px-6 whitespace-nowrap text-sm text-secondary-gray">${item.location}</td>
+                <td class="py-3 px-6 whitespace-nowrap text-sm font-medium ${statusClass}">${item.status}</td>
+            </tr>
+        `;
+    });
+}
 
 // --- Announcement Modal Functions ---
 function openAnnouncementsModal() {
