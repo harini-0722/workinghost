@@ -59,6 +59,7 @@ app.use('/api/visitor-request', visitorRoutes);
 app.use('/api/staff', staffRoutes);
 app.use('/api/feedback', feedbackRoutes);
 app.use('/api/lost-found', lostFoundRoutes);
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // ----------------------------------------------------
 
 // --- Multer Configuration (This block appears twice in your original code, which isn't ideal but we'll leave it for now) ---

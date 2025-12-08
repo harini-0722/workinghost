@@ -1118,9 +1118,311 @@ function populateStudentProfileView() {
     }
 }
 
-// ... (All other existing functions like submitVisitorRequest, submitLeave, etc., remain unchanged above this line)
-// ...
+// =========================================================================
+// MISSING CORE FUNCTIONS (Add these to fix ReferenceErrors)
+// =========================================================================
 
+// --- 1. ATTENDANCE FUNCTIONS ---
+
+async function toggleAttendance() {
+    if (!g_student || !g_student._id) return;
+
+    // Determine action based on current status
+    const action = g_attendanceStatus.status === 'Checked In' ? 'check-out' : 'check-in';
+    const statusToSend = action === 'check-in' ? 'Present' : 'Absent';
+
+    try {
+        const response = await fetch('/api/attendance/mark', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                studentId: g_student._id, 
+                status: statusToSend 
+            })
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.success) {
+            alert(`Successfully ${action === 'check-in' ? 'Checked In' : 'Checked Out'}!`);
+            
+            // Update local state immediately
+            g_attendanceStatus.status = action === 'check-in' ? 'Checked In' : 'Checked Out';
+            g_attendanceStatus.lastActionTime = new Date();
+            
+            // Update UI
+            updateAttendanceStatus(); 
+            
+            // Refresh the log data
+            await loadStudentData(); // Reloads all data to get the new log entry
+            populateAttendanceLog(); 
+        } else {
+            throw new Error(result.message || 'Failed to update attendance');
+        }
+    } catch (error) {
+        console.error('Attendance Error:', error);
+        alert(error.message);
+    }
+}
+
+function updateAttendanceStatus() {
+    const statusText = document.getElementById('attendance-status-text');
+    const statusTime = document.getElementById('attendance-status-time');
+    const toggleBtn = document.getElementById('attendance-toggle-btn');
+    const statusCard = document.getElementById('attendance-status-card');
+
+    if (!statusText || !toggleBtn) return;
+
+    if (g_attendanceStatus.status === 'Checked In') {
+        // UI for Checked In
+        statusText.textContent = 'Checked In';
+        statusText.classList.remove('text-secondary-gray');
+        statusText.classList.add('text-accent-green');
+        
+        statusCard.classList.remove('border-accent-red'); // Remove red border if present
+        statusCard.classList.add('border-accent-green');
+
+        toggleBtn.textContent = 'Check Out';
+        toggleBtn.classList.remove('bg-accent-green', 'hover:bg-green-700');
+        toggleBtn.classList.add('bg-accent-red', 'hover:bg-red-700');
+    } else {
+        // UI for Checked Out
+        statusText.textContent = 'Checked Out';
+        statusText.classList.remove('text-accent-green');
+        statusText.classList.add('text-secondary-gray'); // Or red if you prefer
+        
+        statusCard.classList.remove('border-accent-green');
+        statusCard.classList.add('border-accent-red');
+
+        toggleBtn.textContent = 'Check In';
+        toggleBtn.classList.remove('bg-accent-red', 'hover:bg-red-700');
+        toggleBtn.classList.add('bg-accent-green', 'hover:bg-green-700');
+    }
+
+    if (g_attendanceStatus.lastActionTime) {
+        statusTime.textContent = `Since: ${formatTime(g_attendanceStatus.lastActionTime)}`;
+    } else {
+        statusTime.textContent = 'Status unknown';
+    }
+}
+
+function populateAttendanceLog() {
+    const tbody = document.getElementById('attendance-log-body');
+    if (!tbody) return;
+    
+    tbody.innerHTML = '';
+    
+    // Sort by date descending (newest first)
+    const sortedLog = [...g_attendance].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    if (sortedLog.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" class="p-4 text-center text-gray-500">No attendance records yet.</td></tr>';
+        return;
+    }
+
+    sortedLog.slice(0, 7).forEach(log => {
+        const dateStr = formatDate(log.date);
+        const checkIn = log.checkInTime ? formatTime(log.checkInTime) : '--';
+        const checkOut = log.checkOutTime ? formatTime(log.checkOutTime) : '--';
+        const statusColor = log.status === 'Present' ? 'text-accent-green' : 'text-accent-red';
+
+        const row = `
+            <tr class="hover:bg-light-bg transition-colors">
+                <td class="py-3 px-6 text-sm text-accent-dark">${dateStr}</td>
+                <td class="py-3 px-6 text-sm text-secondary-gray">${checkIn}</td>
+                <td class="py-3 px-6 text-sm text-secondary-gray">${checkOut}</td>
+                <td class="py-3 px-6 text-sm font-semibold ${statusColor}">${log.status}</td>
+            </tr>
+        `;
+        tbody.innerHTML += row;
+    });
+}
+
+// --- 2. COMPLAINT FUNCTIONS ---
+
+async function submitComplaint() {
+    if (!g_student || !g_student._id) return;
+
+    const type = document.getElementById('complaint-type').value;
+    const location = document.getElementById('complaint-location').value;
+    const date = document.getElementById('complaint-date').value;
+    const priority = document.getElementById('complaint-priority').value;
+    const description = document.getElementById('complaint-description').value;
+
+    if (!type || !location || !priority || !description) {
+        alert("Please fill in all required fields.");
+        return;
+    }
+
+    try {
+        const response = await fetch('/api/complaints', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                studentId: g_student._id,
+                title: `${type} Issue at ${location}`, // Auto-generate title
+                type,
+                location,
+                priority,
+                description,
+                date: date || new Date()
+            })
+        });
+
+        const result = await response.json();
+        if (result.success) {
+            alert('Complaint submitted successfully!');
+            document.getElementById('complaint-form').reset();
+            
+            // Refresh data
+            await loadStudentData();
+            populateStudentComplaintHistory();
+            updateDashboardComplaintCount();
+        } else {
+            alert(result.message || 'Failed to submit complaint');
+        }
+    } catch (err) {
+        console.error(err);
+        alert('Server error submitting complaint');
+    }
+}
+
+// --- 3. VISITOR REQUEST FUNCTIONS ---
+
+async function submitVisitorRequest() {
+    if (!g_student || !g_student._id) return;
+
+    const visitorName = document.getElementById('visitor-name').value;
+    const checkInDate = document.getElementById('visitor-start-date').value;
+    const checkOutDate = document.getElementById('visitor-end-date').value;
+    const reason = document.getElementById('visitor-reason').value;
+
+    if (!visitorName || !checkInDate || !checkOutDate || !reason) {
+        alert('Please fill all fields');
+        return;
+    }
+
+    try {
+        const response = await fetch('/api/visitor-request', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                studentId: g_student._id,
+                visitorName,
+                visitDate: checkInDate, 
+                checkOutDate,
+                reason
+            })
+        });
+
+        const result = await response.json();
+        if (result.success) {
+            alert('Visitor request submitted for approval.');
+            document.getElementById('visitor-request-form').reset();
+            
+            // Refresh list specifically
+            const histRes = await fetch(`/api/visitor-request/history/${g_student._id}`);
+            const histData = await histRes.json();
+            if(histData.success) {
+                g_visitorRequests = histData.visitorRequests;
+                populateVisitorRequestHistory();
+            }
+        } else {
+            alert(result.message);
+        }
+    } catch (err) {
+        console.error(err);
+        alert('Error submitting request');
+    }
+}
+
+function populateVisitorRequestHistory() {
+    const tbody = document.getElementById('visitor-request-history-body');
+    if (!tbody) return;
+    
+    tbody.innerHTML = '';
+    
+    // Sort newest first
+    const sorted = [...g_visitorRequests].sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+    if (sorted.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-gray-500">No visitor requests found.</td></tr>';
+        return;
+    }
+
+    sorted.forEach(req => {
+        const start = formatDate(req.visitDate);
+        const end = formatDate(req.checkOutDate);
+        
+        let statusColor = 'text-info-yellow';
+        if(req.status === 'Approved') statusColor = 'text-accent-green';
+        if(req.status === 'Rejected') statusColor = 'text-accent-red';
+
+        const row = `
+            <tr class="hover:bg-light-bg transition-colors">
+                <td class="py-3 px-6 text-sm font-medium text-accent-dark">${req.visitorName}</td>
+                <td class="py-3 px-6 text-sm text-secondary-gray">${start}</td>
+                <td class="py-3 px-6 text-sm text-secondary-gray">${end}</td>
+                <td class="py-3 px-6 text-sm text-secondary-gray">${req.reason}</td>
+                <td class="py-3 px-6 text-sm font-bold ${statusColor}">${req.status}</td>
+            </tr>
+        `;
+        tbody.innerHTML += row;
+    });
+}
+
+// --- 4. LEAVE REQUEST FUNCTIONS ---
+
+async function submitLeave() {
+    if (!g_student || !g_student._id) return;
+
+    const startDate = document.getElementById('leave-start').value;
+    const endDate = document.getElementById('leave-end').value;
+    let reason = document.getElementById('leave-reason').value;
+
+    if (reason === 'Other') {
+        reason = document.getElementById('leave-reason-manual').value;
+    }
+
+    if (!startDate || !endDate || !reason) {
+        alert('Please fill all fields');
+        return;
+    }
+
+    try {
+        const response = await fetch('/api/leave', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                studentId: g_student._id,
+                startDate,
+                endDate,
+                reason
+            })
+        });
+
+        const result = await response.json();
+        if (result.success) {
+            alert('Leave request submitted successfully.');
+            // Clear inputs
+            document.getElementById('leave-start').value = '';
+            document.getElementById('leave-end').value = '';
+            
+            // Refresh History
+            const histRes = await fetch(`/api/leave/history/${g_student._id}`);
+            const histData = await histRes.json();
+            if(histData.success) {
+                g_leaveHistory = histData.leaves;
+                populateStudentLeaveHistory();
+            }
+        } else {
+            alert(result.message);
+        }
+    } catch (err) {
+        console.error(err);
+        alert('Error submitting leave request');
+    }
+}
 // =========================================================================
 // INITIALIZATION
 // =========================================================================
