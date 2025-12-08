@@ -1120,6 +1120,167 @@ function populateVisitorRequestHistory() {
     });
 }
 
+// 1. New function to submit Feedback
+async function submitFeedback() {
+    const studentId = g_student._id;
+    const form = document.getElementById('feedback-form');
+    const category = document.getElementById('feedback-category').value;
+    const description = document.getElementById('feedback-description').value;
+    const isAnonymous = document.getElementById('feedback-anonymous').checked;
+
+    if (!studentId || !category || !description) {
+        alert('Please fill out all required fields.');
+        return;
+    }
+    
+    if (description.length > 500) {
+        alert('Feedback description cannot exceed 500 characters.');
+        return;
+    }
+
+
+    try {
+        const response = await fetch('/api/feedback', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ studentId, category, description, isAnonymous }),
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            alert(result.message);
+            form.reset();
+        } else {
+            alert('Failed to submit feedback: ' + (result.message || 'Unknown error.'));
+        }
+    } catch (error) {
+        console.error('Error submitting feedback:', error);
+        alert('An unexpected network error occurred. Please try again.');
+    }
+}
+
+// 2. New function to submit Lost Item Report
+async function submitLostItemReport() {
+    const studentId = g_student._id;
+    const form = document.getElementById('lost-item-form');
+    const itemName = document.getElementById('lost-item-name').value;
+    const lastSeenLocation = document.getElementById('lost-item-location').value;
+
+    if (!studentId || !itemName) {
+        alert('Please enter the name of the lost item.');
+        return;
+    }
+
+    try {
+        const response = await fetch('/api/lost-found/report-lost', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ studentId, itemName, lastSeenLocation }),
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            alert(result.message);
+            form.reset();
+            // Reload the list of Found Items
+            fetchFoundItems(); 
+        } else {
+            alert('Failed to submit lost report: ' + (result.message || 'Unknown error.'));
+        }
+    } catch (error) {
+        console.error('Error reporting lost item:', error);
+        alert('An unexpected network error occurred while reporting the lost item.');
+    }
+}
+
+// 3. New function to fetch and display Found Items
+async function fetchFoundItems() {
+    const lostFoundBody = document.getElementById('lost-found-body');
+    if (!lostFoundBody) return; 
+
+    lostFoundBody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-secondary-gray">
+        <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-primary-blue mx-auto mb-2"></div>
+        Loading recently found items...
+    </td></tr>`;
+    
+    try {
+        const response = await fetch('/api/lost-found/found-items');
+        const result = await response.json();
+
+        if (result.success) {
+            g_foundItems = result.foundItems; 
+            lostFoundBody.innerHTML = ''; 
+
+            if (g_foundItems.length === 0) {
+                lostFoundBody.innerHTML = `<tr><td colspan="4" class="py-4 px-6 text-center text-accent-green font-semibold">🎉 No items currently reported as found by staff.</td></tr>`;
+                return;
+            }
+
+            g_foundItems.forEach(item => {
+                const date = new Date(item.submissionDate).toLocaleDateString('en-IN', {
+                    day: 'numeric', month: 'short', year: 'numeric'
+                });
+                // Note: The backend schema for LostFound uses itemType: 'Found' for items the student should see.
+                const statusInfo = {
+                    Pending: { color: 'text-info-yellow', emoji: '👀' },
+                    Retrieved: { color: 'text-accent-green', emoji: '✅' },
+                    Closed: { color: 'text-secondary-gray', emoji: '🔒' }
+                }[item.status] || { color: 'text-secondary-gray', emoji: '❓' };
+
+
+                lostFoundBody.innerHTML += `
+                    <tr class="hover:bg-light-bg transition-colors">
+                        <td class="py-3 px-6 text-sm font-medium text-accent-dark">${item.itemName}</td>
+                        <td class="py-3 px-6 text-sm text-secondary-gray">${date}</td>
+                        <td class="py-3 px-6 text-sm text-secondary-gray">${item.lastSeenLocation || 'Hostel Office'}</td>
+                        <td class="py-3 px-6 text-sm font-semibold ${statusInfo.color}">
+                            ${statusInfo.emoji} ${item.status}
+                        </td>
+                    </tr>
+                `;
+            });
+        } else {
+            lostFoundBody.innerHTML = `<tr><td colspan="4" class="py-4 px-6 text-center text-accent-red">Failed to load items: ${result.message}</td></tr>`;
+        }
+    } catch (error) {
+        console.error('Error fetching found items:', error);
+        lostFoundBody.innerHTML = `<tr><td colspan="4" class="py-4 px-6 text-center text-accent-red">Network error loading found items.</td></tr>`;
+    }
+}
+
+// 4. Update core function to use dynamic fetching logic
+function populateLostAndFound() {
+    // This function previously used mock data, now it calls the dynamic fetcher
+    fetchFoundItems();
+}
+
+
+// 5. Update UI activation logic for tabs
+function showReportTab(tabName) {
+    document.querySelectorAll('.report-tab-content').forEach(content => {
+        content.classList.add('hidden');
+    });
+    document.querySelectorAll('.report-tab').forEach(tab => {
+        tab.classList.remove('active', 'border-primary-blue', 'text-primary-blue', 'font-semibold');
+        tab.classList.add('border-transparent', 'text-secondary-gray', 'hover:text-primary-blue');
+    });
+    
+    document.getElementById(`report-tab-content-${tabName}`).classList.remove('hidden');
+    const activeTab = document.getElementById(`tab-${tabName}`);
+    activeTab.classList.add('active', 'border-primary-blue', 'text-primary-blue', 'font-semibold');
+    activeTab.classList.remove('border-transparent', 'text-secondary-gray', 'hover:text-primary-blue');
+
+    // CRITICAL: Call the new fetching function when the tab is clicked
+    if (tabName === 'lost-found') {
+        fetchFoundItems();
+    }
+}
 function populateLostAndFound() {
     const tableBody = document.getElementById('lost-found-body');
     tableBody.innerHTML = '';
