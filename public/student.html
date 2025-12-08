@@ -1,847 +1,846 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IIT Hostel Management - Student Portal</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <script src="https://unpkg.com/heroicons@2.1.1/umd/solid.js"></script>
-    <script src="https://unpkg.com/heroicons@2.1.1/umd/outline.js"></script>
-    
-    <link rel="stylesheet" href="student-style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IIT Hostel Management - Student Portal</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script src="https://unpkg.com/heroicons@2.1.1/umd/solid.js"></script>
+    <script src="https://unpkg.com/heroicons@2.1.1/umd/outline.js"></script>
+    
+    <link rel="stylesheet" href="student-style.css">
 
-    <style>
-        /* --- Clean and Energetic Gradient Styles (Now Mild and Soft) --- */
-        :root {
-            /* Keep core colors defined for card accents/buttons */
-            --color-dark-blue: #5680E9; 
-            --color-light-cyan: #84CEEB; 
-            --color-mid-blue: #5AB9EA; 
-            --color-pale-lilac: #C1C8E4; 
-            --color-dark-purple: #8860D0;
+    <style>
+        /* --- Clean and Energetic Gradient Styles (Now Mild and Soft) --- */
+        :root {
+            /* Keep core colors defined for card accents/buttons */
+            --color-dark-blue: #5680E9; 
+            --color-light-cyan: #84CEEB; 
+            --color-mid-blue: #5AB9EA; 
+            --color-pale-lilac: #C1C8E4; 
+            --color-dark-purple: #8860D0;
 
-            /* Custom Theme Overrides */
-            --theme-primary: #2563EB; /* Primary blue for contrast/buttons */
-            --theme-dark-text: #1F2937; /* Very dark text color */
-            --theme-cyan: #84CEEB; /* Lighter blue for unified card borders */
+            /* Custom Theme Overrides */
+            --theme-primary: #2563EB; /* Primary blue for contrast/buttons */
+            --theme-dark-text: #1F2937; /* Very dark text color */
+            --theme-cyan: #84CEEB; /* Lighter blue for unified card borders */
 
-            /* New Mild Background Color for body background */
-            --color-mild-bg-start: #E8F5FF; /* Very light blue/white */
-            --color-mild-bg-end: #CDE8F9;   /* Very pale cyan/blue */
-        }
+            /* New Mild Background Color for body background */
+            --color-mild-bg-start: #E8F5FF; /* Very light blue/white */
+            --color-mild-bg-end: #CDE8F9;   /* Very pale cyan/blue */
+        }
 
-        body {
-            /* New: Simple, very light gradient to match the mild background in the image */
-            background-color: var(--color-mild-bg-start) !important;
-            background-image: 
-                linear-gradient(to bottom right, var(--color-mild-bg-start), var(--color-mild-bg-end));
-            
-            background-attachment: fixed;
-            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            color: var(--theme-dark-text);
-        }
+        body {
+            /* New: Simple, very light gradient to match the mild background in the image */
+            background-color: var(--color-mild-bg-start) !important;
+            background-image: 
+                linear-gradient(to bottom right, var(--color-mild-bg-start), var(--color-mild-bg-end));
+            
+            background-attachment: fixed;
+            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: var(--theme-dark-text);
+        }
 
-        .navbar {
-            background-color: #ffffff;
-        }
-        /* --- END Gradient Styles --- */
+        .navbar {
+            background-color: #ffffff;
+        }
+        /* --- END Gradient Styles --- */
 
-        /* --- Harmonized Dashboard Cards (from previous request) --- */
+        /* --- Harmonized Dashboard Cards (from previous request) --- */
 
-        .text-accent-dark {
-            color: var(--theme-dark-text) !important;
-        }
+        .text-accent-dark {
+            color: var(--theme-dark-text) !important;
+        }
 
-        .card-classy-lift {
-            border-top-width: 4px;
-            border-top-color: var(--theme-cyan) !important; 
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
-            transition: transform 0.3s ease;
-        }
-        .card-classy-lift:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1) !important;
-        }
-        
-        /* 1. Your Room Card: Use Cyan for border, Primary Blue for header text */
-        #student-dashboard-view .grid > div:nth-child(1) {
-            border-top-color: var(--theme-cyan) !important;
-        }
-        #student-dashboard-view .grid > div:nth-child(1) .text-primary-blue {
-            color: var(--theme-cyan) !important;
-        }
+        .card-classy-lift {
+            border-top-width: 4px;
+            border-top-color: var(--theme-cyan) !important; 
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+            transition: transform 0.3s ease;
+        }
+        .card-classy-lift:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1) !important;
+        }
+        
+        /* 1. Your Room Card: Use Cyan for border, Primary Blue for header text */
+        #student-dashboard-view .grid > div:nth-child(1) {
+            border-top-color: var(--theme-cyan) !important;
+        }
+        #student-dashboard-view .grid > div:nth-child(1) .text-primary-blue {
+            color: var(--theme-cyan) !important;
+        }
 
-        /* 2. Fee Status Card: Keep Green border, change header text to accent-dark */
-        #student-dashboard-view .grid > div:nth-child(2) {
-            border-top-color: var(--accent-green) !important;
-        }
-        #student-dashboard-view .grid > div:nth-child(2) .text-accent-red { 
-            color: var(--accent-green) !important;
-        }
-        #student-dashboard-view .grid > div:nth-child(2) .text-xs {
-             color: var(--accent-green) !important;
-        }
-        
-        /* 3. Open Requests Card: Keep Orange border, change header text to accent-dark */
-        #student-dashboard-view .grid > div:nth-child(3) {
-            border-top-color: var(--complaint-theme) !important;
-        }
-        #student-dashboard-view .grid > div:nth-child(3) .text-complaint-theme {
-            color: var(--complaint-theme) !important;
-        }
-        #student-dashboard-view .grid > div:nth-child(3) .text-accent-dark {
-             color: var(--theme-dark-text) !important;
-        }
-        
-        .btn-classy-lift.bg-primary-blue {
-            background-color: var(--theme-primary) !important;
-        }
-        
-        .lg\:col-span-1 .text-xl.font-bold {
-            color: var(--theme-dark-text) !important;
-        }
+        /* 2. Fee Status Card: Keep Green border, change header text to accent-dark */
+        #student-dashboard-view .grid > div:nth-child(2) {
+            border-top-color: var(--accent-green) !important;
+        }
+        #student-dashboard-view .grid > div:nth-child(2) .text-accent-red { 
+            color: var(--accent-green) !important;
+        }
+        #student-dashboard-view .grid > div:nth-child(2) .text-xs {
+             color: var(--accent-green) !important;
+        }
+        
+        /* 3. Open Requests Card: Keep Orange border, change header text to accent-dark */
+        #student-dashboard-view .grid > div:nth-child(3) {
+            border-top-color: var(--complaint-theme) !important;
+        }
+        #student-dashboard-view .grid > div:nth-child(3) .text-complaint-theme {
+            color: var(--complaint-theme) !important;
+        }
+        #student-dashboard-view .grid > div:nth-child(3) .text-accent-dark {
+             color: var(--theme-dark-text) !important;
+        }
+        
+        .btn-classy-lift.bg-primary-blue {
+            background-color: var(--theme-primary) !important;
+        }
+        
+        .lg\:col-span-1 .text-xl.font-bold {
+            color: var(--theme-dark-text) !important;
+        }
 
-        #report-tab-content-complaints .text-complaint-theme,
-        #report-tab-content-lost-found .text-accent-red,
-        #student-leave-view .text-info-yellow {
-             color: inherit !important; 
-        }
-    </style>
+        #report-tab-content-complaints .text-complaint-theme,
+        #report-tab-content-lost-found .text-accent-red,
+        #student-leave-view .text-info-yellow {
+             color: inherit !important; 
+        }
+    </style>
 
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'primary-blue': '#2563EB',
-                        'secondary-accent': '#F9C74F',
-                        'accent-dark': '#1F2937',
-                        'accent-green': '#059669',
-                        'accent-red': '#DC2626',
-                        'info-yellow': '#FBBF24',
-                        'complaint-theme': '#EA580C', 
-                        'secondary-gray': '#6B7280',
-                        'light-bg': '#F9FAFB',
-                        'card-bg': '#FFFFFF',
-                        'text-muted': '#E5E7EB',
-                        'page-bg': '#eff6ff'
-                    },
-                    boxShadow: {
-                        'soft': '0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.02)',
-                        'lift': '0 5px 15px -3px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.05)',
-                        'deep': '0 10px 25px -5px rgba(0, 0, 0, 0.2), 0 3px 5px -2px rgba(0, 0, 0, 0.08)',
-                    }
-                }
-            }
-        }
-    </script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary-blue': '#2563EB',
+                        'secondary-accent': '#F9C74F',
+                        'accent-dark': '#1F2937',
+                        'accent-green': '#059669',
+                        'accent-red': '#DC2626',
+                        'info-yellow': '#FBBF24',
+                        'complaint-theme': '#EA580C', 
+                        'secondary-gray': '#6B7280',
+                        'light-bg': '#F9FAFB',
+                        'card-bg': '#FFFFFF',
+                        'text-muted': '#E5E7EB',
+                        'page-bg': '#eff6ff'
+                    },
+                    boxShadow: {
+                        'soft': '0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.02)',
+                        'lift': '0 5px 15px -3px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.05)',
+                        'deep': '0 10px 25px -5px rgba(0, 0, 0, 0.2), 0 3px 5px -2px rgba(0, 0, 0, 0.08)',
+                    }
+                }
+            }
+        }
+    </script>
 </head>
 
 <body class="bg-blue-50 text-gray-900">
 
-    <nav class="navbar shadow-lg border-b border-primary-blue/20">
-        <div class="w-full px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                
-                <div class="flex items-center">
-                    <a href="#" onclick="showView('student-dashboard-view')" class="flex-shrink-0 text-xl md:text-2xl font-bold text-primary-blue hover:text-blue-700 transition duration-300">
-                        IIT COLLEGE <span class="hidden sm:inline text-xs md:text-sm font-normal text-secondary-gray ml-1">| Student Portal</span>
-                    </a>
-                </div>
+    <nav class="navbar shadow-lg border-b border-primary-blue/20">
+        <div class="w-full px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                
+                <div class="flex items-center">
+                    <a href="#" onclick="showView('student-dashboard-view')" class="flex-shrink-0 text-xl md:text-2xl font-bold text-primary-blue hover:text-blue-700 transition duration-300">
+                        IIT COLLEGE <span class="hidden sm:inline text-xs md:text-sm font-normal text-secondary-gray ml-1">| Student Portal</span>
+                    </a>
+                </div>
 
-                <div class="hidden sm:flex flex-1 justify-center">
-                    <div class="flex space-x-4 lg:space-x-6">
-                        <a href="#" onclick="showView('student-dashboard-view')" id="nav-student-dashboard-view" class="nav-link inline-flex items-center px-1 pt-1 text-sm font-medium text-secondary-gray hover:text-primary-blue transition duration-200 active">
-                            <span class="mr-1">🏠</span> Dashboard
-                        </a>
-                        <a href="#" onclick="showStudentDetails()" id="nav-student-profile-view" class="nav-link inline-flex items-center px-1 pt-1 text-sm font-medium text-secondary-gray hover:text-primary-blue transition duration-200">
-                            <span class="mr-1">🧑</span> My Profile
-                        </a>
-                        <a href="#" onclick="showView('student-room-view')" id="nav-student-room-view" class="nav-link inline-flex items-center px-1 pt-1 text-sm font-medium text-secondary-gray hover:text-primary-blue transition duration-200">
-                            <span class="mr-1">🛏</span> My Room
-                        </a>
-                        <a href="#" onclick="showView('student-attendance-view')" id="nav-student-attendance-view" class="nav-link inline-flex items-center px-1 pt-1 text-sm font-medium text-secondary-gray hover:text-primary-blue transition duration-200">
-                            <span class="mr-1">✅</span> Attendance
-                        </a>
-                        <a href="#" onclick="showView('student-reports-view')" id="nav-student-reports-view" class="nav-link inline-flex items-center px-1 pt-1 text-sm font-medium text-secondary-gray hover:text-primary-blue transition duration-200">
-                            <span class="mr-1">⚠️</span> Reports & Issues
-                        </a>
-                        <a href="#" onclick="showView('student-visitor-view')" id="nav-student-visitor-view" class="nav-link inline-flex items-center px-1 pt-1 text-sm font-medium text-secondary-gray hover:text-primary-blue transition duration-200">
-                            <span class="mr-1">👤</span> Visitor Request
-                        </a>
-                        <a href="#" onclick="showView('student-leave-view')" id="nav-student-leave-view" class="nav-link inline-flex items-center px-1 pt-1 text-sm font-medium text-secondary-gray hover:text-primary-blue transition duration-200">
-                            <span class="mr-1">🗓</span> Leave Request
-                        </a>
-                        <a href="gymkhana.html" target="_top" id="nav-student-gymkhana-view" class="nav-link inline-flex items-center px-1 pt-1 text-sm font-medium text-secondary-gray hover:text-primary-blue transition duration-200">
-                            <span class="mr-1">🗳️</span> Gymkhana
-                        </a>
-                    </div>
-                </div>
+                <div class="hidden sm:flex flex-1 justify-center">
+                    <div class="flex space-x-4 lg:space-x-6">
+                        <a href="#" onclick="showView('student-dashboard-view')" id="nav-student-dashboard-view" class="nav-link inline-flex items-center px-1 pt-1 text-sm font-medium text-secondary-gray hover:text-primary-blue transition duration-200 active">
+                            <span class="mr-1">🏠</span> Dashboard
+                        </a>
+                        <a href="#" onclick="showStudentDetails()" id="nav-student-profile-view" class="nav-link inline-flex items-center px-1 pt-1 text-sm font-medium text-secondary-gray hover:text-primary-blue transition duration-200">
+                            <span class="mr-1">🧑</span> My Profile
+                        </a>
+                        <a href="#" onclick="showView('student-room-view')" id="nav-student-room-view" class="nav-link inline-flex items-center px-1 pt-1 text-sm font-medium text-secondary-gray hover:text-primary-blue transition duration-200">
+                            <span class="mr-1">🛏</span> My Room
+                        </a>
+                        <a href="#" onclick="showView('student-attendance-view')" id="nav-student-attendance-view" class="nav-link inline-flex items-center px-1 pt-1 text-sm font-medium text-secondary-gray hover:text-primary-blue transition duration-200">
+                            <span class="mr-1">✅</span> Attendance
+                        </a>
+                        <a href="#" onclick="showView('student-reports-view')" id="nav-student-reports-view" class="nav-link inline-flex items-center px-1 pt-1 text-sm font-medium text-secondary-gray hover:text-primary-blue transition duration-200">
+                            <span class="mr-1">⚠️</span> Reports & Issues
+                        </a>
+                        <a href="#" onclick="showView('student-visitor-view')" id="nav-student-visitor-view" class="nav-link inline-flex items-center px-1 pt-1 text-sm font-medium text-secondary-gray hover:text-primary-blue transition duration-200">
+                            <span class="mr-1">👤</span> Visitor Request
+                        </a>
+                        <a href="#" onclick="showView('student-leave-view')" id="nav-student-leave-view" class="nav-link inline-flex items-center px-1 pt-1 text-sm font-medium text-secondary-gray hover:text-primary-blue transition duration-200">
+                            <span class="mr-1">🗓</span> Leave Request
+                        </a>
+                        <a href="gymkhana.html" target="_top" id="nav-student-gymkhana-view" class="nav-link inline-flex items-center px-1 pt-1 text-sm font-medium text-secondary-gray hover:text-primary-blue transition duration-200">
+                            <span class="mr-1">🗳️</span> Gymkhana
+                        </a>
+                    </div>
+                </div>
 
-                <div class="flex items-center space-x-4">
-                    
-                    <a href="#" onclick="logout()" class="nav-link hidden sm:inline-flex items-center px-1 pt-1 text-sm font-medium text-secondary-gray hover:text-accent-red transition duration-200">
-                        <span class="mr-1">🚪</span> Logout
-                    </a>
+                <div class="flex items-center space-x-4">
+                    
+                    <a href="#" onclick="logout()" class="nav-link hidden sm:inline-flex items-center px-1 pt-1 text-sm font-medium text-secondary-gray hover:text-accent-red transition duration-200">
+                        <span class="mr-1">🚪</span> Logout
+                    </a>
 
-                    <div class="flex-shrink-0">
-                         <div id="student-initial-box" onclick="showStudentDetails()" class="h-8 w-8 md:h-10 md:w-10 bg-primary-blue rounded-full flex items-center justify-center text-card-bg font-semibold shadow-soft cursor-pointer relative">
-                             <img id="nav-profile-image" class="h-full w-full rounded-full object-cover hidden" alt="Profile">
-                             <span id="nav-initials" class="text-sm md:text-base">...</span>
-                         </div>
-                    </div>
-                    
-                    <button type="button" id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-primary-blue hover:text-primary-blue/80 hover:bg-light-bg focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-blue sm:hidden" aria-controls="mobile-menu" aria-expanded="false">
-                        <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
-                    </button>
-                </div>
+                    <div class="flex-shrink-0">
+                         <div id="student-initial-box" onclick="showStudentDetails()" class="h-8 w-8 md:h-10 md:w-10 bg-primary-blue rounded-full flex items-center justify-center text-card-bg font-semibold shadow-soft cursor-pointer relative">
+                             <img id="nav-profile-image" class="h-full w-full rounded-full object-cover hidden" alt="Profile">
+                             <span id="nav-initials" class="text-sm md:text-base">...</span>
+                         </div>
+                    </div>
+                    
+                    <button type="button" id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-primary-blue hover:text-primary-blue/80 hover:bg-light-bg focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-blue sm:hidden" aria-controls="mobile-menu" aria-expanded="false">
+                        <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
+                    </button>
+                </div>
 
-            </div>
-        </div>
+            </div>
+        </div>
 
-        <div class="sm:hidden hidden" id="mobile-menu">
-            <div class="pt-2 pb-3 space-y-1">
-                <a href="#" onclick="showView('student-dashboard-view'); hideMobileMenu();" id="mobile-nav-student-dashboard-view" class="nav-link block pl-3 pr-4 py-2 border-l-4 border-primary-blue text-base font-medium text-primary-blue bg-light-bg"><span class="mr-2">🏠</span> Dashboard</a>
-                <a href="#" onclick="showStudentDetails(); hideMobileMenu();" id="mobile-nav-student-profile-view" class="nav-link block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:bg-light-bg hover:text-gray-800"><span class="mr-2">🧑</span> My Profile</a>
-                <a href="#" onclick="showView('student-room-view'); hideMobileMenu();" id="mobile-nav-student-room-view" class="nav-link block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:bg-light-bg hover:text-gray-800"><span class="mr-2">🛏</span> My Room</a>
-                <a href="#" onclick="showView('student-attendance-view'); hideMobileMenu();" id="mobile-nav-student-attendance-view" class="nav-link block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:bg-light-bg hover:text-gray-800"><span class="mr-2">✅</span> Attendance</a>
-                <a href="#" onclick="showView('student-reports-view'); hideMobileMenu();" id="mobile-nav-student-reports-view" class="nav-link block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:bg-light-bg hover:text-gray-800"><span class="mr-2">⚠️</span> Reports & Issues</a>
-                <a href="#" onclick="showView('student-visitor-view'); hideMobileMenu();" id="mobile-nav-student-visitor-view" class="nav-link block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:bg-light-bg hover:text-gray-800"><span class="mr-2">👤</span> Visitor Request</a>
-                <a href="#" onclick="showView('student-leave-view'); hideMobileMenu();" id="mobile-nav-student-leave-view" class="nav-link block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:bg-light-bg hover:text-gray-800"><span class="mr-2">🗓</span> Leave Request</a>
-                <a href="gymkhana.html" target="_top" id="mobile-nav-student-gymkhana-view" class="nav-link block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:bg-light-bg hover:text-gray-800"><span class="mr-2">🗳️</span> Gymkhana</a>
-                <a href="#" onclick="logout(); hideMobileMenu();" class="nav-link block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:bg-light-bg hover:text-accent-red"><span class="mr-2">🚪</span> Logout</a>
-            </div>
-        </div>
-    </nav>
-    
-    <div class="main-wrapper">
-        <div class="content-padding">
+        <div class="sm:hidden hidden" id="mobile-menu">
+            <div class="pt-2 pb-3 space-y-1">
+                <a href="#" onclick="showView('student-dashboard-view'); hideMobileMenu();" id="mobile-nav-student-dashboard-view" class="nav-link block pl-3 pr-4 py-2 border-l-4 border-primary-blue text-base font-medium text-primary-blue bg-light-bg"><span class="mr-2">🏠</span> Dashboard</a>
+                <a href="#" onclick="showStudentDetails(); hideMobileMenu();" id="mobile-nav-student-profile-view" class="nav-link block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:bg-light-bg hover:text-gray-800"><span class="mr-2">🧑</span> My Profile</a>
+                <a href="#" onclick="showView('student-room-view'); hideMobileMenu();" id="mobile-nav-student-room-view" class="nav-link block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:bg-light-bg hover:text-gray-800"><span class="mr-2">🛏</span> My Room</a>
+                <a href="#" onclick="showView('student-attendance-view'); hideMobileMenu();" id="mobile-nav-student-attendance-view" class="nav-link block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:bg-light-bg hover:text-gray-800"><span class="mr-2">✅</span> Attendance</a>
+                <a href="#" onclick="showView('student-reports-view'); hideMobileMenu();" id="mobile-nav-student-reports-view" class="nav-link block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:bg-light-bg hover:text-gray-800"><span class="mr-2">⚠️</span> Reports & Issues</a>
+                <a href="#" onclick="showView('student-visitor-view'); hideMobileMenu();" id="mobile-nav-student-visitor-view" class="nav-link block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:bg-light-bg hover:text-gray-800"><span class="mr-2">👤</span> Visitor Request</a>
+                <a href="#" onclick="showView('student-leave-view'); hideMobileMenu();" id="mobile-nav-student-leave-view" class="nav-link block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:bg-light-bg hover:text-gray-800"><span class="mr-2">🗓</span> Leave Request</a>
+                <a href="gymkhana.html" target="_top" id="mobile-nav-student-gymkhana-view" class="nav-link block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:bg-light-bg hover:text-gray-800"><span class="mr-2">🗳️</span> Gymkhana</a>
+                <a href="#" onclick="logout(); hideMobileMenu();" class="nav-link block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:bg-light-bg hover:text-accent-red"><span class="mr-2">🚪</span> Logout</a>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="main-wrapper">
+        <div class="content-padding">
 
-            <div id="student-dashboard-view" class="view">
-                <h1 id="welcome-heading" class="text-3xl md:text-4xl font-extrabold text-accent-dark mb-2 mt-2 md:mt-4"> Welcome...</h1>
-                <p class="text-base md:text-lg text-secondary-gray mb-8 md:mb-10">Your personalized hostel status and services overview.</p>
+            <div id="student-dashboard-view" class="view">
+                <h1 id="welcome-heading" class="text-3xl md:text-4xl font-extrabold text-accent-dark mb-2 mt-2 md:mt-4"> Welcome...</h1>
+                <p class="text-base md:text-lg text-secondary-gray mb-8 md:mb-10">Your personalized hostel status and services overview.</p>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mb-10 md:mb-16">
-                    
-                    <div onclick="showView('student-room-view')" class="bg-card-bg p-6 rounded-xl shadow-lift border-t-4 border-primary-blue card-classy-lift cursor-pointer">
-                        <p class="text-xs font-semibold text-primary-blue uppercase mb-3">Your Room</p>
-                        <p class="text-4xl md:text-5xl font-extrabold text-accent-dark mb-1">...</p>
-                        <p class="text-sm text-secondary-gray">...</p>
-                        <div class="mt-4 flex items-center text-accent-dark font-semibold">
-                            <span class="text-xs text-accent-green mr-2">●</span> You are currently checked in.
-                        </div>
-                    </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mb-10 md:mb-16">
+                    
+                    <div onclick="showView('student-room-view')" class="bg-card-bg p-6 rounded-xl shadow-lift border-t-4 border-primary-blue card-classy-lift cursor-pointer">
+                        <p class="text-xs font-semibold text-primary-blue uppercase mb-3">Your Room</p>
+                        <p class="text-4xl md:text-5xl font-extrabold text-accent-dark mb-1">...</p>
+                        <p class="text-sm text-secondary-gray">...</p>
+                        <div class="mt-4 flex items-center text-accent-dark font-semibold">
+                            <span class="text-xs text-accent-green mr-2">●</span> You are currently checked in.
+                        </div>
+                    </div>
 
-                    <div onclick="showStudentDetails()" class="bg-card-bg p-6 rounded-xl shadow-lift border-t-4 border-accent-red card-classy-lift cursor-pointer">
-                        <p class="text-xs font-semibold text-accent-red uppercase mb-3">Fee Status</p>
-                        <p id="dashboard-fee-status" class="text-4xl md:text-5xl font-extrabold text-accent-red mb-1">...</p>
-                        <p class="text-sm text-secondary-gray">...</p>
-                        <div class="mt-4 flex items-center text-accent-red font-semibold">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>
-                            <span>...</span>
-                        </div>
-                    </div>
+                    <div onclick="showStudentDetails()" class="bg-card-bg p-6 rounded-xl shadow-lift border-t-4 border-accent-red card-classy-lift cursor-pointer">
+                        <p class="text-xs font-semibold text-accent-red uppercase mb-3">Fee Status</p>
+                        <p id="dashboard-fee-status" class="text-4xl md:text-5xl font-extrabold text-accent-red mb-1">...</p>
+                        <p class="text-sm text-secondary-gray">...</p>
+                        <div class="mt-4 flex items-center text-accent-red font-semibold">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>
+                            <span>...</span>
+                        </div>
+                    </div>
 
-                    <div onclick="showView('student-reports-view')" class="bg-card-bg p-6 rounded-xl shadow-lift border-t-4 border-complaint-theme card-classy-lift cursor-pointer">
-                        <p class="text-xs font-semibold text-complaint-theme uppercase mb-3">Open Requests</p>
-                        <p id="dashboard-open-requests" class="text-4xl md:text-5xl font-extrabold text-accent-dark mb-1">...</p>
-                        <p class="text-sm text-secondary-gray">...</p>
-                        <div class="mt-4 flex items-center text-complaint-theme font-semibold">
-                            <span class="text-xs text-complaint-theme mr-2">●</span> Priority: Critical
-                        </div>
-                    </div>
-                </div>
+                    <div onclick="showView('student-reports-view')" class="bg-card-bg p-6 rounded-xl shadow-lift border-t-4 border-complaint-theme card-classy-lift cursor-pointer">
+                        <p class="text-xs font-semibold text-complaint-theme uppercase mb-3">Open Requests</p>
+                        <p id="dashboard-open-requests" class="text-4xl md:text-5xl font-extrabold text-accent-dark mb-1">...</p>
+                        <p class="text-sm text-secondary-gray">...</p>
+                        <div class="mt-4 flex items-center text-complaint-theme font-semibold">
+                            <span class="text-xs text-complaint-theme mr-2">●</span> Priority: Critical
+                        </div>
+                    </div>
+                </div>
 
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
-        
-                    <div class="lg:col-span-2">
-                        <div class="flex justify-between items-center mb-6">
-                            <h2 class="text-2xl md:text-3xl font-bold text-accent-dark">🎭 Club Activities & Events</h2>
-                            <button onclick="showView('student-activities-view')" class="btn-classy-lift bg-primary-blue text-card-bg text-sm font-semibold px-5 py-3 rounded-lg shadow-lift hover:bg-blue-700 transition duration-300">
-                                View All Activities
-                            </button>
-                        </div>
-        
-                        <div id="club-activities-dashboard" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
-                            <div class="text-center py-8 text-secondary-gray col-span-full">
-                                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-blue mx-auto mb-2"></div>
-                                <p>Loading activities...</p>
-                            </div>
-                        </div>
-                    </div>
-        
-                    <div class="lg:col-span-1">
-                        <h2 class="text-2xl md:text-3xl font-bold text-accent-dark mb-6">Quick Actions</h2>
-                        <div class="grid grid-cols-1 gap-4">
-                             <button onclick="showView('student-reports-view')" class="btn-classy-lift bg-primary-blue text-card-bg text-sm font-semibold px-5 py-3 rounded-lg shadow-lift hover:bg-blue-700 transition duration-300">
-                                 File a Report or Issue
-                             </button>
-                            <button onclick="showView('student-leave-view')" class="btn-classy-lift bg-primary-blue text-card-bg text-sm font-semibold px-5 py-3 rounded-lg shadow-lift hover:bg-blue-700 transition duration-300">
-                                Apply for Leave
-                            </button>
-                            <button onclick="showStudentDetails()" class="btn-classy-lift bg-primary-blue text-card-bg text-sm font-semibold px-5 py-3 rounded-lg shadow-lift hover:bg-blue-700 transition duration-300">
-                                View Profile & Fees
-                            </button>
-                            <button onclick="openAnnouncementsModal()" class="btn-classy-lift bg-primary-blue text-card-bg text-sm font-semibold px-5 py-3 rounded-lg shadow-lift hover:bg-blue-700 transition duration-300">
-                                Hostel Announcements
-                            </button>
-                        </div>
-                    </div>
-        
-                </div>
-            </div>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
+        
+                    <div class="lg:col-span-2">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-2xl md:text-3xl font-bold text-accent-dark">🎭 Club Activities & Events</h2>
+                            <button onclick="showView('student-activities-view')" class="btn-classy-lift bg-primary-blue text-card-bg text-sm font-semibold px-5 py-3 rounded-lg shadow-lift hover:bg-blue-700 transition duration-300">
+                                View All Activities
+                            </button>
+                        </div>
+        
+                        <div id="club-activities-dashboard" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+                            <div class="text-center py-8 text-secondary-gray col-span-full">
+                                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-blue mx-auto mb-2"></div>
+                                <p>Loading activities...</p>
+                            </div>
+                        </div>
+                    </div>
+        
+                    <div class="lg:col-span-1">
+                        <h2 class="text-2xl md:text-3xl font-bold text-accent-dark mb-6">Quick Actions</h2>
+                        <div class="grid grid-cols-1 gap-4">
+                             <button onclick="showView('student-reports-view')" class="btn-classy-lift bg-primary-blue text-card-bg text-sm font-semibold px-5 py-3 rounded-lg shadow-lift hover:bg-blue-700 transition duration-300">
+                                 File a Report or Issue
+                             </button>
+                            <button onclick="showView('student-leave-view')" class="btn-classy-lift bg-primary-blue text-card-bg text-sm font-semibold px-5 py-3 rounded-lg shadow-lift hover:bg-blue-700 transition duration-300">
+                                Apply for Leave
+                            </button>
+                            <button onclick="showStudentDetails()" class="btn-classy-lift bg-primary-blue text-card-bg text-sm font-semibold px-5 py-3 rounded-lg shadow-lift hover:bg-blue-700 transition duration-300">
+                                View Profile & Fees
+                            </button>
+                            <button onclick="openAnnouncementsModal()" class="btn-classy-lift bg-primary-blue text-card-bg text-sm font-semibold px-5 py-3 rounded-lg shadow-lift hover:bg-blue-700 transition duration-300">
+                                Hostel Announcements
+                            </button>
+                        </div>
+                    </div>
+        
+                </div>
+            </div>
 
-            <div id="student-room-view" class="view hidden">
-                <h1 class="text-3xl md:text-4xl font-extrabold text-accent-dark mb-6 md:mb-8">My Room & Mates 🛏️</h1>
-                <p class="text-secondary-gray mb-8">Details about your current accommodation and fellow occupants.</p>
+            <div id="student-room-view" class="view hidden">
+                <h1 class="text-3xl md:text-4xl font-extrabold text-accent-dark mb-6 md:mb-8">My Room & Mates 🛏️</h1>
+                <p class="text-secondary-gray mb-8">Details about your current accommodation and fellow occupants.</p>
 
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
-                    <div class="lg:col-span-1 bg-card-bg rounded-xl shadow-lift border-t-4 border-primary-blue overflow-hidden">
-                        
-                        <img id="room-detail-image" src="" alt="Room Image" class="w-full h-48 object-cover" style="background-color: #e0e0e0;">
-                        <div class="p-6">
-                            <h3 class="text-xl font-bold text-accent-dark mb-4">Room ... Summary</h3>
-                            <div class="space-y-3 text-sm">
-                                <p class="text-secondary-gray flex justify-between">Hostel: <span class="font-semibold text-accent-dark">...</span></p>
-                                <p class="text-secondary-gray flex justify-between">Floor: <span class="font-semibold text-accent-dark">...</span></p>
-                                <p class="text-secondary-gray flex justify-between">Capacity: <span class="font-semibold text-accent-dark">...</span></p>
-                                <p class="text-secondary-gray flex justify-between">Occupancy: <span class="font-bold text-accent-green">...</span></p>
-                            </div>
-                            <div class="mt-6 pt-4 border-t border-text-muted">
-                                <p class="text-secondary-gray text-xs">If any issues, please check the Reports tab.</p>
-                            </div>
-                        </div>
-                    </div>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
+                    <div class="lg:col-span-1 bg-card-bg rounded-xl shadow-lift border-t-4 border-primary-blue overflow-hidden">
+                        
+                        <img id="room-detail-image" src="" alt="Room Image" class="w-full h-48 object-cover" style="background-color: #e0e0e0;">
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold text-accent-dark mb-4">Room ... Summary</h3>
+                            <div class="space-y-3 text-sm">
+                                <p class="text-secondary-gray flex justify-between">Hostel: <span class="font-semibold text-accent-dark">...</span></p>
+                                <p class="text-secondary-gray flex justify-between">Floor: <span class="font-semibold text-accent-dark">...</span></p>
+                                <p class="text-secondary-gray flex justify-between">Capacity: <span class="font-semibold text-accent-dark">...</span></p>
+                                <p class="text-secondary-gray flex justify-between">Occupancy: <span class="font-bold text-accent-green">...</span></p>
+                            </div>
+                            <div class="mt-6 pt-4 border-t border-text-muted">
+                                <p class="text-secondary-gray text-xs">If any issues, please check the Reports tab.</p>
+                            </div>
+                        </div>
+                    </div>
 
-                    <div class="lg:col-span-2 bg-card-bg p-6 rounded-xl shadow-lift border-t-4 border-primary-blue">
-                        <h3 class="text-xl font-bold text-accent-dark mb-5">Current Roommates (...)</h3>
-                        <div id="roommates-list" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            </div>
-                    </div>
-                </div>
-            </div>
+                    <div class="lg:col-span-2 bg-card-bg p-6 rounded-xl shadow-lift border-t-4 border-primary-blue">
+                        <h3 class="text-xl font-bold text-accent-dark mb-5">Current Roommates (...)</h3>
+                        <div id="roommates-list" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            </div>
+                    </div>
+                </div>
+            </div>
 
-            <div id="student-attendance-view" class="view hidden">
-                <h1 class="text-3xl md:text-4xl font-extrabold text-accent-dark mb-6 md:mb-8"> My Attendance ✅</h1>
-                <p class="text-secondary-gray mb-8">Manage your daily hostel check-in and check-out status.</p>
+            <div id="student-attendance-view" class="view hidden">
+                <h1 class="text-3xl md:text-4xl font-extrabold text-accent-dark mb-6 md:mb-8"> My Attendance ✅</h1>
+                <p class="text-secondary-gray mb-8">Manage your daily hostel check-in and check-out status.</p>
 
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
-                    <div id="attendance-status-card" class="lg:col-span-1 bg-card-bg p-6 rounded-xl shadow-lift border-t-4 border-accent-green">
-                        <h3 class="text-xl font-bold text-accent-dark mb-4">Current Status</h3>
-                        <div class="text-center py-6">
-                            <p class="text-3xl font-extrabold text-accent-green mb-2" id="attendance-status-text">Checked In</p>
-                            <p class="text-sm text-secondary-gray" id="attendance-status-time">Since: 24 Oct 2025, 08:00 AM</p>
-                        </div>
-                        <button id="attendance-toggle-btn" class="btn-classy-lift bg-accent-red text-card-bg w-full py-3 rounded-lg shadow-lift hover:bg-red-700 font-semibold">
-                            Check Out
-                        </button>
-                    </div>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
+                    <div id="attendance-status-card" class="lg:col-span-1 bg-card-bg p-6 rounded-xl shadow-lift border-t-4 border-accent-green">
+                        <h3 class="text-xl font-bold text-accent-dark mb-4">Current Status</h3>
+                        <div class="text-center py-6">
+                            <p class="text-3xl font-extrabold text-accent-green mb-2" id="attendance-status-text">Checked In</p>
+                            <p class="text-sm text-secondary-gray" id="attendance-status-time">Since: 24 Oct 2025, 08:00 AM</p>
+                        </div>
+                        <button id="attendance-toggle-btn" class="btn-classy-lift bg-accent-red text-card-bg w-full py-3 rounded-lg shadow-lift hover:bg-red-700 font-semibold">
+                            Check Out
+                        </button>
+                    </div>
 
-                    <div class="lg:col-span-2 bg-card-bg p-6 rounded-xl shadow-lift border-t-4 border-primary-blue">
-                        <h3 class="text-xl font-bold text-accent-dark mb-5">Attendance Log (Last 7 Days)</h3>
-                        <div class="overflow-x-auto">
-                            <table class="min-w-full divide-y divide-text-muted">
-                                <thead class="bg-light-bg">
-                                    <tr>
-                                        <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Date</th>
-                                        <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Check-In</th>
-                                        <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Check-Out</th>
-                                        <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="attendance-log-body" class="bg-card-bg divide-y divide-text-muted">
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                    <div class="lg:col-span-2 bg-card-bg p-6 rounded-xl shadow-lift border-t-4 border-primary-blue">
+                        <h3 class="text-xl font-bold text-accent-dark mb-5">Attendance Log (Last 7 Days)</h3>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-text-muted">
+                                <thead class="bg-light-bg">
+                                    <tr>
+                                        <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Date</th>
+                                        <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Check-In</th>
+                                        <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Check-Out</th>
+                                        <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="attendance-log-body" class="bg-card-bg divide-y divide-text-muted">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-            <div id="student-visitor-view" class="view hidden">
-                <h1 class="text-3xl md:text-4xl font-extrabold text-accent-dark mb-6 md:mb-8">Visitor Request 👤</h1>
-                <p class="text-secondary-gray mb-8">Register a guest visitor pass for admin approval.</p>
+            <div id="student-visitor-view" class="view hidden">
+                <h1 class="text-3xl md:text-4xl font-extrabold text-accent-dark mb-6 md:mb-8">Visitor Request 👤</h1>
+                <p class="text-secondary-gray mb-8">Register a guest visitor pass for admin approval.</p>
 
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
-                    <div class="lg:col-span-1 bg-card-bg p-6 rounded-xl shadow-lift border-l-4 border-primary-blue">
-                        <h3 class="text-xl font-bold text-primary-blue mb-4">New Visitor Pass Request</h3>
-                        <form id="visitor-request-form" onsubmit="event.preventDefault(); submitVisitorRequest();" class="space-y-4">
-                            <div>
-                                <label class="block text-sm font-medium text-secondary-gray mb-1">Visitor's Full Name</label>
-                                <input type="text" id="visitor-name" placeholder="e.g., Mrs. Sharma" class="w-full p-3 border border-text-muted rounded-lg focus:ring-primary-blue focus:border-primary-blue bg-light-bg" required>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-secondary-gray mb-1">Check-In Date</label>
-                                <input type="date" id="visitor-start-date" class="w-full p-3 border border-text-muted rounded-lg focus:ring-primary-blue focus:border-primary-blue bg-light-bg" required>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-secondary-gray mb-1">Check-Out Date</label>
-                                <input type="date" id="visitor-end-date" class="w-full p-3 border border-text-muted rounded-lg focus:ring-primary-blue focus:border-primary-blue bg-light-bg" required>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-secondary-gray mb-1">Reason for Visit</label>
-                                <textarea id="visitor-reason" rows="3" placeholder="e.g., Family visit" class="w-full p-3 border border-text-muted rounded-lg focus:ring-primary-blue focus:border-primary-blue bg-light-bg" required></textarea>
-                            </div>
-                            <button type="submit" class="btn-classy-lift bg-primary-blue text-card-bg w-full py-3 rounded-lg shadow-lift hover:bg-blue-700">
-                                Submit Visitor Request
-                            </button>
-                        </form>
-                    </div>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
+                    <div class="lg:col-span-1 bg-card-bg p-6 rounded-xl shadow-lift border-l-4 border-primary-blue">
+                        <h3 class="text-xl font-bold text-primary-blue mb-4">New Visitor Pass Request</h3>
+                        <form id="visitor-request-form" onsubmit="event.preventDefault(); submitVisitorRequest();" class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-secondary-gray mb-1">Visitor's Full Name</label>
+                                <input type="text" id="visitor-name" placeholder="e.g., Mrs. Sharma" class="w-full p-3 border border-text-muted rounded-lg focus:ring-primary-blue focus:border-primary-blue bg-light-bg" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-secondary-gray mb-1">Check-In Date</label>
+                                <input type="date" id="visitor-start-date" class="w-full p-3 border border-text-muted rounded-lg focus:ring-primary-blue focus:border-primary-blue bg-light-bg" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-secondary-gray mb-1">Check-Out Date</label>
+                                <input type="date" id="visitor-end-date" class="w-full p-3 border border-text-muted rounded-lg focus:ring-primary-blue focus:border-primary-blue bg-light-bg" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-secondary-gray mb-1">Reason for Visit</label>
+                                <textarea id="visitor-reason" rows="3" placeholder="e.g., Family visit" class="w-full p-3 border border-text-muted rounded-lg focus:ring-primary-blue focus:border-primary-blue bg-light-bg" required></textarea>
+                            </div>
+                            <button type="submit" class="btn-classy-lift bg-primary-blue text-card-bg w-full py-3 rounded-lg shadow-lift hover:bg-blue-700">
+                                Submit Visitor Request
+                            </button>
+                        </form>
+                    </div>
 
-                    <div class="lg:col-span-2 bg-card-bg p-6 rounded-xl shadow-lift border-t-4 border-primary-blue">
-                        <h3 class="text-xl font-bold text-accent-dark mb-5">Visitor Request History</h3>
-                        <div class="overflow-x-auto">
-                            <table class="min-w-full divide-y divide-text-muted">
-                                <thead class="bg-light-bg">
-                                    <tr>
-                                        <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Visitor</th>
-                                        <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Start Date</th>
-                                        <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">End Date</th>
-                                        <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Reason</th>
-                                        <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="visitor-request-history-body" class="bg-card-bg divide-y divide-text-muted">
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div id="student-reports-view" class="view hidden">
-                <h1 class="text-3xl md:text-4xl font-extrabold text-accent-dark mb-6 md:mb-8">Reports & Issues ⚠️</h1>
-                
-                <div class="mb-6 md:mb-8">
-                    <div class="bg-card-bg rounded-lg shadow-soft px-4 sm:px-6">
-                        <div class="border-b border-text-muted">
-                            <nav class="-mb-px flex space-x-8" aria-label="Tabs">
-                                <a href="#" id="tab-complaints" onclick="showReportTab('complaints')" class="report-tab active">
-                                    Complaints
-                                </a>
-                                <a href="#" id="tab-feedback" onclick="showReportTab('feedback')" class="report-tab">
-                                    Feedback
-                                </a>
-                                <a href="#" id="tab-lost-found" onclick="showReportTab('lost-found')" class="report-tab">
-                                    Lost & Found
-                                </a>
-                            </nav>
-                        </div>
-                    </div>
-                </div>
+                    <div class="lg:col-span-2 bg-card-bg p-6 rounded-xl shadow-lift border-t-4 border-primary-blue">
+                        <h3 class="text-xl font-bold text-accent-dark mb-5">Visitor Request History</h3>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-text-muted">
+                                <thead class="bg-light-bg">
+                                    <tr>
+                                        <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Visitor</th>
+                                        <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Start Date</th>
+                                        <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">End Date</th>
+                                        <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Reason</th>
+                                        <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="visitor-request-history-body" class="bg-card-bg divide-y divide-text-muted">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="student-reports-view" class="view hidden">
+                <h1 class="text-3xl md:text-4xl font-extrabold text-accent-dark mb-6 md:mb-8">Reports & Issues ⚠️</h1>
+                
+                <div class="mb-6 md:mb-8">
+                    <div class="bg-card-bg rounded-lg shadow-soft px-4 sm:px-6">
+                        <div class="border-b border-text-muted">
+                            <nav class="-mb-px flex space-x-8" aria-label="Tabs">
+                                <a href="#" id="tab-complaints" onclick="showReportTab('complaints')" class="report-tab active">
+                                    Complaints
+                                </a>
+                                <a href="#" id="tab-feedback" onclick="showReportTab('feedback')" class="report-tab">
+                                    Feedback
+                                </a>
+                                <a href="#" id="tab-lost-found" onclick="showReportTab('lost-found')" class="report-tab">
+                                    Lost & Found
+                                </a>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
 
-                <div id="report-tab-content-complaints" class="report-tab-content">
-                    <p class="text-secondary-gray mb-8">Submit new maintenance or hostel issues and track your existing requests.</p>
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
-                        <div class="lg:col-span-1 bg-card-bg p-6 rounded-xl shadow-lift border-l-4 border-complaint-theme">
-                            <h3 class="text-xl font-bold text-complaint-theme mb-4">Submit New Complaint</h3>
-                            <form id="complaint-form" onsubmit="event.preventDefault(); submitComplaint();" class="space-y-4">
-                                <div>
-                                    <label class="block text-sm font-medium text-secondary-gray mb-1">Complaint Type</label>
-                                    <select id="complaint-type" class="w-full p-3 border border-text-muted rounded-lg focus:ring-primary-blue focus:border-primary-blue bg-light-bg" required>
-                                        <option value="">Select Complaint Type</option>
-                                        <option value="Maintenance">Maintenance</option>
-                                        <option value="Electrical">Electrical Issue</option>
-                                        <option value="Plumbing">Plumbing/Water Issue</option>
-                                        <option value="Cleaning">Cleaning/Housekeeping</option>
-                                        <option value="Furniture">Furniture Repair</option>
-                                        <option value="Noise">Noise Complaint</option>
-                                        <option value="Security">Security Concern</option>
-                                        <option value="Other">Other</option>
-                                    </select>
-                                </div>
-                                
-                                <div>
-                                    <label class="block text-sm font-medium text-secondary-gray mb-1">Issue Location</label>
-                                    <select id="complaint-location" class="w-full p-3 border border-text-muted rounded-lg focus:ring-primary-blue focus:border-primary-blue bg-light-bg" required>
-                                        <option value="">Select Location</option>
-                                        <option value="My Room">My Room</option>
-                                        <option value="Floor Washroom">Floor Washroom</option>
-                                        <option value="Common Washroom">Common Washroom</option>
-                                        <option value="Hostel Common Area">Hostel Common Area</option>
-                                        <option value="Mess/Dining">Mess/Dining Area</option>
-                                        <option value="Corridor">Corridor</option>
-                                        <option value="Staircase">Staircase</option>
-                                        <option value="Other Area">Other Area</option>
-                                    </select>
-                                </div>
-                                
-                                
-                                
-                                <div>
-                                    <label class="block text-sm font-medium text-secondary-gray mb-1">Issue Date</label>
-                                    <input type="date" id="complaint-date" class="w-full p-3 border border-text-muted rounded-lg focus:ring-primary-blue focus:border-primary-blue bg-light-bg" required>
-                                </div>
-                                
-                                <div>
-                                    <label class="block text-sm font-medium text-secondary-gray mb-1">Priority Level</label>
-                                    <select id="complaint-priority" class="w-full p-3 border border-text-muted rounded-lg focus:ring-primary-blue focus:border-primary-blue bg-light-bg" required>
-                                        <option value="">Select Priority</option>
-                                        <option value="Low">Low</option>
-                                        <option value="Medium">Medium</option>
-                                        <option value="High">High</option>
-                                        <option value="Critical">Critical</option>
-                                    </select>
-                                </div>
-                                
-                                <div>
-                                    <label class="block text-sm font-medium text-secondary-gray mb-1">Detailed Description</label>
-                                    <textarea id="complaint-description" rows="4" placeholder="Please describe the issue in detail..." class="w-full p-3 border border-text-muted rounded-lg focus:ring-primary-blue focus:border-primary-blue bg-light-bg" required></textarea>
-                                </div>
-                                
-                                <button type="submit" class="btn-classy-lift bg-complaint-theme text-card-bg w-full py-3 rounded-lg shadow-lift hover:bg-orange-700 font-semibold">
-                                    Submit Complaint
-                                </button>
-                            </form>
-                        </div>
-                        <div class="lg:col-span-2">
-                            <h3 class="text-xl font-bold text-accent-dark mb-5">My Complaint History</h3>
-                            <div class="bg-card-bg rounded-xl shadow-lift overflow-x-auto">
-                                       <table class="min-w-full divide-y divide-text-muted">
-                                            <thead class="bg-light-bg">
-                                                <tr>
-                                                    <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">ID</th>
-                                                    <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Date</th>
-                                                    <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Type</th>
-                                                    <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Location</th>
-                                                    <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Priority</th>
-                                                    <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Status</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody id="student-complaint-history" class="bg-card-bg divide-y divide-text-muted">
-                                            </tbody>
-                                       </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <div id="report-tab-content-complaints" class="report-tab-content">
+                    <p class="text-secondary-gray mb-8">Submit new maintenance or hostel issues and track your existing requests.</p>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
+                        <div class="lg:col-span-1 bg-card-bg p-6 rounded-xl shadow-lift border-l-4 border-complaint-theme">
+                            <h3 class="text-xl font-bold text-complaint-theme mb-4">Submit New Complaint</h3>
+                            <form id="complaint-form" onsubmit="event.preventDefault(); submitComplaint();" class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-secondary-gray mb-1">Complaint Type</label>
+                                    <select id="complaint-type" class="w-full p-3 border border-text-muted rounded-lg focus:ring-primary-blue focus:border-primary-blue bg-light-bg" required>
+                                        <option value="">Select Complaint Type</option>
+                                        <option value="Maintenance">Maintenance</option>
+                                        <option value="Electrical">Electrical Issue</option>
+                                        <option value="Plumbing">Plumbing/Water Issue</option>
+                                        <option value="Cleaning">Cleaning/Housekeeping</option>
+                                        <option value="Furniture">Furniture Repair</option>
+                                        <option value="Noise">Noise Complaint</option>
+                                        <option value="Security">Security Concern</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-secondary-gray mb-1">Issue Location</label>
+                                    <select id="complaint-location" class="w-full p-3 border border-text-muted rounded-lg focus:ring-primary-blue focus:border-primary-blue bg-light-bg" required>
+                                        <option value="">Select Location</option>
+                                        <option value="My Room">My Room</option>
+                                        <option value="Floor Washroom">Floor Washroom</option>
+                                        <option value="Common Washroom">Common Washroom</option>
+                                        <option value="Hostel Common Area">Hostel Common Area</option>
+                                        <option value="Mess/Dining">Mess/Dining Area</option>
+                                        <option value="Corridor">Corridor</option>
+                                        <option value="Staircase">Staircase</option>
+                                        <option value="Other Area">Other Area</option>
+                                    </select>
+                                </div>
+                                
+                                
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-secondary-gray mb-1">Issue Date</label>
+                                    <input type="date" id="complaint-date" class="w-full p-3 border border-text-muted rounded-lg focus:ring-primary-blue focus:border-primary-blue bg-light-bg" required>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-secondary-gray mb-1">Priority Level</label>
+                                    <select id="complaint-priority" class="w-full p-3 border border-text-muted rounded-lg focus:ring-primary-blue focus:border-primary-blue bg-light-bg" required>
+                                        <option value="">Select Priority</option>
+                                        <option value="Low">Low</option>
+                                        <option value="Medium">Medium</option>
+                                        <option value="High">High</option>
+                                        <option value="Critical">Critical</option>
+                                    </select>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-secondary-gray mb-1">Detailed Description</label>
+                                    <textarea id="complaint-description" rows="4" placeholder="Please describe the issue in detail..." class="w-full p-3 border border-text-muted rounded-lg focus:ring-primary-blue focus:border-primary-blue bg-light-bg" required></textarea>
+                                </div>
+                                
+                                <button type="submit" class="btn-classy-lift bg-complaint-theme text-card-bg w-full py-3 rounded-lg shadow-lift hover:bg-orange-700 font-semibold">
+                                    Submit Complaint
+                                </button>
+                            </form>
+                        </div>
+                        <div class="lg:col-span-2">
+                            <h3 class="text-xl font-bold text-accent-dark mb-5">My Complaint History</h3>
+                            <div class="bg-card-bg rounded-xl shadow-lift overflow-x-auto">
+                                       <table class="min-w-full divide-y divide-text-muted">
+                                            <thead class="bg-light-bg">
+                                                <tr>
+                                                    <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">ID</th>
+                                                    <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Date</th>
+                                                    <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Type</th>
+                                                    <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Location</th>
+                                                    <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Priority</th>
+                                                    <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Status</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="student-complaint-history" class="bg-card-bg divide-y divide-text-muted">
+                                            </tbody>
+                                       </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-                <div id="report-tab-content-feedback" class="report-tab-content hidden">
-                    <p class="text-secondary-gray mb-8">Provide anonymous or named feedback about hostel services.</p>
-                    <div class="max-w-2xl mx-auto">
-                        <div class="bg-card-bg p-6 rounded-xl shadow-lift border-l-4 border-info-yellow">
-                            <h3 class="text-xl font-bold text-info-yellow mb-4">Submit Feedback</h3>
-                            
-                                                        <form id="feedback-form" onsubmit="event.preventDefault(); submitFeedback();" class="space-y-4">
-                                <div>
-                                    <label class="block text-sm font-medium text-secondary-gray mb-1">Feedback Category</label>
-                                    <select id="feedback-category" class="w-full p-3 border border-text-muted rounded-lg focus:ring-primary-blue focus:border-primary-blue bg-light-bg">
-                                        <option>Mess & Food Quality</option>
-                                        <option>Staff & Warden Behavior</option>
-                                        <option>Hostel Facilities</option>
-                                        <option>Events & Activities</option>
-                                        <option>Other Suggestions</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-secondary-gray mb-1">Your Feedback</label>
-                                    <textarea id="feedback-description" rows="4" placeholder="Share your suggestions or concerns..." class="w-full p-3 border border-text-muted rounded-lg focus:ring-primary-blue focus:border-primary-blue bg-light-bg"></textarea>
-                                </div>
-                                <div class="flex items-center">
-                                    <input id="feedback-anonymous" type="checkbox" class="h-4 w-4 text-primary-blue border-gray-300 rounded focus:ring-primary-blue">
-                                    <label for="feedback-anonymous" class="ml-2 block text-sm text-secondary-gray">Submit anonymously</label>
-                                </div>
-                                <button type="submit" class="btn-classy-lift bg-info-yellow text-accent-dark w-full py-3 rounded-lg shadow-lift hover:bg-amber-400 font-semibold">
-                                    Submit Feedback
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
+                <div id="report-tab-content-feedback" class="report-tab-content hidden">
+                    <p class="text-secondary-gray mb-8">Provide anonymous or named feedback about hostel services.</p>
+                    <div class="max-w-2xl mx-auto">
+                        <div class="bg-card-bg p-6 rounded-xl shadow-lift border-l-4 border-info-yellow">
+                            <h3 class="text-xl font-bold text-info-yellow mb-4">Submit Feedback</h3>
+                            <form onsubmit="event.preventDefault(); alert('Feedback submitted successfully!');" class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-secondary-gray mb-1">Feedback Category</label>
+                                    <select id="feedback-category" class="w-full p-3 border border-text-muted rounded-lg focus:ring-primary-blue focus:border-primary-blue bg-light-bg">
+                                        <option>Mess & Food Quality</option>
+                                        <option>Staff & Warden Behavior</option>
+                                        <option>Hostel Facilities</option>
+                                        <option>Events & Activities</option>
+                                        <option>Other Suggestions</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-secondary-gray mb-1">Your Feedback</label>
+                                    <textarea id="feedback-description" rows="4" placeholder="Share your suggestions or concerns..." class="w-full p-3 border border-text-muted rounded-lg focus:ring-primary-blue focus:border-primary-blue bg-light-bg"></textarea>
+                                </div>
+                                <div class="flex items-center">
+                                    <input id="feedback-anonymous" type="checkbox" class="h-4 w-4 text-primary-blue border-gray-300 rounded focus:ring-primary-blue">
+                                    <label for="feedback-anonymous" class="ml-2 block text-sm text-secondary-gray">Submit anonymously</label>
+                                </div>
+                                <button type="submit" class="btn-classy-lift bg-info-yellow text-accent-dark w-full py-3 rounded-lg shadow-lift hover:bg-amber-400 font-semibold">
+                                    Submit Feedback
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
 
-                <div id="report-tab-content-lost-found" class="report-tab-content hidden">
-                    <p class="text-secondary-gray mb-8">Report items you've lost or view items found by others.</p>
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
-                        <div class="lg:col-span-1 bg-card-bg p-6 rounded-xl shadow-lift border-l-4 border-accent-red">
-                            <h3 class="text-xl font-bold text-accent-red mb-4">Report a Lost Item</h3>
-                                                        <form id="lost-item-form" onsubmit="event.preventDefault(); submitLostItemReport();" class="space-y-4">
-                                <div>
-                                    <label class="block text-sm font-medium text-secondary-gray mb-1">What did you lose?</label>
-                                    <input type="text" id="lost-item-name" placeholder="e.g., Blue Umbrella" class="w-full p-3 border border-text-muted rounded-lg focus:ring-primary-blue focus:border-primary-blue bg-light-bg" required>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-secondary-gray mb-1">Where did you last see it?</label>
-                                    <input type="text" id="lost-item-location" placeholder="e.g., Hostel Lobby" class="w-full p-3 border border-text-muted rounded-lg focus:ring-primary-blue focus:border-primary-blue bg-light-bg">
-                                </div>
-                                <button type="submit" class="btn-classy-lift bg-accent-red text-card-bg w-full py-3 rounded-lg shadow-lift hover:bg-red-700">
-                                    File Lost Report
-                                </button>
-                            </form>
-                        </div>
-                        <div class="lg:col-span-2">
-                             <h3 class="text-xl font-bold text-accent-dark mb-5">Recently Found Items</h3>
-                            <div class="bg-card-bg p-6 rounded-xl shadow-lift">
-                                <div class="overflow-x-auto">
-                                    <table class="min-w-full divide-y divide-text-muted">
-                                        <thead class="bg-light-bg">
-                                            <tr>
-                                                <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Item</th>
-                                                <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Date Found</th>
-                                                <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Location</th>
-                                                <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Status</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="lost-found-body" class="bg-card-bg divide-y divide-text-muted">
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                <div id="report-tab-content-lost-found" class="report-tab-content hidden">
+                    <p class="text-secondary-gray mb-8">Report items you've lost or view items found by others.</p>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
+                        <div class="lg:col-span-1 bg-card-bg p-6 rounded-xl shadow-lift border-l-4 border-accent-red">
+                            <h3 class="text-xl font-bold text-accent-red mb-4">Report a Lost Item</h3>
+                            <form onsubmit="event.preventDefault(); alert('Lost item report submitted.');" class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-secondary-gray mb-1">What did you lose?</label>
+                                    <input type="text" id="lost-item-name" placeholder="e.g., Blue Umbrella" class="w-full p-3 border border-text-muted rounded-lg focus:ring-primary-blue focus:border-primary-blue bg-light-bg" required>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-secondary-gray mb-1">Where did you last see it?</label>
+                                    <input type="text" id="lost-item-location" placeholder="e.g., Hostel Lobby" class="w-full p-3 border border-text-muted rounded-lg focus:ring-primary-blue focus:border-primary-blue bg-light-bg">
+                                </div>
+                                <button type="submit" class="btn-classy-lift bg-accent-red text-card-bg w-full py-3 rounded-lg shadow-lift hover:bg-red-700">
+                                    File Lost Report
+                                </button>
+                            </form>
+                        </div>
+                        <div class="lg:col-span-2">
+                             <h3 class="text-xl font-bold text-accent-dark mb-5">Recently Found Items</h3>
+                            <div class="bg-card-bg p-6 rounded-xl shadow-lift">
+                                <div class="overflow-x-auto">
+                                    <table class="min-w-full divide-y divide-text-muted">
+                                        <thead class="bg-light-bg">
+                                            <tr>
+                                                <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Item</th>
+                                                <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Date Found</th>
+                                                <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Location</th>
+                                                <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="lost-found-body" class="bg-card-bg divide-y divide-text-muted">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-            <div id="student-leave-view" class="view hidden">
-                <h1 class="text-3xl md:text-4xl font-extrabold text-accent-dark mb-6 md:mb-8">Leave Request 🗓️</h1>
-                <p class="text-secondary-gray mb-8">Submit requests for overnight or extended leave from the hostel.</p>
+            <div id="student-leave-view" class="view hidden">
+                <h1 class="text-3xl md:text-4xl font-extrabold text-accent-dark mb-6 md:mb-8">Leave Request 🗓️</h1>
+                <p class="text-secondary-gray mb-8">Submit requests for overnight or extended leave from the hostel.</p>
 
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
-                    <div class="lg:col-span-1 bg-card-bg p-6 rounded-xl shadow-lift border-l-4 border-info-yellow">
-                        <h3 class="text-xl font-bold text-info-yellow mb-4">New Leave Application</h3>
-                        <form onsubmit="event.preventDefault(); submitLeave();" class="space-y-4">
-                            <div>
-                                <label class="block text-sm font-medium text-secondary-gray mb-1">Departure Date</label>
-                                <input type="date" id="leave-start" class="w-full p-3 border border-text-muted rounded-lg focus:ring-primary-blue focus:border-primary-blue bg-light-bg"/>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-secondary-gray mb-1">Return Date</label>
-                                <input type="date" id="leave-end" class="w-full p-3 border border-text-muted rounded-lg focus:ring-primary-blue focus:border-primary-blue bg-light-bg"/>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-secondary-gray mb-1">Reason for Leave</label>
-                                <select id="leave-reason" onchange="toggleLeaveReason()" class="w-full p-3 border border-text-muted rounded-lg focus:ring-primary-blue focus:border-primary-blue bg-light-bg">
-                                    <option value="Family Emergency">Family Emergency</option>
-                                    <option value="Home Trip / Vacation">Home Trip / Vacation</option>
-                                    <option value="Academic / Conference Trip">Academic / Conference Trip</option>
-                                    <option value="Medical Appointment">Medical Appointment</option>
-                                    <option value="Other">Other (Specify manually)</option>
-                                </select>
-                                <input type="text" id="leave-reason-manual" class="hidden w-full mt-2 p-3 border border-text-muted rounded-lg focus:ring-primary-blue focus:border-primary-blue bg-light-bg" placeholder="Please specify your reason...">
-                            </div>
-                            <button type="submit" class="btn-classy-lift bg-info-yellow text-accent-dark w-full py-3 rounded-lg shadow-lift hover:bg-amber-400">
-                                Submit Leave Request
-                            </button>
-                        </form>
-                    </div>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
+                    <div class="lg:col-span-1 bg-card-bg p-6 rounded-xl shadow-lift border-l-4 border-info-yellow">
+                        <h3 class="text-xl font-bold text-info-yellow mb-4">New Leave Application</h3>
+                        <form onsubmit="event.preventDefault(); submitLeave();" class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-secondary-gray mb-1">Departure Date</label>
+                                <input type="date" id="leave-start" class="w-full p-3 border border-text-muted rounded-lg focus:ring-primary-blue focus:border-primary-blue bg-light-bg"/>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-secondary-gray mb-1">Return Date</label>
+                                <input type="date" id="leave-end" class="w-full p-3 border border-text-muted rounded-lg focus:ring-primary-blue focus:border-primary-blue bg-light-bg"/>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-secondary-gray mb-1">Reason for Leave</label>
+                                <select id="leave-reason" onchange="toggleLeaveReason()" class="w-full p-3 border border-text-muted rounded-lg focus:ring-primary-blue focus:border-primary-blue bg-light-bg">
+                                    <option value="Family Emergency">Family Emergency</option>
+                                    <option value="Home Trip / Vacation">Home Trip / Vacation</option>
+                                    <option value="Academic / Conference Trip">Academic / Conference Trip</option>
+                                    <option value="Medical Appointment">Medical Appointment</option>
+                                    <option value="Other">Other (Specify manually)</option>
+                                </select>
+                                <input type="text" id="leave-reason-manual" class="hidden w-full mt-2 p-3 border border-text-muted rounded-lg focus:ring-primary-blue focus:border-primary-blue bg-light-bg" placeholder="Please specify your reason...">
+                            </div>
+                            <button type="submit" class="btn-classy-lift bg-info-yellow text-accent-dark w-full py-3 rounded-lg shadow-lift hover:bg-amber-400">
+                                Submit Leave Request
+                            </button>
+                        </form>
+                    </div>
 
-                    <div class="lg:col-span-2">
-                        <h3 class="text-xl font-bold text-accent-dark mb-5">Previous Leave Status</h3>
-                        <div class="bg-card-bg rounded-xl shadow-lift overflow-x-auto">
-                            <table class="min-w-full divide-y divide-text-muted">
-                                <thead class="bg-light-bg">
-                                    <tr>
-                                        <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Start Date</th>
-                                        <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">End Date</th>
-                                        <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Reason</th>
-                                        <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="student-leave-history" class="bg-card-bg divide-y divide-text-muted">
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                    <div class="lg:col-span-2">
+                        <h3 class="text-xl font-bold text-accent-dark mb-5">Previous Leave Status</h3>
+                        <div class="bg-card-bg rounded-xl shadow-lift overflow-x-auto">
+                            <table class="min-w-full divide-y divide-text-muted">
+                                <thead class="bg-light-bg">
+                                    <tr>
+                                        <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Start Date</th>
+                                        <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">End Date</th>
+                                        <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Reason</th>
+                                        <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="student-leave-history" class="bg-card-bg divide-y divide-text-muted">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-            <div id="student-details-view" class="view hidden">
-                <button onclick="showView('student-dashboard-view')" class="btn-classy-lift flex items-center space-x-2 text-primary-blue hover:text-blue-700 font-semibold mb-6">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
-                    </svg>
-                    <span>Back to Dashboard</span>
-                </button>
+            <div id="student-details-view" class="view hidden">
+                <button onclick="showView('student-dashboard-view')" class="btn-classy-lift flex items-center space-x-2 text-primary-blue hover:text-blue-700 font-semibold mb-6">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                    </svg>
+                    <span>Back to Dashboard</span>
+                </button>
 
-                <div class="bg-white rounded-lg shadow-md p-6 md:p-8 mb-8">
-                    <div class="flex flex-col md:flex-row items-center gap-6">
-                        <div class="flex-shrink-0 relative">
-                            <img id="profile-image" class="h-28 w-28 rounded-full object-cover shadow-md hidden" alt="Profile">
-                            <span id="profile-initials" class="flex items-center justify-center h-28 w-28 rounded-full bg-primary-blue text-white text-5xl font-bold">
-                                ..
-                            </span>
-                        </div>
-                        <div class="text-center md:text-left">
-                            <h1 class="text-4xl font-extrabold text-gray-900" id="profile-name">Loading...</h1>
-                            <div class="flex justify-center md:justify-start items-center gap-3 mt-3">
-                                <span id="profile-year" class="text-sm font-bold px-3 py-1 bg-primary-blue/10 text-primary-blue rounded-full"></span>
-                                <span id="profile-course" class="text-sm font-bold px-3 py-1 bg-blue-100 text-blue-700 rounded-full"></span>
-                            </div>
-                            <div class="flex justify-center md:justify-start items-center gap-2 mt-4 text-gray-600">
-                                <hero-icon-solid name="building-office" class="h-5 w-5 text-indigo-500"></hero-icon-solid>
-                                <span class="font-medium" id="profile-location">Loading...</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <div class="bg-white rounded-lg shadow-md p-6 md:p-8 mb-8">
+                    <div class="flex flex-col md:flex-row items-center gap-6">
+                        <div class="flex-shrink-0 relative">
+                            <img id="profile-image" class="h-28 w-28 rounded-full object-cover shadow-md hidden" alt="Profile">
+                            <span id="profile-initials" class="flex items-center justify-center h-28 w-28 rounded-full bg-primary-blue text-white text-5xl font-bold">
+                                ..
+                            </span>
+                        </div>
+                        <div class="text-center md:text-left">
+                            <h1 class="text-4xl font-extrabold text-gray-900" id="profile-name">Loading...</h1>
+                            <div class="flex justify-center md:justify-start items-center gap-3 mt-3">
+                                <span id="profile-year" class="text-sm font-bold px-3 py-1 bg-primary-blue/10 text-primary-blue rounded-full"></span>
+                                <span id="profile-course" class="text-sm font-bold px-3 py-1 bg-blue-100 text-blue-700 rounded-full"></span>
+                            </div>
+                            <div class="flex justify-center md:justify-start items-center gap-2 mt-4 text-gray-600">
+                                <hero-icon-solid name="building-office" class="h-5 w-5 text-indigo-500"></hero-icon-solid>
+                                <span class="font-medium" id="profile-location">Loading...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-                <div class="space-y-8">
-                    <div class="bg-white rounded-lg shadow-md p-6">
-                        <h2 class="text-2xl font-bold text-gray-800 mb-6">Contact Information</h2>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <div class="flex items-center gap-4">
-                                <span class="p-3 bg-blue-100 rounded-full"><hero-icon-solid name="envelope" class="h-6 w-6 text-blue-600"></hero-icon-solid></span>
-                                <div>
-                                    <p class="text-sm text-gray-500">Email</p>
-                                    <p class="text-base font-medium text-gray-900" id="profile-email">Loading...</p>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-4">
-                                <span class="p-3 bg-blue-100 rounded-full"><hero-icon-solid name="phone" class="h-6 w-6 text-blue-600"></hero-icon-solid></span>
-                                <div>
-                                    <p class="text-sm text-gray-500">Phone</p>
-                                    <p class="text-base font-medium text-gray-900" id="profile-phone">Loading...</p>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-4">
-                                <span class="p-3 bg-blue-100 rounded-full"><hero-icon-solid name="calendar-days" class="h-6 w-6 text-blue-600"></hero-icon-solid></span>
-                                <div>
-                                    <p class="text-sm text-gray-500">Join Date</p>
-                                    <p class="text-base font-medium text-gray-900" id="profile-join-date">Loading...</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="space-y-8">
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-6">Contact Information</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div class="flex items-center gap-4">
+                                <span class="p-3 bg-blue-100 rounded-full"><hero-icon-solid name="envelope" class="h-6 w-6 text-blue-600"></hero-icon-solid></span>
+                                <div>
+                                    <p class="text-sm text-gray-500">Email</p>
+                                    <p class="text-base font-medium text-gray-900" id="profile-email">Loading...</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <span class="p-3 bg-blue-100 rounded-full"><hero-icon-solid name="phone" class="h-6 w-6 text-blue-600"></hero-icon-solid></span>
+                                <div>
+                                    <p class="text-sm text-gray-500">Phone</p>
+                                    <p class="text-base font-medium text-gray-900" id="profile-phone">Loading...</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <span class="p-3 bg-blue-100 rounded-full"><hero-icon-solid name="calendar-days" class="h-6 w-6 text-blue-600"></hero-icon-solid></span>
+                                <div>
+                                    <p class="text-sm text-gray-500">Join Date</p>
+                                    <p class="text-base font-medium text-gray-900" id="profile-join-date">Loading...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                    <div class="bg-white rounded-lg shadow-md p-6">
-                        <h2 class="text-2xl font-bold text-gray-800 mb-6">Fee Details</h2>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <div>
-                                <p class="text-sm text-gray-500 mb-1">Fee Status</p>
-                                <span id="profile-fee-status" class="text-lg font-bold px-4 py-1.5 rounded-full">Loading...</span>
-                            </div>
-                            <div>
-                                <p class="text-sm text-gray-500 mb-1">Payment Method</p>
-                                <p class="text-lg font-medium text-gray-900" id="profile-payment-method">Loading...</p>
-                            </div>
-                            <div>
-                                <p class="text-sm text-gray-500 mb-1">Next Due Date</p>
-                                <p class="text-lg font-medium text-gray-900">2026-05-01</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="bg-white rounded-lg shadow-md p-6">
-                        <h2 class="text-2xl font-bold text-gray-800 mb-6">Assigned Assets</h2>
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="profile-assets-list">
-                            </div>
-                    </div>
-
-
-                    <div class="bg-white rounded-lg shadow-md">
-                        <h2 class="text-2xl font-bold text-gray-800 p-6 border-b">Attendance Log</h2>
-                        <div class="overflow-x-auto">
-                            <table class="w-full min-w-max">
-                                <thead class="bg-gray-50">
-                                    <tr>
-                                        <th class="text-left text-sm font-semibold text-gray-600 p-4">Date</th>
-                                        <th class="text-left text-sm font-semibold text-gray-600 p-4">Check-in</th>
-                                        <th class="text-left text-sm font-semibold text-gray-600 p-4">Check-out</th>
-                                        <th class="text-left text-sm font-semibold text-gray-600 p-4">Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y" id="profile-attendance-log-table">
-                               </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <div class="bg-white rounded-lg shadow-md p-6">
-                        <h2 class="text-2xl font-bold text-gray-800 mb-6">Complaints Filed by Student</h2>
-                        <div class="space-y-4" id="profile-complaints-list">
-                       </div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="student-activities-view" class="view hidden">
-                <button onclick="showView('student-dashboard-view')" class="btn-classy-lift flex items-center space-x-2 text-primary-blue hover:text-blue-700 font-semibold mb-6">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
-                    </svg>
-                    <span>Back to Dashboard</span>
-                </button>
-
-                <div class="flex justify-between items-center mb-8">
-                    <div>
-                        <h1 class="text-3xl md:text-4xl font-extrabold text-accent-dark mb-2">🎭 All Club Activities & Events</h1>
-                        <p class="text-secondary-gray">Discover upcoming events, workshops, and activities in our hostel community.</p>
-                    </div>
-                </div>
-
-                <div class="bg-card-bg rounded-lg p-4 mb-6 shadow-soft">
-                    <div class="flex flex-wrap gap-4">
-                        <button onclick="filterActivities('All')" class="activity-filter-btn px-4 py-2 rounded-lg bg-primary-blue text-white font-medium transition duration-200">
-                            All Activities
-                        </button>
-                        <button onclick="filterActivities('Sports')" class="activity-filter-btn px-4 py-2 rounded-lg bg-gray-200 text-gray-700 font-medium hover:bg-gray-300 transition duration-200">
-                            ⚽ Sports
-                        </button>
-                        <button onclick="filterActivities('Cultural')" class="activity-filter-btn px-4 py-2 rounded-lg bg-gray-200 text-gray-700 font-medium hover:bg-gray-300 transition duration-200">
-                            💃 Cultural
-                        </button>
-                        <button onclick="filterActivities('Technical')" class="activity-filter-btn px-4 py-2 rounded-lg bg-gray-200 text-gray-700 font-medium hover:bg-gray-300 transition duration-200">
-                            💻 Technical
-                        </button>
-                        <button onclick="filterActivities('Workshop')" class="activity-filter-btn px-4 py-2 rounded-lg bg-gray-200 text-gray-700 font-medium hover:bg-gray-300 transition duration-200">
-                            🔧 Workshop
-                        </button>
-                        <button onclick="filterActivities('General')" class="activity-filter-btn px-4 py-2 rounded-lg bg-gray-200 text-gray-700 font-medium hover:bg-gray-300 transition duration-200">
-                            📝 General
-                        </button>
-                    </div>
-                </div>
-
-                <div id="all-club-activities" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <div class="col-span-full text-center py-12 text-secondary-gray">
-                        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-blue mx-auto mb-4"></div>
-                        <p>Loading activities...</p>
-                    </div>
-                </div>
-            </div>
-
-            </div>
-    </div>
-    
-    <footer class="fixed-bar shadow-soft border-t-4 border-primary-blue/20 p-4 md:p-6 text-center text-sm text-secondary-gray">
-        <div class="container mx-auto">
-            <p>&copy; 2024 IIT Hostel Management Demo. All rights reserved.</p>
-            <p class="mt-1 text-xs text-primary-blue">Contact: warden@iit-hostel.edu</p>
-        </div>
-    </footer>
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-6">Fee Details</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div>
+                                <p class="text-sm text-gray-500 mb-1">Fee Status</p>
+                                <span id="profile-fee-status" class="text-lg font-bold px-4 py-1.5 rounded-full">Loading...</span>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500 mb-1">Payment Method</p>
+                                <p class="text-lg font-medium text-gray-900" id="profile-payment-method">Loading...</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500 mb-1">Next Due Date</p>
+                                <p class="text-lg font-medium text-gray-900">2026-05-01</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-6">Assigned Assets</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="profile-assets-list">
+                            </div>
+                    </div>
 
 
-    <div id="announcement-modal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center p-4 transition-opacity duration-300">
-        <div class="modal-card bg-card-bg rounded-xl shadow-deep w-full max-w-2xl flex flex-col">
-            
-            <div id="announcement-list-view">
-                <div class="flex justify-between items-center p-5 border-b border-text-muted">
-                    <h3 class="text-xl font-bold text-primary-blue">Hostel Announcements</h3>
-                    <button onclick="closeAnnouncementsModal()" class="text-secondary-gray hover:text-accent-dark">&times;</button>
-                </div>
-                <div id="announcement-list-container" class="p-6 space-y-4 overflow-y-auto" style="max-height: 70vh;">
-                            </div>
-            </div>
+                    <div class="bg-white rounded-lg shadow-md">
+                        <h2 class="text-2xl font-bold text-gray-800 p-6 border-b">Attendance Log</h2>
+                        <div class="overflow-x-auto">
+                            <table class="w-full min-w-max">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="text-left text-sm font-semibold text-gray-600 p-4">Date</th>
+                                        <th class="text-left text-sm font-semibold text-gray-600 p-4">Check-in</th>
+                                        <th class="text-left text-sm font-semibold text-gray-600 p-4">Check-out</th>
+                                        <th class="text-left text-sm font-semibold text-gray-600 p-4">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y" id="profile-attendance-log-table">
+                               </tbody>
+                            </table>
+                        </div>
+                    </div>
 
-            <div id="announcement-detail-view" class="hidden">
-                <div class="flex justify-between items-center p-5 border-b border-text-muted">
-                    <button onclick="showAnnouncementsList()" class="text-primary-blue font-semibold hover:text-blue-700">
-                        &larr; Back to List
-                    </button>
-                    <button onclick="closeAnnouncementsModal()" class="text-secondary-gray hover:text-accent-dark">&times;</button>
-                </div>
-                <div class="p-6 overflow-y-auto" style="max-height: 70vh;">
-                    <h3 id="announcement-detail-title" class="text-2xl font-bold text-accent-dark mb-2"></h3>
-                    <p id="announcement-detail-date" class="text-sm text-secondary-gray mb-4"></p>
-                    <div id="announcement-detail-body" class="prose max-w-none text-accent-dark">
-                        </div>
-                </div>
-            </div>
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-6">Complaints Filed by Student</h2>
+                        <div class="space-y-4" id="profile-complaints-list">
+                       </div>
+                    </div>
+                </div>
+            </div>
 
-        </div>
-    </div>
-    
-    <script src="student-script.js"></script>
+            <div id="student-activities-view" class="view hidden">
+                <button onclick="showView('student-dashboard-view')" class="btn-classy-lift flex items-center space-x-2 text-primary-blue hover:text-blue-700 font-semibold mb-6">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                    </svg>
+                    <span>Back to Dashboard</span>
+                </button>
+
+                <div class="flex justify-between items-center mb-8">
+                    <div>
+                        <h1 class="text-3xl md:text-4xl font-extrabold text-accent-dark mb-2">🎭 All Club Activities & Events</h1>
+                        <p class="text-secondary-gray">Discover upcoming events, workshops, and activities in our hostel community.</p>
+                    </div>
+                </div>
+
+                <div class="bg-card-bg rounded-lg p-4 mb-6 shadow-soft">
+                    <div class="flex flex-wrap gap-4">
+                        <button onclick="filterActivities('All')" class="activity-filter-btn px-4 py-2 rounded-lg bg-primary-blue text-white font-medium transition duration-200">
+                            All Activities
+                        </button>
+                        <button onclick="filterActivities('Sports')" class="activity-filter-btn px-4 py-2 rounded-lg bg-gray-200 text-gray-700 font-medium hover:bg-gray-300 transition duration-200">
+                            ⚽ Sports
+                        </button>
+                        <button onclick="filterActivities('Cultural')" class="activity-filter-btn px-4 py-2 rounded-lg bg-gray-200 text-gray-700 font-medium hover:bg-gray-300 transition duration-200">
+                            💃 Cultural
+                        </button>
+                        <button onclick="filterActivities('Technical')" class="activity-filter-btn px-4 py-2 rounded-lg bg-gray-200 text-gray-700 font-medium hover:bg-gray-300 transition duration-200">
+                            💻 Technical
+                        </button>
+                        <button onclick="filterActivities('Workshop')" class="activity-filter-btn px-4 py-2 rounded-lg bg-gray-200 text-gray-700 font-medium hover:bg-gray-300 transition duration-200">
+                            🔧 Workshop
+                        </button>
+                        <button onclick="filterActivities('General')" class="activity-filter-btn px-4 py-2 rounded-lg bg-gray-200 text-gray-700 font-medium hover:bg-gray-300 transition duration-200">
+                            📝 General
+                        </button>
+                    </div>
+                </div>
+
+                <div id="all-club-activities" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="col-span-full text-center py-12 text-secondary-gray">
+                        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-blue mx-auto mb-4"></div>
+                        <p>Loading activities...</p>
+                    </div>
+                </div>
+            </div>
+
+            </div>
+    </div>
+    
+    <footer class="fixed-bar shadow-soft border-t-4 border-primary-blue/20 p-4 md:p-6 text-center text-sm text-secondary-gray">
+        <div class="container mx-auto">
+            <p>&copy; 2024 IIT Hostel Management Demo. All rights reserved.</p>
+            <p class="mt-1 text-xs text-primary-blue">Contact: warden@iit-hostel.edu</p>
+        </div>
+    </footer>
+
+
+    <div id="announcement-modal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center p-4 transition-opacity duration-300">
+        <div class="modal-card bg-card-bg rounded-xl shadow-deep w-full max-w-2xl flex flex-col">
+            
+            <div id="announcement-list-view">
+                <div class="flex justify-between items-center p-5 border-b border-text-muted">
+                    <h3 class="text-xl font-bold text-primary-blue">Hostel Announcements</h3>
+                    <button onclick="closeAnnouncementsModal()" class="text-secondary-gray hover:text-accent-dark">&times;</button>
+                </div>
+                <div id="announcement-list-container" class="p-6 space-y-4 overflow-y-auto" style="max-height: 70vh;">
+                            </div>
+            </div>
+
+            <div id="announcement-detail-view" class="hidden">
+                <div class="flex justify-between items-center p-5 border-b border-text-muted">
+                    <button onclick="showAnnouncementsList()" class="text-primary-blue font-semibold hover:text-blue-700">
+                        &larr; Back to List
+                    </button>
+                    <button onclick="closeAnnouncementsModal()" class="text-secondary-gray hover:text-accent-dark">&times;</button>
+                </div>
+                <div class="p-6 overflow-y-auto" style="max-height: 70vh;">
+                    <h3 id="announcement-detail-title" class="text-2xl font-bold text-accent-dark mb-2"></h3>
+                    <p id="announcement-detail-date" class="text-sm text-secondary-gray mb-4"></p>
+                    <div id="announcement-detail-body" class="prose max-w-none text-accent-dark">
+                        </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    
+    <script src="student-script.js"></script>
 </body>
 </html>
