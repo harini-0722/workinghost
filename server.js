@@ -48,6 +48,7 @@ app.use('/api/leave', leaveRoutes);
 app.use(express.static(path.join(__dirname, 'public')));
 // This line makes the 'uploads' folder accessible via the URL /uploads
 app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // --- API ROUTES ---
 // 4. Gymkhana API Routes
