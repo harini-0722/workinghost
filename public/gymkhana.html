@@ -85,6 +85,16 @@
             transition: opacity 0.3s ease-in-out;
             min-height: 500px;
         }
+        
+        /* Custom class for club images */
+        .club-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-900">
@@ -1153,11 +1163,10 @@
     // --- CORE DATA LOADING ---
     const loadAllData = async () => {
         // Load data for Home Page components
-        // FIX: Reverted to plural names to match your createCrudEndpoints logic
         globalData.events = await fetchData('/events'); 
-        globalData.members = await fetchData('/members'); // <<-- FIX: Corrected to '/members'
+        globalData.members = await fetchData('/members'); 
         globalData.clubs = await fetchData('/clubs');
-        globalData.heads = await fetchData('/heads'); // <<-- FIX: Corrected to '/heads'
+        globalData.heads = await fetchData('/heads'); 
         
         // Load data for Election components (only happens once)
         globalData.posts = await fetchData('/elections/posts');
@@ -1188,8 +1197,6 @@
         renderAnnouncements();
         // Render elected members uses globalData.heads (which is fetched from /heads)
         renderElectedMembers(); 
-        // Ensure view is set to info-view on entry, or call switchView('grids-view') if results should be default.
-        // For now, let's keep the default tab logic separate.
         // switchView('info-view'); 
     }
 
@@ -1209,7 +1216,6 @@
         
         membersToDisplay.forEach(member => {
             const initials = member.name.split(' ').map(n => n[0]).join('');
-            // Use different placeholder/color for members page for a distinct look
             const placeholderImg = `https://placehold.co/100x100/1D4ED8/FFFFFF?text=${initials}`; // Blue
             const finalImgSrc = member.imageUrl ? member.imageUrl : placeholderImg;
 
@@ -1304,10 +1310,21 @@
             }
              
             filteredClubs.forEach(item => {
-                const iconColor = item.council.toLowerCase().includes('scitech') ? 'text-blue-500' : 'text-indigo-500';
+                const initials = item.name.split(' ').map(n => n[0]).join('');
+                // Use the primary color for the initial placeholder
+                const placeholderColor = councilName === 'scitech' ? 'indigo-600' : 
+                                         councilName === 'cultural' ? 'rose-600' : 
+                                         councilName === 'sports' ? 'green-600' : 
+                                         'amber-600';
+                const placeholderImg = `https://placehold.co/80x80/${placeholderColor.replace('-', '').replace('600', '400')}/FFFFFF?text=${initials}`;
+                const finalImgSrc = item.imageUrl ? item.imageUrl : placeholderImg;
+                
                 list.innerHTML += `
                     <div class="bg-white p-4 rounded-lg shadow-xl text-center border-t-4 border-indigo-200 card-hover">
-                        <i class="${item.icon || 'fas fa-dot-circle'} fa-3x ${iconColor}"></i> 
+                        <img class="club-image" 
+                            src="${finalImgSrc}" 
+                            alt="${item.name} Logo"
+                            onerror="this.onerror=null;this.src='${placeholderImg}'">
                         <p class="font-bold text-gray-900 mt-2">${item.name}</p>
                         <p class="text-xs text-gray-500">${item.council}</p>
                     </div>
