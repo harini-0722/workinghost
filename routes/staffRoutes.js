@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const Staff = require('../models/Staff');
-const fs = require('fs'); // Changed to standard fs for existsSync check
+const fs = require('fs');
 const path = require('path');
-const multer = require('multer'); // 1. IMPORT MULTER
+const multer = require('multer');
 
 // --- MULTER CONFIGURATION ---
 const storage = multer.diskStorage({
@@ -38,39 +38,50 @@ router.get('/', async (req, res) => {
 });
 
 // --- POST /api/staff ---
-// ✅ FIX: Added 'upload.single('profileImage')' middleware here
 router.post('/', upload.single('profileImage'), async (req, res) => {
     try {
-        // Now req.body will actually contain your text data
+        // req.body contains all form fields, which can now be empty strings ('')
         const { name, username, password, role, place, phone, email, status, joiningDate } = req.body;
         const file = req.file; 
 
-        // 1. Mandatory Fields Validation
+        // 1. MANDATORY FIELDS VALIDATION REMOVED
+        // The check below has been completely removed to allow empty submissions:
+        /*
         if (!name || !username || !password || !role || !place || !status || !joiningDate) {
             return res.status(400).json({ 
                 success: false, 
                 message: "Missing required fields (Name, Username, Password, Role, Place, Status, Joining Date)." 
             });
         }
+        */
 
-        // 2. Uniqueness Check
-        const existingStaff = await Staff.findOne({ username: username });
-        if (existingStaff) {
-            return res.status(400).json({ success: false, message: 'Username already exists.' });
+        // 2. Uniqueness Check (Only run if username is actually provided)
+        if (username) {
+            const existingStaff = await Staff.findOne({ username: username });
+            if (existingStaff) {
+                return res.status(400).json({ success: false, message: 'Username already exists.' });
+            }
         }
 
         // 3. Image URL Handling
         let profileImageUrl = '';
         if (file) {
-            // Logic: standardizing on /uploads/filename
             profileImageUrl = `/uploads/${file.filename}`;
         }
         
         // 4. Create new Staff record
+        // We use || '' to ensure the database receives an empty string instead of undefined/null 
+        // if the form data was blank, which is safer.
         const newStaff = new Staff({
-            name, username, password, role, place, phone, email,
-            status: status || 'Active',
-            joiningDate: new Date(joiningDate), // Ensure Model has this field
+            name: name || '',
+            username: username || '',
+            password: password || '',
+            role: role || '',
+            place: place || '',
+            phone: phone || '',
+            email: email || '',
+            status: status || 'Active', // Default to Active if status is not provided
+            joiningDate: joiningDate ? new Date(joiningDate) : new Date(), // Use current date if none provided
             profileImageUrl: profileImageUrl,
         });
 
@@ -79,8 +90,13 @@ router.post('/', upload.single('profileImage'), async (req, res) => {
 
     } catch (error) {
         console.error("❌ Error adding staff:", error);
+        
+        // Handle database-specific errors
         if (error.code === 11000) return res.status(400).json({ success: false, message: 'Username already exists.' });
-        if (error.name === 'ValidationError') return res.status(400).json({ success: false, message: `Validation failed: ${error.message}` });
+        
+        // The Mongoose Validation Error (which still needs to be addressed in the Staff Model)
+        if (error.name === 'ValidationError') return res.status(400).json({ success: false, message: `Validation failed: ${error.message}. You must also update your Mongoose Staff Model to remove 'required: true' for all fields you want to be optional.` });
+        
         res.status(500).json({ success: false, message: "Error saving staff data" });
     }
 });
