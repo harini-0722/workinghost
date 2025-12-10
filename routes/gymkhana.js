@@ -55,8 +55,8 @@ createCrudEndpoints(Event, 'event');
 createCrudEndpoints(Member, 'member');
 
 createCrudEndpoints(Head, 'head');
-// We call ElectionPost directly below to handle complex POST logic
-// We call Announcement directly below to handle complex POST logic
+// We call ElectionPost directly below to handle complex POST/DELETE logic
+// We call Announcement directly below to handle complex POST/DELETE logic
 
 
 // -------------------------------------------------------------
@@ -269,6 +269,16 @@ router.get('/elections/posts', async (req, res) => {
     }
 });
 
+// NEW: DELETE Election Post
+router.delete('/elections/posts/:id', async (req, res) => {
+    try {
+        await ElectionPost.findByIdAndDelete(req.params.id);
+        res.json({ success: true, message: 'Election post deleted' });
+    } catch (e) {
+        res.status(500).json({ success: false, message: e.message });
+    }
+});
+
 
 // --- CANDIDATES ---
 router.post('/elections/candidates', upload.single('imageUrl'), async (req, res) => {
@@ -325,6 +335,16 @@ router.get('/elections/candidates', async (req, res) => {
     }
 });
 
+// NEW: DELETE Candidate
+router.delete('/elections/candidates/:id', async (req, res) => {
+    try {
+        await Candidate.findByIdAndDelete(req.params.id);
+        res.json({ success: true, message: 'Candidate deleted' });
+    } catch (e) {
+        res.status(500).json({ success: false, message: e.message });
+    }
+});
+
 
 // --- ANNOUNCEMENTS ---
 router.post('/elections/announcements', upload.single('imageUrl'), async (req, res) => {
@@ -352,6 +372,16 @@ router.get('/elections/announcements', async (req, res) => {
     } catch (e) {
         res.status(500).json({ success: false, message: e.message });
     }
+});
+
+// NEW: DELETE Announcement
+router.delete('/elections/announcements/:id', async (req, res) => {
+    try {
+        await Announcement.findByIdAndDelete(req.params.id);
+        res.json({ success: true, message: 'Announcement deleted' });
+    } catch (e) {
+        res.status(500).json({ success: false, message: e.message });
+    }
 });
 
 
