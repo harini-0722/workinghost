@@ -60,24 +60,5 @@ router.post('/add-found-item', async (req, res) => {
         res.json({ success: true, message: 'Found item added' });
     } catch(err) { res.status(500).json(err); }
 });
-router.get('/lost-reports/:studentId', async (req, res) => {
-    try {
-        const studentId = req.params.studentId;
-        // Find items of type 'Lost' submitted by the student, sort by newest first
-        const lostItems = await LostFound.find({ 
-            studentId: studentId, 
-            type: 'Lost' 
-        })
-        .sort({ submissionDate: -1 });
-
-        res.status(200).json({
-            success: true,
-            lostItems
-        });
-    } catch (error) {
-        console.error('Fetch Lost Reports Error:', error);
-        res.status(500).json({ success: false, message: 'Server error fetching lost reports.' });
-    }
-});
 
 module.exports = router;

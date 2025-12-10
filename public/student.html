@@ -549,65 +549,48 @@
                         </div>
                     </div>
                 </div>
-<div id="report-tab-content-lost-found" class="report-tab-content hidden">
-    <p class="text-secondary-gray mb-8">Report items you've lost or view items found by others.</p>
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
-        <div class="lg:col-span-1">
-            <div class="bg-card-bg p-6 rounded-xl shadow-lift border-l-4 border-accent-red mb-8"> <h3 class="text-xl font-bold text-accent-red mb-4">Report a Lost Item</h3>
-                <form id="lost-report-form" onsubmit="event.preventDefault(); submitLostReport();" class="space-y-4"> <div>
-                        <label class="block text-sm font-medium text-secondary-gray mb-1">What did you lose?</label>
-                        <input type="text" id="lost-item-name" placeholder="e.g., Blue Umbrella" class="w-full p-3 border border-text-muted rounded-lg focus:ring-primary-blue focus:border-primary-blue bg-light-bg" required>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-secondary-gray mb-1">Where did you last see it?</label>
-                        <input type="text" id="lost-item-location" placeholder="e.g., Hostel Lobby" class="w-full p-3 border border-text-muted rounded-lg focus:ring-primary-blue focus:border-primary-blue bg-light-bg">
-                    </div>
-                    <button type="submit" class="btn-classy-lift bg-accent-red text-card-bg w-full py-3 rounded-lg shadow-lift hover:bg-red-700">
-                        File Lost Report
-                    </button>
-                </form>
-            </div>
 
-            <div class="bg-card-bg p-6 rounded-xl shadow-lift border-l-4 border-primary-blue">
-                <h3 class="text-xl font-bold text-accent-dark mb-5">My Lost Item Reports</h3>
-                <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-text-muted">
-                        <thead class="bg-light-bg">
-                            <tr>
-                                <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Item</th>
-                                <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Last Seen</th>
-                                <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="lost-reports-body" class="bg-card-bg divide-y divide-text-muted">
-                            <tr><td colspan="3" class="py-4 px-6 text-center text-secondary-gray">Loading reports...</td></tr>
-                        </tbody>
-                    </table>
+                <div id="report-tab-content-lost-found" class="report-tab-content hidden">
+                    <p class="text-secondary-gray mb-8">Report items you've lost or view items found by others.</p>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
+                        <div class="lg:col-span-1 bg-card-bg p-6 rounded-xl shadow-lift border-l-4 border-accent-red">
+                            <h3 class="text-xl font-bold text-accent-red mb-4">Report a Lost Item</h3>
+                            <form onsubmit="event.preventDefault(); alert('Lost item report submitted.');" class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-secondary-gray mb-1">What did you lose?</label>
+                                    <input type="text" id="lost-item-name" placeholder="e.g., Blue Umbrella" class="w-full p-3 border border-text-muted rounded-lg focus:ring-primary-blue focus:border-primary-blue bg-light-bg" required>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-secondary-gray mb-1">Where did you last see it?</label>
+                                    <input type="text" id="lost-item-location" placeholder="e.g., Hostel Lobby" class="w-full p-3 border border-text-muted rounded-lg focus:ring-primary-blue focus:border-primary-blue bg-light-bg">
+                                </div>
+                                <button type="submit" class="btn-classy-lift bg-accent-red text-card-bg w-full py-3 rounded-lg shadow-lift hover:bg-red-700">
+                                    File Lost Report
+                                </button>
+                            </form>
+                        </div>
+                        <div class="lg:col-span-2">
+                             <h3 class="text-xl font-bold text-accent-dark mb-5">Recently Found Items</h3>
+                            <div class="bg-card-bg p-6 rounded-xl shadow-lift">
+                                <div class="overflow-x-auto">
+                                    <table class="min-w-full divide-y divide-text-muted">
+                                        <thead class="bg-light-bg">
+                                            <tr>
+                                                <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Item</th>
+                                                <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Date Found</th>
+                                                <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Location</th>
+                                                <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="lost-found-body" class="bg-card-bg divide-y divide-text-muted">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            </div>
-
-        <div class="lg:col-span-2">
-            <h3 class="text-xl font-bold text-accent-dark mb-5">Recently Found Items</h3>
-            <div class="bg-card-bg p-6 rounded-xl shadow-lift">
-                <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-text-muted">
-                        <thead class="bg-light-bg">
-                            <tr>
-                                <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Item</th>
-                                <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Date Found</th>
-                                <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Location</th>
-                                <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="lost-found-body" class="bg-card-bg divide-y divide-text-muted">
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
             <div id="student-leave-view" class="view hidden">
                 <h1 class="text-3xl md:text-4xl font-extrabold text-accent-dark mb-6 md:mb-8">Leave Request 🗓️</h1>
