@@ -146,8 +146,6 @@
                 <div class="hidden md:flex md:items-center md:space-x-8">
                     <a href="#" onclick="showPage('home')" class="font-medium text-gray-700 hover:text-indigo-600 transition duration-150">Home</a>
                     
-                    <a href="#" onclick="showPage('membersPage')" class="font-medium text-gray-700 hover:text-indigo-600 transition duration-150">Members</a>
-                    
                     <a href="#" onclick="showPage('aiTechHub')" class="font-medium text-gray-700 hover:text-indigo-600 transition duration-150">Tech Usage</a>
                     
                     <div class="relative" id="desktop-dropdown-container">
@@ -210,8 +208,6 @@
         <div id="mobile-menu" class="md:hidden hidden">
             <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
                 <a href="#" onclick="showPage('home')" class="text-gray-700 hover:bg-gray-50 block px-3 py-2 rounded-md text-base font-medium">Home</a>
-                
-                <a href="#" onclick="showPage('membersPage')" class="text-gray-700 hover:bg-gray-50 block px-3 py-2 rounded-md text-base font-medium">Members</a>
                 
                 <a href="#" onclick="showPage('aiTechHub')" class="text-gray-700 hover:bg-gray-50 block px-3 py-2 rounded-md text-base font-medium">Tech Usage</a>
                 
@@ -399,8 +395,8 @@
                     <div class="flex flex-col md:flex-row items-center gap-16">
                         <div class="md:w-1/2">
                             <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1200&q=80" 
-                                            alt="Students" 
-                                            class="rounded-2xl shadow-xl w-full h-auto object-cover">
+                                         alt="Students" 
+                                         class="rounded-2xl shadow-xl w-full h-auto object-cover">
                         </div>
                         <div class="md:w-1/2">
                             <h2 class="text-base text-indigo-600 font-semibold tracking-wide uppercase">Who We Are</h2>
@@ -479,39 +475,7 @@
                 </div>
             </section>
         </div>
-        
-        <div id="membersPage" class="page">
-            
-            <section class="relative h-[60vh] min-h-[400px] flex items-center justify-center text-center text-white overflow-hidden">
-                <div class="absolute inset-0">
-                                        <div class="absolute inset-0 bg-gray-900 bg-opacity-70"></div>
-                </div>
-                <div class="relative z-10 p-4">
-                    <h1 class="text-6xl md:text-8xl font-extrabold tracking-tight" style="text-shadow: 2px 2px 8px rgba(0,0,0,0.5)">
-                        Our Members
-                    </h1>
-                    <p class="mt-6 max-w-2xl text-xl md:text-2xl opacity-90">
-                        The elected representatives and student leaders of the Gymkhana Council.
-                    </p>
-                </div>
-            </section>
-            
-            <section class="py-24 bg-white">
-                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div class="text-center">
-                        <h2 class="text-4xl font-extrabold text-gray-900">Elected Office Bearers (2025-26)</h2>
-                        <p class="mt-4 max-w-2xl mx-auto text-xl text-gray-500">
-                            Meet the current team of dedicated students driving change and organizing campus life.
-                        </p>
-                    </div>
 
-                    <div id="members-page-grid" class="mt-16 grid grid-cols-1 gap-10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-                        <p class="col-span-4 text-center text-gray-500">Loading member data...</p>
-                    </div>
-                </div>
-            </section>
-
-        </div>
         <div id="techClubs" class="page">
             
             <section class="relative h-[60vh] min-h-[400px] flex items-center justify-center text-center text-white overflow-hidden">
@@ -1005,7 +969,6 @@
                     <h4 class="text-lg font-semibold text-white uppercase tracking-wider">Quick Links</h4>
                     <ul class="mt-4 space-y-3">
                         <li><a href="#" onclick="showPage('home')" class="hover:text-white transition">Home</a></li>
-                        <li><a href="#" onclick="showPage('membersPage')" class="hover:text-white transition">Members</a></li>
                         <li><a href="#" onclick="showPage('aiTechHub')" class="hover:text-white transition">Tech Usage</a></li>
                         <li><a href="#" onclick="showPage('safetyNet')" class="hover:text-indigo-400 text-indigo-300 transition font-bold">Safety Net / Help</a></li>
                         <li><a href="#" onclick="showPage('events')" class="hover:text-white transition">Events</a></li>
@@ -1109,12 +1072,7 @@
         // Conditionally render dynamic content based on the destination page
         if (pageId === 'elections') {
             initializeElectionsPage();
-        } else if (pageId === 'events') { 
-            renderEvents(); 
-        } 
-        else if (pageId === 'membersPage') {
-            renderMembersPage();
-        }
+        } else if (pageId === 'events') { renderEvents(); } 
         else if (pageId === 'techClubs' || pageId === 'culturalClubs' || pageId === 'sportsClubs' || pageId === 'academicClubs') { 
             renderClubDetails(); 
         }
@@ -1126,8 +1084,7 @@
             const response = await fetch('/api' + url); 
             if (!response.ok) {
                 console.error(`Fetch failed for ${url}: Status ${response.status}`);
-                // NOTE: Using a fallback array/object structure on failure is critical.
-                return (url.includes('settings') || url.includes('full-results')) ? {} : []; 
+                throw new Error('API request failed.');
             }
             const body = await response.json();
 
@@ -1137,7 +1094,6 @@
                 return body.success ? body.data : {};
             }
             
-            // Assuming CRUD endpoints return { success: true, data: array }
             return body.success && Array.isArray(body.data) ? body.data : [];
 
         } catch (error) {
@@ -1150,10 +1106,10 @@
     // --- CORE DATA LOADING ---
     const loadAllData = async () => {
         // Load data for Home Page components
-        globalData.events = await fetchData('/event'); // Note: Endpoint changed to /event (singular) to match createCrudEndpoints usage for GET all.
-        globalData.members = await fetchData('/member'); // <<-- CRITICAL: FETCHING MEMBERS HERE
+        globalData.events = await fetchData('/events');
+        globalData.members = await fetchData('/members');
         globalData.clubs = await fetchData('/clubs');
-        globalData.heads = await fetchData('/head'); // Note: Endpoint changed to /head (singular) to match createCrudEndpoints usage for GET all.
+        globalData.heads = await fetchData('/heads');
         
         // Load data for Election components (only happens once)
         globalData.posts = await fetchData('/elections/posts');
@@ -1179,44 +1135,12 @@
 
 
     // --- RENDERING FUNCTIONS ---
-    
-    // NEW: Renders content for the dedicated Members page
-    function renderMembersPage() {
-        const membersGrid = document.getElementById('members-page-grid');
-        membersGrid.innerHTML = '';
-        
-        const membersToDisplay = globalData.members || [];
-
-        if (membersToDisplay.length === 0) {
-            membersGrid.innerHTML = '<p class="col-span-4 text-center text-gray-500">No executive members currently listed. Please ask the admin to add data.</p>';
-            return;
-        }
-        
-        membersToDisplay.forEach(member => {
-            const initials = member.name.split(' ').map(n => n[0]).join('');
-            // Use different placeholder/color for members page for a distinct look
-            const placeholderImg = `https://placehold.co/100x100/1D4ED8/FFFFFF?text=${initials}`; // Blue
-            const finalImgSrc = member.imageUrl ? member.imageUrl : placeholderImg;
-
-            membersGrid.innerHTML += `
-                <div class="bg-gray-50 p-6 rounded-2xl shadow-xl border-t-4 border-indigo-600 flex flex-col items-center text-center card-hover">
-                    <img class="h-28 w-28 rounded-full object-cover shadow-md mb-4 ring-2 ring-indigo-300" 
-                        src="${finalImgSrc}" 
-                        alt="${member.name} Image"
-                        onerror="this.onerror=null;this.src='${placeholderImg}'">
-                    <p class="text-xl font-extrabold text-gray-900">${member.name}</p>
-                    <p class="mt-2 text-base font-bold text-indigo-700">${member.position}</p>
-                    <p class="mt-1 text-sm text-gray-500">${member.description || 'Student Gymkhana Representative'}</p>
-                </div>
-            `;
-        });
-    }
 
     function renderHomePageContent() {
         // 1. About Section
         const aboutTextContainer = document.getElementById('home-about-text');
         const aboutText = globalData.settings.about_us_text || 
-                             '<p>The Student Gymkhana is the central body driving student life at IIT Indore. Please ask the Admin to update the content in the Site Settings page.</p>';
+                            '<p>The Student Gymkhana is the central body driving student life at IIT Indore. Please ask the Admin to update the content in the Site Settings page.</p>';
         
         aboutTextContainer.innerHTML = `<p>${aboutText}</p>`;
         
@@ -1224,11 +1148,10 @@
         const homeMembersGrid = document.getElementById('home-members-grid');
         homeMembersGrid.innerHTML = '';
         
-        const membersToDisplay = (globalData.members || []).slice(0, 8); 
+        const membersToDisplay = globalData.members.slice(0, 8); 
 
         if (membersToDisplay.length === 0) {
             homeMembersGrid.innerHTML = '<p class="col-span-4 text-center text-gray-500">No executive members currently listed.</p>';
-            // Note: The original public-gymkhana.js handles placeholder content better. We keep the minimalist version here as requested.
             return;
         }
         
@@ -1288,12 +1211,11 @@
                 list.innerHTML = `<p class="col-span-full text-center text-gray-500">No ${councilName} clubs listed.</p>`;
                 return;
             }
-             // NOTE: The public-gymkhana.js has better logic for clubs/heads, this uses the embedded simple logic for now
             filteredClubs.forEach(item => {
                 const iconColor = item.council.toLowerCase().includes('scitech') ? 'text-blue-500' : 'text-indigo-500';
                 list.innerHTML += `
                     <div class="bg-white p-4 rounded-lg shadow-xl text-center border-t-4 border-indigo-200 card-hover">
-                        <i class="${item.icon || 'fas fa-dot-circle'} fa-3x ${iconColor}"></i> 
+                        <i class="${item.icon} fa-3x ${iconColor}"></i>
                         <p class="font-bold text-gray-900 mt-2">${item.name}</p>
                         <p class="text-xs text-gray-500">${item.council}</p>
                     </div>
@@ -1462,8 +1384,7 @@
             `;
         });
     }
-    
-    // NOTE: loadVotingCandidates and related submission functions are unchanged for election logic
+
     /**
      * Populates the Voting Modal with positions and candidates.
      */
@@ -1497,7 +1418,7 @@
             `;
             
             if (candidates.length === 0) {
-                    positionHtml += `<p class="text-gray-600">No candidates running for this post yet.</p>`;
+                 positionHtml += `<p class="text-gray-600">No candidates running for this post yet.</p>`;
             } else {
                 candidates.forEach(candidate => {
                     const initials = candidate.name.split(' ').map(n => n[0]).join('');
@@ -1506,7 +1427,7 @@
 
                     positionHtml += `
                         <label class="flex items-center p-3 border border-gray-200 bg-white rounded-lg shadow-sm hover:bg-indigo-100 cursor-pointer transition duration-150">
-                            <input type="radio" name="${post.position}" value="${candidate.id}" class="h-5 w-5 text-indigo-600 focus:ring-indigo-500 mr-4" required>
+                            <input type="radio" name="${post.position}" value="${candidate._id}" class="h-5 w-5 text-indigo-600 focus:ring-indigo-500 mr-4" required>
                             <img src="${finalImgSrc}" class="w-10 h-10 object-cover rounded-full mr-4" onerror="this.onerror=null;this.src='${placeholderImg}'">
                             <div>
                                 <p class="text-base font-semibold text-gray-900">${candidate.name}</p>
