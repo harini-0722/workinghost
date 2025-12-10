@@ -53,7 +53,7 @@ const createCrudEndpoints = (model, modelName) => {
 };
 createCrudEndpoints(Event, 'event');
 createCrudEndpoints(Member, 'member');
-createCrudEndpoints(Club, 'club');
+
 createCrudEndpoints(Head, 'head');
 // We call ElectionPost directly below to handle complex POST logic
 // We call Announcement directly below to handle complex POST logic
@@ -102,11 +102,43 @@ router.post('/heads', upload.single('imageUrl'), async (req, res) => {
     } catch (e) { res.status(500).json({ success: false, message: e.message }); }
 });
 
-router.post('/clubs', async (req, res) => {
+// REPLACE the old router.post('/clubs', async (req, res) => { ... });
+router.post('/clubs', upload.single('imageUrl'), async (req, res) => {
     try {
-        const newItem = new Club(req.body);
+        const { name, council } = req.body;
+        // Check for file existence
+        if (!req.file) {
+            return res.status(400).json({ success: false, message: 'Club Image file is required' });
+        }
+        
+        const imageUrlPath = '/uploads/' + req.file.filename;
+        
+        const newItem = new Club({ name, council, imageUrl: imageUrlPath });
         await newItem.save();
+        
+        // Return the saved club object with the new image URL
         res.status(201).json({ success: true, data: newItem });
+    } catch (e) {
+        res.status(500).json({ success: false, message: e.message });
+    }
+});
+
+// ADD a GET route for clubs (since createCrudEndpoints was removed for it)
+router.get('/clubs', async (req, res) => {
+    try {
+        const items = await Club.find();
+        res.json({ success: true, data: items });
+    } catch (e) {
+        res.status(500).json({ success: false, message: e.message });
+    }
+});
+
+// ADD a DELETE route for clubs (since createCrudEndpoints was removed for it)
+router.delete('/clubs/:id', async (req, res) => {
+    try {
+        // NOTE: For a production app, you would also delete the file from the filesystem here.
+        await Club.findByIdAndDelete(req.params.id);
+        res.json({ success: true, message: 'club deleted' });
     } catch (e) {
         res.status(500).json({ success: false, message: e.message });
     }
