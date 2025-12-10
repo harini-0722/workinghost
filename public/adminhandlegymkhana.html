@@ -14,13 +14,18 @@
         .election-tab-content { display: none; }
         .election-tab-content.active { display: block; }
         
-        /* --- NEW STYLES FOR DELETE BUTTONS --- */
+        /* --- NEW STYLES FOR ACTION BUTTONS --- */
         .grid-item { position: relative; }
-        .delete-btn {
+        .action-btns {
             position: absolute;
             top: 5px;
             right: 5px;
-            color: #ef4444; /* red-500 */
+            display: flex;
+            gap: 5px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .action-btn {
             background-color: white;
             border-radius: 50%;
             width: 24px;
@@ -28,12 +33,13 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            opacity: 0;
-            transition: opacity 0.2s;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
             cursor: pointer;
+            transition: background-color 0.1s;
         }
-        .grid-item:hover .delete-btn { opacity: 1; }
+        .action-btn.delete-btn { color: #ef4444; } /* red-500 */
+        .action-btn.edit-btn { color: #3b82f6; } /* blue-500 */
+        .grid-item:hover .action-btns { opacity: 1; }
         /* ------------------------------------- */
 
         ::-webkit-scrollbar { width: 8px; }
@@ -131,8 +137,8 @@
                 <div id="page-content-events" class="page-content">
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                         <div class="lg:col-span-1">
-                            <form id="add-event-form" class="bg-white p-6 rounded-lg shadow-lg space-y-4 sticky top-28">
-                                <h2 class="text-xl font-bold text-gray-900">Add New Event</h2>
+                            <form id="add-event-form" class="bg-white p-6 rounded-lg shadow-lg space-y-4 sticky top-28" data-edit-id="">
+                                <h2 id="event-form-title" class="text-xl font-bold text-gray-900">Add New Event</h2>
                                 <div>
                                     <label for="event-name" class="block text-sm font-medium text-gray-700">Event Name</label>
                                     <input type="text" id="event-name" name="name" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
@@ -146,12 +152,13 @@
                                     <textarea id="event-desc" name="description" rows="3" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"></textarea>
                                 </div>
                                 <div>
-                                    <label for="event-image" class="block text-sm font-medium text-gray-700">Image</label>
-                                    <input type="file" id="event-image" name="imageUrl" required class="mt-1 block w-full file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                                    <label for="event-image" class="block text-sm font-medium text-gray-700">Image (Leave empty to keep existing on edit)</label>
+                                    <input type="file" id="event-image" name="imageUrl" class="mt-1 block w-full file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
                                 </div>
-                                <button type="submit" class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md font-semibold hover:bg-indigo-700 flex items-center justify-center transition-colors duration-200">
+                                <button type="submit" id="event-submit-btn" class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md font-semibold hover:bg-indigo-700 flex items-center justify-center transition-colors duration-200">
                                     <i class="fas fa-plus mr-2"></i>Add Event
                                 </button>
+                                <button type="button" id="event-cancel-btn" class="w-full bg-gray-400 text-white py-2 px-4 rounded-md font-semibold hover:bg-gray-500 flex items-center justify-center transition-colors duration-200 hidden" onclick="resetForm('event')">Cancel Edit</button>
                             </form>
                         </div>
                         <div class="lg:col-span-2">
@@ -165,8 +172,8 @@
                 <div id="page-content-members" class="page-content">
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                         <div class="lg:col-span-1">
-                            <form id="add-member-form" class="bg-white p-6 rounded-lg shadow-lg space-y-4 sticky top-28">
-                                <h2 class="text-xl font-bold text-gray-900">Add New Member</h2>
+                            <form id="add-member-form" class="bg-white p-6 rounded-lg shadow-lg space-y-4 sticky top-28" data-edit-id="">
+                                <h2 id="member-form-title" class="text-xl font-bold text-gray-900">Add New Member</h2>
                                 <div>
                                     <label for="member-name" class="block text-sm font-medium text-gray-700">Member Name</label>
                                     <input type="text" id="member-name" name="name" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
@@ -180,12 +187,13 @@
                                     <input type="text" id="member-desc" name="description" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                                 </div>
                                 <div>
-                                    <label for="member-image" class="block text-sm font-medium text-gray-700">Image</label>
-                                    <input type="file" id="member-image" name="imageUrl" required class="mt-1 block w-full file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                                    <label for="member-image" class="block text-sm font-medium text-gray-700">Image (Leave empty to keep existing on edit)</label>
+                                    <input type="file" id="member-image" name="imageUrl" class="mt-1 block w-full file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
                                 </div>
-                                <button type="submit" class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md font-semibold hover:bg-indigo-700 flex items-center justify-center transition-colors duration-200">
+                                <button type="submit" id="member-submit-btn" class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md font-semibold hover:bg-indigo-700 flex items-center justify-center transition-colors duration-200">
                                     <i class="fas fa-plus mr-2"></i>Add Member
                                 </button>
+                                <button type="button" id="member-cancel-btn" class="w-full bg-gray-400 text-white py-2 px-4 rounded-md font-semibold hover:bg-gray-500 flex items-center justify-center transition-colors duration-200 hidden" onclick="resetForm('member')">Cancel Edit</button>
                             </form>
                         </div>
                         <div class="lg:col-span-2">
@@ -199,8 +207,8 @@
                 <div id="page-content-clubs" class="page-content">
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                         <div class="lg:col-span-1">
-                            <form id="add-club-form" class="bg-white p-6 rounded-lg shadow-lg space-y-4 sticky top-28">
-                                <h2 class="text-xl font-bold text-gray-900">Add New Club</h2>
+                            <form id="add-club-form" class="bg-white p-6 rounded-lg shadow-lg space-y-4 sticky top-28" data-edit-id="">
+                                <h2 id="club-form-title" class="text-xl font-bold text-gray-900">Add New Club</h2>
                                 <div>
                                     <label for="club-name" class="block text-sm font-medium text-gray-700">Club Name</label>
                                     <input type="text" id="club-name" name="name" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
@@ -215,12 +223,13 @@
                                     </select>
                                 </div>
                                 <div>
-    <label for="club-image" class="block text-sm font-medium text-gray-700">Club Image</label>
-    <input type="file" id="club-image" name="imageUrl" required class="mt-1 block w-full file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
-</div>
-                                <button type="submit" class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md font-semibold hover:bg-indigo-700 flex items-center justify-center transition-colors duration-200">
+                                    <label for="club-image" class="block text-sm font-medium text-gray-700">Club Image (Leave empty to keep existing on edit)</label>
+                                    <input type="file" id="club-image" name="imageUrl" class="mt-1 block w-full file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                                </div>
+                                <button type="submit" id="club-submit-btn" class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md font-semibold hover:bg-indigo-700 flex items-center justify-center transition-colors duration-200">
                                     <i class="fas fa-plus mr-2"></i>Add Club
                                 </button>
+                                <button type="button" id="club-cancel-btn" class="w-full bg-gray-400 text-white py-2 px-4 rounded-md font-semibold hover:bg-gray-500 flex items-center justify-center transition-colors duration-200 hidden" onclick="resetForm('club')">Cancel Edit</button>
                             </form>
                         </div>
                         <div class="lg:col-span-2">
@@ -234,8 +243,8 @@
                 <div id="page-content-heads" class="page-content">
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                         <div class="lg:col-span-1">
-                            <form id="add-head-form" class="bg-white p-6 rounded-lg shadow-lg space-y-4 sticky top-28">
-                                <h2 class="text-xl font-bold text-gray-900">Add Council Head</h2>
+                            <form id="add-head-form" class="bg-white p-6 rounded-lg shadow-lg space-y-4 sticky top-28" data-edit-id="">
+                                <h2 id="head-form-title" class="text-xl font-bold text-gray-900">Add Council Head</h2>
                                 <div>
                                     <label for="head-name" class="block text-sm font-medium text-gray-700">Name</label>
                                     <input type="text" id="head-name" name="name" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
@@ -254,12 +263,13 @@
                                     </select>
                                 </div>
                                 <div>
-                                    <label for="head-image" class="block text-sm font-medium text-gray-700">Image</label>
-                                    <input type="file" id="head-image" name="imageUrl" required class="mt-1 block w-full file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                                    <label for="head-image" class="block text-sm font-medium text-gray-700">Image (Leave empty to keep existing on edit)</label>
+                                    <input type="file" id="head-image" name="imageUrl" class="mt-1 block w-full file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
                                 </div>
-                                <button type="submit" class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md font-semibold hover:bg-indigo-700 flex items-center justify-center transition-colors duration-200">
+                                <button type="submit" id="head-submit-btn" class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md font-semibold hover:bg-indigo-700 flex items-center justify-center transition-colors duration-200">
                                     <i class="fas fa-user-tie mr-2"></i>Add Head
                                 </button>
+                                <button type="button" id="head-cancel-btn" class="w-full bg-gray-400 text-white py-2 px-4 rounded-md font-semibold hover:bg-gray-500 flex items-center justify-center transition-colors duration-200 hidden" onclick="resetForm('head')">Cancel Edit</button>
                             </form>
                         </div>
                         <div class="lg:col-span-2">
@@ -595,7 +605,6 @@
             }
 
             // Remove item from the global array immediately
-            const initialLength = dataArray.length;
             const updatedArray = dataArray.filter(item => item._id !== id);
             
             // Reassign the global variable to the filtered array
@@ -603,6 +612,9 @@
             else if (type === 'member') memberData = updatedArray;
             else if (type === 'club') clubData = updatedArray;
             else if (type === 'head') headData = updatedArray;
+            
+            // Reset the form if the deleted item was currently being edited
+            resetForm(type);
             
             renderFunction(); // Re-render the UI
             renderDashboardCounts(); // Update counts
@@ -614,8 +626,77 @@
         }
     };
 
+    // --- NEW: EDIT ITEM LOGIC ---
+    /**
+     * Fetches an individual item's data and populates the form for editing.
+     * @param {string} type - The model name (e.g., 'event', 'member').
+     * @param {string} id - The MongoDB ID of the item to edit.
+     * @param {Array} dataArray - The global array containing the data.
+     */
+    window.editItem = (type, id, dataArray) => {
+        const item = dataArray.find(item => item._id === id);
+        if (!item) {
+            alert(`Item not found for editing (ID: ${id})`);
+            return;
+        }
 
-    // --- CORE RENDERING FUNCTIONS (UPDATED WITH DELETE BUTTONS) ---
+        const form = document.getElementById(`add-${type}-form`);
+        
+        // 1. Set the form state to EDIT mode
+        form.setAttribute('data-edit-id', id);
+        
+        // 2. Populate fields
+        document.getElementById(`${type}-form-title`).textContent = `Edit Existing ${type.charAt(0).toUpperCase() + type.slice(1)}`;
+        document.getElementById(`${type}-submit-btn`).innerHTML = `<i class="fas fa-save mr-2"></i>Save Changes`;
+        document.getElementById(`${type}-submit-btn`).classList.remove('bg-indigo-600', 'hover:bg-indigo-700');
+        document.getElementById(`${type}-submit-btn`).classList.add('bg-blue-600', 'hover:bg-blue-700');
+        document.getElementById(`${type}-cancel-btn`).classList.remove('hidden');
+
+        document.getElementById(`${type}-name`).value = item.name;
+
+        if (type === 'event') {
+            document.getElementById(`event-date`).value = item.dateTag;
+            document.getElementById(`event-desc`).value = item.description;
+        } else if (type === 'member') {
+            document.getElementById(`member-position`).value = item.position;
+            document.getElementById(`member-desc`).value = item.description;
+        } else if (type === 'club') {
+            document.getElementById(`club-council`).value = item.council;
+            // NOTE: Image field is intentionally left blank for security reasons (you upload a new file, or leave it blank to keep the old one)
+        } else if (type === 'head') {
+            document.getElementById(`head-position`).value = item.position;
+            document.getElementById(`head-council`).value = item.council;
+            // NOTE: Image field is intentionally left blank
+        }
+        
+        // Scroll to the form for better UX
+        form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+
+    /**
+     * Resets the form back to ADD mode after a successful edit or cancellation.
+     * @param {string} type - The model name.
+     */
+    window.resetForm = (type) => {
+        const form = document.getElementById(`add-${type}-form`);
+        form.reset(); // Clear all fields
+        
+        // Reset form state variables
+        form.setAttribute('data-edit-id', '');
+        
+        // Reset form title and buttons
+        document.getElementById(`${type}-form-title`).textContent = `Add New ${type.charAt(0).toUpperCase() + type.slice(1)}`;
+        
+        const submitBtn = document.getElementById(`${type}-submit-btn`);
+        submitBtn.innerHTML = `<i class="fas fa-plus mr-2"></i>Add ${type.charAt(0).toUpperCase() + type.slice(1)}`;
+        submitBtn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+        submitBtn.classList.add('bg-indigo-600', 'hover:bg-indigo-700');
+
+        document.getElementById(`${type}-cancel-btn`).classList.add('hidden');
+    }
+
+
+    // --- CORE RENDERING FUNCTIONS (UPDATED WITH EDIT/DELETE BUTTONS) ---
 
     const renderEvents = (events = eventData) => {
         const list = document.getElementById('events-list');
@@ -627,13 +708,19 @@
         events.forEach(item => {
             list.innerHTML += `
                 <div class="bg-white p-4 rounded-lg shadow-md flex items-start space-x-4 grid-item">
-                    <button class="delete-btn" onclick="deleteItem('event', '${item._id}', renderEvents, eventData)">
-                        <i class="fas fa-times fa-xs"></i>
-                    </button>
+                    <div class="action-btns">
+                        <button class="action-btn edit-btn" onclick="editItem('event', '${item._id}', eventData)">
+                            <i class="fas fa-edit fa-xs"></i>
+                        </button>
+                        <button class="action-btn delete-btn" onclick="deleteItem('event', '${item._id}', renderEvents, eventData)">
+                            <i class="fas fa-times fa-xs"></i>
+                        </button>
+                    </div>
                     <img src="${item.imageUrl}" class="w-16 h-16 object-cover rounded" onerror="this.onerror=null;this.src='/placeholder.jpg'">
                     <div>
                         <p class="font-bold text-gray-900">${item.name}</p>
                         <p class="text-sm text-indigo-600">${item.dateTag}</p>
+                        <p class="text-xs text-gray-500 mt-1">${item.description.substring(0, 100)}...</p>
                     </div>
                 </div>
             `;
@@ -650,39 +737,48 @@
         members.forEach(item => {
             list.innerHTML += `
                 <div class="bg-white p-4 rounded-lg shadow-sm text-center grid-item">
-                    <button class="delete-btn" onclick="deleteItem('member', '${item._id}', renderMembers, memberData)">
-                        <i class="fas fa-times fa-xs"></i>
-                    </button>
+                    <div class="action-btns">
+                        <button class="action-btn edit-btn" onclick="editItem('member', '${item._id}', memberData)">
+                            <i class="fas fa-edit fa-xs"></i>
+                        </button>
+                        <button class="action-btn delete-btn" onclick="deleteItem('member', '${item._id}', renderMembers, memberData)">
+                            <i class="fas fa-times fa-xs"></i>
+                        </button>
+                    </div>
                     <img src="${item.imageUrl}" class="w-20 h-20 object-cover rounded-full mx-auto" onerror="this.onerror=null;this.src='/placeholder.jpg'">
                     <p class="font-bold text-gray-900 mt-2">${item.name}</p>
                     <p class="text-sm text-indigo-600">${item.position}</p>
+                    <p class="text-xs text-gray-500">${item.description}</p>
                 </div>
             `;
         });
     };
     
-   // ...
-const renderClubs = (clubs = clubData) => {
-    const list = document.getElementById('clubs-list');
-    list.innerHTML = '';
-    if (!Array.isArray(clubs) || clubs.length === 0) {
-        list.innerHTML = `<p class="col-span-full text-gray-500">No clubs found.</p>`;
-        return;
-    }
-    clubs.forEach(item => {
-        list.innerHTML += `
-            <div class="bg-white p-4 rounded-lg shadow-sm text-center border-t-4 border-indigo-200 grid-item">
-                <button class="delete-btn" onclick="deleteItem('club', '${item._id}', renderClubs, clubData)">
-                    <i class="fas fa-times fa-xs"></i>
-                </button>
-                <img src="${item.imageUrl}" class="w-20 h-20 object-cover rounded-full mx-auto ring-2 ring-indigo-300" onerror="this.onerror=null;this.src='/placeholder.jpg'">
-                <p class="font-bold text-gray-900 mt-2">${item.name}</p>
-                <p class="text-xs text-gray-500">${item.council}</p>
-            </div>
-        `;
-    });
-};
-// ...
+    const renderClubs = (clubs = clubData) => {
+        const list = document.getElementById('clubs-list');
+        list.innerHTML = '';
+        if (!Array.isArray(clubs) || clubs.length === 0) {
+            list.innerHTML = `<p class="col-span-full text-gray-500">No clubs found.</p>`;
+            return;
+        }
+        clubs.forEach(item => {
+            list.innerHTML += `
+                <div class="bg-white p-4 rounded-lg shadow-sm text-center border-t-4 border-indigo-200 grid-item">
+                    <div class="action-btns">
+                        <button class="action-btn edit-btn" onclick="editItem('club', '${item._id}', clubData)">
+                            <i class="fas fa-edit fa-xs"></i>
+                        </button>
+                        <button class="action-btn delete-btn" onclick="deleteItem('club', '${item._id}', renderClubs, clubData)">
+                            <i class="fas fa-times fa-xs"></i>
+                        </button>
+                    </div>
+                    <img src="${item.imageUrl}" class="w-20 h-20 object-cover rounded-full mx-auto ring-2 ring-indigo-300" onerror="this.onerror=null;this.src='/placeholder.jpg'">
+                    <p class="font-bold text-gray-900 mt-2">${item.name}</p>
+                    <p class="text-xs text-gray-500">${item.council}</p>
+                </div>
+            `;
+        });
+    };
 
     const renderHeads = (heads = headData) => {
         const list = document.getElementById('heads-list');
@@ -694,9 +790,14 @@ const renderClubs = (clubs = clubData) => {
         heads.forEach(item => {
             list.innerHTML += `
                 <div class="bg-white p-4 rounded-lg shadow-sm flex items-start space-x-4 border-l-4 border-rose-500 grid-item">
-                    <button class="delete-btn" onclick="deleteItem('head', '${item._id}', renderHeads, headData)">
-                        <i class="fas fa-times fa-xs"></i>
-                    </button>
+                    <div class="action-btns">
+                        <button class="action-btn edit-btn" onclick="editItem('head', '${item._id}', headData)">
+                            <i class="fas fa-edit fa-xs"></i>
+                        </button>
+                        <button class="action-btn delete-btn" onclick="deleteItem('head', '${item._id}', renderHeads, headData)">
+                            <i class="fas fa-times fa-xs"></i>
+                        </button>
+                    </div>
                     <img src="${item.imageUrl}" class="w-16 h-16 object-cover rounded-full" onerror="this.onerror=null;this.src='/placeholder.jpg'">
                     <div>
                         <p class="font-bold text-gray-900">${item.name}</p>
@@ -894,8 +995,8 @@ const renderClubs = (clubs = clubData) => {
             for (const [blockName, posts] of Object.entries(data.results_by_block)) {
                 // Determine a color for the block card
                 const blockColor = blockName.toLowerCase().includes('cvr') ? 'indigo' : 
-                                 blockName.toLowerCase().includes('da') ? 'green' : 
-                                 blockName.toLowerCase().includes('summary') ? 'purple' : 'blue';
+                                   blockName.toLowerCase().includes('da') ? 'green' : 
+                                   blockName.toLowerCase().includes('summary') ? 'purple' : 'blue';
                 
                 // Create the main block container
                 html += `
@@ -1057,110 +1158,157 @@ const renderClubs = (clubs = clubData) => {
 
     // --- EVENT HANDLERS (POST & DELETE) ---
 
-    // Event POST
-    document.getElementById('add-event-form').addEventListener('submit', async (e) => {
+    // Generic Add/Edit Handler for Events, Members, Clubs, Heads
+    const genericAddEditHandler = async (e) => {
+        e.preventDefault();
+        const form = e.target;
+        const type = form.id.split('-')[1]; // e.g., 'event'
+        const editId = form.getAttribute('data-edit-id');
+        const isEdit = !!editId;
+
+        const endpoint = isEdit ? `/api/${type}s/${editId}` : `/api/${type}s`;
+        const method = isEdit ? 'PUT' : 'POST';
+        const formData = new FormData(form);
+
+        try {
+            const response = await fetch(endpoint, { method: method, body: formData });
+
+            if (!response.ok) {
+                const errorBody = await response.json();
+                throw new Error(errorBody.message || `Failed to ${isEdit ? 'update' : 'add'} ${type}.`);
+            }
+
+            const responseBody = await response.json();
+            
+            // Update the global data array and re-render
+            let dataArray;
+            let renderFunc;
+            if (type === 'event') { dataArray = eventData; renderFunc = renderEvents; }
+            else if (type === 'member') { dataArray = memberData; renderFunc = renderMembers; }
+            else if (type === 'club') { dataArray = clubData; renderFunc = renderClubs; }
+            else if (type === 'head') { dataArray = headData; renderFunc = renderHeads; }
+
+            if (isEdit) {
+                // Replace old item with new item data in the array
+                const index = dataArray.findIndex(item => item._id === editId);
+                if (index !== -1) {
+                    dataArray[index] = responseBody.data;
+                }
+            } else {
+                dataArray.push(responseBody.data);
+            }
+            
+            renderFunc();
+            resetForm(type); // Reset form mode to ADD
+            alert(`${type} ${isEdit ? 'updated' : 'added'} successfully!`);
+            renderDashboardCounts();
+            
+        } catch (error) {
+            console.error(`Error ${isEdit ? 'updating' : 'adding'} ${type}:`, error);
+            alert(`Error ${isEdit ? 'updating' : 'adding'} ${type}: ` + error.message);
+        }
+    };
+    
+    // Attach the generic handler to all forms
+    document.getElementById('add-event-form').addEventListener('submit', genericAddEditHandler);
+    document.getElementById('add-member-form').addEventListener('submit', genericAddEditHandler);
+    document.getElementById('add-club-form').addEventListener('submit', genericAddEditHandler);
+    document.getElementById('add-head-form').addEventListener('submit', genericAddEditHandler);
+
+
+    // Event POST (Candidate, Announcement, Position posts remain unchanged)
+    document.getElementById('add-election-detail-form').addEventListener('submit', async (e) => {
         e.preventDefault(); 
         const form = e.target;
         const formData = new FormData(form);
 
         try {
-            const response = await fetch('/api/events', { method: 'POST', body: formData });
+            const response = await fetch('/api/elections/posts', { 
+                method: 'POST', 
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(Object.fromEntries(formData))
+            });
             if (!response.ok) {
                 const errorBody = await response.json();
-                throw new Error(errorBody.message || 'Failed to add event.');
+                throw new Error(errorBody.message || 'Failed to add position.');
             }
-            const responseBody = await response.json();
-            eventData.push(responseBody.data);
-            renderEvents(); 
+            // Simply re-fetch to update the lists
+            await fetchInitialElectionData();
             form.reset();
-            alert('Event added successfully!');
-            renderDashboardCounts();
+            alert('Position added successfully!');
         } catch (error) {
-            console.error('Error adding event:', error);
-            alert('Error adding event: ' + error.message);
+            console.error('Error adding position:', error);
+            alert('Error adding position: ' + error.message);
         }
     });
 
-    // Member POST
-    document.getElementById('add-member-form').addEventListener('submit', async (e) => {
+    document.getElementById('add-candidate-form').addEventListener('submit', async (e) => {
         e.preventDefault();
         const form = e.target;
         const formData = new FormData(form);
 
         try {
-            const response = await fetch('/api/members', { method: 'POST', body: formData });
+            const response = await fetch('/api/elections/candidates', { method: 'POST', body: formData });
             if (!response.ok) {
                 const errorBody = await response.json();
-                throw new Error(errorBody.message || 'Failed to add member.');
+                throw new Error(errorBody.message || 'Failed to add candidate.');
             }
-            const responseBody = await response.json();
-            memberData.push(responseBody.data);
-            renderMembers(); 
+            await fetchInitialElectionData();
             form.reset();
-            alert('Member added successfully!');
-            renderDashboardCounts(); 
+            alert('Candidate added successfully!');
         } catch (error) {
-            console.error('Error adding member:', error);
-            alert('Error adding member: ' + error.message);
+            console.error('Error adding candidate:', error);
+            alert('Error adding candidate: ' + error.message);
         }
     });
 
-    // Club POST
-   // ...
-// Club POST (UPDATED FOR IMAGE UPLOAD)
-document.getElementById('add-club-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const form = e.target;
-    // Use FormData directly for file upload
-    const formData = new FormData(form);
-
-    try {
-        const response = await fetch('/api/clubs', {
-            method: 'POST',
-            body: formData, // Send FormData object - NO Content-Type header needed
-        });
-
-        if (!response.ok) {
-            const errorBody = await response.json();
-            throw new Error(errorBody.message || 'Failed to add club.');
-        }
-
-        const responseBody = await response.json();
-        clubData.push(responseBody.data);
-        renderClubs(); 
-        form.reset();
-        alert('Club added successfully!');
-        renderDashboardCounts();
-    } catch (error) {
-        console.error('Error adding club:', error);
-        alert('Error adding club: ' + error.message);
-    }
-});
-// ...
-    // Head POST
-    document.getElementById('add-head-form').addEventListener('submit', async (e) => {
+    document.getElementById('add-announcement-form').addEventListener('submit', async (e) => {
         e.preventDefault();
         const form = e.target;
         const formData = new FormData(form);
 
         try {
-            const response = await fetch('/api/heads', { method: 'POST', body: formData });
+            const response = await fetch('/api/elections/announcements', { method: 'POST', body: formData });
             if (!response.ok) {
                 const errorBody = await response.json();
-                throw new Error(errorBody.message || 'Failed to add council head.');
+                throw new Error(errorBody.message || 'Failed to add announcement.');
             }
-
-            const responseBody = await response.json();
-            headData.push(responseBody.data);
-            renderHeads(); 
+            await fetchInitialElectionData();
             form.reset();
-            alert('Council Head added successfully!');
-            renderDashboardCounts();
+            alert('Announcement published successfully!');
         } catch (error) {
-            console.error('Error adding head:', error);
-            alert('Error adding head: ' + error.message);
+            console.error('Error adding announcement:', error);
+            alert('Error adding announcement: ' + error.message);
         }
     });
+
+    document.getElementById('declare-winner-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const form = e.target;
+        const formData = Object.fromEntries(new FormData(form));
+
+        try {
+            const response = await fetch('/api/elections/winners', { 
+                method: 'POST', 
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
+            });
+
+            if (!response.ok) {
+                const errorBody = await response.json();
+                throw new Error(errorBody.message || 'Failed to declare winner.');
+            }
+
+            await fetchInitialElectionData();
+            form.reset();
+            alert('Winner declared successfully!');
+
+        } catch (error) {
+            console.error('Error declaring winner:', error);
+            alert('Error declaring winner: ' + error.message);
+        }
+    });
+
 
     // Settings POST (About Us)
     document.getElementById('settings-about-form').addEventListener('submit', async (e) => {
@@ -1181,6 +1329,32 @@ document.getElementById('add-club-form').addEventListener('submit', async (e) =>
         } catch (error) {
             console.error('Error saving settings:', error);
             alert('Error saving settings: ' + error.message);
+        }
+    });
+
+    // Settings POST (Election Dates)
+    document.getElementById('settings-election-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const data = {
+            d1_title: document.getElementById('election-date-1-title').value,
+            d1_date: document.getElementById('election-date-1-date').value,
+            d2_title: document.getElementById('election-date-2-title').value,
+            d2_date: document.getElementById('election-date-2-date').value,
+            d3_title: document.getElementById('election-date-3-title').value,
+            d3_date: document.getElementById('election-date-3-date').value,
+            d4_title: document.getElementById('election-date-4-title').value,
+            d4_date: document.getElementById('election-date-4-date').value,
+        };
+        try {
+            const response = await fetch('/api/settings', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ key: 'electionDates', value: data }),
+            });
+            if (response.ok) alert('Election Dates saved!');
+            else alert('Error saving settings');
+        } catch (error) {
+            console.error('Error saving settings:', error);
         }
     });
 
