@@ -11,7 +11,7 @@ let g_complaints = [];
 let g_visitorRequests = []; 
 let g_clubActivities = []; 
 let g_leaveHistory = [];
-let g_lostFoundItems = []; // Global store for fetched FOUND items
+let g_lostFoundItems = []; // Global store for fetched Lost & Found items
 
 let g_attendanceStatus = { status: 'Checked Out', lastActionTime: null };
 
@@ -91,19 +91,19 @@ async function loadStudentData() {
             }
         } catch(err) { console.error("Leave history fetch failed", err); }
         
-        // *** LOST & FOUND FIX 1: FETCH LIVE DATA (Found Items) ***
+        // *** LOST & FOUND FIX 1: FETCH LIVE DATA and correct the key used for data access ***
         try {
             const lfRes = await fetch(`/api/lost-found/found-items`); 
             const lfData = await lfRes.json();
-            // We expect the backend key to be 'foundItems' as per your route definition
-            if(lfData.success && Array.isArray(lfData.foundItems)) { 
+            if(lfData.success && Array.isArray(lfData.foundItems)) { // Backend uses 'foundItems'
                 g_lostFoundItems = lfData.foundItems; 
-            } else {
+            } else if (lfData.success) {
                 g_lostFoundItems = [];
+            } else {
+                throw new Error(lfData.message || "Failed to fetch lost and found items.");
             }
         } catch(err) { 
             console.error("Lost & Found data fetch failed:", err); 
-            g_lostFoundItems = []; // Ensure it's an empty array on failure
         }
         // *** END LOST & FOUND FIX 1 ***
 
@@ -136,19 +136,19 @@ async function submitLostItem() {
     const name = document.getElementById('lost-item-name').value;
     const location = document.getElementById('lost-item-location').value;
     const date = document.getElementById('lost-item-date').value;
-    const studentId = g_student ? g_student._id : null; 
+    const studentId = g_student._id; 
 
     if (!name || !date || !studentId) {
-        alert('Please specify the item, date of loss, and ensure your user data is loaded.');
+        alert('Please specify the item and date of loss, and ensure student data is loaded.');
         return;
     }
     
     // Payload keys match the backend route's expected fields: itemName, lastSeenLocation
     const lostItemData = {
         studentId: studentId,
-        itemName: name,             
-        lastSeenLocation: location, 
-        dateLost: date,             
+        itemName: name,             // Matches backend: const { ..., itemName, ... } = req.body;
+        lastSeenLocation: location, // Matches backend: const { ..., lastSeenLocation } = req.body;
+        dateLost: date,             // Pass dateLost (assuming your Mongoose model saves it)
     };
 
     try {
@@ -161,9 +161,9 @@ async function submitLostItem() {
         const data = await response.json();
 
         if (response.ok && data.success) {
-            alert(data.message || `Lost item report for "${name}" submitted successfully! We will notify you if it is found.`);
+            alert(`Lost item report for "${name}" submitted successfully! We will notify you if it is found.`);
             
-            // CRITICAL STEP: Reload data and repopulate the display table
+            // Refresh ALL data (including the Found Items list) and then update the display
             await loadStudentData();
             populateLostAndFound(); 
             
@@ -506,13 +506,6 @@ function showReportTab(tabName) {
     document.getElementById(`report-tab-content-${tabName}`).classList.remove('hidden');
     const activeTab = document.getElementById(`tab-${tabName}`);
     activeTab.classList.add('active', 'border-primary-blue', 'text-primary-blue');
-    
-    // Re-run population for the specific tab content when switched
-    if (tabName === 'lost-found') {
-        populateLostAndFound();
-    } else if (tabName === 'complaints') {
-        populateStudentComplaintHistory();
-    }
 }
 
 function logout() {
@@ -867,14 +860,14 @@ function populateStudentLeaveHistory() {
     const tableBody = document.getElementById('student-leave-history');
     tableBody.innerHTML = '';
     
-    // Use the real fetched data in g_leaveHistory
-    const sortedLeaves = g_leaveHistory
-        .sort((a, b) => new Date(b.startDate) - new Date(a.startDate)); // Sort by start date (newest first)
-
-    if (sortedLeaves.length === 0) {
+    // Use the fetched g_leaveHistory
+    if (!g_leaveHistory || g_leaveHistory.length === 0) {
         tableBody.innerHTML = `<tr><td colspan="4" class="py-4 px-6 text-center text-secondary-gray">No leave history found.</td></tr>`;
         return;
     }
+
+    // Sort newest first
+    const sortedLeaves = g_leaveHistory.sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
 
     sortedLeaves.forEach(l => {
         let statusColorClass = l.status === 'Approved' ? 'text-accent-green' : (l.status === 'Pending' ? 'text-info-yellow' : 'text-accent-red');
@@ -1220,12 +1213,12 @@ function populateLostAndFound() {
         return;
     }
     
-    // Sort by submissionDate if available, assuming submissionDate/dateFound is what the DB returns for the FOUND date
+    // Sort by submissionDate if available, otherwise assume the item object is ready to display
     const sortedFoundItems = g_lostFoundItems
         .sort((a, b) => new Date(b.submissionDate || b.dateFound) - new Date(a.submissionDate || a.dateFound)); 
 
     sortedFoundItems.forEach(item => {
-        // Use keys that are likely returned by your Mongoose model: itemName, location, submissionDate/dateFound, status
+        // Assuming your database model uses 'itemName' (from the backend route) and 'location'
         const itemName = item.itemName || 'N/A';
         const dateFound = item.submissionDate ? formatDate(item.submissionDate) : (item.dateFound || 'N/A');
         const location = item.location || 'N/A';
