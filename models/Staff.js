@@ -4,13 +4,12 @@ const staffSchema = new mongoose.Schema({
     // Login Details
     username: {
         type: String,
-        required: false, // MADE OPTIONAL
+        required: true,
         unique: true,
-        sparse: true, 
     },
     password: {
         type: String,
-        required: false, // MADE OPTIONAL
+        required: true,
     },
     // Personal Details
     name: {
@@ -32,6 +31,7 @@ const staffSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    // ✅ FIX: Added joiningDate to Schema
     joiningDate: {
         type: Date,
         default: Date.now,
