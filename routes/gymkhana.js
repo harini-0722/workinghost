@@ -158,13 +158,13 @@ const updateItem = async (model, modelName, req, res) => {
         if (req.file) {
             updateData.imageUrl = '/uploads/' + req.file.filename;
         } else if (req.body.imageUrl === '') {
-            // If the user submits without a new file, ensure we don't try to save an empty string 
-            // if the original field wasn't sent. We only need the fields passed in req.body/formData
+            // Optional: Handle case where frontend explicitly clears image (if applicable)
             delete updateData.imageUrl; 
         }
 
-        // Handle specific fields (for type safety and explicit updates)
+        // Handle specific fields
         if (modelName === 'event') {
+            // Ensure proper field mapping for events
             updateData.dateTag = req.body.dateTag; 
             updateData.description = req.body.description;
         } else if (modelName === 'member') {
@@ -414,6 +414,7 @@ router.post('/elections/winners', async (req, res) => {
             success: true, 
             data: { position, candidate, votes: votes, id: winningCandidate._id } 
         });
+        
     } catch (e) {
         res.status(500).json({ success: false, message: e.message });
     }

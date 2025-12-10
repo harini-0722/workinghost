@@ -308,7 +308,7 @@
                     </p>
                     <a href="#" onclick="showPage('aiTechHub')" class="mt-6 inline-flex items-center px-8 py-3 border border-transparent text-base font-bold rounded-lg shadow-md text-white bg-teal-600 hover:bg-teal-700 transition duration-300">
                         Explore AI Tools <i class="fas fa-robot ml-3"></i>
-                    </button>
+                    </a>
                 </div>
             </section>
             <section class="py-24 bg-white">
@@ -1153,10 +1153,11 @@
     // --- CORE DATA LOADING ---
     const loadAllData = async () => {
         // Load data for Home Page components
+        // FIX: Reverted to plural names to match your createCrudEndpoints logic
         globalData.events = await fetchData('/events'); 
-        globalData.members = await fetchData('/members'); 
+        globalData.members = await fetchData('/members'); // <<-- FIX: Corrected to '/members'
         globalData.clubs = await fetchData('/clubs');
-        globalData.heads = await fetchData('/heads'); 
+        globalData.heads = await fetchData('/heads'); // <<-- FIX: Corrected to '/heads'
         
         // Load data for Election components (only happens once)
         globalData.posts = await fetchData('/elections/posts');
@@ -1187,6 +1188,8 @@
         renderAnnouncements();
         // Render elected members uses globalData.heads (which is fetched from /heads)
         renderElectedMembers(); 
+        // Ensure view is set to info-view on entry, or call switchView('grids-view') if results should be default.
+        // For now, let's keep the default tab logic separate.
         // switchView('info-view'); 
     }
 
@@ -1206,6 +1209,7 @@
         
         membersToDisplay.forEach(member => {
             const initials = member.name.split(' ').map(n => n[0]).join('');
+            // Use different placeholder/color for members page for a distinct look
             const placeholderImg = `https://placehold.co/100x100/1D4ED8/FFFFFF?text=${initials}`; // Blue
             const finalImgSrc = member.imageUrl ? member.imageUrl : placeholderImg;
 
@@ -1300,17 +1304,10 @@
             }
              
             filteredClubs.forEach(item => {
-                const initials = item.name.split(' ').map(n => n[0]).join('');
-                const placeholderImg = `https://placehold.co/100x100/4F46E5/FFFFFF?text=${initials}`;
-                const finalImgSrc = item.imageUrl ? item.imageUrl : placeholderImg;
-
-                // FIX: Changed to display the image URL instead of the placeholder icon
+                const iconColor = item.council.toLowerCase().includes('scitech') ? 'text-blue-500' : 'text-indigo-500';
                 list.innerHTML += `
                     <div class="bg-white p-4 rounded-lg shadow-xl text-center border-t-4 border-indigo-200 card-hover">
-                        <img class="w-20 h-20 object-cover rounded-full mx-auto ring-2 ring-indigo-300" 
-                            src="${finalImgSrc}" 
-                            alt="${item.name} Logo"
-                            onerror="this.onerror=null;this.src='${placeholderImg}'">
+                        <i class="${item.icon || 'fas fa-dot-circle'} fa-3x ${iconColor}"></i> 
                         <p class="font-bold text-gray-900 mt-2">${item.name}</p>
                         <p class="text-xs text-gray-500">${item.council}</p>
                     </div>
