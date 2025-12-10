@@ -262,7 +262,6 @@
         function showSuccess(msg) { alert('✅ ' + msg); }
         function showError(msg) { alert('❌ ' + msg); }
         
-        // FIX: Added 'onerror' logic directly to the image tag later, but this function provides the base URL
         function getImageUrl(staff) {
             return staff.profileImageUrl || staff.imageDataURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(staff.name || 'Staff')}&background=6366f1&color=fff&size=128`; 
         }
@@ -281,34 +280,35 @@
             }
         });
 
-        // --- FETCH BLOCKS ---
+        // --- FETCH BLOCKS (Mock/Real API Call) ---
         async function loadAvailableBlocks() {
             try {
-                // NOTE: This assumes an API endpoint exists and returns { success: true, blocks: [...] }
+                // Assuming this hits a real endpoint or returns mock data
                 const res = await fetch('/api/blocks'); 
                 const data = await res.json();
                 if (data.success) availableBlocks = data.blocks;
             } catch (error) { 
-                console.error('Block load error', error); 
-                // Fallback blocks for testing if API fails
-                availableBlocks = [{ blockName: "Block A" }, { blockName: "Block B" }];
+                console.error('Block load error, using mock data:', error); 
+                availableBlocks = [{ blockName: "Block A" }, { blockName: "Block B" }, { blockName: "Block C" }];
             }
         }
 
-        // --- FETCH STAFF ---
+        // --- FETCH STAFF (Mock/Real API Call) ---
         async function loadStaffRoster() {
             try {
-                // NOTE: This assumes an API endpoint exists and returns { success: true, staff: [...] }
                 const res = await fetch('/api/staff');
                 const data = await res.json();
-                document.getElementById('loading-message').style.display = 'none'; // Clear loading
+                const loadingMessage = document.getElementById('loading-message');
+                if (loadingMessage) loadingMessage.style.display = 'none';
                 
                 if (data.success) {
                     staffRoster = data.staff;
                     renderStaffRoster();
                 }
             } catch (error) {
-                staffRosterContainer.innerHTML = `<div class="col-span-full text-center text-red-500 font-semibold py-10">❌ Failed to connect to server.</div>`;
+                const loadingMessage = document.getElementById('loading-message');
+                if (loadingMessage) loadingMessage.style.display = 'none';
+                staffRosterContainer.innerHTML = `<div class="col-span-full text-center text-red-500 font-semibold py-10">❌ Failed to connect to server or load staff data.</div>`;
             }
         }
 
@@ -327,14 +327,12 @@
             staffRoster.forEach(staff => {
                 const staffId = staff._id || staff.id;
                 
-                // Fallback avatar if server image deletes (hosting issue)
                 const fallbackAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(staff.name || 'Staff')}&background=6366f1&color=fff&size=128`;
                 const displayName = staff.name || 'Unassigned Name';
                 const displayRole = staff.role || 'Unassigned Role';
                 const displayUsername = staff.username ? `@${staff.username}` : '@no.login';
                 const displayPlace = staff.place || 'Hostel Wide';
 
-                // Card HTML Structure
                 const cardHTML = `
                     <div class="staff-card group bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden relative flex flex-col h-full">
                         
@@ -403,33 +401,26 @@
             });
         }
 
-        // --- SUBMIT HANDLER ---
+        // --- SUBMIT HANDLER (Client-side validation removed) ---
         addStaffForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
             const rawData = new FormData(addStaffForm); 
             
-            // Get values, preferring the custom input if 'Other' was selected, otherwise the dropdown value.
-            // If the field is not present (because initField reset it), or is blank, it defaults to ''.
             const assignedRole = rawData.get('role') || rawData.get('role_dropdown_value') || '';
             const assignedPlace = rawData.get('place') || rawData.get('place_dropdown_value') || '';
             
-            // NOTE: Per the user request, no field is mandatory. 
-            // The system will attempt to create a staff member even if all fields are empty, 
-            // though this might fail on the backend if a field like 'name' or 'username' is expected.
-            // Assuming your backend can handle missing/empty values for non-essential fields.
-
+            // *** REMOVED ALL MANDATORY CLIENT-SIDE VALIDATION HERE ***
+            
             const formDataToSubmit = new FormData();
-            // Use || '' to ensure null/undefined/missing form fields are sent as empty strings, not 'null' or 'undefined'.
-            formDataToSubmit.append('name', rawData.get('name') || '');
-            formDataToSubmit.append('username', rawData.get('username') || '');
-            // NOTE: Sending empty password might be a security risk if the backend doesn't handle it.
-            // If a user is created without credentials, they won't be able to log in.
+            // Use || '' to ensure null/undefined/missing form fields are sent as empty strings
+            formDataToSubmit.append('name', rawData.get('name') || ''); 
+            formDataToSubmit.append('username', rawData.get('username') || ''); 
             formDataToSubmit.append('password', rawData.get('password') || ''); 
             formDataToSubmit.append('joiningDate', new Date().toISOString()); 
             formDataToSubmit.append('phone', rawData.get('phone') || ''); 
             formDataToSubmit.append('email', rawData.get('email') || '');
-            // Role and Place logic ensures the correct value is used
+            // Filter out the 'Other' placeholder value if not followed by a custom input
             formDataToSubmit.append('role', assignedRole === 'Other' ? '' : assignedRole); 
             formDataToSubmit.append('place', assignedPlace === 'Other' ? '' : assignedPlace); 
             formDataToSubmit.append('status', 'Active'); 
@@ -441,11 +432,10 @@
             submitBtn.innerHTML = `<div class="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></div>`;
 
             try {
-                // NOTE: Using a real API endpoint here.
                 const res = await fetch('/api/staff', { method: 'POST', body: formDataToSubmit });
                 const data = await res.json();
                 
-                if (data.success) {
+                if (res.ok && data.success) { // Check both status and success flag
                     showSuccess(`Staff Account Created!`);
                     addStaffForm.reset();
                     imagePreview.classList.add('hidden');
@@ -454,9 +444,11 @@
                     initPlaceField();
                     loadStaffRoster();
                 } else {
-                    throw new Error(data.message || 'Staff creation failed on server.');
+                    // This catches the 400 Bad Request error from your backend
+                    const errorMessage = data.message || `Server Error: ${res.statusText}. Check your backend logic.`;
+                    throw new Error(errorMessage);
                 }
-            } catch (err) { showError(err.message || 'Error creating staff'); }
+            } catch (err) { showError(err.message || 'Error creating staff (Check console for details)'); }
             finally { 
                 submitBtn.disabled = false; 
                 submitBtn.innerHTML = `<span>Create Account</span><hero-icon-solid name="check" class="h-5 w-5"></hero-icon-solid>`;
@@ -536,7 +528,6 @@
         });
 
         function openCredentialModal(staff) {
-            // Also need fallback for modal image
             const fallbackAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(staff.name || 'Staff')}&background=6366f1&color=fff&size=128`;
             const displayUsername = staff.username || 'N/A';
             const displayPasswordStatus = staff.password ? '•••••••' : 'N/A';
