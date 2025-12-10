@@ -47,13 +47,17 @@ router.get('/found-items', async (req, res) => {
 
 // BONUS POST: (Optional) If you want to test adding a "Found" item to see it in the table
 // You can use Postman to hit this endpoint
-router.post('/add-found-item', async (req, res) => {
+router.post('/report-lost', async (req, res) => {
     try {
-        const { itemName, location } = req.body;
+        // Now also destruct the dateLost field
+        const { studentId, itemName, lastSeenLocation, dateLost } = req.body; 
+
         const newItem = new LostFound({
+            studentId,
             itemName,
-            location,
-            type: 'Found',
+            location: lastSeenLocation,
+            dateLost, // <-- Add this to your Mongoose model and schema
+            type: 'Lost',
             status: 'Pending'
         });
         await newItem.save();

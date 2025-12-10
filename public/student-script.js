@@ -200,31 +200,36 @@ async function submitLostItem() {
     
     const lostItemData = {
         studentId: studentId,
-        item: name,
-        lostLocation: location, // Assuming your DB uses a field like this
-        dateLost: date,
+        // *** FIX 1: Change 'item' to 'itemName' to match backend destructuring ***
+        itemName: name,
+        // *** FIX 2: Change 'lostLocation' to 'lastSeenLocation' to match backend destructuring ***
+        lastSeenLocation: location, 
+        // FIX 3: You are NOT using dateLost in the backend, but we'll leave it for now, 
+        // although you should add dateLost to your backend model. 
+        dateLost: date, 
     };
 
     try {
-        // Assuming you have an endpoint for submitting lost reports
         const response = await fetch('/api/lost-found/report-lost', { 
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(lostItemData)
         });
 
+        // ... rest of the function remains the same ...
         const data = await response.json();
 
         if (response.ok && data.success) {
             alert(`Lost item report for "${name}" submitted successfully! We will notify you if it is found.`);
             
-            // Re-fetch ALL data to ensure the display updates if there was a linked action
             await loadStudentData();
-            populateLostAndFound(); // Re-populate the found items table
+            populateLostAndFound(); 
             
             document.getElementById('lost-item-form').reset();
         } else {
-            throw new Error(data.message || 'Failed to submit lost item report.');
+            // Check for potential server error messages here
+            const errorMessage = data.message || 'Failed to submit lost item report.';
+            throw new Error(errorMessage);
         }
 
     } catch (error) {
