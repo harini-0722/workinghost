@@ -11,13 +11,11 @@ let g_complaints = [];
 let g_visitorRequests = []; 
 let g_clubActivities = []; 
 let g_leaveHistory = [];
-let g_lostFoundItems = []; // CORRECTED: Now a live data store
+let g_lostFoundItems = []; // Global store for fetched Lost & Found items
 
 let g_attendanceStatus = { status: 'Checked Out', lastActionTime: null };
 
 // --- Mock data (Only for Announcements now) ---
-// The original mockLostFound has been removed and replaced by g_lostFoundItems.
-
 const mockAnnouncements = [
     {
         id: 1,
@@ -93,25 +91,21 @@ async function loadStudentData() {
             }
         } catch(err) { console.error("Leave history fetch failed", err); }
         
-        // *** LOST & FOUND FIX: FETCH LIVE DATA ***
+        // *** LOST & FOUND FIX 1: FETCH LIVE DATA and correct the key used for data access ***
         try {
-            // Assuming this is the correct endpoint for fetching found items
             const lfRes = await fetch(`/api/lost-found/found-items`); 
             const lfData = await lfRes.json();
-            if(lfData.success && Array.isArray(lfData.items)) {
-                g_lostFoundItems = lfData.items; 
+            if(lfData.success && Array.isArray(lfData.foundItems)) { // Backend uses 'foundItems'
+                g_lostFoundItems = lfData.foundItems; 
             } else if (lfData.success) {
-                // Handle case where success is true but data is empty/wrong format
                 g_lostFoundItems = [];
             } else {
                 throw new Error(lfData.message || "Failed to fetch lost and found items.");
             }
         } catch(err) { 
             console.error("Lost & Found data fetch failed:", err); 
-            // Optional: Provide mock data on failure for a smoother UX, but not recommended for production
-            // g_lostFoundItems = mockLostFound; 
         }
-        // *** END LOST & FOUND FIX ***
+        // *** END LOST & FOUND FIX 1 ***
 
         // Get current attendance status
         const statusResponse = await fetch(`/api/attendance/status/${studentId}`);
@@ -137,7 +131,56 @@ async function loadStudentData() {
 // API FUNCTIONS
 // =========================================================================
 
+// --- LOST & FOUND FIX 2: Implement submission function ---
+async function submitLostItem() {
+    const name = document.getElementById('lost-item-name').value;
+    const location = document.getElementById('lost-item-location').value;
+    const date = document.getElementById('lost-item-date').value;
+    const studentId = g_student._id; 
+
+    if (!name || !date || !studentId) {
+        alert('Please specify the item and date of loss, and ensure student data is loaded.');
+        return;
+    }
+    
+    // Payload keys match the backend route's expected fields: itemName, lastSeenLocation
+    const lostItemData = {
+        studentId: studentId,
+        itemName: name,             // Matches backend: const { ..., itemName, ... } = req.body;
+        lastSeenLocation: location, // Matches backend: const { ..., lastSeenLocation } = req.body;
+        dateLost: date,             // Pass dateLost (assuming your Mongoose model saves it)
+    };
+
+    try {
+        const response = await fetch('/api/lost-found/report-lost', { 
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(lostItemData)
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+            alert(`Lost item report for "${name}" submitted successfully! We will notify you if it is found.`);
+            
+            // Refresh ALL data (including the Found Items list) and then update the display
+            await loadStudentData();
+            populateLostAndFound(); 
+            
+            document.getElementById('lost-item-form').reset();
+        } else {
+            const errorMessage = data.message || 'Server error filing report.';
+            throw new Error(errorMessage);
+        }
+
+    } catch (error) {
+        console.error('Lost Report Submission Error:', error);
+        alert(`Failed to submit lost report: ${error.message}`);
+    }
+}
+
 async function submitComplaint() {
+    // ... (Your existing submitComplaint function)
     const type = document.getElementById('complaint-type').value;
     const location = document.getElementById('complaint-location').value;
     const date = document.getElementById('complaint-date').value;
@@ -187,58 +230,9 @@ async function submitComplaint() {
         alert(`Failed to submit complaint: ${error.message}`);
     }
 }
-async function submitLostItem() {
-    const name = document.getElementById('lost-item-name').value;
-    const location = document.getElementById('lost-item-location').value;
-    const date = document.getElementById('lost-item-date').value;
-    const studentId = g_student._id; 
-
-    if (!name || !date || !studentId) {
-        alert('Please specify the item and date of loss.');
-        return;
-    }
-    
-    const lostItemData = {
-        studentId: studentId,
-        // *** FIX 1: Change 'item' to 'itemName' to match backend destructuring ***
-        itemName: name,
-        // *** FIX 2: Change 'lostLocation' to 'lastSeenLocation' to match backend destructuring ***
-        lastSeenLocation: location, 
-        // FIX 3: You are NOT using dateLost in the backend, but we'll leave it for now, 
-        // although you should add dateLost to your backend model. 
-        dateLost: date, 
-    };
-
-    try {
-        const response = await fetch('/api/lost-found/report-lost', { 
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(lostItemData)
-        });
-
-        // ... rest of the function remains the same ...
-        const data = await response.json();
-
-        if (response.ok && data.success) {
-            alert(`Lost item report for "${name}" submitted successfully! We will notify you if it is found.`);
-            
-            await loadStudentData();
-            populateLostAndFound(); 
-            
-            document.getElementById('lost-item-form').reset();
-        } else {
-            // Check for potential server error messages here
-            const errorMessage = data.message || 'Failed to submit lost item report.';
-            throw new Error(errorMessage);
-        }
-
-    } catch (error) {
-        console.error('Lost Report Submission Error:', error);
-        alert(`Failed to submit lost report: ${error.message}`);
-    }
-}
 
 async function submitVisitorRequest() {
+    // ... (Your existing submitVisitorRequest function)
     const name = document.getElementById('visitor-name').value;
     const startDate = document.getElementById('visitor-start-date').value;
     const endDate = document.getElementById('visitor-end-date').value;
@@ -298,6 +292,7 @@ async function submitVisitorRequest() {
 // --- NEW LEAVE FUNCTIONALITY ---
 
 function toggleLeaveReason() {
+    // ... (Your existing toggleLeaveReason function)
     const reasonSelect = document.getElementById('leave-reason');
     const manualInput = document.getElementById('leave-reason-manual');
     if (reasonSelect.value === 'Other') {
@@ -311,6 +306,7 @@ function toggleLeaveReason() {
 }
 
 async function submitLeave() {
+    // ... (Your existing submitLeave function)
     const start = document.getElementById('leave-start').value;
     const end = document.getElementById('leave-end').value;
     const reasonSelect = document.getElementById('leave-reason');
@@ -384,6 +380,7 @@ async function submitLeave() {
 }
 
 function populateStudentLeaveHistory() {
+    // ... (Your existing populateStudentLeaveHistory function)
     const tableBody = document.getElementById('student-leave-history');
     tableBody.innerHTML = '';
     
@@ -521,6 +518,7 @@ function logout() {
 // =========================================================================
 
 async function loadClubActivities() {
+    // ... (Your existing loadClubActivities function)
     try {
         const response = await fetch('/api/activities');
         if (!response.ok) {
@@ -552,6 +550,7 @@ async function loadClubActivities() {
 }
 
 function displayClubActivitiesOnDashboard() {
+    // ... (Your existing displayClubActivitiesOnDashboard function)
     const container = document.getElementById('club-activities-dashboard');
     
     if (!g_clubActivities || g_clubActivities.length === 0) {
@@ -593,6 +592,7 @@ function displayClubActivitiesOnDashboard() {
 }
 
 function displayAllActivities(filterType = 'All') {
+    // ... (Your existing displayAllActivities function)
     const container = document.getElementById('all-club-activities');
     
     let activitiesToShow = g_clubActivities;
@@ -644,6 +644,7 @@ function displayAllActivities(filterType = 'All') {
 }
 
 function filterActivities(type) {
+    // ... (Your existing filterActivities function)
     document.querySelectorAll('.activity-filter-btn').forEach(btn => {
         btn.classList.remove('bg-primary-blue', 'text-white');
         btn.classList.add('bg-gray-200', 'text-gray-700', 'hover:bg-gray-300');
@@ -659,6 +660,7 @@ function filterActivities(type) {
 }
 
 function getActivityTheme(type) {
+    // ... (Your existing getActivityTheme function)
     const themes = {
         'Sports': { border: 'border-orange-500', bg: 'bg-orange-100', text: 'text-orange-700' },
         'Cultural': { border: 'border-pink-500', bg: 'bg-pink-100', text: 'text-pink-700' },
@@ -670,6 +672,7 @@ function getActivityTheme(type) {
 }
 
 function showActivityDetail(activityId) {
+    // ... (Your existing showActivityDetail function)
     const activity = g_clubActivities.find(a => a._id === activityId);
     if (activity) {
         const formattedDate = formatDate(activity.date);
@@ -682,6 +685,7 @@ function showActivityDetail(activityId) {
 // =========================================================================
 
 function initializeDashboard() {
+    // ... (Your existing initializeDashboard function)
     if (!g_student) {   
         console.error("No student data loaded.");
         logout();   
@@ -760,6 +764,7 @@ function initializeDashboard() {
 }
 
 function populateRoommatesList() {
+    // ... (Your existing populateRoommatesList function)
     if (!g_room || !g_block || !g_student) {
         console.error("Data missing for room view.");
         return;
@@ -817,6 +822,7 @@ function populateRoommatesList() {
 }
 
 function populateStudentComplaintHistory() {
+    // ... (Your existing populateStudentComplaintHistory function)
     const tableBody = document.getElementById('student-complaint-history');
     tableBody.innerHTML = '';
     
@@ -850,6 +856,7 @@ function populateStudentComplaintHistory() {
 }
 
 function populateStudentLeaveHistory() {
+    // ... (Your existing populateStudentLeaveHistory function)
     const tableBody = document.getElementById('student-leave-history');
     tableBody.innerHTML = '';
     
@@ -877,6 +884,7 @@ function populateStudentLeaveHistory() {
 }
 
 function updateDashboardComplaintCount() {
+    // ... (Your existing updateDashboardComplaintCount function)
     const pendingComplaints = g_complaints.filter(c => c.status === 'Pending');
     const openRequestsEl = document.getElementById('dashboard-open-requests');
     const openRequestsText = openRequestsEl.nextElementSibling;
@@ -892,6 +900,7 @@ function updateDashboardComplaintCount() {
 
 // --- Dynamic "Other" Reason UI Setup ---
 function setupLeaveForm() {
+    // ... (Your existing setupLeaveForm function)
     const reasonSelect = document.getElementById('leave-reason');
     if (!reasonSelect) return;
 
@@ -925,11 +934,13 @@ function setupLeaveForm() {
 }
 
 function showStudentDetails() {
+    // ... (Your existing showStudentDetails function)
     showView('student-details-view');
     populateStudentProfileView();
 }
 
 function populateStudentProfileView() {
+    // ... (Your existing populateStudentProfileView function)
     if (!g_student) {
         console.error("No student data loaded.");
         document.getElementById('profile-name').textContent = 'Error loading data';
@@ -1064,6 +1075,7 @@ function populateStudentProfileView() {
 // =========================================================================
 
 function updateAttendanceStatus() {
+    // ... (Your existing updateAttendanceStatus function)
     const card = document.getElementById('attendance-status-card');
     const statusText = document.getElementById('attendance-status-text');
     const timeText = document.getElementById('attendance-status-time');
@@ -1091,6 +1103,7 @@ function updateAttendanceStatus() {
 }
 
 async function toggleAttendance() {
+    // ... (Your existing toggleAttendance function)
     const button = document.getElementById('attendance-toggle-btn');
     button.disabled = true;
     button.textContent = 'Updating...';
@@ -1128,6 +1141,7 @@ async function toggleAttendance() {
 }
 
 function populateAttendanceLog() {
+    // ... (Your existing populateAttendanceLog function)
     const tableBody = document.getElementById('attendance-log-body');
     tableBody.innerHTML = '';
     
@@ -1155,6 +1169,7 @@ function populateAttendanceLog() {
 }
 
 function populateVisitorRequestHistory() {
+    // ... (Your existing populateVisitorRequestHistory function)
     const tableBody = document.getElementById('visitor-request-history-body');
     tableBody.innerHTML = '';
     
@@ -1188,48 +1203,54 @@ function populateVisitorRequestHistory() {
     });
 }
 
-// *** FIX APPLIED HERE: Using g_lostFoundItems instead of mockLostFound ***
+// *** LOST & FOUND FIX 3: Updated to use live data (g_lostFoundItems) and correct field names ***
 function populateLostAndFound() {
     const tableBody = document.getElementById('lost-found-body');
     tableBody.innerHTML = '';
     
-    // Check if g_lostFoundItems is loaded and use it
     if (!g_lostFoundItems || g_lostFoundItems.length === 0) {
-            tableBody.innerHTML = `<tr><td colspan="4" class="py-4 px-6 text-center text-secondary-gray">No items reported found.</td></tr>`;
-            return;
+        tableBody.innerHTML = `<tr><td colspan="4" class="py-4 px-6 text-center text-secondary-gray">No items reported found.</td></tr>`;
+        return;
     }
     
-    // Sort by dateFound newest first (assuming dateFound is in sortable format)
+    // Sort by submissionDate if available, otherwise assume the item object is ready to display
     const sortedFoundItems = g_lostFoundItems
-        .sort((a, b) => new Date(b.dateFound) - new Date(a.dateFound)); 
+        .sort((a, b) => new Date(b.submissionDate || b.dateFound) - new Date(a.submissionDate || a.dateFound)); 
 
     sortedFoundItems.forEach(item => {
-        // Assuming 'status' field in your DB matches one of these states
-        const statusClass = item.status === 'Available' ? 'text-accent-green' : 
-                            (item.status === 'Claimed' ? 'text-secondary-gray' : 'text-info-yellow');
+        // Assuming your database model uses 'itemName' (from the backend route) and 'location'
+        const itemName = item.itemName || 'N/A';
+        const dateFound = item.submissionDate ? formatDate(item.submissionDate) : (item.dateFound || 'N/A');
+        const location = item.location || 'N/A';
+        const status = item.status || 'Available';
+
+        const statusClass = status === 'Available' ? 'text-accent-green' : 
+                            (status === 'Claimed' ? 'text-secondary-gray' : 'text-info-yellow');
 
         tableBody.innerHTML += `
             <tr class="hover:bg-light-bg transition duration-150">
-                <td class="py-3 px-6 whitespace-nowrap text-sm text-accent-dark">${item.item}</td>
-                <td class="py-3 px-6 whitespace-nowrap text-sm text-secondary-gray">${formatDate(item.dateFound)}</td>
-                <td class="py-3 px-6 whitespace-nowrap text-sm text-secondary-gray">${item.location}</td>
-                <td class="py-3 px-6 whitespace-nowrap text-sm font-medium ${statusClass}">${item.status}</td>
+                <td class="py-3 px-6 whitespace-nowrap text-sm text-accent-dark">${itemName}</td>
+                <td class="py-3 px-6 whitespace-nowrap text-sm text-secondary-gray">${dateFound}</td>
+                <td class="py-3 px-6 whitespace-nowrap text-sm text-secondary-gray">${location}</td>
+                <td class="py-3 px-6 whitespace-nowrap text-sm font-medium ${statusClass}">${status}</td>
             </tr>
         `;
     });
 }
-// *** END FIX ***
-
+// *** END FIX 3 ***
 
 // --- Announcement Modal Functions ---
 function openAnnouncementsModal() {
+    // ... (Your existing openAnnouncementsModal function)
     document.getElementById('announcement-modal').classList.remove('hidden');
     populateAnnouncementsList();
 }
 function closeAnnouncementsModal() {
+    // ... (Your existing closeAnnouncementsModal function)
     document.getElementById('announcement-modal').classList.add('hidden');
 }
 function populateAnnouncementsList() {
+    // ... (Your existing populateAnnouncementsList function)
     document.getElementById('announcement-list-view').classList.remove('hidden');
     document.getElementById('announcement-detail-view').classList.add('hidden');
     const container = document.getElementById('announcement-list-container');
@@ -1245,6 +1266,7 @@ function populateAnnouncementsList() {
     });
 }
 function showAnnouncementDetail(id) {
+    // ... (Your existing showAnnouncementDetail function)
     const ann = mockAnnouncements.find(a => a.id === id);
     if (!ann) return;
     document.getElementById('announcement-list-view').classList.add('hidden');
@@ -1254,6 +1276,7 @@ function showAnnouncementDetail(id) {
     document.getElementById('announcement-detail-body').innerHTML = ann.full_desc;
 }
 function showAnnouncementsList() {
+    // ... (Your existing showAnnouncementsList function)
     document.getElementById('announcement-detail-view').classList.add('hidden');
     document.getElementById('announcement-list-view').classList.remove('hidden');
 }
