@@ -45,10 +45,15 @@ app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 app.use('/api/leave', leaveRoutes);
 // 3. Static Files (This fixes your 404 error)
 // This line serves ALL files from your 'public' folder (like .html, .js, .css)
+// --- In server.js (Middleware Section) ---
+
+// 1. Serve the main 'public' folder (for HTML, client-side JS, CSS, etc.)
 app.use(express.static(path.join(__dirname, 'public')));
-// This line makes the 'uploads' folder accessible via the URL /uploads
-app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// 2. Explicitly map the URL path '/uploads' to the folder where Multer saves files.
+app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads')));
+
+// ------------------------------------------
 
 // --- API ROUTES ---
 // 4. Gymkhana API Routes
