@@ -11,13 +11,12 @@ let g_complaints = [];
 let g_visitorRequests = []; 
 let g_clubActivities = []; 
 let g_leaveHistory = [];
-let g_foundItems = []; // ADDED: Store real found items
+let g_foundItems = []; // Store real found items
+let g_lostReports = []; // ADDED: Store real lost reports for the student
 
 let g_attendanceStatus = { status: 'Checked Out', lastActionTime: null };
 
 // --- Mock data (Only for Announcements now) ---
-// REMOVED: mockLostFound
-
 const mockAnnouncements = [
     {
         id: 1,
@@ -34,6 +33,7 @@ const mockAnnouncements = [
 
 async function fetchFoundItems() {
     try {
+        // Calls the /api/lostandfound/found-items route
         const response = await fetch('/api/lostandfound/found-items');
         const data = await response.json();
         if (data.success) {
@@ -44,6 +44,23 @@ async function fetchFoundItems() {
         }
     } catch (error) {
         console.error('Error fetching found items:', error);
+    }
+}
+
+// NEW: Function to fetch the student's lost reports
+async function fetchLostReports(studentId) {
+    try {
+        // Calls the /api/lostandfound/lost-reports/:studentId route
+        const response = await fetch(`/api/lostandfound/lost-reports/${studentId}`);
+        const data = await response.json();
+        if (data.success) {
+            g_lostReports = data.lostItems;
+            console.log('✅ Lost Reports loaded:', g_lostReports);
+        } else {
+            console.error('Failed to load lost reports:', data.message);
+        }
+    } catch (error) {
+        console.error('Error fetching lost reports:', error);
     }
 }
 
@@ -108,8 +125,11 @@ async function loadStudentData() {
             }
         } catch(err) { console.error("Leave history fetch failed", err); }
         
-        // NEW: Fetch Found Items
+        // Fetch Found Items 
         await fetchFoundItems(); 
+
+        // NEW: Fetch Lost Reports for the student
+        await fetchLostReports(studentId); 
 
         // Get current attendance status
         const statusResponse = await fetch(`/api/attendance/status/${studentId}`);
@@ -186,6 +206,50 @@ async function submitComplaint() {
     }
 }
 
+// NEW: Function to submit a LOST item report
+async function submitLostItemReport() {
+    const itemName = document.getElementById('lost-item-name').value;
+    const lastSeenLocation = document.getElementById('lost-item-location').value;
+    const studentId = g_student._id;
+
+    if (!itemName || !lastSeenLocation || !studentId) {
+        alert('Please fill out all fields and ensure you are logged in.');
+        return;
+    }
+
+    const reportData = {
+        studentId: studentId,
+        itemName: itemName,
+        // The server expects 'lastSeenLocation' for a POST request to /report-lost
+        lastSeenLocation: lastSeenLocation, 
+    };
+
+    try {
+        const response = await fetch('/api/lostandfound/report-lost', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(reportData)
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+            alert(`Lost item report for "${itemName}" submitted successfully!`);
+
+            // Refresh lost reports and UI
+            await fetchLostReports(studentId);
+            populateLostReportsTable();
+            
+            document.getElementById('lost-item-form').reset();
+        } else {
+            throw new Error(data.message || 'Failed to submit lost item report on the server.');
+        }
+    } catch (error) {
+        console.error('Lost Report Submission Error:', error);
+        alert(`Failed to submit report: ${error.message}`);
+    }
+}
+
 async function submitVisitorRequest() {
     const name = document.getElementById('visitor-name').value;
     const startDate = document.getElementById('visitor-start-date').value;
@@ -243,7 +307,7 @@ async function submitVisitorRequest() {
     }
 }
 
-// --- NEW LEAVE FUNCTIONALITY ---
+// --- LEAVE FUNCTIONALITY (kept as is) ---
 
 function toggleLeaveReason() {
     const reasonSelect = document.getElementById('leave-reason');
@@ -335,9 +399,8 @@ function populateStudentLeaveHistory() {
     const tableBody = document.getElementById('student-leave-history');
     tableBody.innerHTML = '';
     
-    // Use the real fetched data in g_leaveHistory
     const sortedLeaves = g_leaveHistory
-        .sort((a, b) => new Date(b.startDate) - new Date(a.startDate)); // Sort by start date (newest first)
+        .sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
 
     if (sortedLeaves.length === 0) {
         tableBody.innerHTML = `<tr><td colspan="4" class="py-4 px-6 text-center text-secondary-gray">No leave history found.</td></tr>`;
@@ -359,6 +422,80 @@ function populateStudentLeaveHistory() {
 }
 
 // =========================================================================
+// LOST & FOUND FUNCTIONS
+// =========================================================================
+
+// NEW: Function to populate the 'Recently Found Items' table (using g_foundItems)
+function populateFoundItemsTable() {
+    const tableBody = document.getElementById('lost-found-body');
+    tableBody.innerHTML = ''; // Clear existing content
+
+    if (!g_foundItems || g_foundItems.length === 0) {
+        tableBody.innerHTML = `<tr><td colspan="4" class="py-4 px-6 text-center text-secondary-gray">No items have been found recently.</td></tr>`;
+        return;
+    }
+
+    // g_foundItems holds data fetched from /api/lostandfound/found-items
+    g_foundItems.forEach(item => {
+        // Status class based on LostFound model statuses (Pending, Retrieved, Closed)
+        let statusClass = item.status === 'Retrieved' ? 'bg-accent-green/20 text-accent-green' : 'bg-info-yellow/20 text-info-yellow';
+        if (item.status === 'Closed') statusClass = 'bg-gray-200/50 text-secondary-gray';
+
+        tableBody.innerHTML += `
+            <tr class="hover:bg-light-bg transition duration-150">
+                <td class="py-3 px-6 whitespace-nowrap text-sm text-accent-dark">${item.itemName}</td>
+                <td class="py-3 px-6 whitespace-nowrap text-sm text-secondary-gray">${formatDate(item.submissionDate)}</td>
+                <td class="py-3 px-6 text-sm text-secondary-gray">${item.location}</td>
+                <td class="py-3 px-6 whitespace-nowrap">
+                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusClass}">
+                        ${item.status}
+                    </span>
+                </td>
+            </tr>
+        `;
+    });
+}
+
+// NEW: Function to populate the 'My Lost Reports' table (using g_lostReports)
+function populateLostReportsTable() {
+    const tableBody = document.getElementById('lost-reports-body');
+    tableBody.innerHTML = ''; // Clear existing content
+
+    if (!g_lostReports || g_lostReports.length === 0) {
+        tableBody.innerHTML = `<tr><td colspan="4" class="py-4 px-6 text-center text-secondary-gray">You have not filed any lost item reports.</td></tr>`;
+        return;
+    }
+
+    // g_lostReports holds data fetched from /api/lostandfound/lost-reports/:studentId
+    g_lostReports.forEach(report => {
+        let statusClass;
+        if (report.status === 'Retrieved') { statusClass = 'bg-accent-green/20 text-accent-green'; }
+        else if (report.status === 'Pending') { statusClass = 'bg-info-yellow/20 text-info-yellow'; }
+        else { statusClass = 'bg-accent-red/20 text-accent-red'; } // For 'Closed' or other statuses
+
+        tableBody.innerHTML += `
+            <tr class="hover:bg-light-bg transition duration-150">
+                <td class="py-3 px-6 whitespace-nowrap text-sm text-accent-dark">${report.itemName}</td>
+                <td class="py-3 px-6 whitespace-nowrap text-sm text-secondary-gray">${formatDate(report.submissionDate)}</td>
+                <td class="py-3 px-6 text-sm text-secondary-gray">${report.location}</td>
+                <td class="py-3 px-6 whitespace-nowrap">
+                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusClass}">
+                        ${report.status}
+                    </span>
+                </td>
+            </tr>
+        `;
+    });
+}
+
+// NEW: Helper function to initialize all Lost & Found tables
+function initializeLostAndFound() {
+    populateLostReportsTable();
+    populateFoundItemsTable();
+}
+
+
+// =========================================================================
 // UTILITIES & NAVIGATION
 // =========================================================================
 function formatCurrency(amount) {
@@ -367,7 +504,11 @@ function formatCurrency(amount) {
 
 function formatDate(dateString) {
     if (!dateString) return 'N/A';
-    return new Date(dateString).toLocaleDateString('en-GB', {
+    // Ensure dateString is treated as UTC/GMT to avoid timezone shifting issues
+    const date = new Date(dateString);
+    if (isNaN(date)) return 'N/A';
+    
+    return date.toLocaleDateString('en-GB', {
         day: '2-digit', month: 'short', year: 'numeric'
     });     
 }
@@ -381,725 +522,333 @@ function formatTime(isoString) {
 
 function updateActiveMenuItem(viewId) {
     const allLinks = document.querySelectorAll('.nav-link');
-    
+    const mobileLinks = document.querySelectorAll('#mobile-menu .nav-link');
+
     allLinks.forEach(link => {
-        link.classList.remove('active', 'text-primary-blue', 'font-semibold', 'border-primary-blue');
-        link.classList.add('text-secondary-gray', 'hover:text-primary-blue', 'border-transparent');
+        link.classList.remove('active', 'border-primary-blue', 'text-primary-blue');
+        link.classList.add('border-transparent', 'text-secondary-gray', 'hover:text-primary-blue');
     });
 
-    if (viewId === 'student-details-view') {
-          viewId = 'student-profile-view';
+    mobileLinks.forEach(link => {
+        link.classList.remove('border-primary-blue', 'text-primary-blue', 'bg-light-bg');
+        link.classList.add('border-transparent', 'text-gray-600', 'hover:bg-light-bg', 'hover:text-gray-800');
+    });
+
+    const activeLink = document.getElementById(`nav-${viewId}`);
+    const activeMobileLink = document.getElementById(`mobile-nav-${viewId}`);
+
+    if (activeLink) {
+        activeLink.classList.add('active', 'border-b-2', 'border-primary-blue', 'text-primary-blue');
+        activeLink.classList.remove('border-transparent', 'text-secondary-gray');
     }
-    
-    const desktopLink = document.getElementById(`nav-${viewId}`);
-    if (desktopLink) {
-        desktopLink.classList.add('active', 'text-primary-blue', 'font-semibold');
-        desktopLink.classList.remove('text-secondary-gray');
-    }
-    const mobileLink = document.getElementById(`mobile-nav-${viewId}`);
-    if (mobileLink) {
-        mobileLink.classList.add('active', 'text-primary-blue', 'bg-light-bg', 'border-primary-blue');
-        mobileLink.classList.remove('text-gray-600', 'border-transparent');
+
+    if (activeMobileLink) {
+        activeMobileLink.classList.add('active', 'border-l-4', 'border-primary-blue', 'text-primary-blue', 'bg-light-bg');
+        activeMobileLink.classList.remove('border-transparent', 'text-gray-600', 'hover:bg-light-bg', 'hover:text-gray-800');
     }
 }
 
 function showView(viewId) {
-    const views = document.querySelectorAll('.view');
-    views.forEach(view => {
-        if (view.id === viewId) {
-            view.classList.remove('hidden', 'opacity-0', 'translate-x-20');
-            view.classList.add('opacity-100', 'translate-x-0');
-            view.style.display = 'block'; // Ensure block display
-        } else {
-            view.classList.add('hidden', 'opacity-0', 'translate-x-20');
-            view.classList.remove('opacity-100', 'translate-x-0');
-            view.style.display = 'none'; // Ensure hidden
-        }
+    document.querySelectorAll('.view').forEach(view => {
+        view.classList.add('hidden');
     });
+    document.getElementById(viewId).classList.remove('hidden');
     updateActiveMenuItem(viewId);
-    
-    // Call correct functions for each view
-    if (viewId === 'student-details-view') {
-        populateStudentProfileView();     
+    window.scrollTo(0, 0);
+
+    // Special logic for specific views
+    if (viewId === 'student-profile-view') {
+        populateStudentProfile(g_student, g_block.blockName, g_room.roomNumber, g_complaints);
     } else if (viewId === 'student-room-view') {
         populateRoommatesList();
-    } else if (viewId === 'student-reports-view') {
-        showReportTab('complaints');
-        populateStudentComplaintHistory();
-        populateLostAndFound(); // REFRESHED LOST AND FOUND DATA
-    } else if (viewId === 'student-leave-view') {
-        populateStudentLeaveHistory();
     } else if (viewId === 'student-attendance-view') {
-        updateAttendanceStatus();       
-        populateAttendanceLog();
+        updateAttendanceStatus();
+        populateAttendanceHistory();
+    } else if (viewId === 'student-reports-view') {
+        // Ensure default tab is populated when view is opened
+        showReportTab('complaints');
     } else if (viewId === 'student-visitor-view') {
         populateVisitorRequestHistory();
-    } else if (viewId === 'student-activities-view') {
-        displayAllActivities();
+    } else if (viewId === 'student-leave-view') {
+        populateStudentLeaveHistory();
     }
 }
+
+// ADDED: Function to handle Report Tab switching
+function showReportTab(tabName) {
+    document.querySelectorAll('.report-tab-content').forEach(el => el.classList.add('hidden'));
+    document.querySelectorAll('.report-tab').forEach(el => el.classList.remove('border-primary-blue', 'text-primary-blue', 'border-transparent', 'text-secondary-gray', 'hover:text-gray-800'));
+    
+    // Add active class and styling to the selected tab button
+    document.getElementById(`tab-${tabName}`).classList.add('border-b-2', 'border-primary-blue', 'text-primary-blue');
+    document.getElementById(`tab-${tabName}`).classList.remove('border-transparent', 'text-secondary-gray', 'hover:text-gray-800');
+
+    // Show the corresponding content
+    document.getElementById(`report-tab-content-${tabName}`).classList.remove('hidden');
+
+    // Call specific population functions when the tab is switched to
+    if (tabName === 'complaints') {
+        populateStudentComplaintHistory();
+    } else if (tabName === 'lost-found') {
+        initializeLostAndFound(); // This ensures the tables are loaded with real data
+    }
+}
+
 
 function toggleMobileMenu() {
-    document.getElementById('mobile-menu').classList.toggle('hidden');
+    const menu = document.getElementById('mobile-menu');
+    const button = document.getElementById('mobile-menu-button');
+    const isExpanded = button.getAttribute('aria-expanded') === 'true' || false;
+
+    if (isExpanded) {
+        menu.classList.add('hidden');
+        button.setAttribute('aria-expanded', 'false');
+    } else {
+        menu.classList.remove('hidden');
+        button.setAttribute('aria-expanded', 'true');
+    }
 }
+
 function hideMobileMenu() {
     document.getElementById('mobile-menu').classList.add('hidden');
+    document.getElementById('mobile-menu-button').setAttribute('aria-expanded', 'false');
 }
 
-function showReportTab(tabName) {
-    document.querySelectorAll('.report-tab-content').forEach(content => {
-        content.classList.add('hidden');
-    });
-    document.querySelectorAll('.report-tab').forEach(tab => {
-        tab.classList.remove('active', 'border-primary-blue', 'text-primary-blue');
-    });
-    
-    document.getElementById(`report-tab-content-${tabName}`).classList.remove('hidden');
-    const activeTab = document.getElementById(`tab-${tabName}`);
-    activeTab.classList.add('active', 'border-primary-blue', 'text-primary-blue');
-    
-    if (tabName === 'lost-found') {
-        populateLostAndFound(); // Ensure this is called when the tab is switched to
-    }
+function showStudentDetails() {
+    showView('student-profile-view');
 }
 
-function logout() {
-    localStorage.removeItem('currentStudentId');     
-    window.location.href = "login.html";     
-}
-
-// =========================================================================
-// CLUB ACTIVITIES FUNCTIONS
-// =========================================================================
-
-async function loadClubActivities() {
-    try {
-        const response = await fetch('/api/activities');
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        if (data.success) {
-            g_clubActivities = data.activities;
-            console.log('✅ Club activities loaded:', g_clubActivities);
-            return true;
-        } else {
-            throw new Error(data.message);
-        }
-    } catch (error) {
-        console.error('❌ Failed to load club activities:', error);
-        // Fallback data
-        g_clubActivities = [
-            {
-                _id: '1',
-                title: '⚽ Inter-Hostel Cricket Finals',
-                type: 'Sports',
-                date: '2025-11-15',
-                description: 'Finals between Men\'s Hostel and Women\'s Hostel teams',
-                imageUrl: ''
-            }
-        ];
-        return false;
-    }
-}
-
-function displayClubActivitiesOnDashboard() {
-    const container = document.getElementById('club-activities-dashboard');
-    
-    if (!g_clubActivities || g_clubActivities.length === 0) {
-        container.innerHTML = `
-            <div class="col-span-full text-center py-8 text-secondary-gray">
-                <p>🎭 No upcoming club activities at the moment.</p>
-                <p class="text-sm mt-2">Check back later for new events!</p>
-            </div>
-        `;
-        return;
-    }
-
-    const recentActivities = g_clubActivities
-        .sort((a, b) => new Date(b.date) - new Date(a.date))
-        .slice(0, 3);
-
-    container.innerHTML = '';
-
-    recentActivities.forEach(activity => {
-        const theme = getActivityTheme(activity.type);
-        const formattedDate = formatDate(activity.date);
-        const imageUrl = activity.imageUrl || `https://via.placeholder.com/300x150/e0e0e0/909090?text=${activity.type}`;
-
-        const activityHTML = `
-            <div class="bg-card-bg rounded-lg shadow-lift overflow-hidden border-l-4 ${theme.border} transition-all duration-300 hover:shadow-xl hover:scale-105 cursor-pointer" onclick="showActivityDetail('${activity._id}')">
-                <img src="${imageUrl}" alt="${activity.title}" class="w-full h-32 object-cover">
-                <div class="p-4">
-                    <div class="flex justify-between items-start mb-2">
-                        <h3 class="text-lg font-bold text-accent-dark truncate flex-1">${activity.title}</h3>
-                        <span class="text-xs font-bold px-2 py-1 rounded-full ${theme.bg} ${theme.text} ml-2 flex-shrink-0">${activity.type}</span>
-                    </div>
-                    <p class="text-sm font-medium text-secondary-gray mb-2">📅 ${formattedDate}</p>
-                    <p class="text-sm text-secondary-gray line-clamp-2">${activity.description || 'No description available.'}</p>
-                </div>
-            </div>
-        `;
-        container.innerHTML += activityHTML;
-    });
-}
-
-function displayAllActivities(filterType = 'All') {
-    const container = document.getElementById('all-club-activities');
-    
-    let activitiesToShow = g_clubActivities;
-    
-    if (filterType !== 'All') {
-        activitiesToShow = g_clubActivities.filter(activity => activity.type === filterType);
-    }
-    
-    activitiesToShow = activitiesToShow.sort((a, b) => new Date(b.date) - new Date(a.date));
-    
-    if (activitiesToShow.length === 0) {
-        container.innerHTML = `
-            <div class="col-span-full text-center py-12 text-secondary-gray">
-                <p>🎭 No ${filterType === 'All' ? '' : filterType + ' '}activities found.</p>
-                <p class="text-sm mt-2">Check back later for new events!</p>
-            </div>
-        `;
-        return;
-    }
-
-    container.innerHTML = '';
-
-    activitiesToShow.forEach(activity => {
-        const theme = getActivityTheme(activity.type);
-        const formattedDate = formatDate(activity.date);
-        const imageUrl = activity.imageUrl || `https://via.placeholder.com/300x150/e0e0e0/909090?text=${activity.type}`;
-
-        const activityHTML = `
-            <div class="bg-card-bg rounded-lg shadow-lift overflow-hidden border-l-4 ${theme.border} transition-all duration-300 hover:shadow-xl hover:scale-105">
-                <img src="${imageUrl}" alt="${activity.title}" class="w-full h-40 object-cover">
-                <div class="p-5">
-                    <div class="flex justify-between items-start mb-3">
-                        <h3 class="text-xl font-bold text-accent-dark">${activity.title}</h3>
-                        <span class="text-xs font-bold px-3 py-1 rounded-full ${theme.bg} ${theme.text} ml-2 flex-shrink-0">${activity.type}</span>
-                    </div>
-                    <p class="text-sm font-medium text-secondary-gray mb-3">📅 ${formattedDate}</p>
-                    <p class="text-sm text-secondary-gray mb-4">${activity.description || 'No description available.'}</p>
-                    <div class="flex justify-between items-center">
-                        <span class="text-xs text-primary-blue font-medium">Hostel Administration</span>
-                        <button onclick="showActivityDetail('${activity._id}')" class="text-sm font-medium text-primary-blue hover:text-blue-700">
-                            View Details →
-                        </button>
-                    </div>
-                </div>
-            </div>
-        `;
-        container.innerHTML += activityHTML;
-    });
-}
-
-function filterActivities(type) {
-    document.querySelectorAll('.activity-filter-btn').forEach(btn => {
-        btn.classList.remove('bg-primary-blue', 'text-white');
-        btn.classList.add('bg-gray-200', 'text-gray-700', 'hover:bg-gray-300');
-    });
-    
-    const activeBtn = document.querySelector(`button[onclick="filterActivities('${type}')"]`);
-    if (activeBtn) {
-        activeBtn.classList.remove('bg-gray-200', 'text-gray-700', 'hover:bg-gray-300');
-        activeBtn.classList.add('bg-primary-blue', 'text-white');
-    }
-    
-    displayAllActivities(type);
-}
-
-function getActivityTheme(type) {
-    const themes = {
-        'Sports': { border: 'border-orange-500', bg: 'bg-orange-100', text: 'text-orange-700' },
-        'Cultural': { border: 'border-pink-500', bg: 'bg-pink-100', text: 'text-pink-700' },
-        'Technical': { border: 'border-indigo-500', bg: 'bg-indigo-100', text: 'text-indigo-700' },
-        'Workshop': { border: 'border-yellow-500', bg: 'bg-yellow-100', text: 'text-yellow-700' },
-        'General': { border: 'border-gray-500', bg: 'bg-gray-100', text: 'text-gray-700' }
-    };
-    return themes[type] || themes['General'];
-}
-
-function showActivityDetail(activityId) {
-    const activity = g_clubActivities.find(a => a._id === activityId);
-    if (activity) {
-        const formattedDate = formatDate(activity.date);
-        alert(`🎭 ${activity.title}\n\n📅 Date: ${formattedDate}\n📋 Type: ${activity.type}\n\n📝 Description:\n${activity.description || 'No description available.'}`);
-    }
-}
-
-// =========================================================================
-// DATA POPULATION FUNCTIONS
-// =========================================================================
-
-function initializeDashboard() {
-    if (!g_student) {      
-        console.error("No student data loaded.");
-        logout();      
-        return;
-    }
-    
-    // 1. Set Welcome Message
-    const firstName = g_student.name.split(' ')[0];
-    document.getElementById('welcome-heading').textContent = `Welcome, ${firstName} 👋`;
-
-    // 2. Set Initials & Nav Profile Pic
-    const initials = g_student.name.split(' ').map(n => n[0]).join('').substring(0, 2);
+function updateStudentDashboard() {
+    // 1. Student Info
+    document.getElementById('dashboard-greeting').textContent = `Welcome back, ${g_student.name.split(' ')[0]}!`;
+    const initialBox = document.getElementById('nav-initials');
     const navImg = document.getElementById('nav-profile-image');
-    const navInitials = document.getElementById('nav-initials');
+    
+    const nameParts = g_student.name.split(' ');
+    const initials = (nameParts[0] ? nameParts[0][0] : '') + (nameParts[1] ? nameParts[1][0] : '');
     
     if (g_student.profileImageUrl) {
-        navImg.src = g_student.profileImageUrl;
-        navImg.classList.remove('hidden');
-        navInitials.classList.add('hidden');
+         navImg.src = g_student.profileImageUrl;
+         navImg.classList.remove('hidden');
+         initialBox.classList.add('hidden');
     } else {
-        navInitials.textContent = initials;
-        navInitials.classList.remove('hidden');
-        navImg.classList.add('hidden');
+         initialBox.textContent = initials;
+         initialBox.classList.remove('hidden');
+         navImg.classList.add('hidden');
     }
+
+    // 2. Room Card
+    document.getElementById('dashboard-room-number').textContent = g_room.roomNumber;
+    document.getElementById('dashboard-room-block').textContent = g_block.blockName;
+    document.getElementById('dashboard-room-capacity').textContent = `${g_roommates.length + 1}/${g_room.capacity}`;
     
-    // 3. Room Card
-    const roomCard = document.querySelector('.card-classy-lift[onclick="showView(\'student-room-view\')"]');
-    if (g_room && g_block) {
-        roomCard.querySelector('.text-4xl').textContent = g_room.roomNumber;     
-        roomCard.querySelector('.text-sm').textContent = `${g_block.blockName} | ${g_room.floor}`;
-        roomCard.classList.add('border-primary-blue');     
-        roomCard.querySelector('.text-xs').classList.add('text-primary-blue');     
-    }
-
-    // 4. Fee Card
-    const feeStatusElement = document.getElementById('dashboard-fee-status');
-    const feeCard = feeStatusElement.closest('.card-classy-lift');
-    const feeStatusText = feeCard.querySelector('.text-sm');
-    const feeStatusIcon = feeCard.querySelector('.mt-4');
-
-    if (g_student.feeStatus === 'Pending') {
-        feeStatusElement.textContent = 'Fee Due';     
-        feeStatusElement.classList.add('text-accent-red');
-        feeStatusElement.classList.remove('text-accent-green');
-        feeCard.classList.replace('border-accent-green', 'border-accent-red');
-        feeCard.querySelector('.text-xs').classList.replace('text-accent-green', 'text-accent-red');
-        feeStatusText.textContent = `Status: ${g_student.feeStatus}`;
+    // 3. Fee Status Card
+    const feeStatusEl = document.getElementById('dashboard-fee-status');
+    const feeStatusIcon = document.getElementById('dashboard-fee-status-icon');
+    
+    if (g_student.feeStatus === 'Due' || g_student.feeStatus === 'Overdue') {
+        feeStatusEl.textContent = g_student.feeStatus;
         feeStatusIcon.classList.replace('text-accent-green', 'text-accent-red');
-        feeStatusIcon.querySelector('span').textContent = 'Please pay at the admin office.';
+        feeStatusIcon.innerHTML = '<span>●</span> <span class="ml-1">Payment required.</span>';
     } else {
-        feeStatusElement.textContent = 'Paid';     
-        feeStatusElement.classList.add('text-accent-green');
-        feeStatusElement.classList.remove('text-accent-red');
-        feeCard.classList.replace('border-accent-red', 'border-accent-green');
-        feeCard.querySelector('.text-xs').classList.replace('text-accent-red', 'text-accent-green');
-        feeStatusText.textContent = `Status: ${g_student.feeStatus}`;
+        feeStatusEl.textContent = g_student.feeStatus;
         feeStatusIcon.classList.replace('text-accent-red', 'text-accent-green');
         feeStatusIcon.innerHTML = '<span>●</span> <span class="ml-1">No outstanding balance.</span>';
     }
 
-    // 5. Open Requests Card
-    const openRequestsEl = document.getElementById('dashboard-open-requests');
-    const openRequestsText = openRequestsEl.nextElementSibling;
+    // 4. Open Requests Card
+    updateDashboardComplaintCount();
+
+    // 5. Display Club Activities
+    displayClubActivitiesOnDashboard();
     
-    const pendingComplaints = g_complaints.filter(c => c.status === 'Pending' || c.status === 'Critical');     
+    // 6. Display Announcements (mocked)
+    populateAnnouncementsList();
+}
+
+function updateDashboardComplaintCount() {
+    const openRequestsEl = document.getElementById('dashboard-open-requests');
+    const openRequestsText = document.getElementById('dashboard-open-requests-text');
+    const pendingComplaints = g_complaints.filter(c => c.status === 'Pending' || c.status === 'Critical');
+    
     openRequestsEl.textContent = String(pendingComplaints.length).padStart(2, '0');
     
     if (pendingComplaints.length > 0) {
-        openRequestsText.textContent = `Complaint Pending (${pendingComplaints[0].title})`;
+        // Show the title of the highest priority pending complaint
+        const highestPriority = pendingComplaints.sort((a, b) => {
+            const priorityOrder = { 'Critical': 3, 'High': 2, 'Medium': 1, 'Low': 0 };
+            return priorityOrder[b.priority] - priorityOrder[a.priority];
+        })[0];
+        openRequestsText.textContent = `${pendingComplaints.length} Pending Complaints (Highest: ${highestPriority.title})`;
     } else {
         openRequestsText.textContent = 'No open complaints.';
     }
+}
 
-    // 6. Display Club Activities
-    displayClubActivitiesOnDashboard();
+
+function populateStudentProfile(student, blockName, roomNumber, complaints) {
+    if (!student) return;
+
+    // Profile Details
+    document.getElementById('profile-name').textContent = student.name || 'N/A';
+    document.getElementById('profile-student-id').textContent = student.studentId || 'N/A';
+    document.getElementById('profile-email').textContent = student.email || 'N/A';
+    document.getElementById('profile-phone').textContent = student.phone || 'N/A';
+    document.getElementById('profile-program').textContent = student.program || 'N/A';
+    document.getElementById('profile-batch').textContent = student.batch || 'N/A';
+    
+    // Residence Details
+    document.getElementById('profile-block').textContent = blockName || 'N/A';
+    document.getElementById('profile-room').textContent = roomNumber || 'N/A';
+    document.getElementById('profile-fee-status').textContent = student.feeStatus || 'N/A';
+    
+    // Emergency Contact
+    document.getElementById('emergency-name').textContent = student.emergencyContact?.name || 'N/A';
+    document.getElementById('emergency-phone').textContent = student.emergencyContact?.phone || 'N/A';
+    document.getElementById('emergency-relationship').textContent = student.emergencyContact?.relationship || 'N/A';
+
+    // Complaint Summary
+    const totalComplaints = complaints.length;
+    const resolvedComplaints = complaints.filter(c => c.status === 'Resolved').length;
+    document.getElementById('complaint-summary-total').textContent = totalComplaints;
+    document.getElementById('complaint-summary-resolved').textContent = resolvedComplaints;
+    document.getElementById('complaint-summary-pending').textContent = totalComplaints - resolvedComplaints;
 }
 
 function populateRoommatesList() {
-    if (!g_room || !g_block || !g_student) {
-        console.error("Data missing for room view.");
+    const listContainer = document.getElementById('roommates-list');
+    listContainer.innerHTML = '';
+    
+    if (g_roommates.length === 0) {
+        listContainer.innerHTML = `<p class="text-secondary-gray text-center py-4">You have no registered roommates.</p>`;
         return;
     }
 
-    const roomImage = document.getElementById('room-detail-image');
-    if (g_room.imageUrl) {
-        roomImage.src = g_room.imageUrl;
-    }
-
-    const summaryCard = document.querySelector('#student-room-view .lg\\:col-span-1 .p-6'); 
-    
-    summaryCard.querySelector('h3').textContent = `Room ${g_room.roomNumber} Summary`;
-    summaryCard.querySelector('p.flex:nth-child(1) span').textContent = g_block.blockName;
-    summaryCard.querySelector('p.flex:nth-child(2) span').textContent = g_room.floor;
-    summaryCard.querySelector('p.flex:nth-child(3) span').textContent = `${g_room.capacity} Beds`;
-    
-    const occupancy = g_roommates.length + 1;      
-    const occupancyText = `${occupancy}/${g_room.capacity}`;
-    const occupancyEl = summaryCard.querySelector('p.flex:nth-child(4) span');
-    occupancyEl.textContent = occupancyText;
-    
-    if (occupancy >= g_room.capacity) {
-        occupancyEl.textContent = `Full (${occupancyText})`;
-        occupancyEl.classList.add('text-accent-red');
-        occupancyEl.classList.remove('text-accent-green');
-    } else {
-        occupancyEl.textContent = `Available (${occupancyText})`;
-        occupancyEl.classList.add('text-accent-green');
-        occupancyEl.classList.remove('text-accent-red');
-    }
-
-    const roommatesList = document.getElementById('roommates-list');
-    roommatesList.innerHTML = '';
-    roommatesList.previousElementSibling.textContent = `Current Roommates (${g_roommates.length})`;
-
-    g_roommates.forEach(mate => {      
-        if (!mate) return;
+    g_roommates.forEach(roommate => {
+        const initials = (roommate.name.split(' ')[0] ? roommate.name.split(' ')[0][0] : '') + (roommate.name.split(' ')[1] ? roommate.name.split(' ')[1][0] : '');
         
-        const mateCard = document.createElement('div');
-        mateCard.className = `bg-light-bg p-4 rounded-lg shadow-soft flex items-center space-x-4 border-l-4 border-primary-blue`;
-        mateCard.innerHTML = `
-            <img src="${mate.profileImageUrl || './default-avatar.png'}" alt="${mate.name}" class="h-12 w-12 rounded-full object-cover flex-shrink-0">
-            <div class="overflow-hidden">
-                <p class="font-bold text-accent-dark truncate">${mate.name}</p>
-                <p class="text-sm text-secondary-gray truncate">${mate.department || 'N/A'} - ${mate.year || 'N/A'}</p>
+        listContainer.innerHTML += `
+            <div class="flex items-center space-x-4 p-4 bg-white rounded-lg shadow-sm border border-gray-100">
+                <div class="w-10 h-10 flex items-center justify-center rounded-full bg-primary-blue text-white font-bold text-sm">
+                    ${initials}
+                </div>
+                <div class="flex-1">
+                    <p class="font-semibold text-accent-dark">${roommate.name}</p>
+                    <p class="text-sm text-secondary-gray">${roommate.program} - ${roommate.batch}</p>
+                </div>
+                <div class="text-right">
+                    <p class="font-semibold text-accent-dark">${roommate.studentId}</p>
+                    <a href="tel:${roommate.phone}" class="text-sm text-primary-blue hover:underline">${roommate.phone}</a>
+                </div>
             </div>
         `;
-        roommatesList.appendChild(mateCard);
     });
+}
 
-    if (g_roommates.length === 0) {
-        roommatesList.innerHTML = `<p class="text-secondary-gray col-span-2">You are currently the sole occupant of Room ${g_room.roomNumber}.</p>`;
+function updateAttendanceStatus() {
+    const statusEl = document.getElementById('current-attendance-status');
+    const timeEl = document.getElementById('last-action-time');
+    const button = document.getElementById('attendance-toggle-btn');
+    
+    const isCheckedIn = g_attendanceStatus.status === 'Checked In';
+
+    statusEl.textContent = g_attendanceStatus.status;
+    statusEl.className = `font-bold text-xl ${isCheckedIn ? 'text-accent-green' : 'text-accent-red'}`;
+    
+    timeEl.textContent = g_attendanceStatus.lastActionTime ? `Last action: ${formatTime(g_attendanceStatus.lastActionTime)}` : 'Last action: N/A';
+
+    button.textContent = isCheckedIn ? 'Check Out' : 'Check In';
+    button.className = `w-full py-3 rounded-lg font-semibold transition duration-200 ${isCheckedIn ? 'bg-accent-red hover:bg-red-700' : 'bg-primary-blue hover:bg-blue-700'} text-white shadow-lg`;
+}
+
+async function toggleAttendance() {
+    const studentId = g_student._id;
+    const action = g_attendanceStatus.status === 'Checked In' ? 'checkout' : 'checkin';
+    
+    try {
+        const response = await fetch(`/api/attendance/${action}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ studentId })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+            // Update global status
+            g_attendanceStatus.status = data.status;
+            g_attendanceStatus.lastActionTime = data.actionTime;
+            
+            alert(`Successfully ${action === 'checkin' ? 'Checked In' : 'Checked Out'}!`);
+            
+            // Reload attendance data and refresh UI
+            await loadStudentData(); 
+            updateAttendanceStatus();
+            populateAttendanceHistory();
+        } else {
+            throw new Error(data.message || `Failed to ${action}.`);
+        }
+    } catch (error) {
+        console.error('Attendance Toggle Error:', error);
+        alert(`Error: ${error.message}`);
     }
+}
+
+function populateAttendanceHistory() {
+    const tableBody = document.getElementById('attendance-history-body');
+    tableBody.innerHTML = '';
+    
+    if (g_attendance.length === 0) {
+        tableBody.innerHTML = `<tr><td colspan="4" class="py-4 px-6 text-center text-secondary-gray">No attendance records found.</td></tr>`;
+        return;
+    }
+
+    g_attendance.sort((a, b) => new Date(b.actionTime) - new Date(a.actionTime)); // Sort newest first
+
+    g_attendance.forEach(record => {
+        const isCheckIn = record.type === 'Check In';
+        const typeClass = isCheckIn ? 'text-accent-green' : 'text-accent-red';
+
+        tableBody.innerHTML += `
+            <tr class="hover:bg-light-bg transition duration-150">
+                <td class="py-3 px-6 whitespace-nowrap text-sm text-accent-dark">${formatDate(record.actionTime)}</td>
+                <td class="py-3 px-6 whitespace-nowrap text-sm text-accent-dark">${new Date(record.actionTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true })}</td>
+                <td class="py-3 px-6 whitespace-nowrap text-sm font-medium ${typeClass}">${record.type}</td>
+                <td class="py-3 px-6 text-sm text-secondary-gray">${record.gate || 'Main Gate'}</td>
+            </tr>
+        `;
+    });
 }
 
 function populateStudentComplaintHistory() {
     const tableBody = document.getElementById('student-complaint-history');
     tableBody.innerHTML = '';
     
-    const myComplaints = g_complaints.sort((a, b) => new Date(b.date) - new Date(a.date));
+    const sortedComplaints = g_complaints
+        .sort((a, b) => new Date(b.date) - new Date(a.date)); // Sort by date (newest first)
 
-    if (myComplaints.length === 0) {
-        tableBody.innerHTML = `<tr><td colspan="6" class="py-4 px-6 text-center text-secondary-gray">You have not filed any complaints.</td></tr>`;
+    if (sortedComplaints.length === 0) {
+        tableBody.innerHTML = `<tr><td colspan="4" class="py-4 px-6 text-center text-secondary-gray">No complaint history found.</td></tr>`;
         return;
     }
 
-    myComplaints.forEach(c => {
-        let priorityColorClass = '';
-        if (c.priority === 'Critical') priorityColorClass = 'text-accent-red';
-        else if (c.priority === 'High') priorityColorClass = 'text-orange-500';
-        else if (c.priority === 'Medium') priorityColorClass = 'text-info-yellow';
-        else priorityColorClass = 'text-accent-green';
-        
-        let statusColorClass = c.status === 'Resolved' ? 'text-accent-green' : (c.status === 'Pending' || c.status === 'Critical' ? 'text-info-yellow' : 'text-secondary-gray');
-        let formattedDate = c.date ? new Date(c.date).toLocaleDateString() : 'N/A';
+    sortedComplaints.forEach(c => {
+        let statusColorClass;
+        if (c.status === 'Resolved') { statusColorClass = 'bg-accent-green/20 text-accent-green'; }
+        else if (c.status === 'Pending') { statusColorClass = 'bg-info-yellow/20 text-info-yellow'; }
+        else if (c.status === 'Critical') { statusColorClass = 'bg-accent-red/20 text-accent-red'; }
+        else { statusColorClass = 'bg-gray-200/50 text-secondary-gray'; }
 
         tableBody.innerHTML += `
             <tr class="hover:bg-light-bg transition duration-150">
-                <td class="py-3 px-6 whitespace-nowrap text-sm text-accent-dark">#C00${c._id ? c._id.substring(c._id.length - 4) : 'N/A'}</td>
-                <td class="py-3 px-6 whitespace-nowrap text-sm text-secondary-gray">${formattedDate}</td>
-                <td class="py-3 px-6 whitespace-nowrap text-sm text-accent-dark">${c.type || c.title}</td>
-                <td class="py-3 px-6 whitespace-nowrap text-sm text-secondary-gray">${c.location}</td>
-                <td class="py-3 px-6 whitespace-nowrap text-sm font-medium ${priorityColorClass}">${c.priority}</td>
-                <td class="py-3 px-6 whitespace-nowrap text-sm font-medium ${statusColorClass}">${c.status}</td>
-            </tr>
-        `;
-    });
-}
-
-function populateStudentLeaveHistory() {
-    const tableBody = document.getElementById('student-leave-history');
-    tableBody.innerHTML = '';
-    
-    // Use the fetched g_leaveHistory
-    if (!g_leaveHistory || g_leaveHistory.length === 0) {
-        tableBody.innerHTML = `<tr><td colspan="4" class="py-4 px-6 text-center text-secondary-gray">No leave history found.</td></tr>`;
-        return;
-    }
-
-    // Sort newest first
-    const sortedLeaves = g_leaveHistory.sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
-
-    sortedLeaves.forEach(l => {
-        let statusColorClass = l.status === 'Approved' ? 'text-accent-green' : (l.status === 'Pending' ? 'text-info-yellow' : 'text-accent-red');
-
-        tableBody.innerHTML += `
-            <tr class="hover:bg-light-bg transition duration-150">
-                <td class="py-3 px-6 whitespace-nowrap text-sm text-accent-dark">${formatDate(l.startDate)}</td>
-                <td class="py-3 px-6 whitespace-nowrap text-sm text-accent-dark">${formatDate(l.endDate)}</td>
-                <td class="py-3 px-6 text-sm text-secondary-gray">${l.reason}</td>
-                <td class="py-3 px-6 whitespace-nowrap text-sm font-medium ${statusColorClass}">${l.status}</td>
-            </tr>
-        `;
-    });
-}
-
-function updateDashboardComplaintCount() {
-    const pendingComplaints = g_complaints.filter(c => c.status === 'Pending');
-    const openRequestsEl = document.getElementById('dashboard-open-requests');
-    const openRequestsText = openRequestsEl.nextElementSibling;
-    
-    openRequestsEl.textContent = String(pendingComplaints.length).padStart(2, '0');
-    
-    if (pendingComplaints.length > 0) {
-        openRequestsText.textContent = `Complaint Pending (${pendingComplaints[0].type || pendingComplaints[0].title})`;
-    } else {
-        openRequestsText.textContent = 'No open complaints.';
-    }
-}
-
-// --- Dynamic "Other" Reason UI Setup ---
-function setupLeaveForm() {
-    const reasonSelect = document.getElementById('leave-reason');
-    if (!reasonSelect) return;
-
-    // Add "Other" option if not present
-    if (!reasonSelect.querySelector('option[value="Other"]')) {
-        const otherOpt = document.createElement('option');
-        otherOpt.value = 'Other';
-        otherOpt.text = 'Other (Type Manually)';
-        reasonSelect.appendChild(otherOpt);
-    }
-
-    // Check if manual input already exists before creating it (might exist from HTML)
-    let manualInput = document.getElementById('leave-reason-manual');
-    if (!manualInput) {
-        // Create hidden text input if it was not in the original HTML
-        manualInput = document.createElement('input');
-        manualInput.type = 'text';
-        manualInput.id = 'leave-reason-manual';
-        manualInput.className = 'w-full p-3 border border-text-muted rounded-lg focus:ring-primary-blue focus:border-primary-blue bg-light-bg mt-2 hidden';
-        manualInput.placeholder = 'Please type your reason here...';
-        
-        reasonSelect.parentNode.insertBefore(manualInput, reasonSelect.nextSibling);
-    }
-
-    // Toggle listener
-    reasonSelect.addEventListener('change', toggleLeaveReason);
-    // Initial setup call
-    toggleLeaveReason();
-}
-
-function showStudentDetails() {
-    showView('student-details-view');
-    populateStudentProfileView();
-}
-
-function populateStudentProfileView() {
-    if (!g_student) {
-        console.error("No student data loaded.");
-        document.getElementById('profile-name').textContent = 'Error loading data';
-        return;
-    }
-    
-    const student = g_student;
-    const roomNumber = g_room ? g_room.roomNumber : 'N/A';
-    const blockName = g_block ? g_block.blockName : 'N/A';
-    const attendance = g_attendance;
-    const complaints = g_complaints;
-
-    // --- 1. Populate Profile Header ---
-    document.getElementById('profile-name').textContent = student.name;
-    const nameParts = student.name.split(' ');
-    const initials = (nameParts[0] ? nameParts[0][0] : '') + (nameParts[1] ? nameParts[1][0] : '');
-    
-    const initialsEl = document.getElementById('profile-initials');
-    const profileImgEl = document.getElementById('profile-image');
-
-    if (student.profileImageUrl) {
-        profileImgEl.src = student.profileImageUrl;
-        profileImgEl.classList.remove('hidden');
-        initialsEl.classList.add('hidden');
-    } else {
-        initialsEl.textContent = initials;
-        initialsEl.classList.remove('hidden');
-        profileImgEl.classList.add('hidden');
-    }
-    
-    document.getElementById('profile-year').textContent = student.year || 'N/A';
-    document.getElementById('profile-course').textContent = `${student.course || ''} ${student.department || ''}`;
-    document.getElementById('profile-location').textContent = `${blockName} - Room ${roomNumber}`;
-
-    // --- 2. Populate Contact Info ---
-    document.getElementById('profile-email').textContent = student.email || 'N/A';
-    document.getElementById('profile-phone').textContent = student.phone || 'N/A';
-    document.getElementById('profile-join-date').textContent = formatDate(student.joiningDate);
-
-    // --- 3. Populate Fee Details ---
-    const feeStatusEl = document.getElementById('profile-fee-status');
-    const paymentMethodEl = document.getElementById('profile-payment-method');
-    
-    feeStatusEl.textContent = student.feeStatus || 'Pending';
-    paymentMethodEl.textContent = student.paymentMethod || 'Not Paid';
-    
-    feeStatusEl.classList.remove('bg-green-100', 'text-green-700', 'bg-red-100', 'text-red-700');     
-    if (student.feeStatus === 'Paid') {
-        feeStatusEl.classList.add('bg-green-100', 'text-green-700');
-    } else {
-        feeStatusEl.textContent = 'Due';
-        feeStatusEl.classList.add('bg-red-100', 'text-red-700');
-    }
-
-    // --- 4. Populate Assigned Assets ---
-    const assetsList = document.getElementById('profile-assets-list');
-    const assets = student.assets || [];
-    if (assets.length === 0) {
-        assetsList.innerHTML = '<p class="text-gray-500 col-span-full">No assets are currently assigned to you.</p>';
-    } else {
-        assetsList.innerHTML = '';
-        const assetIcons = {
-            'Table': '🪑', 'Chair': '🪑', 'Bed': '🛏️', 'Mattress': '🛏️',
-            'Cupboard': '🚪', 'Fan': '💨', 'Light': '💡', 'System': '💻', 'Other': '📝'
-        };
-        
-        assets.forEach(asset => {
-            const assetName = asset.name || 'Unknown Asset';
-            const assetTypeMatch = Object.keys(assetIcons).find(key => assetName.toLowerCase().includes(key.toLowerCase()));
-            const icon = assetIcons[assetTypeMatch] || assetIcons['Other'];
-
-            const item = `
-                <div class="flex items-center gap-4 bg-gray-50 p-4 rounded-lg border">
-                    <span class="text-2xl">${icon}</span>
-                    <div>
-                        <p class="font-medium text-gray-800">${assetName}</p>
-                        <p class="text-sm text-gray-500">Quantity: ${asset.quantity}</p>
-                    </div>
-                </div>
-            `;
-            assetsList.innerHTML += item;
-        });
-    }
-
-    // --- 5. Populate Attendance Log ---
-    const attendanceTable = document.getElementById('profile-attendance-log-table');
-    if (!attendance || attendance.length === 0) {
-        attendanceTable.innerHTML = '<tr><td colspan="4" class="p-4 text-center text-gray-500">No attendance data found.</td></tr>';
-    } else {
-        attendanceTable.innerHTML = '';
-        attendance.slice(0, 5).forEach(log => { 
-            const statusColor = log.status === 'Present' ? 'text-green-600' : 'text-red-600';
-            const row = `
-                <tr>
-                    <td class="p-4 text-gray-800 font-medium">${formatDate(log.date)}</td>
-                    <td class="p-4 text-gray-700">${log.checkInTime ? new Date(log.checkInTime).toLocaleTimeString() : '--'}</td>
-                    <td class="p-4 text-gray-700">${log.checkOutTime ? new Date(log.checkOutTime).toLocaleTimeString() : '--'}</td>
-                    <td class="p-4 font-medium ${statusColor}">${log.status}</td>
-                </tr>
-            `;
-            attendanceTable.innerHTML += row;
-        });
-    }
-
-    // --- 6. Populate Complaints List ---
-    const complaintsList = document.getElementById('profile-complaints-list');
-    if (!complaints || complaints.length === 0) {
-        complaintsList.innerHTML = '<p class="text-gray-500">No complaints filed by this student.</p>';
-    } else {
-        complaintsList.innerHTML = '';
-        complaints.forEach(complaint => {
-            const statusColor = complaint.status === 'Resolved'      
-                ? 'bg-green-100 text-green-700'      
-                : 'bg-yellow-100 text-yellow-700';
-            
-            const item = `
-                <div class="flex justify-between items-center bg-gray-50 p-4 rounded-lg border">
-                    <div>
-                        <p class="font-medium text-gray-800">${complaint.type || complaint.title}</p>
-                        <p class="text-sm text-gray-500">Filed on: ${formatDate(complaint.date)} | Priority: ${complaint.priority}</p>
-                    </div>
-                    <span class="text-xs font-bold px-3 py-1 rounded-full ${statusColor}">${complaint.status}</span>
-                </div>
-            `;
-            complaintsList.innerHTML += item;
-        });
-    }
-}
-
-// =========================================================================
-// ATTENDANCE & OTHER FUNCTIONS
-// =========================================================================
-
-function updateAttendanceStatus() {
-    const card = document.getElementById('attendance-status-card');
-    const statusText = document.getElementById('attendance-status-text');
-    const timeText = document.getElementById('attendance-status-time');
-    const button = document.getElementById('attendance-toggle-btn');
-
-    card.classList.remove('border-accent-green', 'border-accent-red');
-    statusText.classList.remove('text-accent-green', 'text-accent-red');
-    button.classList.remove('bg-accent-green', 'bg-accent-red', 'hover:bg-green-700', 'hover:bg-red-700');
-
-    if (g_attendanceStatus.status === 'Checked In') {
-        card.classList.add('border-accent-green');
-        statusText.classList.add('text-accent-green');
-        statusText.textContent = 'Checked In';
-        timeText.textContent = `Since: ${formatTime(g_attendanceStatus.lastActionTime)}`;
-        button.classList.add('bg-accent-red', 'hover:bg-red-700');
-        button.textContent = 'Check Out';
-    } else {
-        card.classList.add('border-accent-red');
-        statusText.classList.add('text-accent-red');
-        statusText.textContent = 'Checked Out';
-        timeText.textContent = g_attendanceStatus.lastActionTime ? `Since: ${formatTime(g_attendanceStatus.lastActionTime)}` : 'Not yet checked in today';
-        button.classList.add('bg-accent-green', 'hover:bg-green-700');
-        button.textContent = 'Check In';
-    }
-}
-
-async function toggleAttendance() {
-    const button = document.getElementById('attendance-toggle-btn');
-    button.disabled = true;
-    button.textContent = 'Updating...';
-
-    try {
-        const response = await fetch('/api/attendance/toggle', {      
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ studentId: g_student._id })
-        });
-
-        const data = await response.json();
-        if (!data.success) {
-            throw new Error(data.message);
-        }
-
-        g_attendanceStatus.status = data.newStatus;
-        g_attendanceStatus.lastActionTime = data.lastActionTime;
-
-        updateAttendanceStatus();
-        
-        const attResponse = await fetch(`/api/student/${g_student._id}`);
-        const attData = await attResponse.json();
-        if (attData.success) {
-            g_attendance = attData.attendance;      
-            populateAttendanceLog();      
-        }
-        
-    } catch (error) {
-        console.error('Error toggling attendance:', error);
-        alert(`Error: ${error.message}`);
-    } finally {
-        button.disabled = false;
-    }
-}
-
-function populateAttendanceLog() {
-    const tableBody = document.getElementById('attendance-log-body');
-    tableBody.innerHTML = '';
-    
-    if (g_attendance.length === 0) {
-        tableBody.innerHTML = `<tr><td colspan="4" class="py-4 px-6 text-center text-secondary-gray">No attendance log found.</td></tr>`;
-        return;
-    }
-    
-    g_attendance.slice(0, 7).forEach(log => {
-        const statusClass = log.status === 'Present' ? 'text-accent-green' : 'text-accent-red';
-        let formattedDate = log.date ? formatDate(log.date) : 'N/A';
-        
-        let checkIn = log.checkInTime ? new Date(log.checkInTime).toLocaleTimeString() : '--';
-        let checkOut = log.checkOutTime ? new Date(log.checkOutTime).toLocaleTimeString() : '--';
-
-        tableBody.innerHTML += `
-            <tr class="hover:bg-light-bg transition duration-150">
-                <td class="py-3 px-6 whitespace-nowrap text-sm text-accent-dark">${formattedDate}</td>
-                <td class="py-3 px-6 whitespace-nowrap text-sm text-secondary-gray">${checkIn}</td>
-                <td class="py-3 px-6 whitespace-nowrap text-sm text-secondary-gray">${checkOut}</td>
-                <td class="py-3 px-6 whitespace-nowrap text-sm font-medium ${statusClass}">${log.status}</td>
+                <td class="py-3 px-6 whitespace-nowrap text-sm text-accent-dark">${c.title}</td>
+                <td class="py-3 px-6 whitespace-nowrap text-sm text-secondary-gray">${formatDate(c.date)}</td>
+                <td class="py-3 px-6 text-sm text-secondary-gray">${c.priority}</td>
+                <td class="py-3 px-6 whitespace-nowrap">
+                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusColorClass}">
+                        ${c.status}
+                    </span>
+                </td>
             </tr>
         `;
     });
@@ -1109,94 +858,159 @@ function populateVisitorRequestHistory() {
     const tableBody = document.getElementById('visitor-request-history-body');
     tableBody.innerHTML = '';
     
-    const myVisitorHistory = g_visitorRequests
-        .sort((a, b) => new Date(b.startDate) - new Date(a.startDate)); 
+    const sortedRequests = g_visitorRequests
+        .sort((a, b) => new Date(b.startDate) - new Date(a.startDate)); // Sort by start date (newest first)
 
-    if (myVisitorHistory.length === 0) {
-        tableBody.innerHTML = `<tr><td colspan="5" class="py-4 px-6 text-center text-secondary-gray">No visitor request history.</td></tr>`;
+    if (sortedRequests.length === 0) {
+        tableBody.innerHTML = `<tr><td colspan="5" class="py-4 px-6 text-center text-secondary-gray">No visitor requests found.</td></tr>`;
         return;
     }
 
-    myVisitorHistory.forEach(v => {
-        let statusClass;
-        if (v.status === 'Approved') {
-            statusClass = 'text-accent-green';
-        } else if (v.status === 'Pending') {
-            statusClass = 'text-info-yellow';
-        } else {
-            statusClass = 'text-accent-red'; 
-        }
-        
+    sortedRequests.forEach(req => {
+        let statusColorClass;
+        if (req.status === 'Approved') { statusColorClass = 'bg-accent-green/20 text-accent-green'; }
+        else if (req.status === 'Pending') { statusColorClass = 'bg-info-yellow/20 text-info-yellow'; }
+        else { statusColorClass = 'bg-accent-red/20 text-accent-red'; }
+
         tableBody.innerHTML += `
             <tr class="hover:bg-light-bg transition duration-150">
-                <td class="py-3 px-6 whitespace-nowrap text-sm text-accent-dark">${v.visitorName}</td>
-                <td class="py-3 px-6 whitespace-nowrap text-sm text-secondary-gray">${formatDate(v.startDate)}</td>
-                <td class="py-3 px-6 whitespace-nowrap text-sm text-secondary-gray">${formatDate(v.endDate)}</td>
-                <td class="py-3 px-6 text-sm text-secondary-gray">${v.reason}</td>
-                <td class="py-3 px-6 whitespace-nowrap text-sm font-medium ${statusClass}">${v.status}</td>
+                <td class="py-3 px-6 whitespace-nowrap text-sm text-accent-dark">${req.visitorName}</td>
+                <td class="py-3 px-6 whitespace-nowrap text-sm text-secondary-gray">${formatDate(req.startDate)} - ${formatDate(req.endDate)}</td>
+                <td class="py-3 px-6 text-sm text-secondary-gray">${req.reason}</td>
+                <td class="py-3 px-6 whitespace-nowrap">
+                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusColorClass}">
+                        ${req.status}
+                    </span>
+                </td>
+                <td class="py-3 px-6 text-sm">
+                    ${req.status === 'Pending' ? `<button onclick="cancelVisitorRequest('${req._id}')" class="text-accent-red hover:text-red-700">Cancel</button>` : '—'}
+                </td>
             </tr>
         `;
     });
 }
 
-/**
- * FIXED: Fetches and displays real found items from the server.
- */
-function populateLostAndFound() {
-    const tableBody = document.getElementById('lost-found-body');
-    tableBody.innerHTML = '';
-    
-    // Use the real fetched g_foundItems data
-    if (!g_foundItems || g_foundItems.length === 0) {
-            tableBody.innerHTML = `<tr><td colspan="4" class="py-4 px-6 text-center text-secondary-gray">No items reported found.</td></tr>`;
-            return;
+async function cancelVisitorRequest(requestId) {
+    if (!confirm("Are you sure you want to cancel this visitor request?")) {
+        return;
     }
-    
-    g_foundItems.forEach(item => {
-        const statusClass = item.status === 'Pending' ? 'text-info-yellow' : (item.status === 'Retrieved' ? 'text-accent-green' : 'text-secondary-gray');
-        const formattedDate = item.submissionDate ? formatDate(item.submissionDate) : 'N/A';
+
+    try {
+        const response = await fetch(`/api/visitor-request/cancel/${requestId}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ studentId: g_student._id })
+        });
         
-        tableBody.innerHTML += `
-            <tr class="hover:bg-light-bg transition duration-150">
-                <td class="py-3 px-6 whitespace-nowrap text-sm text-accent-dark">${item.itemName}</td>
-                <td class="py-3 px-6 whitespace-nowrap text-sm text-secondary-gray">${formattedDate}</td>
-                <td class="py-3 px-6 whitespace-nowrap text-sm text-secondary-gray">${item.location}</td>
-                <td class="py-3 px-6 whitespace-nowrap text-sm font-medium ${statusClass}">${item.status}</td>
-            </tr>
+        const data = await response.json();
+        
+        if (response.ok && data.success) {
+            alert("Visitor request cancelled successfully.");
+            // Re-fetch and re-populate
+            const vRes = await fetch(`/api/visitor-request/history/${g_student._id}`);
+            const vData = await vRes.json();
+            if(vData.success) {
+                g_visitorRequests = vData.visitorRequests;
+                populateVisitorRequestHistory();
+            }
+        } else {
+            throw new Error(data.message || 'Failed to cancel request.');
+        }
+
+    } catch (error) {
+        console.error('Cancel Error:', error);
+        alert(`Failed to cancel request: ${error.message}`);
+    }
+}
+
+async function loadClubActivities() {
+    try {
+        const response = await fetch('/api/clubs/activities');
+        const data = await response.json();
+        if (data.success) {
+            g_clubActivities = data.activities;
+            console.log('✅ Club Activities loaded:', g_clubActivities);
+        }
+    } catch (error) {
+        console.error('Error fetching club activities:', error);
+    }
+}
+
+function displayClubActivitiesOnDashboard() {
+    const listContainer = document.getElementById('club-activities-list');
+    listContainer.innerHTML = '';
+
+    if (g_clubActivities.length === 0) {
+        listContainer.innerHTML = `<p class="text-secondary-gray text-sm p-4 text-center">No upcoming club activities.</p>`;
+        return;
+    }
+
+    // Filter for upcoming (or recent past) activities, max 3
+    const upcomingActivities = g_clubActivities
+        .filter(a => new Date(a.date) >= new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)) // Include last 7 days
+        .sort((a, b) => new Date(a.date) - new Date(b.date))
+        .slice(0, 3);
+
+    if (upcomingActivities.length === 0) {
+         listContainer.innerHTML = `<p class="text-secondary-gray text-sm p-4 text-center">No upcoming club activities.</p>`;
+         return;
+    }
+
+
+    upcomingActivities.forEach(activity => {
+        listContainer.innerHTML += `
+            <div class="flex justify-between items-center py-2 border-b border-gray-100 last:border-b-0">
+                <div class="flex flex-col">
+                    <p class="font-semibold text-accent-dark text-sm">${activity.title}</p>
+                    <p class="text-xs text-secondary-gray">${activity.clubName}</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-sm text-primary-blue font-medium">${formatDate(activity.date)}</p>
+                    <p class="text-xs text-secondary-gray">${activity.time}</p>
+                </div>
+            </div>
         `;
     });
 }
 
-// --- Announcement Modal Functions ---
-function openAnnouncementsModal() {
-    document.getElementById('announcement-modal').classList.remove('hidden');
-    populateAnnouncementsList();
-}
-function closeAnnouncementsModal() {
-    document.getElementById('announcement-modal').classList.add('hidden');
-}
+// --- Announcements Modal Functions ---
+
 function populateAnnouncementsList() {
-    document.getElementById('announcement-list-view').classList.remove('hidden');
-    document.getElementById('announcement-detail-view').classList.add('hidden');
-    const container = document.getElementById('announcement-list-container');
-    container.innerHTML = '';       
+    const listContainer = document.getElementById('announcement-list-container');
+    listContainer.innerHTML = '';
+
+    if (mockAnnouncements.length === 0) {
+        listContainer.innerHTML = `<p class="text-secondary-gray text-center p-4">No announcements available.</p>`;
+        return;
+    }
+
     mockAnnouncements.forEach(ann => {
-        container.innerHTML += `
-            <a href="#" onclick="event.preventDefault(); showAnnouncementDetail(${ann.id})" class="block p-4 rounded-lg bg-light-bg hover:bg-gray-200 transition duration-200">
-                <p class="text-xs text-secondary-gray">${ann.date}</p>
-                <h4 class="font-bold text-accent-dark hover:text-primary-blue">${ann.title}</h4>
-                <p class="text-sm text-secondary-gray">${ann.short_desc}</p>
-            </a>
+        listContainer.innerHTML += `
+            <div onclick="showAnnouncementDetail(${ann.id})" class="cursor-pointer p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition duration-150 border border-gray-100">
+                <p class="text-sm text-secondary-gray mb-1">${formatDate(ann.date)}</p>
+                <h4 class="font-bold text-accent-dark truncate">${ann.title}</h4>
+                <p class="text-sm text-secondary-gray mt-1 line-clamp-2">${ann.short_desc}</p>
+            </div>
         `;
     });
 }
+
+function openAnnouncementsModal() {
+    document.getElementById('announcements-modal').classList.remove('hidden');
+    showAnnouncementsList();
+}
+
+function closeAnnouncementsModal() {
+    document.getElementById('announcements-modal').classList.add('hidden');
+}
+
 function showAnnouncementDetail(id) {
     const ann = mockAnnouncements.find(a => a.id === id);
     if (!ann) return;
     document.getElementById('announcement-list-view').classList.add('hidden');
     document.getElementById('announcement-detail-view').classList.remove('hidden');
     document.getElementById('announcement-detail-title').textContent = ann.title;
-    document.getElementById('announcement-detail-date').textContent = `Posted on: ${ann.date}`;
+    document.getElementById('announcement-detail-date').textContent = `Posted on: ${formatDate(ann.date)}`;
     document.getElementById('announcement-detail-body').innerHTML = ann.full_desc;
 }
 function showAnnouncementsList() {
@@ -1204,10 +1018,51 @@ function showAnnouncementsList() {
     document.getElementById('announcement-list-view').classList.remove('hidden');
 }
 
+// --- Logout Function ---
+function logout() {
+    localStorage.removeItem('currentStudentId');
+    window.location.href = 'index.html'; // Assuming your login page is index.html
+}
 
 // =========================================================================
 // INITIALIZATION
 // =========================================================================
+function setupLeaveForm() {
+    // Attach listener for the 'Other' option in leave reason
+    const reasonSelect = document.getElementById('leave-reason');
+    if (reasonSelect) {
+        reasonSelect.addEventListener('change', toggleLeaveReason);
+    }
+}
+
+function initializeDashboard() {
+    updateStudentDashboard();
+    // Also initialize the form listeners
+    document.getElementById('complaint-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        submitComplaint();
+    });
+    document.getElementById('visitor-request-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        submitVisitorRequest();
+    });
+    document.getElementById('leave-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        submitLeave();
+    });
+    // Attach listener for Lost Item Report
+    const lostItemForm = document.getElementById('lost-item-form');
+    if (lostItemForm) {
+        lostItemForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            submitLostItemReport();
+        });
+    }
+
+    // Default to the first report tab
+    showReportTab('complaints'); 
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
     
     const success = await loadStudentData();      
@@ -1224,5 +1079,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         
         document.getElementById('mobile-menu-button').addEventListener('click', toggleMobileMenu);
         document.getElementById('attendance-toggle-btn').addEventListener('click', toggleAttendance);
+
+        // Add listeners for report tabs
+        document.getElementById('tab-complaints').addEventListener('click', () => showReportTab('complaints'));
+        document.getElementById('tab-lost-found').addEventListener('click', () => showReportTab('lost-found'));
+
     }
 });
