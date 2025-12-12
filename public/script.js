@@ -218,7 +218,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Function to render the Leave Request Management View
-    // Function to render the Leave Request Management View
 function renderLeaveView() {
     const searchTerm = leaveSearchInput.value.toLowerCase();
     const statusFilter = leaveStatusFilter.value;
@@ -1051,8 +1050,12 @@ function renderLeaveView() {
             
             grandTotalCapacity += block.blockCapacity || totalCapacity; // Use the block's set capacity or fallback to sum
             grandTotalStudents += currentStudents;
+            
+            // New fields for display
+            const blockMaxRooms = block.maxRooms || '∞'; // NEW: Use maxRooms
+            const blockMaxStudents = block.blockCapacity || totalCapacity; // Use blockCapacity for max students
 
-          // Change one of the stats to show the manually entered capacity
+          // Update block card HTML to display both max rooms and max students
             const blockHTML = `
                 <div class="bg-white rounded-lg shadow-md overflow-hidden border-l-8 ${theme.border} relative transition-all duration-300 hover:shadow-xl hover:scale-105">
                     <button class="remove-block-btn absolute top-3 right-3 p-1 text-red-500 hover:bg-red-100 rounded-full transition-colors duration-200 z-10" data-block-id="${block._id}" data-block-name="${block.blockName}" title="Delete Block">
@@ -1066,10 +1069,10 @@ function renderLeaveView() {
                             <h3 class="text-2xl font-bold text-gray-900 ml-4">${block.blockName}</h3>
                         </div>
                         <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
-                            <div><span class="text-gray-500">Total Rooms</span><p class="text-lg font-semibold text-gray-900">${totalRooms}</p></div>
+                            <div><span class="text-gray-500">Rooms (Limit)</span><p class="text-lg font-semibold text-gray-900">${totalRooms} / ${blockMaxRooms}</p></div>
                             <div><span class="text-gray-500">Occupied Rooms</span><p class="text-lg font-semibold text-gray-900">${occupiedRooms}</p></div>
                             <div><span class="text-gray-500">Current Students</span><p class="text-lg font-semibold text-gray-900">${currentStudents}</p></div>
-                            <div><span class="text-gray-500">Target Capacity</span><p class="text-lg font-semibold text-gray-900">${block.blockCapacity || totalCapacity}</p></div> 
+                            <div><span class="text-gray-500">Max Students</span><p class="text-lg font-semibold text-gray-900">${blockMaxStudents}</p></div> 
                         </div>
                     </a>
                 </div>
@@ -1469,240 +1472,249 @@ function renderLeaveView() {
         return assignedAssets;
     }
 
-    // --- 7. FORM & DATA HANDLERS (Unchanged, retained for context) ---
-   // In script.js (~ line 1056 in your provided code)
-addBlockForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const blockName = document.getElementById('block-name').value;
-    const blockKey = document.getElementById('block-key').value.toLowerCase().replace(/\s+/g, '-');
-    const blockTheme = document.getElementById('block-theme').value;
-    // --- START: Capture new field ---
-    const blockCapacity = parseInt(document.getElementById('block-capacity').value, 10);
-    if (!blockName || !blockKey || isNaN(blockCapacity) || blockCapacity < 0) return;
-    // --- END: Capture new field ---
+    // --- 7. FORM & DATA HANDLERS ---
 
-    try {
-        const res = await fetch('/api/blocks', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            // --- Send new field in the body ---
-            body: JSON.stringify({ blockName, blockKey, blockTheme, blockCapacity }) 
-        });
-        const data = await res.json();
-        if (data.success) {
-            await loadHostelData();
-            hideModal('add-block-modal');
-            addBlockForm.reset();
-        } else {
-            throw new Error(data.message);
-        }
-    } catch (error) {
-        alert(`Error adding block: ${error.message}`);
-    }
-});
-// In script.js (~ line 1111)// Add this function before initApp in script.js (around line 1400)
-function updateStudentRoomSelect() {
-    studentRoomSelect.innerHTML = '<option value="" disabled selected>-- Select an available room --</option>';
-    
-    // Find the currently viewed block based on detailView's data attribute
-    const blockKey = detailView.dataset.currentHostelKey;
-    const currentBlock = appState.blocks.find(b => b.blockKey === blockKey);
-
-    if (!currentBlock || !currentBlock.rooms) {
-        studentRoomSelect.innerHTML = '<option value="" disabled>No rooms in this block</option>';
-        return;
-    }
-
-    currentBlock.rooms
-        // Sort rooms by number
-        .sort((a, b) => a.roomNumber.localeCompare(b.roomNumber, undefined, { numeric: true, sensitivity: 'base' }))
-        .forEach(room => {
-            const currentOccupancy = room.students ? room.students.length : 0;
-            const maxCapacity = room.capacity || 0;
-            const availableSlots = maxCapacity - currentOccupancy;
-
-            if (availableSlots > 0) {
-                // Use room._id as the value for submission
-                studentRoomSelect.innerHTML += `
-                    <option value="${room._id}" data-max-capacity="${maxCapacity}" data-current-occupancy="${currentOccupancy}">
-                        ${room.roomNumber} (${currentOccupancy}/${maxCapacity}) - ${availableSlots} slots left
-                    </option>
-                `;
-            }
-        });
-
-    if (studentRoomSelect.options.length === 1) { // Only the disabled default option remains
-        studentRoomSelect.innerHTML = '<option value="" disabled selected>No available rooms found</option>';
-    }
-}
-addRoomForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    // --- CAPACITY CHECK LOGIC START ---
-    const blockKey = detailView.dataset.currentHostelKey;
-    const block = appState.blocks.find(b => b.blockKey === blockKey);
-    const newRoomCapacity = parseInt(document.getElementById('room-capacity').value, 10);
-
-    if (!blockKey || !block) {
-        alert('Error: No block selected.');
-        return;
-    }
-
-    const currentRooms = block.rooms || [];
-    const blockMaxStudents = block.blockCapacity || 999999; // Total student limit
-    // Calculate the total capacity *after* adding the new room
-    const currentRoomsTotalStudentCapacity = currentRooms.reduce((sum, room) => sum + (room.capacity || 0), 0);
-    const projectedTotalStudentCapacity = currentRoomsTotalStudentCapacity + newRoomCapacity;
-
-    if (projectedTotalStudentCapacity > blockMaxStudents) {
-        showError(`Cannot add room. Projected total student capacity (${projectedTotalStudentCapacity}) exceeds the Block's maximum student limit of ${blockMaxStudents}.`);
-        return; 
-    }
-    // --- CAPACITY CHECK LOGIC END ---
-
-    const assignedAssets = processAssetAssignments(roomAssetAssignmentContainer);
-    if (assignedAssets === null) {
-        return;
-    }
-    // 2. NEW: Room Count Limit Check 
-    // We assume blockMaxStudents is ALSO the desired room count limit.
-    const currentRoomCount = currentRooms.length;
-    
-    // FIX: Clearer error message for the room count limit based on blockCapacity
-    if (currentRoomCount >= blockMaxStudents) {
-        showError(`Cannot add room. The Block Capacity (${blockMaxStudents}) is being used as a Room Count Limit, and the block already has ${currentRoomCount} rooms. You must increase the Block Capacity to add more rooms.`);
-        return;
-    }
-    // The rest of the original code follows:
-    // ... rest of original function body ...
-    
-    const formData = new FormData();
-    formData.append('roomNumber', document.getElementById('room-id').value);
-    formData.append('floor', document.getElementById('room-floor').value);
-    formData.append('capacity', document.getElementById('room-capacity').value);
-    formData.append('assets', JSON.stringify(assignedAssets)); 
-
-    const imageFile = document.getElementById('room-image-file').files[0];
-    if (imageFile) {
-        formData.append('roomImage', imageFile);
-    }
-    
-    const submitBtn = addRoomForm.querySelector('button[type="submit"]');
-
-    try {
-        submitBtn.disabled = true;
-        submitBtn.textContent = 'Saving...';
+    // FIX: Updated to capture maxRooms from the new HTML field
+    addBlockForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const blockName = document.getElementById('block-name').value;
+        const blockKey = document.getElementById('block-key').value.toLowerCase().replace(/\s+/g, '-');
+        const blockTheme = document.getElementById('block-theme').value;
+        // --- START: Capture new fields ---
+        const blockCapacity = parseInt(document.getElementById('block-capacity').value, 10);
+        // Assuming you added an ID of 'block-max-rooms' to your new HTML field:
+        const maxRoomsInput = document.getElementById('block-max-rooms');
+        const maxRooms = maxRoomsInput ? parseInt(maxRoomsInput.value, 10) : 0; // NEW FIELD
         
-        const res = await fetch(`/api/blocks/${blockKey}/rooms`, {
-            method: 'POST',
-            body: formData 
-        });
-
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Add Room';
-
-        const data = await res.json();
-        if (data.success) {
-            await loadHostelData();
-            await loadAssetData();
-            hideModal('add-room-modal');
-            addRoomForm.reset();
-            roomAssetAssignmentContainer.innerHTML = ''; 
-        } else {
-            throw new Error(data.message);
-        }
-    } catch (error) {
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Add Room';
-        alert(`Error adding room: ${error.message}`);
-    }
-});
-// In script.js (~ line 1205)
-// In script.js (~ line 1205)
-addStudentForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    const selectedRoomId = document.getElementById('student-room-id').value;
-    const selectedOption = studentRoomSelect.querySelector(`option[value="${selectedRoomId}"]`);
-    const blockKey = detailView.dataset.currentHostelKey;
-    const block = appState.blocks.find(b => b.blockKey === blockKey);
-
-    // --- START: NEW STUDENT CAPACITY VALIDATION ---
-    if (!selectedRoomId || !selectedOption) {
-        alert('Please select a valid room.');
-        return;
-    }
-    
-    // 1. Room-Level Check: Check if the selected room is full
-    const maxRoomCapacity = parseInt(selectedOption.dataset.maxCapacity, 10);
-    const currentRoomOccupancy = parseInt(selectedOption.dataset.currentOccupancy, 10);
-
-    if (currentRoomOccupancy >= maxRoomCapacity) {
-        showError(`Room ${selectedOption.textContent.split(' ')[0]} is already full (${currentRoomOccupancy}/${maxRoomCapacity}). Please choose another room.`);
-        return; 
-    }
-    
-    // 2. Block-Level Check: Check if the block is full
-    if (block && block.blockCapacity) {
-        let currentBlockOccupancy = 0;
-        // Calculate current total student occupancy across all rooms in this block
-        (block.rooms || []).forEach(room => {
-            currentBlockOccupancy += (room.students ? room.students.length : 0);
-        });
-const projectedOccupancy = currentBlockOccupancy + 1; // +1 for the student being added
-        const blockMaxStudents = block.blockCapacity;
-        // FIX: Clearer error message for the block-level student limit
-        if (projectedOccupancy > blockMaxStudents) {
-            showError(`Cannot add student. The block is full. Current students: ${currentBlockOccupancy}. Block limit (Block Capacity): ${blockMaxStudents}.`);
+        if (!blockName || !blockKey || isNaN(blockCapacity) || blockCapacity < 0 || isNaN(maxRooms) || maxRooms < 0) {
+            showError("Please enter valid positive values for Block Capacity and Max Rooms.");
             return;
         }
-    }
-    // --- END: NEW STUDENT CAPACITY VALIDATION ---
+        // --- END: Capture new fields ---
 
-    const assignedAssets = processAssetAssignments(studentAssetAssignmentContainer);
-    if (assignedAssets === null) {
-        return; 
-    }
-     
-    const formData = new FormData(addStudentForm);
-    formData.append('blockKey', blockKey);
-    formData.append('assets', JSON.stringify(assignedAssets)); 
-    
-    // We explicitly set the correct roomId using the value from the select
-    formData.set('roomId', selectedRoomId);
-
-    try {
-        const submitBtn = addStudentForm.querySelector('button[type="submit"]');
-        submitBtn.disabled = true;
-        submitBtn.textContent = 'Uploading...';
-         
-        const res = await fetch('/api/students', {
-            method: 'POST',
-            body: formData
-        });
-
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Add Student';
-
-        const data = await res.json();
-        if (data.success) {
-            await loadHostelData();
-            await loadAssetData();
-            hideModal('add-student-modal');
-            addStudentForm.reset();
-            studentAssetAssignmentContainer.innerHTML = ''; 
-            // Re-render detail view to update UI immediately
-            renderDetailView(blockKey); 
-        } else {
-            throw new Error(data.message);
+        try {
+            const res = await fetch('/api/blocks', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                // --- Send new fields in the body ---
+                body: JSON.stringify({ blockName, blockKey, blockTheme, blockCapacity, maxRooms }) 
+            });
+            const data = await res.json();
+            if (data.success) {
+                await loadHostelData();
+                hideModal('add-block-modal');
+                addBlockForm.reset();
+            } else {
+                throw new Error(data.message);
+            }
+        } catch (error) {
+            alert(`Error adding block: ${error.message}`);
         }
-    } catch (error) {
-        alert(`Error adding student: ${error.message}`);
-        const submitBtn = addStudentForm.querySelector('button[type="submit"]');
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Add Student';
+    });
+
+    // Add this function to update the room selector before opening the Add Student Modal
+    function updateStudentRoomSelect() {
+        studentRoomSelect.innerHTML = '<option value="" disabled selected>-- Select an available room --</option>';
+        
+        const blockKey = detailView.dataset.currentHostelKey;
+        const currentBlock = appState.blocks.find(b => b.blockKey === blockKey);
+
+        if (!currentBlock || !currentBlock.rooms) {
+            studentRoomSelect.innerHTML = '<option value="" disabled>No rooms in this block</option>';
+            return;
+        }
+
+        currentBlock.rooms
+            .sort((a, b) => a.roomNumber.localeCompare(b.roomNumber, undefined, { numeric: true, sensitivity: 'base' }))
+            .forEach(room => {
+                const currentOccupancy = room.students ? room.students.length : 0;
+                const maxCapacity = room.capacity || 0;
+                const availableSlots = maxCapacity - currentOccupancy;
+
+                if (availableSlots > 0) {
+                    studentRoomSelect.innerHTML += `
+                        <option value="${room._id}" data-max-capacity="${maxCapacity}" data-current-occupancy="${currentOccupancy}">
+                            ${room.roomNumber} (${currentOccupancy}/${maxCapacity}) - ${availableSlots} slots left
+                        </option>
+                    `;
+                }
+            });
+
+        if (studentRoomSelect.options.length === 1) { 
+            studentRoomSelect.innerHTML = '<option value="" disabled selected>No available rooms found</option>';
+        }
     }
-});
+
+    // FIX: Updated Room Add Validation to use block.maxRooms and block.blockCapacity separately
+    addRoomForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        // --- SETUP: Block details ---
+        const blockKey = detailView.dataset.currentHostelKey;
+        const block = appState.blocks.find(b => b.blockKey === blockKey);
+        const newRoomCapacity = parseInt(document.getElementById('room-capacity').value, 10);
+
+        if (!blockKey || !block) {
+            alert('Error: No block selected.');
+            return;
+        }
+
+        const currentRooms = block.rooms || [];
+        // Use two separate limits from the block object
+        const blockMaxStudents = block.blockCapacity || 999999;
+        const blockMaxRooms = block.maxRooms || 999999; // NEW: Use maxRooms field
+
+        // 1. Student Capacity Check (Total of all rooms must be less than blockCapacity)
+        const currentRoomsTotalStudentCapacity = currentRooms.reduce((sum, room) => sum + (room.capacity || 0), 0);
+        const projectedTotalStudentCapacity = currentRoomsTotalStudentCapacity + newRoomCapacity;
+
+        if (projectedTotalStudentCapacity > blockMaxStudents) {
+            showError(`Cannot add room. Projected total student capacity (${projectedTotalStudentCapacity}) exceeds the Block's maximum student limit of ${blockMaxStudents}.`);
+            return; 
+        }
+
+        // 2. Room Count Limit Check (Total number of rooms must be less than maxRooms)
+        const currentRoomCount = currentRooms.length;
+        
+        if (currentRoomCount >= blockMaxRooms) { 
+            showError(`Cannot add room. The block is limited to ${blockMaxRooms} rooms, and it already has ${currentRoomCount} rooms.`);
+            return;
+        }
+        // --- VALIDATION END ---
+
+        const assignedAssets = processAssetAssignments(roomAssetAssignmentContainer);
+        if (assignedAssets === null) {
+            return;
+        }
+        
+        const formData = new FormData();
+        formData.append('roomNumber', document.getElementById('room-id').value);
+        formData.append('floor', document.getElementById('room-floor').value);
+        formData.append('capacity', document.getElementById('room-capacity').value);
+        formData.append('assets', JSON.stringify(assignedAssets)); 
+
+        const imageFile = document.getElementById('room-image-file').files[0];
+        if (imageFile) {
+            formData.append('roomImage', imageFile);
+        }
+        
+        const submitBtn = addRoomForm.querySelector('button[type="submit"]');
+
+        try {
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Saving...';
+            
+            const res = await fetch(`/api/blocks/${blockKey}/rooms`, {
+                method: 'POST',
+                body: formData 
+            });
+
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Add Room';
+
+            const data = await res.json();
+            if (data.success) {
+                await loadHostelData();
+                await loadAssetData();
+                hideModal('add-room-modal');
+                addRoomForm.reset();
+                roomAssetAssignmentContainer.innerHTML = ''; 
+            } else {
+                throw new Error(data.message);
+            }
+        } catch (error) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Add Room';
+            alert(`Error adding room: ${error.message}`);
+        }
+    });
+
+    // FIX: Updated Student Add Validation to use block.blockCapacity
+    addStudentForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const selectedRoomId = document.getElementById('student-room-id').value;
+        const selectedOption = studentRoomSelect.querySelector(`option[value="${selectedRoomId}"]`);
+        const blockKey = detailView.dataset.currentHostelKey;
+        const block = appState.blocks.find(b => b.blockKey === blockKey);
+
+        // --- START: NEW STUDENT CAPACITY VALIDATION ---
+        if (!selectedRoomId || !selectedOption) {
+            alert('Please select a valid room.');
+            return;
+        }
+        
+        // 1. Room-Level Check: Check if the selected room is full
+        const maxRoomCapacity = parseInt(selectedOption.dataset.maxCapacity, 10);
+        const currentRoomOccupancy = parseInt(selectedOption.dataset.currentOccupancy, 10);
+
+        if (currentRoomOccupancy >= maxRoomCapacity) {
+            showError(`Room ${selectedOption.textContent.split(' ')[0]} is already full (${currentRoomOccupancy}/${maxRoomCapacity}). Please choose another room.`);
+            return; 
+        }
+        
+        // 2. Block-Level Check: Check if the block is full (using blockCapacity)
+        if (block && block.blockCapacity) {
+            let currentBlockOccupancy = 0;
+            // Calculate current total student occupancy across all rooms in this block
+            (block.rooms || []).forEach(room => {
+                currentBlockOccupancy += (room.students ? room.students.length : 0);
+            });
+            const projectedOccupancy = currentBlockOccupancy + 1; // +1 for the student being added
+            const blockMaxStudents = block.blockCapacity;
+            
+            if (projectedOccupancy > blockMaxStudents) {
+                showError(`Cannot add student. The block is full. Current students: ${currentBlockOccupancy}. Block limit (Block Capacity): ${blockMaxStudents}.`);
+                return;
+            }
+        }
+        // --- END: NEW STUDENT CAPACITY VALIDATION ---
+
+        const assignedAssets = processAssetAssignments(studentAssetAssignmentContainer);
+        if (assignedAssets === null) {
+            return; 
+        }
+        
+        const formData = new FormData(addStudentForm);
+        formData.append('blockKey', blockKey);
+        formData.append('assets', JSON.stringify(assignedAssets)); 
+        
+        // We explicitly set the correct roomId using the value from the select
+        formData.set('roomId', selectedRoomId);
+
+        try {
+            const submitBtn = addStudentForm.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Uploading...';
+            
+            const res = await fetch('/api/students', {
+                method: 'POST',
+                body: formData
+            });
+
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Add Student';
+
+            const data = await res.json();
+            if (data.success) {
+                await loadHostelData();
+                await loadAssetData();
+                hideModal('add-student-modal');
+                addStudentForm.reset();
+                studentAssetAssignmentContainer.innerHTML = ''; 
+                // Re-render detail view to update UI immediately
+                renderDetailView(blockKey); 
+            } else {
+                throw new Error(data.message);
+            }
+        } catch (error) {
+            alert(`Error adding student: ${error.message}`);
+            const submitBtn = addStudentForm.querySelector('button[type="submit"]');
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Add Student';
+        }
+    });
+
     addEventForm.addEventListener('submit', (e) => {
         e.preventDefault();
         const newEvent = {
@@ -1962,14 +1974,13 @@ const projectedOccupancy = currentBlockOccupancy + 1; // +1 for the student bein
         showModal('add-room-modal');
     });
 
-    // In script.js (~ line 1334)
 showAddStudentModalBtn.addEventListener('click', () => {
     // 1. Refresh the room selector based on current capacity
     updateStudentRoomSelect(); 
     
     // 2. Reset and show asset assignment form
-    studentAssetAssignmentContainer.innerHTML = ''; 
-    addAssetAssignmentRow(studentAssetAssignmentContainer); 
+    studentAssetAssignmentContainer.innerHTML = ''; 
+    addAssetAssignmentRow(studentAssetAssignmentContainer); 
     
     // 3. Show modal
     showModal('add-student-modal');

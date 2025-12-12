@@ -232,8 +232,11 @@ app.get("/api/blocks", async (req, res) => {
 });
 app.post("/api/blocks", async (req, res) => {
     try {
-        const { blockName, blockKey, blockTheme } = req.body;
-        if (!blockName || !blockKey || !blockTheme)
+        // Capture the new field
+        const { blockName, blockKey, blockTheme, blockCapacity, maxRooms } = req.body; 
+        
+        // Update validation
+        if (!blockName || !blockKey || !blockTheme || !blockCapacity || !maxRooms)
             return res.status(400).json({ success: false, message: "All fields are required" });
 
         const existing = await Block.findOne({ blockKey: blockKey });
@@ -244,6 +247,8 @@ app.post("/api/blocks", async (req, res) => {
             blockName,
             blockKey: blockKey,
             blockTheme: blockTheme,
+            blockCapacity: parseInt(blockCapacity, 10), // Save student capacity
+            maxRooms: parseInt(maxRooms, 10), // Save new max rooms limit
             rooms: []
         });
         await newBlock.save();

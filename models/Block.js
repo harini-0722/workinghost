@@ -6,7 +6,9 @@ const blockSchema = new mongoose.Schema(
     blockKey: { type: String, required: true, unique: true },
     blockTheme: { type: String, required: true },
     
-    blockCapacity: { type: Number, required: true, default: 0 }, // Correctly defined
+    blockCapacity: { type: Number, required: true, default: 0 }, // Max Students Capacity
+    // --- NEW FIELD FOR ROOM LIMIT ---
+    maxRooms: { type: Number, required: true, default: 0 },
 
     rooms: [{
         type: mongoose.Schema.Types.ObjectId,
