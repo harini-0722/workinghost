@@ -95,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const adminLogoutBtn = document.getElementById('admin-logout-btn'); 
     
     // Block Modal Specific Elements (for Edit/Add toggle)
-    const blockModalTitle = document.getElementById('block-modal-title'); // Assuming you added this ID in admin.html for the title
+    const blockModalTitle = document.getElementById('block-modal-title'); // <-- FIX ASSUMPTION: This ID must be in admin.html
     const blockIdInput = document.getElementById('block-id');
     const blockKeyInput = document.getElementById('block-key');
     const blockCapacityInput = document.getElementById('block-capacity');
@@ -1112,7 +1112,7 @@ function renderLeaveView() {
         }
         
         statTotalCapacity.textContent = grandTotalCapacity;
-        const occupancyPercent = grandTotalCapacity > 0 ? (grandTotalStudents / grandTotalCapacity * 100) : 0;
+        const occupancyPercent = grandTotalStudents > 0 ? (grandTotalStudents / grandTotalCapacity * 100) : 0;
         statOccupancyPercent.textContent = occupancyPercent.toFixed(1) + '%';
         statOccupancyLabel.textContent = occupancyPercent.toFixed(0) + '%';
         statOccupancyRing.style.strokeDashoffset = 100 - occupancyPercent;
@@ -1151,7 +1151,7 @@ function renderLeaveView() {
     
     // Function to reset the modal state for a new block entry
     function prepareBlockModalForAdd() {
-        document.getElementById('block-modal-title').textContent = 'Add New Hostel Block';
+        blockModalTitle.textContent = 'Add New Hostel Block'; // <--- ERROR FIX
         blockSubmitBtn.textContent = 'Save Block';
         blockIdInput.value = ''; // Clear ID to signify ADD mode
         addBlockForm.reset();
@@ -1919,33 +1919,6 @@ function renderLeaveView() {
 
     // --- NEW: ROOM DELETION AND REASSIGNMENT LOGIC ---
     
-    // Helper function to dynamically generate room options excluding the current room
-    function getAvailableRoomOptionsHTML(availableRooms, currentRoomId) {
-        let optionsHTML = '<option value="" disabled selected>Select a new room...</option>';
-        
-        availableRooms
-            .filter(room => room._id !== currentRoomId) // Exclude the room being deleted
-            .sort((a, b) => a.roomNumber.localeCompare(b.roomNumber, undefined, { numeric: true, sensitivity: 'base' }))
-            .forEach(room => {
-                const current = room.students ? room.students.length : 0;
-                const max = room.capacity;
-                const availableSlots = max - current;
-
-                if (availableSlots > 0) {
-                    optionsHTML += `
-                        <option value="${room._id}" data-max="${max}" data-current="${current}">
-                            ${room.roomNumber} (${current}/${max}, ${availableSlots} free)
-                        </option>
-                    `;
-                }
-            });
-        
-        if (optionsHTML === '<option value="" disabled selected>Select a new room...</option>') {
-            return '<option value="" disabled>NO AVAILABLE ROOMS</option>';
-        }
-        return optionsHTML;
-    }
-    
     // Function to check if all students have been reassigned in the modal
     function checkReassignmentStatus() {
         // Count elements that do *not* have the 'reassigned' class
@@ -2066,7 +2039,7 @@ function renderLeaveView() {
         finalDeleteRoomBtn.disabled = true;
         finalDeleteRoomBtn.textContent = `Reassign ${students.length} Student(s) to Proceed`;
 
-        if (getAvailableRoomOptionsHTML(availableRooms, roomToDelete._id) === '<option value="" disabled>NO AVAILABLE ROOMS</option>') {
+        if (getAvailableRoomOptionsHTML(availableRooms, roomToDelete._id).includes('NO AVAILABLE ROOMS')) {
              reassignStudentListContainer.innerHTML = `<p class="text-red-500 font-semibold p-4">❌ No available rooms in the block to reassign students. You must add a new room before deleting this one.</p>`;
              finalDeleteRoomBtn.disabled = true;
              finalDeleteRoomBtn.textContent = `Add Available Room First`;
