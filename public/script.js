@@ -1102,7 +1102,7 @@ function renderLeaveView() {
 
         rooms.forEach(room => {
             const current = room.students ? room.students.length : 0;
-            const max = room.capacity; hostelCapacity += max; hostelOccupancy += current;
+            const max = room.capacity;  hostelOccupancy += current;
             const status = getStatus(current, max); const percent = max > 0 ? (current / max) * 100 : 0;
             const studentNames = (room.students && room.students.length > 0) ? room.students.map(s => s.name).join(', ') : 'None';
             const imageUrl = room.imageUrl || `https://via.placeholder.com/300x150/e0e0e0/909090?text=${room.roomNumber}`;
@@ -1127,7 +1127,11 @@ function renderLeaveView() {
             if (status.text === 'Available') { studentRoomSelect.innerHTML += `<option value="${room._id}">${room.roomNumber} (${current}/${max})</option>`; }
         });
         if (rooms.length === 0) { roomListContainer.innerHTML = '<p class="text-gray-500 text-center col-span-full">No rooms added to this block yet.</p>'; }
-        detailStatCapacity.textContent = hostelCapacity; detailStatOccupancy.textContent = hostelOccupancy; detailStatAvailable.textContent = hostelCapacity - hostelOccupancy;
+       const displayedCapacity = block.blockCapacity || hostelCapacity; // Use set limit, fallback to sum of rooms
+    
+    detailStatCapacity.textContent = displayedCapacity; 
+    detailStatOccupancy.textContent = hostelOccupancy; 
+    detailStatAvailable.textContent = displayedCapacity - hostelOccupancy;
         roomSearchInput.value = ''; roomFilterSelect.value = 'All';
     }
     
@@ -1606,24 +1610,42 @@ addRoomForm.addEventListener('submit', async (e) => {
     }
 });
 // In script.js (~ line 1205)
+// In script.js (~ line 1205)
 addStudentForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     
     const selectedRoomId = document.getElementById('student-room-id').value;
     const selectedOption = studentRoomSelect.querySelector(`option[value="${selectedRoomId}"]`);
+    const blockKey = detailView.dataset.currentHostelKey;
+    const block = appState.blocks.find(b => b.blockKey === blockKey);
 
     // --- START: NEW STUDENT CAPACITY VALIDATION ---
     if (!selectedRoomId || !selectedOption) {
         alert('Please select a valid room.');
         return;
     }
+    
+    // 1. Room-Level Check: Check if the selected room is full
+    const maxRoomCapacity = parseInt(selectedOption.dataset.maxCapacity, 10);
+    const currentRoomOccupancy = parseInt(selectedOption.dataset.currentOccupancy, 10);
 
-    const maxCapacity = parseInt(selectedOption.dataset.maxCapacity, 10);
-    const currentOccupancy = parseInt(selectedOption.dataset.currentOccupancy, 10);
-
-    if (currentOccupancy >= maxCapacity) {
-        showError(`Room ${selectedOption.textContent.split(' ')[0]} is already full (${currentOccupancy}/${maxCapacity}). Please choose another room.`);
+    if (currentRoomOccupancy >= maxRoomCapacity) {
+        showError(`Room ${selectedOption.textContent.split(' ')[0]} is already full (${currentRoomOccupancy}/${maxRoomCapacity}). Please choose another room.`);
         return; 
+    }
+    
+    // 2. Block-Level Check: Check if the block is full
+    if (block && block.blockCapacity) {
+        let currentBlockOccupancy = 0;
+        // Calculate current total student occupancy across all rooms in this block
+        (block.rooms || []).forEach(room => {
+            currentBlockOccupancy += (room.students ? room.students.length : 0);
+        });
+
+        if (currentBlockOccupancy >= block.blockCapacity) {
+            showError(`Cannot add student. The block (${block.blockName}) is already at its maximum student capacity of ${block.blockCapacity}.`);
+            return;
+        }
     }
     // --- END: NEW STUDENT CAPACITY VALIDATION ---
 
@@ -1632,7 +1654,6 @@ addStudentForm.addEventListener('submit', async (e) => {
         return; 
     }
      
-    const blockKey = detailView.dataset.currentHostelKey;
     const formData = new FormData(addStudentForm);
     formData.append('blockKey', blockKey);
     formData.append('assets', JSON.stringify(assignedAssets)); 
@@ -1661,7 +1682,7 @@ addStudentForm.addEventListener('submit', async (e) => {
             addStudentForm.reset();
             studentAssetAssignmentContainer.innerHTML = ''; 
             // Re-render detail view to update UI immediately
-            renderDetailView(blockKey); 
+            renderDetailView(blockKey); 
         } else {
             throw new Error(data.message);
         }
@@ -1672,7 +1693,6 @@ addStudentForm.addEventListener('submit', async (e) => {
         submitBtn.textContent = 'Add Student';
     }
 });
-
     addEventForm.addEventListener('submit', (e) => {
         e.preventDefault();
         const newEvent = {

@@ -6,11 +6,8 @@ const blockSchema = new mongoose.Schema(
     blockKey: { type: String, required: true, unique: true },
     blockTheme: { type: String, required: true },
     
-    // --- NEW FIELD ADDED HERE ---
-    blockCapacity: { type: Number, required: true, default: 0 },
+    blockCapacity: { type: Number, required: true, default: 0 }, // Correctly defined
 
-    // This is the "drawer" that will hold your rooms
-    // It is VERY important for Step 2
     rooms: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Room' 
