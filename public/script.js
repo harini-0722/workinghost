@@ -16,6 +16,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let currentRoomData = null; 
 
+    // --- NEW: Global state for reassignment/edit blocks ---
+    let reassignData = {
+        blockKey: null,
+        roomId: null,
+        studentsToMove: [],
+        availableRooms: []
+    }; 
+    // --- END NEW STATE ---
+
     // --- 2. DOM Elements ---
     const dashboardView = document.getElementById('dashboard-view');
     const detailView = document.getElementById('detail-view');
@@ -85,6 +94,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const addEventForm = document.getElementById('add-event-form');
     const adminLogoutBtn = document.getElementById('admin-logout-btn'); 
     
+    // Block Modal Specific Elements (for Edit/Add toggle)
+    const blockModalTitle = document.getElementById('block-modal-title'); // Assuming you added this ID in admin.html for the title
+    const blockIdInput = document.getElementById('block-id');
+    const blockKeyInput = document.getElementById('block-key');
+    const blockCapacityInput = document.getElementById('block-capacity');
+    const blockMaxRoomsInput = document.getElementById('block-max-rooms');
+    const blockSubmitBtn = document.getElementById('block-submit-btn');
+
     // Room Detail Modal Elements
     const roomDetailsModal = document.getElementById('room-details-modal');
     const modalRoomTitle = document.getElementById('modal-room-title');
@@ -97,6 +114,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalOccupantContainer = document.getElementById('modal-occupant-container');
     const modalIssuesContainer = document.getElementById('modal-issues-container');
     const modalDeleteRoomBtn = document.getElementById('modal-delete-room-btn'); 
+
+    // --- NEW REASSIGNMENT MODAL ELEMENTS ---
+    const reassignStudentsModal = document.getElementById('reassign-students-modal');
+    const reassignModalRoomNumber = document.getElementById('reassign-modal-room-number');
+    const reassignModalStudentCount = document.getElementById('reassign-modal-student-count');
+    const reassignStudentListContainer = document.getElementById('reassign-student-list-container');
+    const finalDeleteRoomBtn = document.getElementById('final-delete-room-btn');
+    // --- END NEW REASSIGNMENT MODAL ELEMENTS ---
 
     // Club Activity Elements
     const clubActivityContainer = document.getElementById('club-activity-container');
@@ -115,6 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const roomAssetAssignmentContainer = document.getElementById('room-asset-assignment-container');
     const addStudentAssetRowBtn = document.getElementById('add-student-asset-row-btn');
     const studentAssetAssignmentContainer = document.getElementById('student-asset-assignment-container');
+
 
     // --- 3. THEME/HELPER DATA & UTILITY FUNCTIONS ---
     const themes = { 
@@ -1058,11 +1084,16 @@ function renderLeaveView() {
           // Update block card HTML to display both max rooms and max students
             const blockHTML = `
                 <div class="bg-white rounded-lg shadow-md overflow-hidden border-l-8 ${theme.border} relative transition-all duration-300 hover:shadow-xl hover:scale-105">
-                    <button class="remove-block-btn absolute top-3 right-3 p-1 text-red-500 hover:bg-red-100 rounded-full transition-colors duration-200 z-10" data-block-id="${block._id}" data-block-name="${block.blockName}" title="Delete Block">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                    </button>
+                    <div class="absolute top-3 right-3 flex space-x-2">
+                        <button class="edit-block-btn p-1 text-blue-500 hover:bg-blue-100 rounded-full transition-colors duration-200 z-10" data-block-id="${block._id}" title="Edit Block">
+                            <hero-icon-solid name="pencil-square" class="w-6 h-6"></hero-icon-solid>
+                        </button>
+                        <button class="remove-block-btn p-1 text-red-500 hover:bg-red-100 rounded-full transition-colors duration-200 z-10" data-block-id="${block._id}" data-block-name="${block.blockName}" title="Delete Block">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </button>
+                    </div>
                     <a href="#" class="block-link block hover:bg-gray-50 p-6" data-hostel-key="${block.blockKey}">
                         <div class="flex items-center mb-4">
                             <div class="p-3 ${theme.bg} rounded-lg"><hero-icon-solid name="${theme.icon}" class="h-6 w-6 ${theme.text}"></hero-icon-solid></div>
@@ -1089,6 +1120,42 @@ function renderLeaveView() {
         statFeesPending.textContent = `${totalPendingFees} Pending`;
         updateVisitorCount(); 
         updateLeaveCount(); // NEW: Update the leave count stat
+    }
+
+    // Function to set modal state for editing an existing block
+    async function prepareBlockModalForEdit(blockId) {
+        try {
+            const res = await fetch(`/api/blocks/${blockId}`);
+            if (!res.ok) throw new Error('Failed to fetch block details');
+            const data = await res.json();
+            const block = data.block;
+
+            document.getElementById('block-modal-title').textContent = 'Edit Hostel Block: ' + block.blockName;
+            blockSubmitBtn.textContent = 'Update Block';
+            blockIdInput.value = block._id;
+            
+            document.getElementById('block-name').value = block.blockName;
+            blockKeyInput.value = block.blockKey;
+            blockCapacityInput.value = block.blockCapacity;
+            blockMaxRoomsInput.value = block.maxRooms; // Set maxRooms
+            document.getElementById('block-theme').value = block.blockTheme;
+            
+            blockKeyInput.disabled = true; // Prevent changing the unique key/slug
+            
+            showModal('add-block-modal');
+
+        } catch (error) {
+            showError('Error loading block data for editing: ' + error.message);
+        }
+    }
+    
+    // Function to reset the modal state for a new block entry
+    function prepareBlockModalForAdd() {
+        document.getElementById('block-modal-title').textContent = 'Add New Hostel Block';
+        blockSubmitBtn.textContent = 'Save Block';
+        blockIdInput.value = ''; // Clear ID to signify ADD mode
+        addBlockForm.reset();
+        blockKeyInput.disabled = false; // Allow key editing for new blocks
     }
 
     function renderDetailView(blockKey) {
@@ -1360,6 +1427,7 @@ function renderLeaveView() {
         visitorsView.classList.add('hidden');
         complaintsView.classList.add('hidden');
         leaveView.classList.add('hidden'); // NEW: Hide leave view
+        reassignStudentsModal.classList.add('hidden'); // NEW: Hide reassign modal
     }
 
     document.addEventListener('click', (e) => {
@@ -1473,45 +1541,48 @@ function renderLeaveView() {
     }
 
     // --- 7. FORM & DATA HANDLERS ---
-
-    // FIX: Updated to capture maxRooms from the new HTML field
+    
+    // Unified Block Form Submission (handles both ADD and EDIT)
     addBlockForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const blockName = document.getElementById('block-name').value;
-        const blockKey = document.getElementById('block-key').value.toLowerCase().replace(/\s+/g, '-');
-        const blockTheme = document.getElementById('block-theme').value;
-        // --- START: Capture new fields ---
-        const blockCapacity = parseInt(document.getElementById('block-capacity').value, 10);
-        // Assuming you added an ID of 'block-max-rooms' to your new HTML field:
-        const maxRoomsInput = document.getElementById('block-max-rooms');
-        const maxRooms = maxRoomsInput ? parseInt(maxRoomsInput.value, 10) : 0; // NEW FIELD
         
-        if (!blockName || !blockKey || isNaN(blockCapacity) || blockCapacity < 0 || isNaN(maxRooms) || maxRooms < 0) {
-            showError("Please enter valid positive values for Block Capacity and Max Rooms.");
+        const isEditMode = !!blockIdInput.value;
+        const blockId = blockIdInput.value;
+        const blockName = document.getElementById('block-name').value;
+        const blockKey = document.getElementById('block-key').value;
+        const blockTheme = document.getElementById('block-theme').value;
+        const blockCapacity = parseInt(document.getElementById('block-capacity').value, 10);
+        const maxRooms = parseInt(document.getElementById('block-max-rooms').value, 10);
+        
+        if (isNaN(blockCapacity) || blockCapacity < 1 || isNaN(maxRooms) || maxRooms < 1) {
+            showError("Please enter valid positive values for Block Capacity (Max Students) and Maximum Rooms Allowed.");
             return;
         }
-        // --- END: Capture new fields ---
 
+        const method = isEditMode ? 'PATCH' : 'POST';
+        const url = isEditMode ? `/api/blocks/${blockId}` : '/api/blocks';
+        
         try {
-            const res = await fetch('/api/blocks', {
-                method: 'POST',
+            const res = await fetch(url, {
+                method: method,
                 headers: { 'Content-Type': 'application/json' },
-                // --- Send new fields in the body ---
-                body: JSON.stringify({ blockName, blockKey, blockTheme, blockCapacity, maxRooms }) 
+                body: JSON.stringify({ blockName, blockKey, blockTheme, blockCapacity, maxRooms })
             });
+
             const data = await res.json();
             if (data.success) {
+                showSuccess(data.message);
                 await loadHostelData();
                 hideModal('add-block-modal');
-                addBlockForm.reset();
+                prepareBlockModalForAdd(); // Reset state for next use
             } else {
                 throw new Error(data.message);
             }
         } catch (error) {
-            alert(`Error adding block: ${error.message}`);
+            alert(`Error ${isEditMode ? 'updating' : 'adding'} block: ${error.message}`);
         }
     });
-
+    
     // Add this function to update the room selector before opening the Add Student Modal
     function updateStudentRoomSelect() {
         studentRoomSelect.innerHTML = '<option value="" disabled selected>-- Select an available room --</option>';
@@ -1846,72 +1917,225 @@ function renderLeaveView() {
         }
     });
 
+    // --- NEW: ROOM DELETION AND REASSIGNMENT LOGIC ---
+    
+    // Function to check if all students have been reassigned in the modal
+    function checkReassignmentStatus() {
+        // Count elements that do *not* have the 'reassigned' class
+        const remainingStudents = reassignStudentListContainer.querySelectorAll('.reassign-row:not(.reassigned)').length;
+        reassignModalStudentCount.textContent = remainingStudents; 
+
+        if (remainingStudents === 0) {
+            finalDeleteRoomBtn.disabled = false;
+            finalDeleteRoomBtn.textContent = `Confirm Delete Empty Room`;
+        } else {
+            finalDeleteRoomBtn.disabled = true;
+            finalDeleteRoomBtn.textContent = `Reassign ${remainingStudents} Student(s) to Proceed`;
+        }
+    }
+
+    // Function to handle the actual reassignment of a student
+    async function handleStudentReassignment(studentId, oldRoomId, newRoomId, moveBtn, studentRow) {
+        try {
+            moveBtn.disabled = true;
+            moveBtn.textContent = 'Moving...';
+
+            const res = await fetch(`/api/students/reassign/${studentId}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ newRoomId, oldRoomId })
+            });
+            
+            const data = await res.json();
+            
+            if (data.success) {
+                // Update UI on success
+                studentRow.classList.add('reassigned');
+                studentRow.classList.remove('border-yellow-300');
+                studentRow.classList.add('border-green-300');
+                studentRow.querySelector('.reassign-student-btn')?.remove(); 
+                studentRow.querySelector('.new-room-select').disabled = true;
+                studentRow.querySelector('.col-span-2:last-child').innerHTML = 
+                    `<span class="text-sm font-semibold text-green-700">✅ Moved!</span>`;
+                
+                showSuccess(data.message);
+                await loadHostelData(); // Reload data to update occupancy counts
+                checkReassignmentStatus(); // Check if room is now empty
+            } else {
+                // Re-enable button on failure
+                moveBtn.disabled = false;
+                moveBtn.textContent = 'Move';
+                throw new Error(data.message);
+            }
+
+        } catch (error) {
+            showError(`Reassignment failed: ${error.message}`);
+        }
+    }
+
+    // Function to handle the final room deletion after students are moved (or if empty)
+    async function handleFinalRoomDeletion(blockKey, roomId) {
+        // Find the current room data to display the room number correctly in the confirmation
+        const block = appState.blocks.find(b => b.blockKey === blockKey);
+        const room = block?.rooms.find(r => r._id === roomId);
+        const roomNum = room?.roomNumber || 'Unknown Room';
+
+        if (!confirm(`Are you absolutely sure you want to delete Room ${roomNum}?\nThis action is irreversible.`)) {
+            // If user cancels during final delete, re-show the reassignment modal if it's not the initial modal
+            if (!reassignStudentsModal.classList.contains('hidden')) {
+                 finalDeleteRoomBtn.disabled = false;
+                 finalDeleteRoomBtn.textContent = 'Confirm Delete Empty Room';
+            } else {
+                // If cancellation happened outside the reassignment modal (i.e., when room was empty initially)
+                // just return to dashboard.
+            }
+            return;
+        }
+        
+        // Disable button while deleting
+        const deleteButtonToDisable = reassignStudentsModal.classList.contains('hidden') ? modalDeleteRoomBtn : finalDeleteRoomBtn;
+        deleteButtonToDisable.disabled = true;
+        deleteButtonToDisable.textContent = 'Deleting...';
+        
+        try {
+            const res = await fetch(`/api/blocks/${blockKey}/rooms/${roomId}`, {
+                method: 'DELETE'
+            });
+            const data = await res.json();
+            
+            if (data.success) {
+                showSuccess(data.message);
+                await loadHostelData(); 
+                await loadAssetData(); 
+                hideModal('reassign-students-modal');
+                hideModal('room-details-modal'); // Ensure the detail modal is closed too
+            } else {
+                deleteButtonToDisable.disabled = false;
+                deleteButtonToDisable.textContent = 'Confirm Delete Empty Room';
+                throw new Error(data.message);
+            }
+        } catch (error) {
+            deleteButtonToDisable.disabled = false;
+            deleteButtonToDisable.textContent = 'Confirm Delete Empty Room';
+            alert(`Error deleting room: ${error.message}`);
+        }
+    }
+
+    // Function to populate and show the reassignment modal
+    function prepareReassignmentModal(block, roomToDelete) {
+        const students = roomToDelete.students || [];
+        const availableRooms = block.rooms || [];
+        
+        reassignData = {
+            blockKey: block.blockKey,
+            roomId: roomToDelete._id,
+            studentsToMove: students,
+            availableRooms: availableRooms
+        };
+
+        reassignModalRoomNumber.textContent = roomToDelete.roomNumber;
+        reassignModalStudentCount.textContent = students.length;
+        reassignStudentListContainer.innerHTML = '';
+        finalDeleteRoomBtn.disabled = true;
+        finalDeleteRoomBtn.textContent = `Reassign ${students.length} Student(s) to Proceed`;
+
+        if (getAvailableRoomOptionsHTML(availableRooms, roomToDelete._id) === '<option value="" disabled>NO AVAILABLE ROOMS</option>') {
+             reassignStudentListContainer.innerHTML = `<p class="text-red-500 font-semibold p-4">❌ No available rooms in the block to reassign students. You must add a new room before deleting this one.</p>`;
+             finalDeleteRoomBtn.disabled = true;
+             finalDeleteRoomBtn.textContent = `Add Available Room First`;
+        } else {
+            students.forEach(student => {
+                const studentRow = document.createElement('div');
+                studentRow.className = 'reassign-row grid grid-cols-6 gap-3 items-center bg-white p-3 rounded shadow-sm border border-yellow-300';
+                studentRow.dataset.studentId = student._id;
+                studentRow.innerHTML = `
+                    <div class="col-span-2 font-medium text-gray-800 truncate" title="${student.name}">${student.name}</div>
+                    <div class="col-span-2">
+                        <select class="new-room-select w-full p-2 border rounded text-sm bg-gray-50" data-old-room-id="${roomToDelete._id}">
+                            ${getAvailableRoomOptionsHTML(availableRooms, roomToDelete._id)}
+                        </select>
+                    </div>
+                    <div class="col-span-2 flex justify-end">
+                        <button class="reassign-student-btn px-3 py-1 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700 disabled:bg-gray-400" disabled>
+                            Move
+                        </button>
+                    </div>
+                `;
+                reassignStudentListContainer.appendChild(studentRow);
+            });
+
+            // Add event listeners to the new select elements to enable the Move button
+            reassignStudentListContainer.querySelectorAll('.new-room-select').forEach(select => {
+                select.addEventListener('change', (e) => {
+                    const row = e.target.closest('.reassign-row');
+                    const moveBtn = row.querySelector('.reassign-student-btn');
+                    moveBtn.disabled = !e.target.value;
+                });
+            });
+        }
+        
+        showModal('reassign-students-modal');
+        hideModal('room-details-modal');
+    }
+
+    // --- INTERCEPT ORIGINAL modalDeleteRoomBtn CLICK ---
     modalDeleteRoomBtn.addEventListener('click', async () => {
         if (!currentRoomData || !currentRoomData._id) return;
+        
         const blockKey = detailView.dataset.currentHostelKey;
-        const roomId = currentRoomData._id;
+        const block = appState.blocks.find(b => b.blockKey === blockKey);
+        
+        // Find the current room status in the global state (it should be up-to-date from loadHostelData)
+        const currentRoom = block.rooms.find(r => r._id === currentRoomData._id);
 
-        if (confirm(`Are you sure you want to delete room ${currentRoomData.roomNumber}?\nThis will also remove all students in it and return all assets to stock.`)) {
-            try {
-                const res = await fetch(`/api/blocks/${blockKey}/rooms/${roomId}`, {
-                    method: 'DELETE'
-                });
-                const data = await res.json();
-                if (data.success) {
-                    await loadHostelData(); 
-                    await loadAssetData(); 
-                    hideModal('room-details-modal');
-                } else {
-                    throw new Error(data.message);
-                }
-            } catch (error) {
-                alert(`Error deleting room: ${error.message}`);
-            }
-        }
-    });
-
-    modalOccupantContainer.addEventListener('click', async (e) => {
-        const button = e.target.closest('.remove-student-btn');
-        if (button) {
-            e.preventDefault(); 
-            e.stopPropagation();
-            const studentId = button.dataset.studentId;
-            if (confirm(`Are you sure you want to remove this student?\nTheir assets will be returned to stock.`)) {
-                try {
-                    const res = await fetch(`/api/students/${studentId}`, {
-                        method: 'DELETE'
-                    });
-                    const data = await res.json();
-                    if (data.success) {
-                        await loadHostelData(); 
-                        await loadAssetData(); 
-
-                        const blockKey = detailView.dataset.currentHostelKey;
-                        const block = appState.blocks.find(b => b.blockKey === blockKey);
-                        const updatedRoom = block.rooms.find(r => r._id === currentRoomData._id);
-                        if (updatedRoom) {
-                            renderRoomDetailsModal(updatedRoom, block);
-                            console.log('✅ Student removed, modal updated.');
-                        } else {
-                            hideModal('room-details-modal');
-                        }
-                    } else {
-                        throw new Error(data.message);
-                    }
-                } catch (error) {
-                    alert(`Error removing student: ${error.message}`);
-                }
+        if (currentRoom?.students && currentRoom.students.length > 0) {
+            // --- INTERCEPT: Room has students, initiate reassignment process ---
+            prepareReassignmentModal(block, currentRoom);
+        } else {
+            // --- NO STUDENTS: Proceed to final confirmation ---
+            if (confirm(`Room ${currentRoomData.roomNumber} is currently empty. Are you sure you want to delete it and return its assets to stock?`)) {
+                hideModal('room-details-modal'); // Hide this modal before final delete operation
+                handleFinalRoomDeletion(blockKey, currentRoomData._id);
             }
         }
     });
     
-    // --- 9. DELETE HANDLERS (for cards) (Unchanged, retained for context) ---
+    // Listener for Move button delegation
+    reassignStudentListContainer.addEventListener('click', (e) => {
+        const moveBtn = e.target.closest('.reassign-student-btn');
+        if (moveBtn) {
+            const studentRow = moveBtn.closest('.reassign-row');
+            const studentId = studentRow.dataset.studentId;
+            const newRoomSelect = studentRow.querySelector('.new-room-select');
+            const newRoomId = newRoomSelect.value;
+            const oldRoomId = newRoomSelect.dataset.oldRoomId;
+
+            if (newRoomId && studentId && oldRoomId) {
+                handleStudentReassignment(studentId, oldRoomId, newRoomId, moveBtn, studentRow);
+            } else {
+                showError("Please select a valid room.");
+            }
+        }
+    });
+
+    // Listener for Final Delete button in Reassign Modal
+    finalDeleteRoomBtn.addEventListener('click', () => {
+        if (reassignData.blockKey && reassignData.roomId && finalDeleteRoomBtn.disabled === false) {
+            handleFinalRoomDeletion(reassignData.blockKey, reassignData.roomId);
+        } else {
+            showError("Please reassign all students before deleting the room.");
+        }
+    });
+    // --- END NEW ROOM DELETION AND REASSIGNMENT LOGIC ---
+
+
+    // --- 9. DELETE AND EDIT HANDLERS (for block cards) ---
     hostelBlockContainer.addEventListener('click', async (e) => {
-        const button = e.target.closest('.remove-block-btn');
-        if (button) {
+        const removeButton = e.target.closest('.remove-block-btn');
+        if (removeButton) {
             e.preventDefault(); e.stopPropagation();
-            const blockId = button.dataset.blockId;
-            const blockName = button.dataset.blockName;
+            const blockId = removeButton.dataset.blockId;
+            const blockName = removeButton.dataset.blockName;
             if (confirm(`Are you sure you want to delete the block "${blockName}"?\nThis action is permanent and will delete all associated rooms, students, and return their assets.`)) {
                 try {
                     const res = await fetch(`/api/blocks/${blockId}`, { method: 'DELETE' });
@@ -1922,6 +2146,14 @@ function renderLeaveView() {
                     } else { throw new Error(data.message); }
                 } catch (error) { alert(`Error deleting block: ${error.message}`); }
             }
+        }
+        
+        const editButton = e.target.closest('.edit-block-btn');
+        if (editButton) {
+            e.preventDefault(); 
+            e.stopPropagation();
+            const blockId = editButton.dataset.blockId;
+            prepareBlockModalForEdit(blockId);
         }
     });
     
@@ -1966,7 +2198,10 @@ function renderLeaveView() {
     });
 
     // --- 10. "SHOW MODAL" BUTTON LISTENERS & VIEW NAVIGATION ---
-    showAddBlockModalBtn.addEventListener('click', () => showModal('add-block-modal'));
+    showAddBlockModalBtn.addEventListener('click', () => {
+        prepareBlockModalForAdd();
+        showModal('add-block-modal')
+    });
     
     showAddRoomModalBtn.addEventListener('click', () => {
         roomAssetAssignmentContainer.innerHTML = ''; 
@@ -1974,17 +2209,17 @@ function renderLeaveView() {
         showModal('add-room-modal');
     });
 
-showAddStudentModalBtn.addEventListener('click', () => {
-    // 1. Refresh the room selector based on current capacity
-    updateStudentRoomSelect(); 
-    
-    // 2. Reset and show asset assignment form
-    studentAssetAssignmentContainer.innerHTML = ''; 
-    addAssetAssignmentRow(studentAssetAssignmentContainer); 
-    
-    // 3. Show modal
-    showModal('add-student-modal');
-});
+    showAddStudentModalBtn.addEventListener('click', () => {
+        // 1. Refresh the room selector based on current capacity
+        updateStudentRoomSelect(); 
+        
+        // 2. Reset and show asset assignment form
+        studentAssetAssignmentContainer.innerHTML = ''; 
+        addAssetAssignmentRow(studentAssetAssignmentContainer); 
+        
+        // 3. Show modal
+        showModal('add-student-modal');
+    });
     
     showAddEventModalBtn.addEventListener('click', () => showModal('add-event-modal'));
     showAddClubActivityModalBtn.addEventListener('click', () => showModal('add-club-activity-modal'));

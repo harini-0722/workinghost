@@ -957,7 +957,21 @@
             </div>
         </div>
     </div>
+<div id="reassign-students-modal" class="modal hidden fixed inset-0 z-30 flex items-center justify-center">
+    <div class="modal-backdrop fixed inset-0" data-modal-hide="reassign-students-modal"></div>
+    <div class="modal-content bg-white p-6 rounded-lg shadow-xl z-40 w-full max-w-2xl mx-4 max-h-[90vh] flex flex-col">
+        <h2 class="text-xl font-semibold mb-2 text-red-600"><span class="icon-space"> </span>Reassign Students Before Deletion</h2>
+        <p class="text-sm text-gray-600 mb-4">You are deleting room <strong id="reassign-modal-room-number" class="text-gray-800"></strong>. Please reassign the <strong id="reassign-modal-student-count">0</strong> student(s) below to available rooms in the same block.</p>
+        
+        <div id="reassign-student-list-container" class="space-y-4 overflow-y-auto p-2 bg-gray-50 rounded-lg flex-grow">
+            </div>
 
+        <div class="flex justify-between items-center pt-4 mt-4 border-t">
+            <button type="button" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300" data-modal-hide="reassign-students-modal"><span class="icon-space"> </span>Cancel Deletion</button>
+            <button type="button" id="final-delete-room-btn" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 disabled:opacity-50" disabled><span class="icon-space"> </span>Confirm Room Delete</button>
+        </div>
+    </div>
+</div>
     <script src="script.js"></script>
 </body>
 </html>

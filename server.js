@@ -284,29 +284,80 @@ app.post('/api/blocks/:blockKey/rooms', upload.single('roomImage'), async (req, 
         res.status(500).json({ success: false, message: 'Error adding room' });
     }
 });
+// PATCH /api/students/reassign/:studentId: Move a student to a new room
+app.patch('/api/students/reassign/:studentId', async (req, res) => {
+    try {
+        const studentId = req.params.studentId;
+        const { newRoomId, oldRoomId } = req.body; // We need both for integrity checks
 
+        if (!newRoomId || !oldRoomId) {
+            return res.status(400).json({ success: false, message: 'Missing newRoomId or oldRoomId' });
+        }
+
+        const student = await Student.findById(studentId);
+        const newRoom = await Room.findById(newRoomId);
+        const oldRoom = await Room.findById(oldRoomId);
+
+        if (!student || !newRoom || !oldRoom) {
+            return res.status(404).json({ success: false, message: 'Student, new room, or old room not found.' });
+        }
+
+        // 1. Capacity Check
+        if (newRoom.students.length >= newRoom.capacity) {
+            return res.status(400).json({ success: false, message: `Room ${newRoom.roomNumber} is full.` });
+        }
+        
+        // 2. Perform the Move:
+        // a. Update student's room reference
+        student.room = newRoomId;
+        await student.save();
+
+        // b. Remove student from old room's student list
+        oldRoom.students.pull(studentId);
+        await oldRoom.save();
+
+        // c. Add student to new room's student list
+        newRoom.students.push(studentId);
+        await newRoom.save();
+
+        res.json({ success: true, message: `Student ${student.name} reassigned to Room ${newRoom.roomNumber}.` });
+
+    } catch (error) {
+        console.error("❌ Error reassigning student:", error);
+        res.status(500).json({ success: false, message: 'Server error during reassignment.' });
+    }
+});
 app.delete('/api/blocks/:blockKey/rooms/:roomId', async (req, res) => {
     try {
         const { blockKey, roomId } = req.params;
-        const roomToDelete = await Room.findById(roomId);
+       const roomToDelete = await Room.findById(roomId).populate('students');
         if (!roomToDelete) {
             return res.status(404).json({ success: false, message: 'Room not found.' });
         }
+// --- NEW: Check if the room is empty ---
+        if (roomToDelete.students.length > 0) {
+            // If the room is not empty, it means the frontend missed the reassignment step 
+            // or the delete button was incorrectly enabled. Block deletion.
+            return res.status(400).json({ 
+                success: false, 
+                message: 'Room still contains students. Cannot delete empty room.' 
+            });
+        }
+        // --- END NEW CHECK --
         await returnAssetsToStock(roomToDelete.assets);
         const studentsInRoom = await Student.find({ room: roomId });
         for (const student of studentsInRoom) {
             await returnAssetsToStock(student.assets);
             await Student.findByIdAndDelete(student._id);
         }
-        await Block.findOneAndUpdate({ blockKey: blockKey }, { $pull: { rooms: roomId } });
+       await Block.findOneAndUpdate({ blockKey: blockKey }, { $pull: { rooms: roomId } });
         await Room.findByIdAndDelete(roomId);
-        res.json({ success: true, message: 'Room and associated students deleted successfully!' });
+        res.json({ success: true, message: 'Room deleted successfully!' });
     } catch (error) {
         console.error("❌ Error deleting room:", error);
         res.status(500).json({ success: false, message: 'Error deleting room' });
     }
 });
-
 app.delete('/api/blocks/:id', async (req, res) => {
     try {
         const blockId = req.params.id;
