@@ -95,12 +95,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const adminLogoutBtn = document.getElementById('admin-logout-btn'); 
     
     // Block Modal Specific Elements (for Edit/Add toggle)
-    const blockModalTitle = document.getElementById('block-modal-title'); // <-- FIX ASSUMPTION: This ID must be in admin.html
+    const blockModalTitle = document.getElementById('block-modal-title'); // <-- CHECK THIS ID IN HTML
     const blockIdInput = document.getElementById('block-id');
     const blockKeyInput = document.getElementById('block-key');
     const blockCapacityInput = document.getElementById('block-capacity');
     const blockMaxRoomsInput = document.getElementById('block-max-rooms');
-    const blockSubmitBtn = document.getElementById('block-submit-btn');
+    const blockSubmitBtn = document.getElementById('block-submit-btn'); // <-- CHECK THIS ID IN HTML
 
     // Room Detail Modal Elements
     const roomDetailsModal = document.getElementById('room-details-modal');
@@ -1130,8 +1130,8 @@ function renderLeaveView() {
             const data = await res.json();
             const block = data.block;
 
-            document.getElementById('block-modal-title').textContent = 'Edit Hostel Block: ' + block.blockName;
-            blockSubmitBtn.textContent = 'Update Block';
+            if(blockModalTitle) blockModalTitle.textContent = 'Edit Hostel Block: ' + block.blockName;
+            if(blockSubmitBtn) blockSubmitBtn.textContent = 'Update Block';
             blockIdInput.value = block._id;
             
             document.getElementById('block-name').value = block.blockName;
@@ -1151,11 +1151,11 @@ function renderLeaveView() {
     
     // Function to reset the modal state for a new block entry
     function prepareBlockModalForAdd() {
-        blockModalTitle.textContent = 'Add New Hostel Block'; // <--- ERROR FIX
-        blockSubmitBtn.textContent = 'Save Block';
+        if(blockModalTitle) blockModalTitle.textContent = 'Add New Hostel Block'; // <--- SAFE ACCESS FIX
+        if(blockSubmitBtn) blockSubmitBtn.textContent = 'Save Block'; // <--- SAFE ACCESS FIX
         blockIdInput.value = ''; // Clear ID to signify ADD mode
         addBlockForm.reset();
-        blockKeyInput.disabled = false; // Allow key editing for new blocks
+        if(blockKeyInput) blockKeyInput.disabled = false; // Allow key editing for new blocks
     }
 
     function renderDetailView(blockKey) {
