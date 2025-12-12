@@ -85,6 +85,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const addEventForm = document.getElementById('add-event-form');
     const adminLogoutBtn = document.getElementById('admin-logout-btn'); 
     
+    // Block Modal Specific Elements (for Edit/Add toggle)
+    const blockModalTitle = document.getElementById('block-modal-title');
+    const blockIdInput = document.getElementById('block-id');
+    const blockKeyInput = document.getElementById('block-key');
+    const blockCapacityInput = document.getElementById('block-capacity');
+    const blockMaxRoomsInput = document.getElementById('block-max-rooms');
+    const blockSubmitBtn = document.getElementById('block-submit-btn');
+
     // Room Detail Modal Elements
     const roomDetailsModal = document.getElementById('room-details-modal');
     const modalRoomTitle = document.getElementById('modal-room-title');
@@ -218,110 +226,110 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Function to render the Leave Request Management View
-function renderLeaveView() {
-    const searchTerm = leaveSearchInput.value.toLowerCase();
-    const statusFilter = leaveStatusFilter.value;
-    leaveRequestContainer.innerHTML = '';
+    function renderLeaveView() {
+        const searchTerm = leaveSearchInput.value.toLowerCase();
+        const statusFilter = leaveStatusFilter.value;
+        leaveRequestContainer.innerHTML = '';
 
-    // --- FIX START: Enrich data before filtering ---
-    // The API gives us studentId, but we need names and room numbers.
-    // We map over the requests to fill in missing details from appState.blocks
-    appState.leaveRequests.forEach(leave => {
-        if (!leave.studentName || !leave.roomNumber) {
-            // Try to find the student in our loaded hostel data
-            for (const block of appState.blocks) {
-                if (block.rooms) {
-                    for (const room of block.rooms) {
-                        if (room.students) {
-                            const student = room.students.find(s => s._id === leave.studentId);
-                            if (student) {
-                                leave.studentName = student.name; // Assign Name
-                                leave.roomNumber = room.roomNumber; // Assign Room
-                                return; // Stop searching for this specific leave
+        // --- FIX START: Enrich data before filtering ---
+        // The API gives us studentId, but we need names and room numbers.
+        // We map over the requests to fill in missing details from appState.blocks
+        appState.leaveRequests.forEach(leave => {
+            if (!leave.studentName || !leave.roomNumber) {
+                // Try to find the student in our loaded hostel data
+                for (const block of appState.blocks) {
+                    if (block.rooms) {
+                        for (const room of block.rooms) {
+                            if (room.students) {
+                                const student = room.students.find(s => s._id === leave.studentId);
+                                if (student) {
+                                    leave.studentName = student.name; // Assign Name
+                                    leave.roomNumber = room.roomNumber; // Assign Room
+                                    return; // Stop searching for this specific leave
+                                }
                             }
                         }
                     }
                 }
             }
-        }
-    });
-    // --- FIX END ---
+        });
+        // --- FIX END ---
 
-    const filteredLeaves = appState.leaveRequests.filter(leave => {
-        // Use 'Unknown' if data is still missing to prevent crashes
-        const sName = (leave.studentName || '').toLowerCase();
-        const rNum = (leave.roomNumber || '').toLowerCase();
+        const filteredLeaves = appState.leaveRequests.filter(leave => {
+            // Use 'Unknown' if data is still missing to prevent crashes
+            const sName = (leave.studentName || '').toLowerCase();
+            const rNum = (leave.roomNumber || '').toLowerCase();
 
-        const statusMatch = (statusFilter === 'All') || (leave.status === statusFilter);
-        const searchMatch = (sName.includes(searchTerm)) || (rNum.includes(searchTerm));
+            const statusMatch = (statusFilter === 'All') || (leave.status === statusFilter);
+            const searchMatch = (sName.includes(searchTerm)) || (rNum.includes(searchTerm));
 
-        return statusMatch && searchMatch;
-    });
+            return statusMatch && searchMatch;
+        });
 
-    if (filteredLeaves.length === 0) {
-        leaveRequestContainer.innerHTML = `<tr><td colspan="6" class="text-center text-gray-500 py-6">No leave requests match the criteria.</td></tr>`;
-        return;
-    }
-
-    // Sort: Pending first, then by applied date (newest first)
-    filteredLeaves.sort((a, b) => {
-        if (a.status === 'Pending' && b.status !== 'Pending') return -1;
-        if (a.status !== 'Pending' && b.status === 'Pending') return 1;
-        return new Date(b.appliedDate) - new Date(a.appliedDate);
-    });
-
-    filteredLeaves.forEach(leave => {
-        let statusClass = '';
-        let actionButtons = '';
-
-        switch (leave.status) {
-            case 'Approved': statusClass = 'bg-green-100 text-green-700'; break;
-            case 'Rejected': statusClass = 'bg-red-100 text-red-700'; break;
-            default: statusClass = 'bg-yellow-100 text-yellow-700'; // Pending
+        if (filteredLeaves.length === 0) {
+            leaveRequestContainer.innerHTML = `<tr><td colspan="6" class="text-center text-gray-500 py-6">No leave requests match the criteria.</td></tr>`;
+            return;
         }
 
-        const viewBtn = `<button class="view-leave-btn text-gray-500 hover:text-blue-600 ml-2" data-id="${leave._id}" title="View Details"><hero-icon-solid name="eye" class="h-5 w-5"></hero-icon-solid></button>`;
+        // Sort: Pending first, then by applied date (newest first)
+        filteredLeaves.sort((a, b) => {
+            if (a.status === 'Pending' && b.status !== 'Pending') return -1;
+            if (a.status !== 'Pending' && b.status === 'Pending') return 1;
+            return new Date(b.appliedDate) - new Date(a.appliedDate);
+        });
 
-        if (leave.status === 'Pending') {
-            actionButtons = `
-                <button class="update-leave-btn bg-green-500 text-white px-3 py-1 rounded text-xs hover:bg-green-600 transition" data-id="${leave._id}" data-action="Approved">Approve</button>
-                <button class="update-leave-btn bg-red-500 text-white px-3 py-1 rounded text-xs hover:bg-red-600 ml-1 transition" data-id="${leave._id}" data-action="Rejected">Reject</button>
+        filteredLeaves.forEach(leave => {
+            let statusClass = '';
+            let actionButtons = '';
+
+            switch (leave.status) {
+                case 'Approved': statusClass = 'bg-green-100 text-green-700'; break;
+                case 'Rejected': statusClass = 'bg-red-100 text-red-700'; break;
+                default: statusClass = 'bg-yellow-100 text-yellow-700'; // Pending
+            }
+
+            const viewBtn = `<button class="view-leave-btn text-gray-500 hover:text-blue-600 ml-2" data-id="${leave._id}" title="View Details"><hero-icon-solid name="eye" class="h-5 w-5"></hero-icon-solid></button>`;
+
+            if (leave.status === 'Pending') {
+                actionButtons = `
+                    <button class="update-leave-btn bg-green-500 text-white px-3 py-1 rounded text-xs hover:bg-green-600 transition" data-id="${leave._id}" data-action="Approved">Approve</button>
+                    <button class="update-leave-btn bg-red-500 text-white px-3 py-1 rounded text-xs hover:bg-red-600 ml-1 transition" data-id="${leave._id}" data-action="Rejected">Reject</button>
+                `;
+            } else {
+                actionButtons = `<span class="text-xs text-gray-400 mr-2">Actioned</span>`;
+            }
+
+            const rowHTML = `
+                <tr class="hover:bg-gray-50 transition-colors border-b">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <div class="font-medium">${leave.studentName || 'Unknown ID: ' + leave.studentId.substring(0,6)+'...'}</div>
+                        <div class="text-xs text-gray-500">Room: ${leave.roomNumber || 'N/A'}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                        ${formatDate(leave.startDate)} - ${formatDate(leave.endDate)}
+                    </td>
+                    <td class="px-6 py-4 text-sm text-gray-700 max-w-xs">
+                        <div class="truncate" title="${leave.reason}">${leave.reason}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-xs text-gray-500">
+                        ${formatDate(leave.appliedDate)}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${statusClass}">
+                            ${leave.status}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
+                        <div class="flex items-center justify-center">
+                            ${actionButtons}
+                            ${viewBtn}
+                        </div>
+                    </td>
+                </tr>
             `;
-        } else {
-            actionButtons = `<span class="text-xs text-gray-400 mr-2">Actioned</span>`;
-        }
-
-        const rowHTML = `
-            <tr class="hover:bg-gray-50 transition-colors border-b">
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    <div class="font-medium">${leave.studentName || 'Unknown ID: ' + leave.studentId.substring(0,6)+'...'}</div>
-                    <div class="text-xs text-gray-500">Room: ${leave.roomNumber || 'N/A'}</div>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                    ${formatDate(leave.startDate)} - ${formatDate(leave.endDate)}
-                </td>
-                <td class="px-6 py-4 text-sm text-gray-700 max-w-xs">
-                    <div class="truncate" title="${leave.reason}">${leave.reason}</div>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap text-xs text-gray-500">
-                    ${formatDate(leave.appliedDate)}
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                    <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${statusClass}">
-                        ${leave.status}
-                    </span>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
-                    <div class="flex items-center justify-center">
-                        ${actionButtons}
-                        ${viewBtn}
-                    </div>
-                </td>
-            </tr>
-        `;
-        leaveRequestContainer.innerHTML += rowHTML;
-    });
-}
+            leaveRequestContainer.innerHTML += rowHTML;
+        });
+    }
 
     // Handle Admin Action (Approve/Reject) on Leave Request
     async function handleLeaveAction(id, action) {
@@ -1050,7 +1058,7 @@ function renderLeaveView() {
             
             grandTotalCapacity += block.blockCapacity || totalCapacity; // Use the block's set capacity or fallback to sum
             grandTotalStudents += currentStudents;
-            
+
             // New fields for display
             const blockMaxRooms = block.maxRooms || '∞'; // NEW: Use maxRooms
             const blockMaxStudents = block.blockCapacity || totalCapacity; // Use blockCapacity for max students
@@ -1058,11 +1066,16 @@ function renderLeaveView() {
           // Update block card HTML to display both max rooms and max students
             const blockHTML = `
                 <div class="bg-white rounded-lg shadow-md overflow-hidden border-l-8 ${theme.border} relative transition-all duration-300 hover:shadow-xl hover:scale-105">
-                    <button class="remove-block-btn absolute top-3 right-3 p-1 text-red-500 hover:bg-red-100 rounded-full transition-colors duration-200 z-10" data-block-id="${block._id}" data-block-name="${block.blockName}" title="Delete Block">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                    </button>
+                    <div class="absolute top-3 right-3 flex space-x-2">
+                        <button class="edit-block-btn p-1 text-blue-500 hover:bg-blue-100 rounded-full transition-colors duration-200 z-10" data-block-id="${block._id}" title="Edit Block">
+                            <hero-icon-solid name="pencil-square" class="w-6 h-6"></hero-icon-solid>
+                        </button>
+                        <button class="remove-block-btn p-1 text-red-500 hover:bg-red-100 rounded-full transition-colors duration-200 z-10" data-block-id="${block._id}" data-block-name="${block.blockName}" title="Delete Block">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </button>
+                    </div>
                     <a href="#" class="block-link block hover:bg-gray-50 p-6" data-hostel-key="${block.blockKey}">
                         <div class="flex items-center mb-4">
                             <div class="p-3 ${theme.bg} rounded-lg"><hero-icon-solid name="${theme.icon}" class="h-6 w-6 ${theme.text}"></hero-icon-solid></div>
@@ -1473,42 +1486,82 @@ function renderLeaveView() {
     }
 
     // --- 7. FORM & DATA HANDLERS ---
+    
+    // Function to reset the modal state for a new block entry
+    function prepareBlockModalForAdd() {
+        blockModalTitle.textContent = 'Add New Hostel Block';
+        blockSubmitBtn.textContent = 'Save Block';
+        blockIdInput.value = ''; // Clear ID to signify ADD mode
+        addBlockForm.reset();
+        blockKeyInput.disabled = false; // Allow key editing for new blocks
+    }
 
-    // FIX: Updated to capture maxRooms from the new HTML field
+    // Function to set modal state for editing an existing block
+    async function prepareBlockModalForEdit(blockId) {
+        try {
+            const res = await fetch(`/api/blocks/${blockId}`);
+            if (!res.ok) throw new Error('Failed to fetch block details');
+            const data = await res.json();
+            const block = data.block;
+
+            blockModalTitle.textContent = 'Edit Hostel Block: ' + block.blockName;
+            blockSubmitBtn.textContent = 'Update Block';
+            blockIdInput.value = block._id;
+            
+            document.getElementById('block-name').value = block.blockName;
+            blockKeyInput.value = block.blockKey;
+            blockCapacityInput.value = block.blockCapacity;
+            blockMaxRoomsInput.value = block.maxRooms; // NEW: Set maxRooms
+            document.getElementById('block-theme').value = block.blockTheme;
+            
+            blockKeyInput.disabled = true; // Prevent changing the unique key/slug
+            
+            showModal('add-block-modal');
+
+        } catch (error) {
+            showError('Error loading block data for editing: ' + error.message);
+        }
+    }
+
+
+    // Unified Block Form Submission (handles both ADD and EDIT)
     addBlockForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const blockName = document.getElementById('block-name').value;
-        const blockKey = document.getElementById('block-key').value.toLowerCase().replace(/\s+/g, '-');
-        const blockTheme = document.getElementById('block-theme').value;
-        // --- START: Capture new fields ---
-        const blockCapacity = parseInt(document.getElementById('block-capacity').value, 10);
-        // Assuming you added an ID of 'block-max-rooms' to your new HTML field:
-        const maxRoomsInput = document.getElementById('block-max-rooms');
-        const maxRooms = maxRoomsInput ? parseInt(maxRoomsInput.value, 10) : 0; // NEW FIELD
         
-        if (!blockName || !blockKey || isNaN(blockCapacity) || blockCapacity < 0 || isNaN(maxRooms) || maxRooms < 0) {
-            showError("Please enter valid positive values for Block Capacity and Max Rooms.");
+        const isEditMode = !!blockIdInput.value;
+        const blockId = blockIdInput.value;
+        const blockName = document.getElementById('block-name').value;
+        const blockKey = document.getElementById('block-key').value;
+        const blockTheme = document.getElementById('block-theme').value;
+        const blockCapacity = parseInt(blockCapacityInput.value, 10);
+        const maxRooms = parseInt(blockMaxRoomsInput.value, 10);
+        
+        if (isNaN(blockCapacity) || blockCapacity < 1 || isNaN(maxRooms) || maxRooms < 1) {
+            showError("Please enter valid positive values for Block Capacity (Max Students) and Maximum Rooms Allowed.");
             return;
         }
-        // --- END: Capture new fields ---
 
+        const method = isEditMode ? 'PATCH' : 'POST';
+        const url = isEditMode ? `/api/blocks/${blockId}` : '/api/blocks';
+        
         try {
-            const res = await fetch('/api/blocks', {
-                method: 'POST',
+            const res = await fetch(url, {
+                method: method,
                 headers: { 'Content-Type': 'application/json' },
-                // --- Send new fields in the body ---
-                body: JSON.stringify({ blockName, blockKey, blockTheme, blockCapacity, maxRooms }) 
+                body: JSON.stringify({ blockName, blockKey, blockTheme, blockCapacity, maxRooms })
             });
+
             const data = await res.json();
             if (data.success) {
+                showSuccess(data.message);
                 await loadHostelData();
                 hideModal('add-block-modal');
-                addBlockForm.reset();
+                prepareBlockModalForAdd(); // Reset state for next use
             } else {
                 throw new Error(data.message);
             }
         } catch (error) {
-            alert(`Error adding block: ${error.message}`);
+            alert(`Error ${isEditMode ? 'updating' : 'adding'} block: ${error.message}`);
         }
     });
 
@@ -1905,13 +1958,13 @@ function renderLeaveView() {
         }
     });
     
-    // --- 9. DELETE HANDLERS (for cards) (Unchanged, retained for context) ---
+    // --- 9. DELETE HANDLERS (for cards) and NEW EDIT HANDLER ---
     hostelBlockContainer.addEventListener('click', async (e) => {
-        const button = e.target.closest('.remove-block-btn');
-        if (button) {
+        const removeButton = e.target.closest('.remove-block-btn');
+        if (removeButton) {
             e.preventDefault(); e.stopPropagation();
-            const blockId = button.dataset.blockId;
-            const blockName = button.dataset.blockName;
+            const blockId = removeButton.dataset.blockId;
+            const blockName = removeButton.dataset.blockName;
             if (confirm(`Are you sure you want to delete the block "${blockName}"?\nThis action is permanent and will delete all associated rooms, students, and return their assets.`)) {
                 try {
                     const res = await fetch(`/api/blocks/${blockId}`, { method: 'DELETE' });
@@ -1923,6 +1976,16 @@ function renderLeaveView() {
                 } catch (error) { alert(`Error deleting block: ${error.message}`); }
             }
         }
+
+        // --- NEW: Edit Block Button Handler ---
+        const editButton = e.target.closest('.edit-block-btn');
+        if (editButton) {
+            e.preventDefault(); 
+            e.stopPropagation();
+            const blockId = editButton.dataset.blockId;
+            prepareBlockModalForEdit(blockId);
+        }
+        // --- END NEW EDIT HANDLER ---
     });
     
     clubActivityContainer.addEventListener('click', async (e) => {
@@ -1966,7 +2029,10 @@ function renderLeaveView() {
     });
 
     // --- 10. "SHOW MODAL" BUTTON LISTENERS & VIEW NAVIGATION ---
-    showAddBlockModalBtn.addEventListener('click', () => showModal('add-block-modal'));
+    showAddBlockModalBtn.addEventListener('click', () => {
+        prepareBlockModalForAdd(); // Prepare for ADD mode
+        showModal('add-block-modal')
+    });
     
     showAddRoomModalBtn.addEventListener('click', () => {
         roomAssetAssignmentContainer.innerHTML = ''; 
@@ -1974,17 +2040,17 @@ function renderLeaveView() {
         showModal('add-room-modal');
     });
 
-showAddStudentModalBtn.addEventListener('click', () => {
-    // 1. Refresh the room selector based on current capacity
-    updateStudentRoomSelect(); 
-    
-    // 2. Reset and show asset assignment form
-    studentAssetAssignmentContainer.innerHTML = ''; 
-    addAssetAssignmentRow(studentAssetAssignmentContainer); 
-    
-    // 3. Show modal
-    showModal('add-student-modal');
-});
+    showAddStudentModalBtn.addEventListener('click', () => {
+        // 1. Refresh the room selector based on current capacity
+        updateStudentRoomSelect(); 
+        
+        // 2. Reset and show asset assignment form
+        studentAssetAssignmentContainer.innerHTML = ''; 
+        addAssetAssignmentRow(studentAssetAssignmentContainer); 
+        
+        // 3. Show modal
+        showModal('add-student-modal');
+    });
     
     showAddEventModalBtn.addEventListener('click', () => showModal('add-event-modal'));
     showAddClubActivityModalBtn.addEventListener('click', () => showModal('add-club-activity-modal'));
@@ -2066,7 +2132,7 @@ showAddStudentModalBtn.addEventListener('click', () => {
         const statusBtn = e.target.closest('.update-complaint-status-btn');
         
         if (viewBtn) {
-            const complaintId = viewBtn.dataset.complaintId;
+            const complaintId = viewBtn.dataset.complaint-id;
             showComplaintDetails(complaintId);
         }
         

@@ -211,7 +211,8 @@ async function returnAssetsToStock(assetsArray) {
 // ------------------------------------------
 // --- HOSTEL: BLOCK & ROOM API ROUTES ---
 // ------------------------------------------
-// This is your NEW route for server.js
+
+// GET /api/blocks: Fetch all blocks (used for dashboard)
 app.get("/api/blocks", async (req, res) => {
     try {
         const blocks = await Block.find({})
@@ -230,12 +231,29 @@ app.get("/api/blocks", async (req, res) => {
         res.status(500).json({ success: false, message: "Server error" });
     }
 });
+
+// GET /api/blocks/:id: Fetch a single block (for edit prep)
+app.get("/api/blocks/:id", async (req, res) => {
+    try {
+        const block = await Block.findById(req.params.id);
+        if (!block) {
+            return res.status(404).json({ success: false, message: "Block not found" });
+        }
+        res.json({ success: true, block });
+    } catch (error) {
+        console.error("❌ Error fetching single block:", error);
+        res.status(500).json({ success: false, message: "Server error" });
+    }
+});
+
+
+// POST /api/blocks: Create a new block
 app.post("/api/blocks", async (req, res) => {
     try {
-        // Capture the new field
+        // Updated to destructure the new maxRooms field
         const { blockName, blockKey, blockTheme, blockCapacity, maxRooms } = req.body; 
         
-        // Update validation
+        // Updated validation
         if (!blockName || !blockKey || !blockTheme || !blockCapacity || !maxRooms)
             return res.status(400).json({ success: false, message: "All fields are required" });
 
@@ -248,7 +266,7 @@ app.post("/api/blocks", async (req, res) => {
             blockKey: blockKey,
             blockTheme: blockTheme,
             blockCapacity: parseInt(blockCapacity, 10), // Save student capacity
-            maxRooms: parseInt(maxRooms, 10), // Save new max rooms limit
+            maxRooms: parseInt(maxRooms, 10),           // Save new max rooms limit
             rooms: []
         });
         await newBlock.save();
@@ -258,6 +276,61 @@ app.post("/api/blocks", async (req, res) => {
         res.status(500).json({ success: false, message: "Server error" });
     }
 });
+
+
+// PATCH /api/blocks/:id: Update an existing block
+app.patch("/api/blocks/:id", async (req, res) => {
+    try {
+        const blockId = req.params.id;
+        const { blockName, blockKey, blockTheme, blockCapacity, maxRooms } = req.body;
+
+        if (!blockName || !blockKey || !blockTheme || !blockCapacity || !maxRooms) {
+            return res.status(400).json({ success: false, message: "All fields are required" });
+        }
+
+        // Check for unique key conflict, excluding the current block
+        const existing = await Block.findOne({ blockKey: blockKey, _id: { $ne: blockId } });
+        if (existing) {
+            return res.status(400).json({ success: false, message: "Block key already exists!" });
+        }
+
+        const blockToUpdate = await Block.findById(blockId).populate('rooms');
+        if (!blockToUpdate) {
+            return res.status(404).json({ success: false, message: "Block not found" });
+        }
+        
+        // 1. Check if new limits conflict with existing reality
+        const currentRoomCount = blockToUpdate.rooms.length;
+        const currentStudentCount = blockToUpdate.rooms.reduce((sum, room) => sum + room.students.length, 0);
+        
+        const newMaxRooms = parseInt(maxRooms, 10);
+        const newMaxCapacity = parseInt(blockCapacity, 10);
+        
+        if (currentRoomCount > newMaxRooms) {
+            return res.status(400).json({ success: false, message: `Cannot set Max Rooms to ${newMaxRooms}. The block already contains ${currentRoomCount} rooms. Delete rooms first.` });
+        }
+        
+        if (currentStudentCount > newMaxCapacity) {
+            return res.status(400).json({ success: false, message: `Cannot set Total Student Capacity to ${newMaxCapacity}. The block currently has ${currentStudentCount} students. Remove students first.` });
+        }
+
+        // 2. Update the block
+        blockToUpdate.blockName = blockName;
+        blockToUpdate.blockKey = blockKey;
+        blockToUpdate.blockTheme = blockTheme;
+        blockToUpdate.blockCapacity = newMaxCapacity;
+        blockToUpdate.maxRooms = newMaxRooms;
+
+        await blockToUpdate.save();
+
+        res.json({ success: true, message: "✅ Block updated successfully!", block: blockToUpdate });
+
+    } catch (error) {
+        console.error("❌ Error updating block:", error);
+        res.status(500).json({ success: false, message: "Server error" });
+    }
+});
+
 
 app.post('/api/blocks/:blockKey/rooms', upload.single('roomImage'), async (req, res) => {
     try {
