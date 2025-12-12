@@ -1496,7 +1496,41 @@ addBlockForm.addEventListener('submit', async (e) => {
         alert(`Error adding block: ${error.message}`);
     }
 });
-// In script.js (~ line 1111)
+// In script.js (~ line 1111)// Add this function before initApp in script.js (around line 1400)
+function updateStudentRoomSelect() {
+    studentRoomSelect.innerHTML = '<option value="" disabled selected>-- Select an available room --</option>';
+    
+    // Find the currently viewed block based on detailView's data attribute
+    const blockKey = detailView.dataset.currentHostelKey;
+    const currentBlock = appState.blocks.find(b => b.blockKey === blockKey);
+
+    if (!currentBlock || !currentBlock.rooms) {
+        studentRoomSelect.innerHTML = '<option value="" disabled>No rooms in this block</option>';
+        return;
+    }
+
+    currentBlock.rooms
+        // Sort rooms by number
+        .sort((a, b) => a.roomNumber.localeCompare(b.roomNumber, undefined, { numeric: true, sensitivity: 'base' }))
+        .forEach(room => {
+            const currentOccupancy = room.students ? room.students.length : 0;
+            const maxCapacity = room.capacity || 0;
+            const availableSlots = maxCapacity - currentOccupancy;
+
+            if (availableSlots > 0) {
+                // Use room._id as the value for submission
+                studentRoomSelect.innerHTML += `
+                    <option value="${room._id}" data-max-capacity="${maxCapacity}" data-current-occupancy="${currentOccupancy}">
+                        ${room.roomNumber} (${currentOccupancy}/${maxCapacity}) - ${availableSlots} slots left
+                    </option>
+                `;
+            }
+        });
+
+    if (studentRoomSelect.options.length === 1) { // Only the disabled default option remains
+        studentRoomSelect.innerHTML = '<option value="" disabled selected>No available rooms found</option>';
+    }
+}
 addRoomForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     
@@ -1571,50 +1605,73 @@ addRoomForm.addEventListener('submit', async (e) => {
         alert(`Error adding room: ${error.message}`);
     }
 });
+// In script.js (~ line 1205)
+addStudentForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const selectedRoomId = document.getElementById('student-room-id').value;
+    const selectedOption = studentRoomSelect.querySelector(`option[value="${selectedRoomId}"]`);
 
-    addStudentForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
-        const assignedAssets = processAssetAssignments(studentAssetAssignmentContainer);
-        if (assignedAssets === null) {
-            return; 
+    // --- START: NEW STUDENT CAPACITY VALIDATION ---
+    if (!selectedRoomId || !selectedOption) {
+        alert('Please select a valid room.');
+        return;
+    }
+
+    const maxCapacity = parseInt(selectedOption.dataset.maxCapacity, 10);
+    const currentOccupancy = parseInt(selectedOption.dataset.currentOccupancy, 10);
+
+    if (currentOccupancy >= maxCapacity) {
+        showError(`Room ${selectedOption.textContent.split(' ')[0]} is already full (${currentOccupancy}/${maxCapacity}). Please choose another room.`);
+        return; 
+    }
+    // --- END: NEW STUDENT CAPACITY VALIDATION ---
+
+    const assignedAssets = processAssetAssignments(studentAssetAssignmentContainer);
+    if (assignedAssets === null) {
+        return; 
+    }
+     
+    const blockKey = detailView.dataset.currentHostelKey;
+    const formData = new FormData(addStudentForm);
+    formData.append('blockKey', blockKey);
+    formData.append('assets', JSON.stringify(assignedAssets)); 
+    
+    // We explicitly set the correct roomId using the value from the select
+    formData.set('roomId', selectedRoomId);
+
+    try {
+        const submitBtn = addStudentForm.querySelector('button[type="submit"]');
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Uploading...';
+         
+        const res = await fetch('/api/students', {
+            method: 'POST',
+            body: formData
+        });
+
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Add Student';
+
+        const data = await res.json();
+        if (data.success) {
+            await loadHostelData();
+            await loadAssetData();
+            hideModal('add-student-modal');
+            addStudentForm.reset();
+            studentAssetAssignmentContainer.innerHTML = ''; 
+            // Re-render detail view to update UI immediately
+            renderDetailView(blockKey); 
+        } else {
+            throw new Error(data.message);
         }
-        
-        const blockKey = detailView.dataset.currentHostelKey;
-        const formData = new FormData(addStudentForm);
-        formData.append('blockKey', blockKey);
-        formData.append('assets', JSON.stringify(assignedAssets)); 
-
-        try {
-            const submitBtn = addStudentForm.querySelector('button[type="submit"]');
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Uploading...';
-            
-            const res = await fetch('/api/students', {
-                method: 'POST',
-                body: formData
-            });
-
-            submitBtn.disabled = false;
-            submitBtn.textContent = 'Add Student';
-
-            const data = await res.json();
-            if (data.success) {
-                await loadHostelData(); 
-                await loadAssetData(); 
-                hideModal('add-student-modal');
-                addStudentForm.reset();
-                studentAssetAssignmentContainer.innerHTML = ''; 
-            } else {
-                throw new Error(data.message);
-            }
-        } catch (error) {
-            alert(`Error adding student: ${error.message}`);
-            const submitBtn = addStudentForm.querySelector('button[type="submit"]');
-            submitBtn.disabled = false;
-            submitBtn.textContent = 'Add Student';
-        }
-    });
+    } catch (error) {
+        alert(`Error adding student: ${error.message}`);
+        const submitBtn = addStudentForm.querySelector('button[type="submit"]');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Add Student';
+    }
+});
 
     addEventForm.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -1875,11 +1932,18 @@ addRoomForm.addEventListener('submit', async (e) => {
         showModal('add-room-modal');
     });
 
-    showAddStudentModalBtn.addEventListener('click', () => {
-        studentAssetAssignmentContainer.innerHTML = ''; 
-        addAssetAssignmentRow(studentAssetAssignmentContainer); 
-        showModal('add-student-modal');
-    });
+    // In script.js (~ line 1334)
+showAddStudentModalBtn.addEventListener('click', () => {
+    // 1. Refresh the room selector based on current capacity
+    updateStudentRoomSelect(); 
+    
+    // 2. Reset and show asset assignment form
+    studentAssetAssignmentContainer.innerHTML = ''; 
+    addAssetAssignmentRow(studentAssetAssignmentContainer); 
+    
+    // 3. Show modal
+    showModal('add-student-modal');
+});
     
     showAddEventModalBtn.addEventListener('click', () => showModal('add-event-modal'));
     showAddClubActivityModalBtn.addEventListener('click', () => showModal('add-club-activity-modal'));
