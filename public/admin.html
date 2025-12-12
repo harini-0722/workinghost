@@ -561,35 +561,38 @@
         </div>
     </footer>
     <div id="add-block-modal" class="modal hidden fixed inset-0 z-30 flex items-center justify-center">
-        <div class="modal-backdrop fixed inset-0" data-modal-hide="add-block-modal"></div>
-        <div class="modal-content bg-white p-6 rounded-lg shadow-xl z-40 w-full max-w-md mx-4">
-            <h2 class="text-xl font-semibold mb-4"><span class="icon-space"> </span>Add New Hostel Block</h2>
-            <form id="add-block-form" class="space-y-4">
-                <div>
-                    <label for="block-name" class="block text-sm font-medium text-gray-700"><span class="icon-space"> </span>Block Name</label>
-                    <input type="text" id="block-name" name="blockName" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="e.g., Sarojini Hall" required>
-                </div>
-                <div>
-                    <label for="block-key" class="block text-sm font-medium text-gray-700"><span class="icon-space"> </span>Unique Key</label>
-                    <input type="text" id="block-key" name="blockKey" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="e.g., 'sarojini' (lowercase, no spaces)" required>
-                </div>
-                <div>
-                    <label for="block-theme" class="block text-sm font-medium text-gray-700"><span class="icon-space"> </span>Theme Color</label>
-                    <select id="block-theme" name="blockTheme" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
-                        <option value="pink">Pink (Women)</option>
-                        <option value="blue">Blue (Men)</option>
-                        <option value="green">Green</option>
-                        <option value="purple">Purple</option>
-                        <option value="yellow">Yellow</option>
-                    </select>
-                </div>
-                <div class="flex justify-end space-x-3 pt-4">
-                    <button type="button" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300" data-modal-hide="add-block-modal"><span class="icon-space"> </span>Cancel</button>
-                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"><span class="icon-space"> </span>Save Block</button>
-                </div>
-            </form>
-        </div>
+    <div class="modal-content bg-white p-6 rounded-lg shadow-xl z-40 w-full max-w-md mx-4">
+        <h2 class="text-xl font-semibold mb-4"><span class="icon-space"> </span>Add New Hostel Block</h2>
+        <form id="add-block-form" class="space-y-4">
+            <div>
+                <label for="block-name" class="block text-sm font-medium text-gray-700"><span class="icon-space"> </span>Block Name</label>
+                <input type="text" id="block-name" name="blockName" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="e.g., Sarojini Hall" required>
+            </div>
+            <div>
+                <label for="block-key" class="block text-sm font-medium text-gray-700"><span class="icon-space"> </span>Unique Key</label>
+                <input type="text" id="block-key" name="blockKey" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="e.g., 'sarojini' (lowercase, no spaces)" required>
+            </div>
+            <div>
+                <label for="block-capacity" class="block text-sm font-medium text-gray-700">Total Student Capacity</label>
+                <input type="number" id="block-capacity" name="blockCapacity" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm text-lg font-bold text-center" value="100" min="1" required>
+            </div>
+            <div>
+                <label for="block-theme" class="block text-sm font-medium text-gray-700"><span class="icon-space"> </span>Theme Color</label>
+                <select id="block-theme" name="blockTheme" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                    <option value="pink">Pink (Women)</option>
+                    <option value="blue">Blue (Men)</option>
+                    <option value="green">Green</option>
+                    <option value="purple">Purple</option>
+                    <option value="yellow">Yellow</option>
+                </select>
+            </div>
+            <div class="flex justify-end space-x-3 pt-4">
+                <button type="button" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300" data-modal-hide="add-block-modal"><span class="icon-space"> </span>Cancel</button>
+                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"><span class="icon-space"> </span>Save Block</button>
+            </div>
+        </form>
     </div>
+</div>
     <div id="add-room-modal" class="modal hidden fixed inset-0 z-30 flex items-center justify-center">
         <div class="modal-backdrop fixed inset-0" data-modal-hide="add-room-modal"></div>
         <div class="modal-content bg-white p-6 rounded-lg shadow-xl z-40 w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto">

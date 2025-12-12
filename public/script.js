@@ -1052,6 +1052,7 @@ function renderLeaveView() {
             grandTotalCapacity += totalCapacity;
             grandTotalStudents += currentStudents;
 
+          // Change one of the stats to show the manually entered capacity
             const blockHTML = `
                 <div class="bg-white rounded-lg shadow-md overflow-hidden border-l-8 ${theme.border} relative transition-all duration-300 hover:shadow-xl hover:scale-105">
                     <button class="remove-block-btn absolute top-3 right-3 p-1 text-red-500 hover:bg-red-100 rounded-full transition-colors duration-200 z-10" data-block-id="${block._id}" data-block-name="${block.blockName}" title="Delete Block">
@@ -1065,10 +1066,10 @@ function renderLeaveView() {
                             <h3 class="text-2xl font-bold text-gray-900 ml-4">${block.blockName}</h3>
                         </div>
                         <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
-                            <div><span class="text-gray-500">Capacity</span><p class="text-lg font-semibold text-gray-900">${totalRooms}</p></div>
+                            <div><span class="text-gray-500">Total Rooms</span><p class="text-lg font-semibold text-gray-900">${totalRooms}</p></div>
                             <div><span class="text-gray-500">Occupied Rooms</span><p class="text-lg font-semibold text-gray-900">${occupiedRooms}</p></div>
                             <div><span class="text-gray-500">Current Students</span><p class="text-lg font-semibold text-gray-900">${currentStudents}</p></div>
-                            <div><span class="text-gray-500">Total Capacity</span><p class="text-lg font-semibold text-gray-900">${totalCapacity}</p></div>
+                            <div><span class="text-gray-500">Target Capacity</span><p class="text-lg font-semibold text-gray-900">${block.blockCapacity || totalCapacity}</p></div> 
                         </div>
                     </a>
                 </div>
@@ -1465,87 +1466,111 @@ function renderLeaveView() {
     }
 
     // --- 7. FORM & DATA HANDLERS (Unchanged, retained for context) ---
-    addBlockForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const blockName = document.getElementById('block-name').value;
-        const blockKey = document.getElementById('block-key').value.toLowerCase().replace(/\s+/g, '-');
-        const blockTheme = document.getElementById('block-theme').value;
-        if (!blockName || !blockKey) return;
+   // In script.js (~ line 1056 in your provided code)
+addBlockForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const blockName = document.getElementById('block-name').value;
+    const blockKey = document.getElementById('block-key').value.toLowerCase().replace(/\s+/g, '-');
+    const blockTheme = document.getElementById('block-theme').value;
+    // --- START: Capture new field ---
+    const blockCapacity = parseInt(document.getElementById('block-capacity').value, 10);
+    if (!blockName || !blockKey || isNaN(blockCapacity) || blockCapacity < 0) return;
+    // --- END: Capture new field ---
 
-        try {
-            const res = await fetch('/api/blocks', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ blockName, blockKey, blockTheme })
-            });
-            const data = await res.json();
-            if (data.success) {
-                await loadHostelData(); 
-                hideModal('add-block-modal');
-                addBlockForm.reset();
-            } else {
-                throw new Error(data.message);
-            }
-        } catch (error) {
-            alert(`Error adding block: ${error.message}`);
+    try {
+        const res = await fetch('/api/blocks', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            // --- Send new field in the body ---
+            body: JSON.stringify({ blockName, blockKey, blockTheme, blockCapacity }) 
+        });
+        const data = await res.json();
+        if (data.success) {
+            await loadHostelData();
+            hideModal('add-block-modal');
+            addBlockForm.reset();
+        } else {
+            throw new Error(data.message);
         }
-    });
+    } catch (error) {
+        alert(`Error adding block: ${error.message}`);
+    }
+});
+// In script.js (~ line 1111)
+addRoomForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    // --- CAPACITY CHECK LOGIC START ---
+    const blockKey = detailView.dataset.currentHostelKey;
+    const block = appState.blocks.find(b => b.blockKey === blockKey);
+    const newRoomCapacity = parseInt(document.getElementById('room-capacity').value, 10);
 
-    addRoomForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
+    if (!blockKey || !block) {
+        alert('Error: No block selected.');
+        return;
+    }
+
+    const currentRoomsTotalCapacity = (block.rooms || []).reduce((sum, room) => sum + (room.capacity || 0), 0);
+    const blockTotalCapacity = block.blockCapacity || 999999; // Default to a very high number if capacity isn't set
+    
+    // Calculate the total capacity *after* adding the new room
+    const projectedTotalCapacity = currentRoomsTotalCapacity + newRoomCapacity;
+
+    if (projectedTotalCapacity > blockTotalCapacity) {
+        alert(`Cannot add room. Projected capacity (${projectedTotalCapacity}) exceeds the Block's maximum capacity of ${blockTotalCapacity}.`);
+        return; 
+    }
+    // --- CAPACITY CHECK LOGIC END ---
+
+    const assignedAssets = processAssetAssignments(roomAssetAssignmentContainer);
+    if (assignedAssets === null) {
+        return;
+    }
+    
+    // The rest of the original code follows:
+    // ... rest of original function body ...
+    
+    const formData = new FormData();
+    formData.append('roomNumber', document.getElementById('room-id').value);
+    formData.append('floor', document.getElementById('room-floor').value);
+    formData.append('capacity', document.getElementById('room-capacity').value);
+    formData.append('assets', JSON.stringify(assignedAssets)); 
+
+    const imageFile = document.getElementById('room-image-file').files[0];
+    if (imageFile) {
+        formData.append('roomImage', imageFile);
+    }
+    
+    const submitBtn = addRoomForm.querySelector('button[type="submit"]');
+
+    try {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Saving...';
         
-        const assignedAssets = processAssetAssignments(roomAssetAssignmentContainer);
-        if (assignedAssets === null) {
-            return; 
-        }
+        const res = await fetch(`/api/blocks/${blockKey}/rooms`, {
+            method: 'POST',
+            body: formData 
+        });
 
-        const blockKey = detailView.dataset.currentHostelKey;
-        if (!blockKey) {
-            alert('Error: No block selected.');
-            return;
-        }
-        
-        const formData = new FormData();
-        formData.append('roomNumber', document.getElementById('room-id').value);
-        formData.append('floor', document.getElementById('room-floor').value);
-        formData.append('capacity', document.getElementById('room-capacity').value);
-        formData.append('assets', JSON.stringify(assignedAssets)); 
-        
-        const imageFile = document.getElementById('room-image-file').files[0];
-        if (imageFile) {
-            formData.append('roomImage', imageFile);
-        }
-        
-        const submitBtn = addRoomForm.querySelector('button[type="submit"]');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Add Room';
 
-        try {
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Saving...';
-            
-            const res = await fetch(`/api/blocks/${blockKey}/rooms`, {
-                method: 'POST',
-                body: formData 
-            });
-
-            submitBtn.disabled = false;
-            submitBtn.textContent = 'Add Room';
-
-            const data = await res.json();
-            if (data.success) {
-                await loadHostelData(); 
-                await loadAssetData(); 
-                hideModal('add-room-modal');
-                addRoomForm.reset();
-                roomAssetAssignmentContainer.innerHTML = ''; 
-            } else {
-                throw new Error(data.message);
-            }
-        } catch (error) {
-            submitBtn.disabled = false;
-            submitBtn.textContent = 'Add Room';
-            alert(`Error adding room: ${error.message}`);
+        const data = await res.json();
+        if (data.success) {
+            await loadHostelData();
+            await loadAssetData();
+            hideModal('add-room-modal');
+            addRoomForm.reset();
+            roomAssetAssignmentContainer.innerHTML = ''; 
+        } else {
+            throw new Error(data.message);
         }
-    });
+    } catch (error) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Add Room';
+        alert(`Error adding room: ${error.message}`);
+    }
+});
 
     addStudentForm.addEventListener('submit', async (e) => {
         e.preventDefault();

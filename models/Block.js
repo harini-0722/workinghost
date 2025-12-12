@@ -1,19 +1,22 @@
 const mongoose = require("mongoose");
 
 const blockSchema = new mongoose.Schema(
-  {
-    blockName: { type: String, required: true },
-    blockKey: { type: String, required: true, unique: true },
-    blockTheme: { type: String, required: true },
-    
-    // This is the "drawer" that will hold your rooms
-    // It is VERY important for Step 2
-    rooms: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Room' 
-    }]
-  },
-  { timestamps: true }
+  {
+    blockName: { type: String, required: true },
+    blockKey: { type: String, required: true, unique: true },
+    blockTheme: { type: String, required: true },
+    
+    // --- NEW FIELD ADDED HERE ---
+    blockCapacity: { type: Number, required: true, default: 0 },
+
+    // This is the "drawer" that will hold your rooms
+    // It is VERY important for Step 2
+    rooms: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Room' 
+    }]
+  },
+  { timestamps: true }
 );
 
 const Block = mongoose.model("Block", blockSchema);
