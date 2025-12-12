@@ -1919,6 +1919,33 @@ function renderLeaveView() {
 
     // --- NEW: ROOM DELETION AND REASSIGNMENT LOGIC ---
     
+    // Helper function to dynamically generate room options excluding the current room
+    function getAvailableRoomOptionsHTML(availableRooms, currentRoomId) {
+        let optionsHTML = '<option value="" disabled selected>Select a new room...</option>';
+        
+        availableRooms
+            .filter(room => room._id !== currentRoomId) // Exclude the room being deleted
+            .sort((a, b) => a.roomNumber.localeCompare(b.roomNumber, undefined, { numeric: true, sensitivity: 'base' }))
+            .forEach(room => {
+                const current = room.students ? room.students.length : 0;
+                const max = room.capacity;
+                const availableSlots = max - current;
+
+                if (availableSlots > 0) {
+                    optionsHTML += `
+                        <option value="${room._id}" data-max="${max}" data-current="${current}">
+                            ${room.roomNumber} (${current}/${max}, ${availableSlots} free)
+                        </option>
+                    `;
+                }
+            });
+        
+        if (optionsHTML === '<option value="" disabled selected>Select a new room...</option>') {
+            return '<option value="" disabled>NO AVAILABLE ROOMS</option>';
+        }
+        return optionsHTML;
+    }
+    
     // Function to check if all students have been reassigned in the modal
     function checkReassignmentStatus() {
         // Count elements that do *not* have the 'reassigned' class
@@ -2049,7 +2076,7 @@ function renderLeaveView() {
                 studentRow.className = 'reassign-row grid grid-cols-6 gap-3 items-center bg-white p-3 rounded shadow-sm border border-yellow-300';
                 studentRow.dataset.studentId = student._id;
                 studentRow.innerHTML = `
-                    <div class="col-span-2 font-medium text-gray-800 truncate" title="${student.name}">${student.name}</div>
+                    <div class="col-span-2 font-medium text-gray-800 truncate" title="${student.name}">${student.name} (${student.rollNumber || 'N/A'})</div>
                     <div class="col-span-2">
                         <select class="new-room-select w-full p-2 border rounded text-sm bg-gray-50" data-old-room-id="${roomToDelete._id}">
                             ${getAvailableRoomOptionsHTML(availableRooms, roomToDelete._id)}
@@ -2123,6 +2150,7 @@ function renderLeaveView() {
         if (reassignData.blockKey && reassignData.roomId && finalDeleteRoomBtn.disabled === false) {
             handleFinalRoomDeletion(reassignData.blockKey, reassignData.roomId);
         } else {
+            // This case should be caught by checkReassignmentStatus disabling the button, but good to have.
             showError("Please reassign all students before deleting the room.");
         }
     });
