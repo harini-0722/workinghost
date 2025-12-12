@@ -1049,7 +1049,7 @@ function renderLeaveView() {
             
             const occupiedRooms = block.rooms ? block.rooms.filter(room => room.students && room.students.length > 0).length : 0;
             
-            grandTotalCapacity += totalCapacity;
+            grandTotalCapacity += block.blockCapacity || totalCapacity; // Use the block's set capacity or fallback to sum
             grandTotalStudents += currentStudents;
 
           // Change one of the stats to show the manually entered capacity
@@ -1555,7 +1555,7 @@ addRoomForm.addEventListener('submit', async (e) => {
     const projectedTotalStudentCapacity = currentRoomsTotalStudentCapacity + newRoomCapacity;
 
     if (projectedTotalStudentCapacity > blockMaxStudents) {
-        showError(`Cannot add room. Projected student capacity (${projectedTotalStudentCapacity}) exceeds the Block's maximum student limit of ${blockMaxStudents}.`);
+        showError(`Cannot add room. Projected total student capacity (${projectedTotalStudentCapacity}) exceeds the Block's maximum student limit of ${blockMaxStudents}.`);
         return; 
     }
     // --- CAPACITY CHECK LOGIC END ---
@@ -1568,8 +1568,9 @@ addRoomForm.addEventListener('submit', async (e) => {
     // We assume blockMaxStudents is ALSO the desired room count limit.
     const currentRoomCount = currentRooms.length;
     
+    // FIX: Clearer error message for the room count limit based on blockCapacity
     if (currentRoomCount >= blockMaxStudents) {
-        showError(`Cannot add room. The block is limited to ${blockMaxStudents} rooms, and it already has ${currentRoomCount} rooms.`);
+        showError(`Cannot add room. The Block Capacity (${blockMaxStudents}) is being used as a Room Count Limit, and the block already has ${currentRoomCount} rooms. You must increase the Block Capacity to add more rooms.`);
         return;
     }
     // The rest of the original code follows:
@@ -1650,8 +1651,9 @@ addStudentForm.addEventListener('submit', async (e) => {
         });
 const projectedOccupancy = currentBlockOccupancy + 1; // +1 for the student being added
         const blockMaxStudents = block.blockCapacity;
+        // FIX: Clearer error message for the block-level student limit
         if (projectedOccupancy > blockMaxStudents) {
-            showError(`Cannot add student. The block is full. Current students: ${currentBlockOccupancy}. Block limit: ${blockMaxStudents}.`);
+            showError(`Cannot add student. The block is full. Current students: ${currentBlockOccupancy}. Block limit (Block Capacity): ${blockMaxStudents}.`);
             return;
         }
     }
