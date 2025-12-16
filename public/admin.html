@@ -605,6 +605,7 @@
         <div class="modal-content bg-white p-6 rounded-lg shadow-xl z-40 w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto">
             <h2 class="text-xl font-semibold mb-4"><span class="icon-space"> </span>Add New Room</h2>
             <form id="add-room-form" class="space-y-4">
+                <input type="hidden" id="room-edit-id-input" name="roomId">
                 <div>
                     <label for="room-id" class="block text-sm font-medium text-gray-700"><span class="icon-space"> </span>Room ID / Number</label>
                     <input type="text" id="room-id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="e.g., A-103" required>

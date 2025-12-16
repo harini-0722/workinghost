@@ -489,7 +489,68 @@ app.delete('/api/blocks/:id', async (req, res) => {
         res.status(500).json({ success: false, message: 'Error deleting block' });
     }
 });
+// GET Route to fetch a single room by ID (for Edit functionality)
+app.get("/api/rooms/:id", async (req, res) => {
+    try {
+        const roomId = req.params.id;
+        const room = await Room.findById(roomId)
+            .populate('students')
+            .populate('complaints');
 
+        if (!room) {
+            return res.status(404).json({ success: false, message: "Room not found." });
+        }
+
+        res.json({ success: true, room });
+    } catch (error) {
+        console.error("❌ Error fetching room details:", error);
+        res.status(500).json({ success: false, message: "Server error fetching room details." });
+    }
+});
+ // PATCH Route to Update an Existing Room
+app.patch("/api/rooms/:id", async (req, res) => {
+    try {
+        const roomId = req.params.id;
+        // Only update these fields
+        const { floor, capacity } = req.body; 
+
+        // 1. Basic Validation
+        if (!floor || !capacity) {
+            return res.status(400).json({ success: false, message: "Floor and Capacity are required for update." });
+        }
+        
+        // 2. Find and Update the room
+        const updatedRoom = await Room.findByIdAndUpdate(
+            roomId,
+            { 
+                floor, 
+                capacity: parseInt(capacity, 10),
+            },
+            { new: true, runValidators: true }
+        );
+
+        if (!updatedRoom) {
+            return res.status(404).json({ success: false, message: "Room not found." });
+        }
+        
+        // 3. Re-calculate block capacity/rooms in case capacity changed (optional but safe)
+        const block = await Block.findById(updatedRoom.block);
+        if (block) {
+            // Recalculate block capacity here if needed, but the current loadHostelData handles it.
+            // For now, assume update is successful.
+        }
+
+        res.json({ 
+            success: true, 
+            message: `Room ${updatedRoom.roomNumber} updated successfully.`, 
+            room: updatedRoom 
+        });
+
+    } catch (error) {
+        console.error("❌ Error updating room:", error);
+        res.status(500).json({ success: false, message: "Server error while updating room." });
+    }
+});
 
 // ------------------------------------------
 // --- HOSTEL: STUDENT API ROUTES ---

@@ -1212,7 +1212,12 @@ function renderLeaveView() {
             const imageUrl = room.imageUrl || `https://via.placeholder.com/300x150/e0e0e0/909090?text=${room.roomNumber}`;
             const roomHTML = `
                 <div class="room-card bg-white rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl hover:scale-105 cursor-pointer" data-room-id="${room.roomNumber}" data-room-status="${status.text}">
-                    <img src="${imageUrl}" alt="Room ${room.roomNumber}" class="activity-card-image">
+                   <button class="edit-room-btn absolute top-3 right-3 p-0.5 text-blue-500 hover:bg-blue-100 rounded-full transition-colors duration-200 z-10" data-room-id="${room._id}" data-room-number="${room.roomNumber}" title="Edit Room">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4">
+                            <path d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.18 1.18c.045.305.071.615.071.931c0 1.637-.62 3.208-1.751 4.34a6.75 6.75 0 0 1-6.721 1.761l1.767 1.767c1.132-1.132 2.703-1.752 4.34-1.752c.316 0 .626.026.931.071l1.18-1.18a2.625 2.625 0 0 0 0-3.712l-.644-.644Zm-1.543 5.433l-4.225-4.225l-2.025 2.025l4.225 4.225l2.025-2.025ZM6.594 13.5l1.455 1.455c-.218.423-.339.882-.339 1.364c0 1.73.74 3.342 2.016 4.475c-1.132 1.132-2.703 1.752-4.34 1.752c-.316 0-.626-.026-.931-.071l-1.18 1.18a2.625 2.625 0 0 1-3.712 0l-.644-.644a2.625 2.625 0 0 1 0-3.712l1.18-1.18c.045-.305.071-.615.071-.931c0-1.637-.62-3.208-1.751-4.34a6.75 6.75 0 0 1 6.721-1.761l-1.767-1.767c-1.132 1.132-2.703 1.752-4.34 1.752c-.316 0-.626-.026-.931-.071l-1.18 1.18a2.625 2.625 0 0 1 0 3.712l.644.644Z" />
+                        </svg>
+                    </button>
+                <img src="${imageUrl}" alt="Room ${room.roomNumber}" class="activity-card-image">
                     <div class="p-5">
                         <div class="flex justify-between items-center mb-2">
                             <h3 class="text-xl font-bold text-gray-800">${room.roomNumber}</h3>
@@ -1653,7 +1658,9 @@ function renderLeaveView() {
     // FIX: Updated Room Add Validation to use block.maxRooms and block.blockCapacity separately
     addRoomForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        
+        // --- SETUP: Determine Mode ---
+    const roomIdToEdit = document.getElementById('room-edit-id-input').value; // Get hidden ID
+    const isEditMode = !!roomIdToEdit;
         // --- SETUP: Block details ---
         const blockKey = detailView.dataset.currentHostelKey;
         const block = appState.blocks.find(b => b.blockKey === blockKey);
@@ -1685,55 +1692,128 @@ function renderLeaveView() {
             showError(`Cannot add room. The block is limited to ${blockMaxRooms} rooms, and it already has ${currentRoomCount} rooms.`);
             return;
         }
-        // --- VALIDATION END ---
+      // --- VALIDATION END ---
 
-        const assignedAssets = processAssetAssignments(roomAssetAssignmentContainer);
-        if (assignedAssets === null) {
-            return;
-        }
-        
-        const formData = new FormData();
-        formData.append('roomNumber', document.getElementById('room-id').value);
-        formData.append('floor', document.getElementById('room-floor').value);
-        formData.append('capacity', document.getElementById('room-capacity').value);
+    // Assets only processed in ADD mode (for simplicity; edit assets handled in detail view)
+    const assignedAssets = !isEditMode ? processAssetAssignments(roomAssetAssignmentContainer) : []; 
+    if (!isEditMode && assignedAssets === null) { return; }
+    
+    const formData = new FormData();
+    formData.append('roomNumber', document.getElementById('room-id').value);
+    formData.append('floor', document.getElementById('room-floor').value);
+    formData.append('capacity', newRoomCapacity);
+
+    // Only process assets and image if in ADD mode
+    if (!isEditMode) {
         formData.append('assets', JSON.stringify(assignedAssets)); 
-
         const imageFile = document.getElementById('room-image-file').files[0];
         if (imageFile) {
             formData.append('roomImage', imageFile);
         }
+    }
+
+    // --- Dynamic URL and Method ---
+    const method = isEditMode ? 'PATCH' : 'POST';
+    // POST to /api/blocks/:blockKey/rooms, PATCH to /api/rooms/:roomId
+    const url = isEditMode ? `/api/rooms/${roomIdToEdit}` : `/api/blocks/${blockKey}/rooms`;
+    
+    const submitBtn = addRoomForm.querySelector('button[type="submit"]');
+
+    try {
+        submitBtn.disabled = true;
+        submitBtn.textContent = isEditMode ? 'Updating...' : 'Saving...';
         
-        const submitBtn = addRoomForm.querySelector('button[type="submit"]');
+        const res = await fetch(url, {
+            method: method,
+            // Only send JSON body for PATCH (Express handles FormData for POST/files)
+            body: isEditMode ? JSON.stringify(Object.fromEntries(formData)) : formData,
+            headers: isEditMode ? { 'Content-Type': 'application/json' } : {} 
+        });
 
-        try {
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Saving...';
-            
-            const res = await fetch(`/api/blocks/${blockKey}/rooms`, {
-                method: 'POST',
-                body: formData 
-            });
+        submitBtn.disabled = false;
+        submitBtn.textContent = isEditMode ? 'Update Room' : 'Add Room';
 
-            submitBtn.disabled = false;
-            submitBtn.textContent = 'Add Room';
-
-            const data = await res.json();
-            if (data.success) {
-                await loadHostelData();
-                await loadAssetData();
-                hideModal('add-room-modal');
-                addRoomForm.reset();
-                roomAssetAssignmentContainer.innerHTML = ''; 
-            } else {
-                throw new Error(data.message);
-            }
-        } catch (error) {
-            submitBtn.disabled = false;
-            submitBtn.textContent = 'Add Room';
-            alert(`Error adding room: ${error.message}`);
+        const data = await res.json();
+        if (data.success) {
+            showSuccess(data.message);
+            await loadHostelData();
+            if (!isEditMode) await loadAssetData(); // Only reload assets if we added new ones
+            hideModal('add-room-modal');
+            prepareRoomModalForAdd(); 
+            renderDetailView(blockKey); // Re-render to show update
+        } else {
+            throw new Error(data.message);
         }
-    });
+    } catch (error) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = isEditMode ? 'Update Room' : 'Add Room';
+        alert(`Error ${isEditMode ? 'updating' : 'adding'} room: ${error.message}`);
+    }
+});
+//edit function of room
+async function prepareRoomModalForEdit(roomId) {
+    try {
+        const res = await fetch(`/api/rooms/${roomId}`); // <-- New GET route to be added in server.js
+        if (!res.ok) throw new Error('Failed to fetch room details');
+        const data = await res.json();
+        const room = data.room;
 
+        // Populate the hidden room ID field (needs to be added to admin.html)
+        document.getElementById('room-edit-id-input').value = room._id;
+        
+        // Change Modal Title and Button
+        const modalTitle = document.querySelector('#add-room-modal h2');
+        const submitBtn = document.querySelector('#add-room-form button[type="submit"]');
+
+        if(modalTitle) modalTitle.textContent = `Edit Room: ${room.roomNumber}`;
+        if(submitBtn) submitBtn.textContent = 'Update Room';
+        
+        // Populate form fields
+        document.getElementById('room-id').value = room.roomNumber;
+        document.getElementById('room-floor').value = room.floor;
+        document.getElementById('room-capacity').value = room.capacity;
+        
+        // Disable non-editable fields (e.g., room number in edit mode)
+        document.getElementById('room-id').disabled = true;
+
+        // Reset and hide Asset Assignment (Room assets should be managed separately later)
+        roomAssetAssignmentContainer.innerHTML = `<p class="text-sm text-gray-500">Assets must be updated via the Room Details view.</p>`;
+        document.getElementById('add-room-asset-row-btn').style.display = 'none';
+
+        // Hide image upload during edit (simplifies form handling)
+        document.getElementById('room-image-file').closest('div').style.display = 'none';
+        
+        showModal('add-room-modal');
+
+    } catch (error) {
+        showError('Error loading room data for editing: ' + error.message);
+    }
+}
+
+// Function to reset the modal state for a new room entry (ADD)
+function prepareRoomModalForAdd() {
+    // Clear the hidden ID field to signify ADD mode
+    document.getElementById('room-edit-id-input').value = ''; 
+    
+    // Reset Modal Title and Button
+    const modalTitle = document.querySelector('#add-room-modal h2');
+    const submitBtn = document.querySelector('#add-room-form button[type="submit"]');
+
+    if(modalTitle) modalTitle.textContent = 'Add New Room';
+    if(submitBtn) submitBtn.textContent = 'Add Room';
+    
+    // Reset form and re-enable fields
+    addRoomForm.reset();
+    document.getElementById('room-id').disabled = false;
+    
+    // Show assets and image upload
+    document.getElementById('add-room-asset-row-btn').style.display = 'flex';
+    document.getElementById('room-image-file').closest('div').style.display = 'block';
+
+    // Reload asset assignment rows
+    roomAssetAssignmentContainer.innerHTML = '';
+    addAssetAssignmentRow(roomAssetAssignmentContainer);
+}
     // FIX: Updated Student Add Validation to use block.blockCapacity
     addStudentForm.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -1937,6 +2017,15 @@ function renderLeaveView() {
     roomFilterSelect.addEventListener('change', filterAndSearchRooms);
 
     roomListContainer.addEventListener('click', (e) => {
+        const editBtn = e.target.closest('.edit-room-btn');
+    if (editBtn) {
+        e.preventDefault(); 
+        e.stopPropagation(); // Stop the card click event from firing
+        const roomId = editBtn.dataset.roomId;
+        prepareRoomModalForAdd(); // Reset state first
+        prepareRoomModalForEdit(roomId);
+        return; // Exit here if edit was clicked
+    }
         const card = e.target.closest('.room-card');
         if (card) {
             const roomId = card.dataset.roomId;
@@ -2241,6 +2330,7 @@ function renderLeaveView() {
     showAddRoomModalBtn.addEventListener('click', () => {
         roomAssetAssignmentContainer.innerHTML = ''; 
         addAssetAssignmentRow(roomAssetAssignmentContainer); 
+        prepareRoomModalForAdd();
         showModal('add-room-modal');
     });
 
