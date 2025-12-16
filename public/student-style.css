@@ -4,22 +4,18 @@ html, body {
     margin: 0;
     padding: 0;
     font-family: 'Inter', sans-serif;
+    /* CRITICAL FIX: Prevent scrollbar on the main page */
+    overflow: hidden; 
 }
 
 /* Layout */
 body {
+    /* Using CSS variable fallback for tailwind theme colors where possible, 
+       but keeping logic simple for external file */
     background-color: #eff6ff; /* page-bg */
     display: flex;    
     flex-direction: column;
-    /* Removed overflow: hidden so content can scroll */
-}
-
-/* Ensure the main wrapper fills space below fixed headers */
-.main-wrapper {
-    flex-grow: 1;
-    overflow-y: auto;    
-    position: relative;    
-    -webkit-overflow-scrolling: touch;
+    /* overflow: hidden; Removed from here, moved to html, body for better control */
 }
 
 .navbar {
@@ -32,11 +28,20 @@ body {
 
 #secondary-nav-bar {
     z-index: 40;
-    /* The top-16 is handled inline in the HTML: sticky top-16 */
+    /* The sticky top position is handled in the HTML as top-16 (4rem) */
 }
 
 .fixed-bar {
      background-color: #FFFFFF;
+}
+
+.main-wrapper {
+    /* CRITICAL: Allows this container to take all remaining space */
+    flex-grow: 1; 
+    /* CRITICAL FIX: This is the ONLY element that scrolls */
+    overflow-y: auto;    
+    position: relative;    
+    -webkit-overflow-scrolling: touch;
 }
 
 .content-padding {
@@ -69,13 +74,13 @@ body {
     display: none; 
 }
 
-/* --- Navigation Links Styling (Replaced .nav-link with specific classes) --- */
+/* --- Navigation Links Styling (Used for neat professional look) --- */
 
 /* Desktop Links (used in secondary-nav-bar) */
 .nav-link-desktop {
     display: inline-flex;
     align-items: center;
-    padding: 1rem 0.25rem; /* Increased vertical padding to make it look professional */
+    padding: 1rem 0.25rem; 
     font-size: 0.875rem; /* text-sm */
     font-weight: 500; /* font-medium */
     color: #6B7280; /* secondary-gray */
@@ -102,9 +107,6 @@ body {
     text-decoration: none;
     transition: all 0.2s;
 }
-
-/* Removed old .nav-link.active as it's replaced by .nav-link-desktop.active */
-
 
 /* Report Tabs - Converted from @apply to standard CSS */
 .report-tab {
