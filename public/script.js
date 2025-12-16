@@ -199,7 +199,38 @@ document.addEventListener('DOMContentLoaded', () => {
             day: 'numeric'
         });
     }
+function getAvailableRoomOptionsHTML(allRooms, roomToExcludeId) {
+    let optionsHTML = '<option value="" disabled selected>-- Select a new room --</option>';
+    let availableCount = 0;
 
+    // Filter out the room being deleted and any rooms that are full
+    const availableRooms = allRooms.filter(room => {
+        const isSelf = room._id === roomToExcludeId;
+        const currentOccupancy = room.students ? room.students.length : 0;
+        const isFull = currentOccupancy >= (room.capacity || 1);
+        
+        return !isSelf && !isFull;
+    }).sort((a, b) => a.roomNumber.localeCompare(b.roomNumber, undefined, { numeric: true, sensitivity: 'base' }));
+
+    if (availableRooms.length === 0) {
+        return '<option value="" disabled>NO AVAILABLE ROOMS</option>';
+    }
+
+    availableRooms.forEach(room => {
+        const currentOccupancy = room.students ? room.students.length : 0;
+        const maxCapacity = room.capacity || 1;
+        const availableSlots = maxCapacity - currentOccupancy;
+
+        optionsHTML += `
+            <option value="${room._id}" data-max-capacity="${maxCapacity}" data-current-occupancy="${currentOccupancy}">
+                ${room.roomNumber} (${currentOccupancy}/${maxCapacity}) - ${availableSlots} slots left
+            </option>
+        `;
+        availableCount++;
+    });
+
+    return optionsHTML;
+}
     // --- NEW: LEAVE MANAGEMENT FUNCTIONS ---
 
     // Function to load all leave requests from the backend API
