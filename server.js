@@ -232,6 +232,50 @@ app.get("/api/blocks", async (req, res) => {
 });
 
 
+app.post("/api/blocks", async (req, res) => {
+    try {
+        // Data from the frontend form submission
+        const { blockName, blockKey, blockTheme, blockCapacity, maxRooms } = req.body;
+
+        // 1. Basic Validation
+        if (!blockName || !blockKey || !blockTheme || !blockCapacity || !maxRooms) {
+            return res.status(400).json({ success: false, message: "All block fields are required." });
+        }
+        
+        // 2. Check for duplicate blockKey (Model schema also does this, but this gives a cleaner error)
+        const existingBlock = await Block.findOne({ blockKey: blockKey });
+        if (existingBlock) {
+            return res.status(409).json({ success: false, message: `Block Key '${blockKey}' already exists. Please choose another.` });
+        }
+
+        // 3. Create and Save the new block
+        const newBlock = new Block({
+            blockName,
+            blockKey,
+            blockTheme,
+            blockCapacity: parseInt(blockCapacity, 10),
+            maxRooms: parseInt(maxRooms, 10),
+            rooms: []
+        });
+
+        await newBlock.save();
+
+        res.status(201).json({ 
+            success: true, 
+            message: `Block '${blockName}' created successfully!`, 
+            block: newBlock 
+        });
+
+    } catch (error) {
+        console.error("❌ Error creating block:", error);
+        // Handle Mongoose unique index error (code 11000) for blockKey just in case
+        if (error.code === 11000) {
+            return res.status(409).json({ success: false, message: "Block Key must be unique." });
+        }
+        res.status(500).json({ success: false, message: "Server error while creating block." });
+    }
+});
+
 app.post('/api/blocks/:blockKey/rooms', upload.single('roomImage'), async (req, res) => {
     try {
         const { blockKey } = req.params;
