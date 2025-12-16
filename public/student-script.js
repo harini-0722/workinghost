@@ -630,7 +630,7 @@ function initializeDashboard() {
     const firstName = g_student.name.split(' ')[0];
     document.getElementById('welcome-heading').textContent = `Welcome, ${firstName} 👋`;
 
-    // 2. Set Initials & Nav Profile Pic
+    // 2. Set Initials & Nav Profile Pic (Existing logic)
     const initials = g_student.name.split(' ').map(n => n[0]).join('').substring(0, 2);
     const navImg = document.getElementById('nav-profile-image');
     const navInitials = document.getElementById('nav-initials');
@@ -645,55 +645,61 @@ function initializeDashboard() {
         navImg.classList.add('hidden');
     }
     
-    // 3. Room Card
-    const roomCard = document.querySelector('.card-classy-lift[onclick="showView(\'student-room-view\')"]');
-    if (g_room && g_block) {
-        roomCard.querySelector('.text-4xl').textContent = g_room.roomNumber;    
-        roomCard.querySelector('.text-sm').textContent = `${g_block.blockName} | ${g_room.floor}`;
-        roomCard.classList.add('border-primary-blue');    
-        roomCard.querySelector('.text-xs').classList.add('text-primary-blue');    
+    // 3. Room Card (UPDATED for Compact Layout)
+    // We select the card by its click action since the class names changed
+    const roomCard = document.querySelector('div[onclick="showView(\'student-room-view\')"]');
+    if (g_room && g_block && roomCard) {
+        // Find the text element that holds the room number (it's now text-2xl, not 4xl)
+        const roomNumEl = roomCard.querySelector('.text-2xl') || roomCard.querySelector('.text-4xl'); 
+        if(roomNumEl) roomNumEl.textContent = g_room.roomNumber;
+        
+        // Find the status text (checked in)
+        const statusEl = roomCard.querySelector('.text-accent-green');
+        if(statusEl) statusEl.innerHTML = `<span class="mr-1">●</span> ${g_block.blockName} | ${g_room.floor}`;
     }
 
-    // 4. Fee Card
+    // 4. Fee Card (UPDATED for Compact Layout)
     const feeStatusElement = document.getElementById('dashboard-fee-status');
-    const feeCard = feeStatusElement.closest('.card-classy-lift');
-    const feeStatusText = feeCard.querySelector('.text-sm');
-    const feeStatusIcon = feeCard.querySelector('.mt-4');
-
-    if (g_student.feeStatus === 'Pending') {
+    // Find the parent card using the new class 'stat-card-compact'
+    const feeCard = feeStatusElement.closest('.stat-card-compact');
+    
+    if (feeCard && g_student.feeStatus === 'Pending') {
         feeStatusElement.textContent = 'Fee Due';    
         feeStatusElement.classList.add('text-accent-red');
         feeStatusElement.classList.remove('text-accent-green');
+        
+        // Update border color
         feeCard.classList.replace('border-accent-green', 'border-accent-red');
-        feeCard.querySelector('.text-xs').classList.replace('text-accent-green', 'text-accent-red');
-        feeStatusText.textContent = `Status: ${g_student.feeStatus}`;
-        feeStatusIcon.classList.replace('text-accent-green', 'text-accent-red');
-        feeStatusIcon.querySelector('span').textContent = 'Please pay at the admin office.';
-    } else {
+        
+        // Update the small icon box background and text
+        const iconBox = feeCard.querySelector('.rounded-full');
+        if(iconBox) {
+            iconBox.classList.replace('bg-green-50', 'bg-red-50');
+            iconBox.classList.replace('text-accent-green', 'text-accent-red');
+        }
+    } else if (feeCard) {
         feeStatusElement.textContent = 'Paid';    
         feeStatusElement.classList.add('text-accent-green');
         feeStatusElement.classList.remove('text-accent-red');
+        
         feeCard.classList.replace('border-accent-red', 'border-accent-green');
-        feeCard.querySelector('.text-xs').classList.replace('text-accent-red', 'text-accent-green');
-        feeStatusText.textContent = `Status: ${g_student.feeStatus}`;
-        feeStatusIcon.classList.replace('text-accent-red', 'text-accent-green');
-        feeStatusIcon.innerHTML = '<span>●</span> <span class="ml-1">No outstanding balance.</span>';
+        
+        const iconBox = feeCard.querySelector('.rounded-full');
+        if(iconBox) {
+            iconBox.classList.replace('bg-red-50', 'bg-green-50');
+            iconBox.classList.replace('text-accent-red', 'text-accent-green');
+        }
     }
 
     // 5. Open Requests Card
     const openRequestsEl = document.getElementById('dashboard-open-requests');
-    const openRequestsText = openRequestsEl.nextElementSibling;
-    
     const pendingComplaints = g_complaints.filter(c => c.status === 'Pending' || c.status === 'Critical');    
-    openRequestsEl.textContent = String(pendingComplaints.length).padStart(2, '0');
     
-    if (pendingComplaints.length > 0) {
-        openRequestsText.textContent = `Complaint Pending (${pendingComplaints[0].title})`;
-    } else {
-        openRequestsText.textContent = 'No open complaints.';
+    if (openRequestsEl) {
+        openRequestsEl.textContent = String(pendingComplaints.length).padStart(2, '0');
     }
 
-    // 6. Display Club Activities
+    // 6. Display Club Activities (Now this will finally run!)
     displayClubActivitiesOnDashboard();
 }
 
