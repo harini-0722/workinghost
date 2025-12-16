@@ -671,58 +671,90 @@
                 </div>
             </div>
 
-            <div id="student-leave-view" class="view hidden">
-                <h1 class="text-3xl md:text-4xl font-extrabold text-accent-dark mb-6 md:mb-8">Leave Request 🗓️</h1>
-                <p class="text-secondary-gray mb-8">Submit requests for overnight or extended leave from the hostel.</p>
+           <div id="student-leave-view" class="view hidden h-full flex flex-col overflow-hidden">
+    <div class="flex-shrink-0 mb-3 pt-2">
+        <h1 class="text-2xl font-bold text-accent-dark flex items-center">
+            <i class="fa-solid fa-calendar-days mr-3 text-info-yellow"></i> Leave Request
+        </h1>
+        <p class="text-sm text-secondary-gray">Submit requests for overnight or extended leave from the hostel.</p>
+    </div>
 
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
-                    <div class="lg:col-span-1 bg-card-bg p-6 rounded-xl shadow-lift border-l-4 border-info-yellow">
-                        <h3 class="text-xl font-bold text-info-yellow mb-4">New Leave Application</h3>
-                        <form onsubmit="event.preventDefault(); submitLeave();" class="space-y-4">
-                            <div>
-                                <label class="block text-sm font-medium text-secondary-gray mb-1">Departure Date</label>
-                                <input type="date" id="leave-start" class="w-full p-3 border border-text-muted rounded-lg focus:ring-primary-blue focus:border-primary-blue bg-light-bg"/>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-secondary-gray mb-1">Return Date</label>
-                                <input type="date" id="leave-end" class="w-full p-3 border border-text-muted rounded-lg focus:ring-primary-blue focus:border-primary-blue bg-light-bg"/>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-secondary-gray mb-1">Reason for Leave</label>
-                                <select id="leave-reason" onchange="toggleLeaveReason()" class="w-full p-3 border border-text-muted rounded-lg focus:ring-primary-blue focus:border-primary-blue bg-light-bg">
-                                    <option value="Family Emergency">Family Emergency</option>
-                                    <option value="Home Trip / Vacation">Home Trip / Vacation</option>
-                                    <option value="Academic / Conference Trip">Academic / Conference Trip</option>
-                                    <option value="Medical Appointment">Medical Appointment</option>
-                                    <option value="Other">Other (Specify manually)</option>
-                                </select>
-                                <input type="text" id="leave-reason-manual" class="hidden w-full mt-2 p-3 border border-text-muted rounded-lg focus:ring-primary-blue focus:border-primary-blue bg-light-bg" placeholder="Please specify your reason...">
-                            </div>
-                            <button type="submit" class="btn-classy-lift bg-info-yellow text-accent-dark w-full py-3 rounded-lg shadow-lift hover:bg-amber-400">
-                                Submit Leave Request
-                            </button>
-                        </form>
+    <div class="flex-1 grid grid-cols-1 lg:grid-cols-3 gap-4 min-h-0 pb-2">
+        
+        <div class="lg:col-span-1 bg-white rounded-xl shadow-sm border border-gray-100 flex flex-col overflow-y-auto custom-scrollbar">
+            <div class="p-4 border-b border-gray-100 bg-gray-50 border-l-4 border-info-yellow">
+                <h3 class="text-sm font-bold text-gray-800 flex items-center">
+                    <i class="fa-solid fa-pen-to-square mr-2 text-info-yellow"></i> New Leave Application
+                </h3>
+            </div>
+            
+            <form onsubmit="event.preventDefault(); submitLeave();" class="p-4 space-y-3">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-secondary-gray mb-1">Departure Date</label>
+                        <div class="relative">
+                             <input type="date" id="leave-start" class="w-full p-2 text-sm border border-gray-200 rounded-lg focus:ring-1 focus:ring-info-yellow focus:border-info-yellow bg-gray-50">
+                        </div>
                     </div>
-
-                    <div class="lg:col-span-2">
-                        <h3 class="text-xl font-bold text-accent-dark mb-5">Previous Leave Status</h3>
-                        <div class="bg-card-bg rounded-xl shadow-lift overflow-x-auto">
-                            <table class="min-w-full divide-y divide-text-muted">
-                                <thead class="bg-light-bg">
-                                    <tr>
-                                        <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Start Date</th>
-                                        <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">End Date</th>
-                                        <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Reason</th>
-                                        <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="student-leave-history" class="bg-card-bg divide-y divide-text-muted">
-                                </tbody>
-                            </table>
+                    <div>
+                        <label class="block text-xs font-bold text-secondary-gray mb-1">Return Date</label>
+                        <div class="relative">
+                            <input type="date" id="leave-end" class="w-full p-2 text-sm border border-gray-200 rounded-lg focus:ring-1 focus:ring-info-yellow focus:border-info-yellow bg-gray-50">
                         </div>
                     </div>
                 </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-secondary-gray mb-1">Reason for Leave</label>
+                    <div class="relative">
+                         <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                            <i class="fa-solid fa-clipboard-question text-xs"></i>
+                        </span>
+                        <select id="leave-reason" onchange="toggleLeaveReason()" class="w-full pl-8 p-2 text-sm border border-gray-200 rounded-lg focus:ring-1 focus:ring-info-yellow focus:border-info-yellow bg-gray-50 appearance-none">
+                            <option value="Family Emergency">Family Emergency</option>
+                            <option value="Home Trip / Vacation">Home Trip / Vacation</option>
+                            <option value="Academic / Conference Trip">Academic / Conference Trip</option>
+                            <option value="Medical Appointment">Medical Appointment</option>
+                            <option value="Other">Other (Specify manually)</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
+                            <i class="fa-solid fa-chevron-down text-xs"></i>
+                        </div>
+                    </div>
+                    <input type="text" id="leave-reason-manual" class="hidden w-full mt-2 p-2 text-sm border border-gray-200 rounded-lg focus:ring-info-yellow focus:border-info-yellow bg-gray-50" placeholder="Type specific reason...">
+                </div>
+
+                <button type="submit" class="w-full py-2.5 rounded-lg bg-info-yellow text-white text-sm font-bold shadow-sm hover:bg-yellow-500 transition transform active:scale-95 flex justify-center items-center mt-2">
+                    <i class="fa-solid fa-paper-plane mr-2"></i> Submit Leave Request
+                </button>
+            </form>
+        </div>
+
+        <div class="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-100 flex flex-col overflow-hidden">
+            <div class="p-4 border-b border-gray-100 bg-gray-50 flex justify-between items-center flex-shrink-0">
+                <h3 class="text-sm font-bold text-accent-dark flex items-center">
+                    <i class="fa-solid fa-clock-rotate-left mr-2 text-secondary-gray"></i> Previous Leave Status
+                </h3>
             </div>
+            
+            <div class="overflow-y-auto flex-1 p-0">
+                <table class="min-w-full divide-y divide-gray-100">
+                    <thead class="bg-gray-50 sticky top-0 z-10">
+                        <tr>
+                            <th class="py-3 px-4 text-left text-xs font-bold text-secondary-gray uppercase tracking-wider">Start Date</th>
+                            <th class="py-3 px-4 text-left text-xs font-bold text-secondary-gray uppercase tracking-wider">End Date</th>
+                            <th class="py-3 px-4 text-left text-xs font-bold text-secondary-gray uppercase tracking-wider">Reason</th>
+                            <th class="py-3 px-4 text-left text-xs font-bold text-secondary-gray uppercase tracking-wider">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="student-leave-history" class="bg-white divide-y divide-gray-50">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
 
             <div id="student-details-view" class="view hidden">
                 <button onclick="showView('student-dashboard-view')" class="btn-classy-lift flex items-center space-x-2 text-primary-blue hover:text-blue-700 font-semibold mb-6">
