@@ -1116,7 +1116,7 @@ function renderLeaveView() {
             const blockHTML = `
                 <div class="bg-white rounded-lg shadow-md overflow-hidden border-l-8 ${theme.border} relative transition-all duration-300 hover:shadow-xl hover:scale-105">
                     <div class="absolute top-3 right-3 flex space-x-2">
-                       // This is the updated code for the Edit button using the OUTLINE style SVG:
+                      
 <button class="edit-block-btn p-0.5 text-blue-500 hover:bg-blue-100 rounded-full transition-colors duration-200 z-10" data-block-id="${block._id}" title="Edit Block">
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
         <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 18.07a4.995 4.995 0 0 1-1.488 1.488l-4.25 1.777l.732-3.351a4.99 4.99 0 0 1 1.488-1.488L16.862 4.487Zm0 0L19.5 7.125"/>
