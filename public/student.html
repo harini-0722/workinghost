@@ -6,7 +6,7 @@
     <title>IIT Hostel Management - Student Portal</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
-    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
     
     <script src="https://unpkg.com/heroicons@2.1.1/umd/solid.js"></script>
@@ -120,99 +120,94 @@
 
 <body class="bg-blue-50 text-gray-900 flex flex-col min-h-screen">
     
-    <nav class="navbar shadow-lg border-b border-primary-blue/20 sticky top-0 z-50">
-        <div class="w-full px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-14"> <div class="flex items-center">
-                    <a href="#" onclick="showView('student-dashboard-view')" class="flex-shrink-0 text-xl md:text-2xl font-bold text-primary-blue hover:text-blue-700 transition duration-300">
-                        IIT COLLEGE <span class="hidden sm:inline text-xs md:text-sm font-normal text-secondary-gray ml-1">| Student Portal</span>
-                    </a>
-                </div>
-
-                <div class="hidden sm:flex flex-1 justify-center"></div>
-
-                <div class="flex items-center space-x-4">
-                    
-                    <a href="#" onclick="logout()" class="nav-link hidden sm:inline-flex items-center px-1 pt-1 text-sm font-medium text-secondary-gray hover:text-accent-red transition duration-200">
-                        <hero-icon-solid name="arrow-left-on-rectangle" class="h-5 w-5 mr-1"></hero-icon-solid> Logout
-                    </a>
-
-                    <div class="flex-shrink-0">
-                         <div id="student-initial-box" onclick="showStudentDetails()" class="h-9 w-9 bg-primary-blue rounded-full flex items-center justify-center text-card-bg font-semibold shadow-soft cursor-pointer relative"> <img id="nav-profile-image" class="h-full w-full rounded-full object-cover hidden" alt="Profile">
-                             <span id="nav-initials" class="text-sm">...</span>
-                         </div>
-                    </div>
-                    
-                    <button type="button" id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-primary-blue hover:text-primary-blue/80 hover:bg-light-bg focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-blue sm:hidden" aria-controls="mobile-menu" aria-expanded="false">
-                        <hero-icon-outline name="bars-3" class="block h-6 w-6"></hero-icon-outline>
-                    </button>
-                </div>
-            </div>
-        </div>
-        
-        <div class="sm:hidden hidden" id="mobile-menu">
-            <div class="pt-2 pb-3 space-y-1">
-                <a href="#" onclick="showView('student-dashboard-view'); hideMobileMenu();" id="mobile-nav-student-dashboard-view" class="nav-link-mobile block pl-3 pr-4 py-2 border-l-4 border-primary-blue text-base font-medium text-primary-blue bg-light-bg">
-                    <hero-icon-solid name="home" class="h-5 w-5 mr-2"></hero-icon-solid> Dashboard
-                </a>
-                <a href="#" onclick="showStudentDetails(); hideMobileMenu();" id="mobile-nav-student-profile-view" class="nav-link-mobile block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:bg-light-bg hover:text-gray-800">
-                    <hero-icon-solid name="user" class="h-5 w-5 mr-2"></hero-icon-solid> My Profile
-                </a>
-                <a href="#" onclick="showView('student-room-view'); hideMobileMenu();" id="mobile-nav-student-room-view" class="nav-link-mobile block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:bg-light-bg hover:text-gray-800">
-                    <hero-icon-solid name="cube" class="h-5 w-5 mr-2"></hero-icon-solid> My Room
-                </a>
-                <a href="#" onclick="showView('student-attendance-view'); hideMobileMenu();" id="mobile-nav-student-attendance-view" class="nav-link-mobile block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:bg-light-bg hover:text-gray-800">
-                    <hero-icon-solid name="check-circle" class="h-5 w-5 mr-2"></hero-icon-solid> Attendance
-                </a>
-                <a href="#" onclick="showView('student-reports-view'); hideMobileMenu();" id="mobile-nav-student-reports-view" class="nav-link-mobile block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:bg-light-bg hover:text-gray-800">
-                    <hero-icon-solid name="exclamation-triangle" class="h-5 w-5 mr-2"></hero-icon-solid> Reports & Issues
-                </a>
-                <a href="#" onclick="showView('student-visitor-view'); hideMobileMenu();" id="mobile-nav-student-visitor-view" class="nav-link-mobile block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:bg-light-bg hover:text-gray-800">
-                    <hero-icon-solid name="user-plus" class="h-5 w-5 mr-2"></hero-icon-solid> Visitor Request
-                </a>
-                <a href="#" onclick="showView('student-leave-view'); hideMobileMenu();" id="mobile-nav-student-leave-view" class="nav-link-mobile block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:bg-light-bg hover:text-gray-800">
-                    <hero-icon-solid name="calendar-days" class="h-5 w-5 mr-2"></hero-icon-solid> Leave Request
-                </a>
-                <a href="gymkhana.html" target="_top" id="mobile-nav-student-gymkhana-view" class="nav-link-mobile block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:bg-light-bg hover:text-gray-800">
-                    <hero-icon-solid name="academic-cap" class="h-5 w-5 mr-2"></hero-icon-solid> Gymkhana
-                </a>
-                <a href="#" onclick="logout(); hideMobileMenu();" class="nav-link-mobile block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:bg-light-bg hover:text-accent-red">
-                    <hero-icon-solid name="arrow-left-on-rectangle" class="h-5 w-5 mr-2"></hero-icon-solid> Logout
+   <nav class="navbar shadow-lg border-b border-primary-blue/20 sticky top-0 z-50">
+    <div class="w-full px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-14"> 
+            <div class="flex items-center">
+                <a href="#" onclick="showView('student-dashboard-view')" class="flex-shrink-0 text-xl md:text-2xl font-bold text-primary-blue hover:text-blue-700 transition duration-300">
+                    <i class="fa-solid fa-graduation-cap mr-2"></i>IIT COLLEGE <span class="hidden sm:inline text-xs md:text-sm font-normal text-secondary-gray ml-1">| Student Portal</span>
                 </a>
             </div>
-        </div>
-    </nav>
-    
-    <div id="secondary-nav-bar" class="hidden sm:block bg-card-bg shadow-soft border-b border-text-muted sticky top-14 z-40">
-        <div class="w-full px-4 sm:px-6 lg:px-8">
-            <div class="flex space-x-4 lg:space-x-6 overflow-x-auto whitespace-nowrap">
+
+            <div class="flex items-center space-x-4">
+                <a href="#" onclick="logout()" class="nav-link hidden sm:inline-flex items-center px-1 pt-1 text-sm font-medium text-secondary-gray hover:text-accent-red transition duration-200">
+                    <i class="fa-solid fa-right-from-bracket mr-2"></i> Logout
+                </a>
+
+                <div class="flex-shrink-0">
+                     <div id="student-initial-box" onclick="showStudentDetails()" class="h-9 w-9 bg-primary-blue rounded-full flex items-center justify-center text-card-bg font-semibold shadow-soft cursor-pointer relative"> 
+                         <img id="nav-profile-image" class="h-full w-full rounded-full object-cover hidden" alt="Profile">
+                         <span id="nav-initials" class="text-sm">...</span>
+                     </div>
+                </div>
                 
-                <a href="#" onclick="showView('student-dashboard-view')" id="nav-student-dashboard-view" class="nav-link-desktop active">
-                    <hero-icon-solid name="home" class="h-5 w-5 mr-1"></hero-icon-solid> Dashboard
-                </a>
-                <a href="#" onclick="showStudentDetails()" id="nav-student-profile-view" class="nav-link-desktop">
-                    <hero-icon-solid name="user" class="h-5 w-5 mr-1"></hero-icon-solid> My Profile
-                </a>
-                <a href="#" onclick="showView('student-room-view')" id="nav-student-room-view" class="nav-link-desktop">
-                    <hero-icon-solid name="cube" class="h-5 w-5 mr-1"></hero-icon-solid> My Room
-                </a>
-                <a href="#" onclick="showView('student-attendance-view')" id="nav-student-attendance-view" class="nav-link-desktop">
-                    <hero-icon-solid name="check-circle" class="h-5 w-5 mr-1"></hero-icon-solid> Attendance
-                </a>
-                <a href="#" onclick="showView('student-reports-view')" id="nav-student-reports-view" class="nav-link-desktop">
-                    <hero-icon-solid name="exclamation-triangle" class="h-5 w-5 mr-1"></hero-icon-solid> Reports & Issues
-                </a>
-                <a href="#" onclick="showView('student-visitor-view')" id="nav-student-visitor-view" class="nav-link-desktop">
-                    <hero-icon-solid name="user-plus" class="h-5 w-5 mr-1"></hero-icon-solid> Visitor Request
-                </a>
-                <a href="#" onclick="showView('student-leave-view')" id="nav-student-leave-view" class="nav-link-desktop">
-                    <hero-icon-solid name="calendar-days" class="h-5 w-5 mr-1"></hero-icon-solid> Leave Request
-                </a>
-                <a href="gymkhana.html" target="_top" id="nav-student-gymkhana-view" class="nav-link-desktop">
-                    <hero-icon-solid name="academic-cap" class="h-5 w-5 mr-1"></hero-icon-solid> Gymkhana
-                </a>
+                <button type="button" id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-primary-blue sm:hidden">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                </button>
             </div>
         </div>
     </div>
+    
+    <div class="sm:hidden hidden" id="mobile-menu">
+        <div class="pt-2 pb-3 space-y-1">
+            <a href="#" onclick="showView('student-dashboard-view'); hideMobileMenu();" class="nav-link-mobile block pl-3 pr-4 py-2 border-l-4 border-primary-blue text-base font-medium text-primary-blue bg-light-bg">
+                <i class="fa-solid fa-house w-6"></i> Dashboard
+            </a>
+            <a href="#" onclick="showStudentDetails(); hideMobileMenu();" class="nav-link-mobile block pl-3 pr-4 py-2 text-base font-medium text-gray-600">
+                <i class="fa-solid fa-user w-6"></i> My Profile
+            </a>
+            <a href="#" onclick="showView('student-room-view'); hideMobileMenu();" class="nav-link-mobile block pl-3 pr-4 py-2 text-base font-medium text-gray-600">
+                <i class="fa-solid fa-bed w-6"></i> My Room
+            </a>
+            <a href="#" onclick="showView('student-attendance-view'); hideMobileMenu();" class="nav-link-mobile block pl-3 pr-4 py-2 text-base font-medium text-gray-600">
+                <i class="fa-solid fa-clipboard-check w-6"></i> Attendance
+            </a>
+            <a href="#" onclick="showView('student-reports-view'); hideMobileMenu();" class="nav-link-mobile block pl-3 pr-4 py-2 text-base font-medium text-gray-600">
+                <i class="fa-solid fa-triangle-exclamation w-6"></i> Reports
+            </a>
+            <a href="#" onclick="showView('student-visitor-view'); hideMobileMenu();" class="nav-link-mobile block pl-3 pr-4 py-2 text-base font-medium text-gray-600">
+                <i class="fa-solid fa-person-walking-luggage w-6"></i> Visitors
+            </a>
+            <a href="#" onclick="showView('student-leave-view'); hideMobileMenu();" class="nav-link-mobile block pl-3 pr-4 py-2 text-base font-medium text-gray-600">
+                <i class="fa-solid fa-calendar-days w-6"></i> Leave
+            </a>
+            <a href="gymkhana.html" class="nav-link-mobile block pl-3 pr-4 py-2 text-base font-medium text-gray-600">
+                <i class="fa-solid fa-medal w-6"></i> Gymkhana
+            </a>
+        </div>
+    </div>
+</nav>
+
+<div id="secondary-nav-bar" class="hidden sm:block bg-card-bg shadow-soft border-b border-text-muted sticky top-14 z-40">
+    <div class="w-full px-4 sm:px-6 lg:px-8">
+        <div class="flex space-x-4 lg:space-x-6 overflow-x-auto whitespace-nowrap">
+            <a href="#" onclick="showView('student-dashboard-view')" id="nav-student-dashboard-view" class="nav-link-desktop active">
+                <i class="fa-solid fa-house mr-2"></i> Dashboard
+            </a>
+            <a href="#" onclick="showStudentDetails()" id="nav-student-profile-view" class="nav-link-desktop">
+                <i class="fa-solid fa-user mr-2"></i> My Profile
+            </a>
+            <a href="#" onclick="showView('student-room-view')" id="nav-student-room-view" class="nav-link-desktop">
+                <i class="fa-solid fa-bed mr-2"></i> My Room
+            </a>
+            <a href="#" onclick="showView('student-attendance-view')" id="nav-student-attendance-view" class="nav-link-desktop">
+                <i class="fa-solid fa-clipboard-check mr-2"></i> Attendance
+            </a>
+            <a href="#" onclick="showView('student-reports-view')" id="nav-student-reports-view" class="nav-link-desktop">
+                <i class="fa-solid fa-triangle-exclamation mr-2"></i> Reports
+            </a>
+            <a href="#" onclick="showView('student-visitor-view')" id="nav-student-visitor-view" class="nav-link-desktop">
+                <i class="fa-solid fa-person-walking-luggage mr-2"></i> Visitor
+            </a>
+            <a href="#" onclick="showView('student-leave-view')" id="nav-student-leave-view" class="nav-link-desktop">
+                <i class="fa-solid fa-calendar-days mr-2"></i> Leave
+            </a>
+            <a href="gymkhana.html" id="nav-student-gymkhana-view" class="nav-link-desktop">
+                <i class="fa-solid fa-medal mr-2"></i> Gymkhana
+            </a>
+        </div>
+    </div>
+</div>
     <div class="main-wrapper">
         <div class="content-padding">
 
@@ -222,12 +217,13 @@
             <h1 id="welcome-heading" class="text-2xl font-bold text-accent-dark">Welcome...</h1>
             <p class="text-sm text-secondary-gray">Your personalized hostel dashboard.</p>
         </div>
-        <div class="text-xs text-secondary-gray bg-white px-3 py-1 rounded-full shadow-sm border border-gray-100">
-            Current Session: 2025-26
+        <div class="text-xs text-secondary-gray bg-white px-3 py-1 rounded-full shadow-sm border border-gray-100 flex items-center">
+            <i class="fa-solid fa-clock mr-2 text-primary-blue"></i> Session: 2025-26
         </div>
     </div>
 
     <div class="flex-shrink-0 grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+        
         <div onclick="showView('student-room-view')" class="stat-card-compact border-l-4 border-primary-blue cursor-pointer bg-white p-4 rounded-xl shadow-sm flex items-center justify-between transition hover:-translate-y-1">
             <div>
                 <p class="text-xs font-bold text-secondary-gray uppercase tracking-wider">Your Room</p>
@@ -235,7 +231,7 @@
                 <p class="text-xs text-accent-green font-bold mt-1 flex items-center"><span class="mr-1">●</span> Checked In</p>
             </div>
             <div class="h-10 w-10 rounded-full bg-blue-50 flex items-center justify-center text-primary-blue">
-                <hero-icon-solid name="home" class="h-5 w-5"></hero-icon-solid>
+                <i class="fa-solid fa-door-open text-lg"></i>
             </div>
         </div>
 
@@ -246,7 +242,7 @@
                 <p class="text-xs text-secondary-gray mt-1 underline">Check details</p>
             </div>
             <div class="h-10 w-10 rounded-full bg-red-50 flex items-center justify-center text-accent-red">
-                <hero-icon-solid name="currency-rupee" class="h-5 w-5"></hero-icon-solid>
+                <i class="fa-solid fa-indian-rupee-sign text-lg"></i>
             </div>
         </div>
 
@@ -257,7 +253,7 @@
                 <p class="text-xs text-complaint-theme font-bold mt-1">View Issues</p>
             </div>
             <div class="h-10 w-10 rounded-full bg-orange-50 flex items-center justify-center text-complaint-theme">
-                <hero-icon-solid name="exclamation-circle" class="h-5 w-5"></hero-icon-solid>
+                <i class="fa-solid fa-bell text-lg"></i>
             </div>
         </div>
     </div>
@@ -267,7 +263,7 @@
         <div class="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-100 flex flex-col overflow-hidden">
             <div class="flex justify-between items-center p-4 border-b border-gray-100 bg-gray-50">
                 <h2 class="text-sm font-bold text-accent-dark flex items-center">
-                    <span class="mr-2">🎭</span> Recent Activities
+                    <i class="fa-solid fa-masks-theater mr-2 text-primary-blue"></i> Recent Activities
                 </h2>
                 <button onclick="showView('student-activities-view')" class="text-xs font-semibold text-primary-blue hover:underline">View All</button>
             </div>
@@ -282,12 +278,12 @@
 
         <div class="lg:col-span-1 bg-white rounded-xl shadow-sm border border-gray-100 flex flex-col p-4">
             <h2 class="text-sm font-bold text-accent-dark mb-4 flex items-center">
-                <span class="mr-2">⚡</span> Quick Actions
+                <i class="fa-solid fa-bolt mr-2 text-yellow-500"></i> Quick Actions
             </h2>
             <div class="space-y-3">
                 <button onclick="showView('student-reports-view')" class="w-full flex items-center p-3 rounded-lg bg-gray-50 hover:bg-blue-50 border border-transparent hover:border-blue-100 transition group text-left">
-                    <div class="p-2 bg-white rounded-md shadow-sm mr-3 text-complaint-theme group-hover:scale-110 transition">
-                        <hero-icon-solid name="pencil-square" class="h-4 w-4"></hero-icon-solid>
+                    <div class="p-2 bg-white rounded-md shadow-sm mr-3 text-complaint-theme group-hover:scale-110 transition flex items-center justify-center h-8 w-8">
+                        <i class="fa-solid fa-pen-to-square"></i>
                     </div>
                     <div>
                         <span class="block text-xs font-bold text-gray-800">File Complaint</span>
@@ -296,8 +292,8 @@
                 </button>
 
                 <button onclick="showView('student-leave-view')" class="w-full flex items-center p-3 rounded-lg bg-gray-50 hover:bg-blue-50 border border-transparent hover:border-blue-100 transition group text-left">
-                    <div class="p-2 bg-white rounded-md shadow-sm mr-3 text-info-yellow group-hover:scale-110 transition">
-                        <hero-icon-solid name="calendar-days" class="h-4 w-4"></hero-icon-solid>
+                    <div class="p-2 bg-white rounded-md shadow-sm mr-3 text-info-yellow group-hover:scale-110 transition flex items-center justify-center h-8 w-8">
+                        <i class="fa-solid fa-paper-plane"></i>
                     </div>
                     <div>
                         <span class="block text-xs font-bold text-gray-800">Apply Leave</span>
@@ -306,8 +302,8 @@
                 </button>
 
                 <button onclick="openAnnouncementsModal()" class="w-full flex items-center p-3 rounded-lg bg-gray-50 hover:bg-blue-50 border border-transparent hover:border-blue-100 transition group text-left">
-                    <div class="p-2 bg-white rounded-md shadow-sm mr-3 text-primary-blue group-hover:scale-110 transition">
-                        <hero-icon-solid name="megaphone" class="h-4 w-4"></hero-icon-solid>
+                    <div class="p-2 bg-white rounded-md shadow-sm mr-3 text-primary-blue group-hover:scale-110 transition flex items-center justify-center h-8 w-8">
+                        <i class="fa-solid fa-bullhorn"></i>
                     </div>
                     <div>
                         <span class="block text-xs font-bold text-gray-800">Announcements</span>
