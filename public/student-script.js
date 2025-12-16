@@ -1126,31 +1126,50 @@ function populateVisitorRequestHistory() {
     const tableBody = document.getElementById('visitor-request-history-body');
     tableBody.innerHTML = '';
     
+    // Sort by start date (Newest first)
     const myVisitorHistory = g_visitorRequests
         .sort((a, b) => new Date(b.startDate) - new Date(a.startDate)); 
 
     if (myVisitorHistory.length === 0) {
-        tableBody.innerHTML = `<tr><td colspan="5" class="py-4 px-6 text-center text-secondary-gray">No visitor request history.</td></tr>`;
+        tableBody.innerHTML = `
+            <tr>
+                <td colspan="5" class="py-8 text-center text-secondary-gray">
+                    <div class="flex flex-col items-center justify-center">
+                        <i class="fa-solid fa-clipboard-list text-2xl mb-2 opacity-20"></i>
+                        <span class="text-xs">No visitor requests found.</span>
+                    </div>
+                </td>
+            </tr>`;
         return;
     }
 
     myVisitorHistory.forEach(v => {
-        let statusClass;
+        let statusClass, statusIcon;
+        
         if (v.status === 'Approved') {
-            statusClass = 'text-accent-green';
+            statusClass = 'text-accent-green bg-green-50 px-2 py-1 rounded-md';
+            statusIcon = '<i class="fa-solid fa-check mr-1"></i>';
         } else if (v.status === 'Pending') {
-            statusClass = 'text-info-yellow';
+            statusClass = 'text-info-yellow bg-yellow-50 px-2 py-1 rounded-md';
+            statusIcon = '<i class="fa-solid fa-hourglass-half mr-1"></i>';
         } else {
-            statusClass = 'text-accent-red'; 
+            statusClass = 'text-accent-red bg-red-50 px-2 py-1 rounded-md'; 
+            statusIcon = '<i class="fa-solid fa-xmark mr-1"></i>';
         }
         
         tableBody.innerHTML += `
-            <tr class="hover:bg-light-bg transition duration-150">
-                <td class="py-3 px-6 whitespace-nowrap text-sm text-accent-dark">${v.visitorName}</td>
-                <td class="py-3 px-6 whitespace-nowrap text-sm text-secondary-gray">${formatDate(v.startDate)}</td>
-                <td class="py-3 px-6 whitespace-nowrap text-sm text-secondary-gray">${formatDate(v.endDate)}</td>
-                <td class="py-3 px-6 text-sm text-secondary-gray">${v.reason}</td>
-                <td class="py-3 px-6 whitespace-nowrap text-sm font-medium ${statusClass}">${v.status}</td>
+            <tr class="hover:bg-gray-50 transition duration-150 group">
+                <td class="py-3 px-4 whitespace-nowrap text-xs font-bold text-accent-dark">
+                    <i class="fa-solid fa-user text-gray-300 mr-2 group-hover:text-primary-blue transition"></i>${v.visitorName}
+                </td>
+                <td class="py-3 px-4 whitespace-nowrap text-xs text-secondary-gray">${formatDate(v.startDate)}</td>
+                <td class="py-3 px-4 whitespace-nowrap text-xs text-secondary-gray">${formatDate(v.endDate)}</td>
+                <td class="py-3 px-4 text-xs text-secondary-gray max-w-[150px] truncate" title="${v.reason}">${v.reason}</td>
+                <td class="py-3 px-4 whitespace-nowrap text-[10px] font-bold">
+                    <span class="${statusClass} flex items-center w-fit">
+                        ${statusIcon} ${v.status}
+                    </span>
+                </td>
             </tr>
         `;
     });
