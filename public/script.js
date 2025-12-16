@@ -1117,8 +1117,10 @@ function renderLeaveView() {
                 <div class="bg-white rounded-lg shadow-md overflow-hidden border-l-8 ${theme.border} relative transition-all duration-300 hover:shadow-xl hover:scale-105">
                     <div class="absolute top-3 right-3 flex space-x-2">
                         <button class="edit-block-btn p-1 text-blue-500 hover:bg-blue-100 rounded-full transition-colors duration-200 z-10" data-block-id="${block._id}" title="Edit Block">
-                            <hero-icon-solid name="pencil-square" class="w-6 h-6"></hero-icon-solid>
-                        </button>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
+        <path d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.18 1.18c.045.305.071.615.071.931c0 1.637-.62 3.208-1.751 4.34a6.75 6.75 0 0 1-6.721 1.761l1.767 1.767c1.132-1.132 2.703-1.752 4.34-1.752c.316 0 .626.026.931.071l1.18-1.18a2.625 2.625 0 0 0 0-3.712l-.644-.644Zm-1.543 5.433l-4.225-4.225l-2.025 2.025l4.225 4.225l2.025-2.025ZM6.594 13.5l1.455 1.455c-.218.423-.339.882-.339 1.364c0 1.73.74 3.342 2.016 4.475c-1.132 1.132-2.703 1.752-4.34 1.752c-.316 0-.626-.026-.931-.071l-1.18 1.18a2.625 2.625 0 0 1-3.712 0l-.644-.644a2.625 2.625 0 0 1 0-3.712l1.18-1.18c.045-.305.071-.615.071-.931c0-1.637-.62-3.208-1.751-4.34a6.75 6.75 0 0 1 6.721-1.761l-1.767-1.767c-1.132 1.132-2.703 1.752-4.34 1.752c-.316 0-.626-.026-.931-.071l-1.18 1.18a2.625 2.625 0 0 1 0 3.712l.644.644Z" />
+    </svg>
+</button>
                         <button class="remove-block-btn p-1 text-red-500 hover:bg-red-100 rounded-full transition-colors duration-200 z-10" data-block-id="${block._id}" data-block-name="${block.blockName}" title="Delete Block">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />

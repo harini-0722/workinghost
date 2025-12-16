@@ -276,6 +276,66 @@ app.post("/api/blocks", async (req, res) => {
     }
 });
 
+app.get("/api/blocks/:id", async (req, res) => {
+    try {
+        const blockId = req.params.id;
+        const block = await Block.findById(blockId)
+            .populate({
+                path: 'rooms',
+                populate: [
+                    { path: 'students' },
+                    { path: 'complaints' }
+                ]
+            });
+
+        if (!block) {
+            return res.status(404).json({ success: false, message: "Block not found." });
+        }
+
+        res.json({ success: true, block });
+    } catch (error) {
+        console.error("❌ Error fetching block details:", error);
+        res.status(500).json({ success: false, message: "Server error fetching block details." });
+    }
+});
+app.patch("/api/blocks/:id", async (req, res) => {
+    try {
+        const blockId = req.params.id;
+        // Fields allowed for update (blockKey should not change as it's the unique slug)
+        const { blockName, blockTheme, blockCapacity, maxRooms } = req.body; 
+
+        // 1. Basic Validation
+        if (!blockName || !blockTheme || !blockCapacity || !maxRooms) {
+            return res.status(400).json({ success: false, message: "All block fields are required." });
+        }
+        
+        // 2. Find and Update the block
+        const updatedBlock = await Block.findByIdAndUpdate(
+            blockId,
+            { 
+                blockName, 
+                blockTheme, 
+                blockCapacity: parseInt(blockCapacity, 10),
+                maxRooms: parseInt(maxRooms, 10)
+            },
+            { new: true, runValidators: true } // {new: true} returns the updated document
+        );
+
+        if (!updatedBlock) {
+            return res.status(404).json({ success: false, message: "Block not found." });
+        }
+
+        res.json({ 
+            success: true, 
+            message: `Block "${updatedBlock.blockName}" updated successfully.`, 
+            block: updatedBlock 
+        });
+
+    } catch (error) {
+        console.error("❌ Error updating block:", error);
+        res.status(500).json({ success: false, message: "Server error while updating block." });
+    }
+});
 app.post('/api/blocks/:blockKey/rooms', upload.single('roomImage'), async (req, res) => {
     try {
         const { blockKey } = req.params;
