@@ -52,7 +52,7 @@
         .navbar {
             background-color: #ffffff;
             /* Ensure fixed height for top nav */
-            height: 4rem; 
+            height: 3.5rem; /* Reduced height from h-16 (4rem) to h-14 (3.5rem) */
         }
         /* --- END Gradient Styles --- */
 
@@ -119,11 +119,10 @@
 </head>
 
 <body class="bg-blue-50 text-gray-900 flex flex-col min-h-screen">
+    
     <nav class="navbar shadow-lg border-b border-primary-blue/20 sticky top-0 z-50">
         <div class="w-full px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                
-                <div class="flex items-center">
+            <div class="flex justify-between items-center h-14"> <div class="flex items-center">
                     <a href="#" onclick="showView('student-dashboard-view')" class="flex-shrink-0 text-xl md:text-2xl font-bold text-primary-blue hover:text-blue-700 transition duration-300">
                         IIT COLLEGE <span class="hidden sm:inline text-xs md:text-sm font-normal text-secondary-gray ml-1">| Student Portal</span>
                     </a>
@@ -138,9 +137,8 @@
                     </a>
 
                     <div class="flex-shrink-0">
-                         <div id="student-initial-box" onclick="showStudentDetails()" class="h-10 w-10 bg-primary-blue rounded-full flex items-center justify-center text-card-bg font-semibold shadow-soft cursor-pointer relative">
-                             <img id="nav-profile-image" class="h-full w-full rounded-full object-cover hidden" alt="Profile">
-                             <span id="nav-initials" class="text-base">...</span>
+                         <div id="student-initial-box" onclick="showStudentDetails()" class="h-9 w-9 bg-primary-blue rounded-full flex items-center justify-center text-card-bg font-semibold shadow-soft cursor-pointer relative"> <img id="nav-profile-image" class="h-full w-full rounded-full object-cover hidden" alt="Profile">
+                             <span id="nav-initials" class="text-sm">...</span>
                          </div>
                     </div>
                     
@@ -184,7 +182,7 @@
         </div>
     </nav>
     
-    <div id="secondary-nav-bar" class="hidden sm:block bg-card-bg shadow-soft border-b border-text-muted sticky top-16 z-40">
+    <div id="secondary-nav-bar" class="hidden sm:block bg-card-bg shadow-soft border-b border-text-muted sticky top-14 z-40">
         <div class="w-full px-4 sm:px-6 lg:px-8">
             <div class="flex space-x-4 lg:space-x-6 overflow-x-auto whitespace-nowrap">
                 
@@ -798,8 +796,7 @@
 
             </div>
     </div>
-    <footer class="fixed-bar shadow-soft border-t-4 border-primary-blue/20 p-4 md:p-6 text-center text-sm text-secondary-gray">
-        <div class="container mx-auto">
+    <footer class="fixed-bar shadow-soft border-t-4 border-primary-blue/20 p-3 md:p-4 text-center text-sm text-secondary-gray"> <div class="container mx-auto">
             <p>&copy; 2024 IIT Hostel Management Demo. All rights reserved.</p>
             <p class="mt-1 text-xs text-primary-blue">Contact: warden@iit-hostel.edu</p>
         </div>

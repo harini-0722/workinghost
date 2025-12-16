@@ -5,7 +5,7 @@ html, body {
     padding: 0;
     font-family: 'Inter', sans-serif;
     /* CRITICAL FIX: Prevent scrollbar on the main page */
-    overflow: hidden; 
+    overflow: hidden; /* */
 }
 
 /* Layout */
@@ -15,7 +15,6 @@ body {
     background-color: #eff6ff; /* page-bg */
     display: flex;    
     flex-direction: column;
-    /* overflow: hidden; Removed from here, moved to html, body for better control */
 }
 
 .navbar {
@@ -24,34 +23,36 @@ body {
     position: sticky;
     top: 0;
     background-color: #FFFFFF; /* card-bg */
+    /* Height is now controlled by reduced content/padding in HTML */
 }
 
 #secondary-nav-bar {
     z-index: 40;
-    /* The sticky top position is handled in the HTML as top-16 (4rem) */
 }
 
 .fixed-bar {
      background-color: #FFFFFF;
+     /* Reduced padding in HTML for a smaller vertical size */
 }
 
 .main-wrapper {
     /* CRITICAL: Allows this container to take all remaining space */
-    flex-grow: 1; 
+    flex-grow: 1; /* */
     /* CRITICAL FIX: This is the ONLY element that scrolls */
-    overflow-y: auto;    
+    overflow-y: auto;    /* */
     position: relative;    
     -webkit-overflow-scrolling: touch;
 }
 
+/* REDUCED PADDING: Tighten vertical space for more content area */
 .content-padding {
-    padding: 1.5rem;    
+    padding: 1rem 1.5rem; /* Reduced top/bottom padding */
     min-height: 100%;    
 }
 
 @media (min-width: 640px) {
     .content-padding {
-        padding: 3rem;    
+        padding: 1.5rem 3rem; /* Reduced top/bottom padding on desktop */
     }
 }
 
@@ -71,16 +72,16 @@ body {
     top: 0;
     left: 0;
     width: 100%;
-    display: none; 
+    display: none; /* */
 }
 
-/* --- Navigation Links Styling (Used for neat professional look) --- */
+/* --- Navigation Links Styling --- */
 
-/* Desktop Links (used in secondary-nav-bar) */
+/* Desktop Links (used in secondary-nav-bar) - Vertical padding reduced further */
 .nav-link-desktop {
     display: inline-flex;
     align-items: center;
-    padding: 1rem 0.25rem; 
+    padding: 0.75rem 0.25rem; /* Reduced vertical padding (py-3 equivalent) */
     font-size: 0.875rem; /* text-sm */
     font-weight: 500; /* font-medium */
     color: #6B7280; /* secondary-gray */
