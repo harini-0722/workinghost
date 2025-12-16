@@ -491,185 +491,204 @@
 
     </div>
 </div>
-            <div id="student-reports-view" class="view hidden">
-                <h1 class="text-3xl md:text-4xl font-extrabold text-accent-dark mb-6 md:mb-8">Reports & Issues ⚠️</h1>
-                
-                <div class="mb-6 md:mb-8">
-                    <div class="bg-card-bg rounded-lg shadow-soft px-4 sm:px-6">
-                        <div class="border-b border-text-muted">
-                            <nav class="-mb-px flex space-x-8" aria-label="Tabs">
-                                <a href="#" id="tab-complaints" onclick="showReportTab('complaints')" class="report-tab active">
-                                    Complaints
-                                </a>
-                                <a href="#" id="tab-feedback" onclick="showReportTab('feedback')" class="report-tab">
-                                    Feedback
-                                </a>
-                                <a href="#" id="tab-lost-found" onclick="showReportTab('lost-found')" class="report-tab">
-                                    Lost & Found
-                                </a>
-                            </nav>
-                        </div>
-                    </div>
-                </div>
+          <div id="student-reports-view" class="view hidden h-full flex flex-col overflow-hidden">
+    <div class="flex-shrink-0 bg-white border-b border-gray-200 pt-3 px-4 shadow-sm z-10">
+        <div class="flex justify-between items-center mb-3">
+            <div>
+                <h1 class="text-2xl font-bold text-accent-dark flex items-center">
+                    <i class="fa-solid fa-triangle-exclamation mr-3 text-complaint-theme"></i> Reports & Issues
+                </h1>
+                <p class="text-xs text-secondary-gray hidden sm:block">Manage complaints, feedback, and lost items.</p>
+            </div>
+        </div>
 
-                <div id="report-tab-content-complaints" class="report-tab-content">
-                    <p class="text-secondary-gray mb-8">Submit new maintenance or hostel issues and track your existing requests.</p>
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
-                        <div class="lg:col-span-1 bg-card-bg p-6 rounded-xl shadow-lift border-l-4 border-complaint-theme">
-                            <h3 class="text-xl font-bold text-complaint-theme mb-4">Submit New Complaint</h3>
-                            <form id="complaint-form" onsubmit="event.preventDefault(); submitComplaint();" class="space-y-4">
-                                <div>
-                                    <label class="block text-sm font-medium text-secondary-gray mb-1">Complaint Type</label>
-                                    <select id="complaint-type" class="w-full p-3 border border-text-muted rounded-lg focus:ring-primary-blue focus:border-primary-blue bg-light-bg" required>
-                                        <option value="">Select Complaint Type</option>
-                                        <option value="Maintenance">Maintenance</option>
-                                        <option value="Electrical">Electrical Issue</option>
-                                        <option value="Plumbing">Plumbing/Water Issue</option>
-                                        <option value="Cleaning">Cleaning/Housekeeping</option>
-                                        <option value="Furniture">Furniture Repair</option>
-                                        <option value="Noise">Noise Complaint</option>
-                                        <option value="Security">Security Concern</option>
-                                        <option value="Other">Other</option>
-                                    </select>
-                                </div>
-                                
-                                <div>
-                                    <label class="block text-sm font-medium text-secondary-gray mb-1">Issue Location</label>
-                                    <select id="complaint-location" class="w-full p-3 border border-text-muted rounded-lg focus:ring-primary-blue focus:border-primary-blue bg-light-bg" required>
-                                        <option value="">Select Location</option>
-                                        <option value="My Room">My Room</option>
-                                        <option value="Floor Washroom">Floor Washroom</option>
-                                        <option value="Common Washroom">Common Washroom</option>
-                                        <option value="Hostel Common Area">Hostel Common Area</option>
-                                        <option value="Mess/Dining">Mess/Dining Area</option>
-                                        <option value="Corridor">Corridor</option>
-                                        <option value="Staircase">Staircase</option>
-                                        <option value="Other Area">Other Area</option>
-                                    </select>
-                                </div>
-                                
-                                
-                                
-                                <div>
-                                    <label class="block text-sm font-medium text-secondary-gray mb-1">Issue Date</label>
-                                    <input type="date" id="complaint-date" class="w-full p-3 border border-text-muted rounded-lg focus:ring-primary-blue focus:border-primary-blue bg-light-bg" required>
-                                </div>
-                                
-                                <div>
-                                    <label class="block text-sm font-medium text-secondary-gray mb-1">Priority Level</label>
-                                    <select id="complaint-priority" class="w-full p-3 border border-text-muted rounded-lg focus:ring-primary-blue focus:border-primary-blue bg-light-bg" required>
-                                        <option value="">Select Priority</option>
-                                        <option value="Low">Low</option>
-                                        <option value="Medium">Medium</option>
-                                        <option value="High">High</option>
-                                        <option value="Critical">Critical</option>
-                                    </select>
-                                </div>
-                                
-                                <div>
-                                    <label class="block text-sm font-medium text-secondary-gray mb-1">Detailed Description</label>
-                                    <textarea id="complaint-description" rows="4" placeholder="Please describe the issue in detail..." class="w-full p-3 border border-text-muted rounded-lg focus:ring-primary-blue focus:border-primary-blue bg-light-bg" required></textarea>
-                                </div>
-                                
-                                <button type="submit" class="btn-classy-lift bg-complaint-theme text-card-bg w-full py-3 rounded-lg shadow-lift hover:bg-orange-700 font-semibold">
-                                    Submit Complaint
-                                </button>
-                            </form>
-                        </div>
-                        <div class="lg:col-span-2">
-                            <h3 class="text-xl font-bold text-accent-dark mb-5">My Complaint History</h3>
-                            <div class="bg-card-bg rounded-xl shadow-lift overflow-x-auto">
-                                       <table class="min-w-full divide-y divide-text-muted">
-                                            <thead class="bg-light-bg">
-                                                <tr>
-                                                    <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">ID</th>
-                                                    <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Date</th>
-                                                    <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Type</th>
-                                                    <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Priority</th>
-                                                    <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Status</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody id="student-complaint-history" class="bg-card-bg divide-y divide-text-muted">
-                                            </tbody>
-                                       </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        <nav class="-mb-px flex space-x-6" aria-label="Tabs">
+            <a href="#" id="tab-complaints" onclick="showReportTab('complaints')" class="report-tab active flex items-center pb-3 px-1 border-b-2 border-primary-blue text-primary-blue font-bold text-sm transition">
+                <i class="fa-solid fa-screwdriver-wrench mr-2"></i> Complaints
+            </a>
+            <a href="#" id="tab-feedback" onclick="showReportTab('feedback')" class="report-tab flex items-center pb-3 px-1 border-b-2 border-transparent text-secondary-gray hover:text-gray-700 hover:border-gray-300 font-medium text-sm transition">
+                <i class="fa-solid fa-comments mr-2"></i> Feedback
+            </a>
+            <a href="#" id="tab-lost-found" onclick="showReportTab('lost-found')" class="report-tab flex items-center pb-3 px-1 border-b-2 border-transparent text-secondary-gray hover:text-gray-700 hover:border-gray-300 font-medium text-sm transition">
+                <i class="fa-solid fa-magnifying-glass mr-2"></i> Lost & Found
+            </a>
+        </nav>
+    </div>
 
-                <div id="report-tab-content-feedback" class="report-tab-content hidden">
-                    <p class="text-secondary-gray mb-8">Provide anonymous or named feedback about hostel services.</p>
-                    <div class="max-w-2xl mx-auto">
-                        <div class="bg-card-bg p-6 rounded-xl shadow-lift border-l-4 border-info-yellow">
-                            <h3 class="text-xl font-bold text-info-yellow mb-4">Submit Feedback</h3>
-                            <form onsubmit="event.preventDefault(); alert('Feedback submitted successfully!');" class="space-y-4">
-                                <div>
-                                    <label class="block text-sm font-medium text-secondary-gray mb-1">Feedback Category</label>
-                                    <select id="feedback-category" class="w-full p-3 border border-text-muted rounded-lg focus:ring-primary-blue focus:border-primary-blue bg-light-bg">
-                                        <option>Mess & Food Quality</option>
-                                        <option>Staff & Warden Behavior</option>
-                                        <option>Hostel Facilities</option>
-                                        <option>Events & Activities</option>
-                                        <option>Other Suggestions</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-secondary-gray mb-1">Your Feedback</label>
-                                    <textarea id="feedback-description" rows="4" placeholder="Share your suggestions or concerns..." class="w-full p-3 border border-text-muted rounded-lg focus:ring-primary-blue focus:border-primary-blue bg-light-bg"></textarea>
-                                </div>
-                                <div class="flex items-center">
-                                    <input id="feedback-anonymous" type="checkbox" class="h-4 w-4 text-primary-blue border-gray-300 rounded focus:ring-primary-blue">
-                                    <label for="feedback-anonymous" class="ml-2 block text-sm text-secondary-gray">Submit anonymously</label>
-                                </div>
-                                <button type="submit" class="btn-classy-lift bg-info-yellow text-accent-dark w-full py-3 rounded-lg shadow-lift hover:bg-amber-400 font-semibold">
-                                    Submit Feedback
-                                </button>
-                            </form>
-                        </div>
-                    </div>
+    <div class="flex-1 bg-blue-50/50 p-4 min-h-0 relative">
+        
+        <div id="report-tab-content-complaints" class="report-tab-content h-full grid grid-cols-1 lg:grid-cols-3 gap-4">
+            
+            <div class="lg:col-span-1 bg-white rounded-xl shadow-sm border border-gray-100 flex flex-col overflow-y-auto custom-scrollbar">
+                <div class="p-3 border-b border-gray-100 bg-gray-50 border-l-4 border-complaint-theme">
+                    <h3 class="text-sm font-bold text-complaint-theme flex items-center">
+                        <i class="fa-solid fa-file-pen mr-2"></i> File Complaint
+                    </h3>
                 </div>
-
-                <div id="report-tab-content-lost-found" class="report-tab-content hidden">
-                    <p class="text-secondary-gray mb-8">Report items you've lost or view items found by others.</p>
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
-                        <div class="lg:col-span-1 bg-card-bg p-6 rounded-xl shadow-lift border-l-4 border-accent-red">
-                            <h3 class="text-xl font-bold text-accent-red mb-4">Report a Lost Item</h3>
-                            <form onsubmit="event.preventDefault(); alert('Lost item report submitted.');" class="space-y-4">
-                                <div>
-                                    <label class="block text-sm font-medium text-secondary-gray mb-1">What did you lose?</label>
-                                    <input type="text" id="lost-item-name" placeholder="e.g., Blue Umbrella" class="w-full p-3 border border-text-muted rounded-lg focus:ring-primary-blue focus:border-primary-blue bg-light-bg" required>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-secondary-gray mb-1">Where did you last see it?</label>
-                                    <input type="text" id="lost-item-location" placeholder="e.g., Hostel Lobby" class="w-full p-3 border border-text-muted rounded-lg focus:ring-primary-blue focus:border-primary-blue bg-light-bg">
-                                </div>
-                                <button type="submit" class="btn-classy-lift bg-accent-red text-card-bg w-full py-3 rounded-lg shadow-lift hover:bg-red-700">
-                                    File Lost Report
-                                </button>
-                            </form>
+                <form id="complaint-form" onsubmit="event.preventDefault(); submitComplaint();" class="p-4 space-y-3">
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[10px] font-bold text-secondary-gray mb-1">Type</label>
+                            <select id="complaint-type" class="w-full p-2 text-xs border border-gray-200 rounded-lg focus:ring-1 focus:ring-complaint-theme bg-gray-50" required>
+                                <option value="">Select...</option>
+                                <option value="Maintenance">Maintenance</option>
+                                <option value="Electrical">Electrical</option>
+                                <option value="Plumbing">Plumbing</option>
+                                <option value="Cleaning">Cleaning</option>
+                                <option value="Internet">Internet/Wi-Fi</option>
+                                <option value="Other">Other</option>
+                            </select>
                         </div>
-                        <div class="lg:col-span-2">
-                             <h3 class="text-xl font-bold text-accent-dark mb-5">Recently Found Items</h3>
-                            <div class="bg-card-bg p-6 rounded-xl shadow-lift">
-                                <div class="overflow-x-auto">
-                                    <table class="min-w-full divide-y divide-text-muted">
-                                        <thead class="bg-light-bg">
-                                            <tr>
-                                                <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Item</th>
-                                                <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Date Found</th>
-                                                <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Location</th>
-                                                <th class="py-3 px-6 text-left text-xs font-medium text-secondary-gray uppercase tracking-wider">Status</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="lost-found-body" class="bg-card-bg divide-y divide-text-muted">
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-secondary-gray mb-1">Priority</label>
+                            <select id="complaint-priority" class="w-full p-2 text-xs border border-gray-200 rounded-lg focus:ring-1 focus:ring-complaint-theme bg-gray-50" required>
+                                <option value="Low">Low</option>
+                                <option value="Medium">Medium</option>
+                                <option value="High">High</option>
+                                <option value="Critical">Critical</option>
+                            </select>
                         </div>
                     </div>
+                    
+                    <div>
+                        <label class="block text-[10px] font-bold text-secondary-gray mb-1">Location</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none text-gray-400"><i class="fa-solid fa-location-dot text-xs"></i></span>
+                            <select id="complaint-location" class="w-full pl-7 p-2 text-xs border border-gray-200 rounded-lg focus:ring-1 focus:ring-complaint-theme bg-gray-50" required>
+                                <option value="My Room">My Room</option>
+                                <option value="Washroom">Floor Washroom</option>
+                                <option value="Corridor">Corridor</option>
+                                <option value="Mess">Mess/Dining</option>
+                                <option value="Common Area">Common Area</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-[10px] font-bold text-secondary-gray mb-1">Date Issue Started</label>
+                        <input type="date" id="complaint-date" class="w-full p-2 text-xs border border-gray-200 rounded-lg focus:ring-1 focus:ring-complaint-theme bg-gray-50" required>
+                    </div>
+
+                    <div>
+                        <label class="block text-[10px] font-bold text-secondary-gray mb-1">Description</label>
+                        <textarea id="complaint-description" rows="3" placeholder="Describe the issue..." class="w-full p-2 text-xs border border-gray-200 rounded-lg focus:ring-1 focus:ring-complaint-theme bg-gray-50" required></textarea>
+                    </div>
+
+                    <button type="submit" class="w-full py-2 rounded-lg bg-complaint-theme text-white text-xs font-bold shadow-sm hover:bg-orange-700 transition flex justify-center items-center">
+                        <i class="fa-solid fa-paper-plane mr-2"></i> Submit
+                    </button>
+                </form>
+            </div>
+
+            <div class="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-100 flex flex-col overflow-hidden">
+                <div class="p-3 border-b border-gray-100 bg-gray-50 flex justify-between items-center flex-shrink-0">
+                    <h3 class="text-sm font-bold text-accent-dark">
+                        <i class="fa-solid fa-clock-rotate-left mr-2 text-secondary-gray"></i> History
+                    </h3>
+                </div>
+                <div class="overflow-y-auto flex-1">
+                    <table class="min-w-full divide-y divide-gray-100">
+                        <thead class="bg-gray-50 sticky top-0 z-10">
+                            <tr>
+                                <th class="py-2 px-4 text-left text-[10px] font-bold text-secondary-gray uppercase">ID</th>
+                                <th class="py-2 px-4 text-left text-[10px] font-bold text-secondary-gray uppercase">Date</th>
+                                <th class="py-2 px-4 text-left text-[10px] font-bold text-secondary-gray uppercase">Type</th>
+                                <th class="py-2 px-4 text-left text-[10px] font-bold text-secondary-gray uppercase">Priority</th>
+                                <th class="py-2 px-4 text-left text-[10px] font-bold text-secondary-gray uppercase">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="student-complaint-history" class="bg-white divide-y divide-gray-50">
+                            </tbody>
+                    </table>
                 </div>
             </div>
+        </div>
+
+        <div id="report-tab-content-feedback" class="report-tab-content hidden h-full flex items-start justify-center pt-6">
+            <div class="bg-white w-full max-w-lg rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                <div class="p-4 border-b border-gray-100 bg-gray-50 border-l-4 border-info-yellow">
+                    <h3 class="text-sm font-bold text-gray-800 flex items-center">
+                        <i class="fa-regular fa-comment-dots mr-2 text-info-yellow"></i> Submit Feedback
+                    </h3>
+                </div>
+                <form onsubmit="event.preventDefault(); alert('Feedback submitted successfully!');" class="p-6 space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-secondary-gray mb-1">Category</label>
+                        <select id="feedback-category" class="w-full p-2 text-sm border border-gray-200 rounded-lg focus:ring-1 focus:ring-info-yellow bg-gray-50">
+                            <option>Mess & Food Quality</option>
+                            <option>Cleaning & Hygiene</option>
+                            <option>Warden & Staff</option>
+                            <option>Events</option>
+                            <option>Other</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-secondary-gray mb-1">Your Message</label>
+                        <textarea id="feedback-description" rows="4" placeholder="Share your suggestions..." class="w-full p-2 text-sm border border-gray-200 rounded-lg focus:ring-1 focus:ring-info-yellow bg-gray-50"></textarea>
+                    </div>
+                    <div class="flex items-center">
+                        <input id="feedback-anonymous" type="checkbox" class="h-4 w-4 text-info-yellow border-gray-300 rounded focus:ring-info-yellow">
+                        <label for="feedback-anonymous" class="ml-2 block text-xs font-bold text-secondary-gray">Submit Anonymously</label>
+                    </div>
+                    <button type="submit" class="w-full py-2.5 rounded-lg bg-info-yellow text-white text-sm font-bold shadow-sm hover:bg-yellow-500 transition flex justify-center items-center">
+                        <i class="fa-solid fa-paper-plane mr-2"></i> Send Feedback
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div id="report-tab-content-lost-found" class="report-tab-content hidden h-full grid grid-cols-1 lg:grid-cols-3 gap-4">
+            
+            <div class="lg:col-span-1 bg-white rounded-xl shadow-sm border border-gray-100 flex flex-col overflow-y-auto custom-scrollbar">
+                <div class="p-3 border-b border-gray-100 bg-gray-50 border-l-4 border-accent-red">
+                    <h3 class="text-sm font-bold text-accent-red flex items-center">
+                        <i class="fa-solid fa-circle-exclamation mr-2"></i> Report Lost Item
+                    </h3>
+                </div>
+                <form onsubmit="event.preventDefault(); alert('Lost item report submitted.');" class="p-4 space-y-3">
+                    <div>
+                        <label class="block text-xs font-bold text-secondary-gray mb-1">Item Name</label>
+                        <input type="text" id="lost-item-name" placeholder="e.g., Blue Umbrella" class="w-full p-2 text-sm border border-gray-200 rounded-lg focus:ring-1 focus:ring-accent-red bg-gray-50" required>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-secondary-gray mb-1">Last Seen Location</label>
+                        <input type="text" id="lost-item-location" placeholder="e.g., Common Room" class="w-full p-2 text-sm border border-gray-200 rounded-lg focus:ring-1 focus:ring-accent-red bg-gray-50">
+                    </div>
+                     <div>
+                        <label class="block text-xs font-bold text-secondary-gray mb-1">Date Lost</label>
+                        <input type="date" class="w-full p-2 text-sm border border-gray-200 rounded-lg focus:ring-1 focus:ring-accent-red bg-gray-50">
+                    </div>
+                    <button type="submit" class="w-full py-2 rounded-lg bg-accent-red text-white text-xs font-bold shadow-sm hover:bg-red-700 transition flex justify-center items-center mt-2">
+                        <i class="fa-solid fa-bullhorn mr-2"></i> Report Lost
+                    </button>
+                </form>
+            </div>
+
+            <div class="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-100 flex flex-col overflow-hidden">
+                <div class="p-3 border-b border-gray-100 bg-gray-50 flex justify-between items-center flex-shrink-0">
+                    <h3 class="text-sm font-bold text-accent-dark">
+                        <i class="fa-brands fa-searchengin mr-2 text-primary-blue"></i> Recently Found Items
+                    </h3>
+                </div>
+                <div class="overflow-y-auto flex-1">
+                    <table class="min-w-full divide-y divide-gray-100">
+                        <thead class="bg-gray-50 sticky top-0 z-10">
+                            <tr>
+                                <th class="py-2 px-4 text-left text-[10px] font-bold text-secondary-gray uppercase">Item</th>
+                                <th class="py-2 px-4 text-left text-[10px] font-bold text-secondary-gray uppercase">Date Found</th>
+                                <th class="py-2 px-4 text-left text-[10px] font-bold text-secondary-gray uppercase">Location</th>
+                                <th class="py-2 px-4 text-left text-[10px] font-bold text-secondary-gray uppercase">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="lost-found-body" class="bg-white divide-y divide-gray-50">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
 
            <div id="student-leave-view" class="view hidden h-full flex flex-col overflow-hidden">
     <div class="flex-shrink-0 mb-3 pt-2">

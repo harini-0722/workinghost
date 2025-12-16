@@ -463,16 +463,27 @@ function hideMobileMenu() {
 }
 
 function showReportTab(tabName) {
+    // Hide all contents
     document.querySelectorAll('.report-tab-content').forEach(content => {
         content.classList.add('hidden');
     });
+    
+    // Reset all tabs styling
     document.querySelectorAll('.report-tab').forEach(tab => {
         tab.classList.remove('active', 'border-primary-blue', 'text-primary-blue');
+        tab.classList.add('border-transparent', 'text-secondary-gray');
     });
     
-    document.getElementById(`report-tab-content-${tabName}`).classList.remove('hidden');
+    // Show selected content
+    const content = document.getElementById(`report-tab-content-${tabName}`);
+    if(content) content.classList.remove('hidden');
+    
+    // Activate selected tab styling
     const activeTab = document.getElementById(`tab-${tabName}`);
-    activeTab.classList.add('active', 'border-primary-blue', 'text-primary-blue');
+    if(activeTab) {
+        activeTab.classList.remove('border-transparent', 'text-secondary-gray');
+        activeTab.classList.add('active', 'border-primary-blue', 'text-primary-blue');
+    }
 }
 
 function logout() {
@@ -817,27 +828,31 @@ function populateStudentComplaintHistory() {
     const myComplaints = g_complaints.sort((a, b) => new Date(b.date) - new Date(a.date));
 
     if (myComplaints.length === 0) {
-        tableBody.innerHTML = `<tr><td colspan="6" class="py-4 px-6 text-center text-secondary-gray">You have not filed any complaints.</td></tr>`;
+        tableBody.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-secondary-gray text-xs">No complaints filed.</td></tr>`;
         return;
     }
 
     myComplaints.forEach(c => {
-        let priorityColorClass = '';
-        if (c.priority === 'Critical') priorityColorClass = 'text-accent-red';
-        else if (c.priority === 'High') priorityColorClass = 'text-orange-500';
-        else if (c.priority === 'Medium') priorityColorClass = 'text-info-yellow';
-        else priorityColorClass = 'text-accent-green';
+        let priorityClass = '';
+        if (c.priority === 'Critical') priorityClass = 'text-accent-red font-bold';
+        else if (c.priority === 'High') priorityClass = 'text-orange-500 font-bold';
+        else if (c.priority === 'Medium') priorityClass = 'text-info-yellow';
+        else priorityClass = 'text-accent-green';
         
-        let statusColorClass = c.status === 'Resolved' ? 'text-accent-green' : (c.status === 'Pending' || c.status === 'Critical' ? 'text-info-yellow' : 'text-secondary-gray');
-        let formattedDate = c.date ? new Date(c.date).toLocaleDateString() : 'N/A';
+        let statusBadge = '';
+        if(c.status === 'Resolved') statusBadge = '<span class="bg-green-50 text-accent-green px-2 py-0.5 rounded text-[10px] font-bold border border-green-100"><i class="fa-solid fa-check mr-1"></i>Resolved</span>';
+        else statusBadge = '<span class="bg-yellow-50 text-info-yellow px-2 py-0.5 rounded text-[10px] font-bold border border-yellow-100"><i class="fa-solid fa-clock mr-1"></i>Pending</span>';
+
+        let formattedDate = c.date ? new Date(c.date).toLocaleDateString('en-GB') : 'N/A';
+        let idShort = c._id ? c._id.substring(c._id.length - 4) : '....';
 
         tableBody.innerHTML += `
-            <tr class="hover:bg-light-bg transition duration-150">
-                <td class="py-3 px-6 whitespace-nowrap text-sm text-accent-dark">#C00${c._id ? c._id.substring(c._id.length - 4) : 'N/A'}</td>
-                <td class="py-3 px-6 whitespace-nowrap text-sm text-secondary-gray">${formattedDate}</td>
-                <td class="py-3 px-6 whitespace-nowrap text-sm text-accent-dark">${c.type || c.title}</td>
-                <td class="py-3 px-6 whitespace-nowrap text-sm font-medium ${priorityColorClass}">${c.priority}</td>
-                <td class="py-3 px-6 whitespace-nowrap text-sm font-medium ${statusColorClass}">${c.status}</td>
+            <tr class="hover:bg-gray-50 transition duration-150">
+                <td class="py-2 px-4 whitespace-nowrap text-xs text-secondary-gray font-mono">#${idShort}</td>
+                <td class="py-2 px-4 whitespace-nowrap text-xs text-accent-dark">${formattedDate}</td>
+                <td class="py-2 px-4 whitespace-nowrap text-xs font-bold text-accent-dark">${c.type || 'General'}</td>
+                <td class="py-2 px-4 whitespace-nowrap text-xs ${priorityClass}">${c.priority}</td>
+                <td class="py-2 px-4 whitespace-nowrap">${statusBadge}</td>
             </tr>
         `;
     });
@@ -1204,18 +1219,27 @@ function populateVisitorRequestHistory() {
 function populateLostAndFound() {
     const tableBody = document.getElementById('lost-found-body');
     tableBody.innerHTML = '';
+    
     if (mockLostFound.length === 0) {
-            tableBody.innerHTML = `<tr><td colspan="4" class="py-4 px-6 text-center text-secondary-gray">No items reported found.</td></tr>`;
+            tableBody.innerHTML = `<tr><td colspan="4" class="py-8 text-center text-secondary-gray text-xs">No items reported found.</td></tr>`;
             return;
     }
+    
     mockLostFound.forEach(item => {
-        const statusClass = item.status === 'Available' ? 'text-accent-green' : 'text-secondary-gray';
+        const statusClass = item.status === 'Available' ? 'text-accent-green bg-green-50 border-green-100' : 'text-secondary-gray bg-gray-50 border-gray-200';
+        
         tableBody.innerHTML += `
-            <tr class="hover:bg-light-bg transition duration-150">
-                <td class="py-3 px-6 whitespace-nowrap text-sm text-accent-dark">${item.item}</td>
-                <td class="py-3 px-6 whitespace-nowrap text-sm text-secondary-gray">${item.dateFound}</td>
-                <td class="py-3 px-6 whitespace-nowrap text-sm text-secondary-gray">${item.location}</td>
-                <td class="py-3 px-6 whitespace-nowrap text-sm font-medium ${statusClass}">${item.status}</td>
+            <tr class="hover:bg-gray-50 transition duration-150">
+                <td class="py-2 px-4 whitespace-nowrap text-xs font-bold text-accent-dark">
+                    <i class="fa-solid fa-box-open mr-2 text-primary-blue opacity-50"></i>${item.item}
+                </td>
+                <td class="py-2 px-4 whitespace-nowrap text-xs text-secondary-gray">${item.dateFound}</td>
+                <td class="py-2 px-4 whitespace-nowrap text-xs text-secondary-gray">${item.location}</td>
+                <td class="py-2 px-4 whitespace-nowrap">
+                    <span class="${statusClass} px-2 py-0.5 rounded text-[10px] font-bold border">
+                        ${item.status}
+                    </span>
+                </td>
             </tr>
         `;
     });
