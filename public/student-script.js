@@ -364,11 +364,10 @@ function formatTime(isoString) {
 }
 
 function updateActiveMenuItem(viewId) {
-    const allLinks = document.querySelectorAll('.nav-link');
-    
-    allLinks.forEach(link => {
-        link.classList.remove('active', 'text-primary-blue', 'font-semibold', 'border-primary-blue');
-        link.classList.add('text-secondary-gray', 'hover:text-primary-blue', 'border-transparent');
+    // Desktop Links
+    const allDesktopLinks = document.querySelectorAll('.nav-link-desktop');
+    allDesktopLinks.forEach(link => {
+        link.classList.remove('active');
     });
 
     if (viewId === 'student-details-view') {
@@ -377,12 +376,19 @@ function updateActiveMenuItem(viewId) {
     
     const desktopLink = document.getElementById(`nav-${viewId}`);
     if (desktopLink) {
-        desktopLink.classList.add('active', 'text-primary-blue', 'font-semibold');
-        desktopLink.classList.remove('text-secondary-gray');
+        desktopLink.classList.add('active');
     }
+
+    // Mobile Links
+    const allMobileLinks = document.querySelectorAll('.nav-link-mobile');
+    allMobileLinks.forEach(link => {
+        link.classList.remove('active', 'bg-light-bg', 'text-primary-blue', 'border-primary-blue', 'font-medium');
+        link.classList.add('text-gray-600', 'border-transparent');
+    });
+
     const mobileLink = document.getElementById(`mobile-nav-${viewId}`);
     if (mobileLink) {
-        mobileLink.classList.add('active', 'text-primary-blue', 'bg-light-bg', 'border-primary-blue');
+        mobileLink.classList.add('active', 'text-primary-blue', 'bg-light-bg', 'border-primary-blue', 'font-medium');
         mobileLink.classList.remove('text-gray-600', 'border-transparent');
     }
 }
@@ -403,7 +409,7 @@ function showView(viewId) {
     updateActiveMenuItem(viewId);
     
     // Call correct functions for each view
-    if (viewId === 'student-details-view') {
+    if (viewId === 'student-details-view' || viewId === 'student-profile-view') {
         populateStudentProfileView();    
     } else if (viewId === 'student-room-view') {
         populateRoommatesList();

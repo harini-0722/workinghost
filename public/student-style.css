@@ -8,12 +8,18 @@ html, body {
 
 /* Layout */
 body {
-    /* Using CSS variable fallback for tailwind theme colors where possible, 
-       but keeping logic simple for external file */
     background-color: #eff6ff; /* page-bg */
     display: flex;    
     flex-direction: column;
-    overflow: hidden;    
+    /* Removed overflow: hidden so content can scroll */
+}
+
+/* Ensure the main wrapper fills space below fixed headers */
+.main-wrapper {
+    flex-grow: 1;
+    overflow-y: auto;    
+    position: relative;    
+    -webkit-overflow-scrolling: touch;
 }
 
 .navbar {
@@ -24,15 +30,13 @@ body {
     background-color: #FFFFFF; /* card-bg */
 }
 
-.fixed-bar {
-     background-color: #FFFFFF;
+#secondary-nav-bar {
+    z-index: 40;
+    /* The top-16 is handled inline in the HTML: sticky top-16 */
 }
 
-.main-wrapper {
-    flex-grow: 1;
-    overflow-y: auto;    
-    position: relative;    
-    -webkit-overflow-scrolling: touch;
+.fixed-bar {
+     background-color: #FFFFFF;
 }
 
 .content-padding {
@@ -62,15 +66,45 @@ body {
     top: 0;
     left: 0;
     width: 100%;
-    display: none; /* Added display none to ensure clicks pass through */
+    display: none; 
 }
 
-/* Navigation Links */
-.nav-link.active {
+/* --- Navigation Links Styling (Replaced .nav-link with specific classes) --- */
+
+/* Desktop Links (used in secondary-nav-bar) */
+.nav-link-desktop {
+    display: inline-flex;
+    align-items: center;
+    padding: 1rem 0.25rem; /* Increased vertical padding to make it look professional */
+    font-size: 0.875rem; /* text-sm */
+    font-weight: 500; /* font-medium */
+    color: #6B7280; /* secondary-gray */
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    text-decoration: none;
+}
+
+.nav-link-desktop:hover {
     color: #2563EB; /* primary-blue */
-    border-bottom: 2px solid #2563EB;
+    border-bottom-color: #D1D5DB; /* light gray hover border */
+}
+
+.nav-link-desktop.active {
+    color: #2563EB; /* primary-blue */
+    border-bottom-color: #2563EB;
     font-weight: 600;
 }
+
+/* Mobile Links (used in mobile-menu dropdown) */
+.nav-link-mobile {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+/* Removed old .nav-link.active as it's replaced by .nav-link-desktop.active */
+
 
 /* Report Tabs - Converted from @apply to standard CSS */
 .report-tab {
