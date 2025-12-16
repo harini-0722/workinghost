@@ -709,54 +709,78 @@ function populateRoommatesList() {
         return;
     }
 
+    // 1. Update Room Image
     const roomImage = document.getElementById('room-detail-image');
     if (g_room.imageUrl) {
         roomImage.src = g_room.imageUrl;
+    } else {
+        // Fallback placeholder if no image
+        roomImage.src = "https://via.placeholder.com/600x400/e0e0e0/909090?text=Room+Image";
     }
 
-    const summaryCard = document.querySelector('#student-room-view .lg\\:col-span-1 .p-6'); 
+    // 2. Update Summary Details (Using new specific IDs)
+    document.getElementById('room-summary-number').textContent = `Room ${g_room.roomNumber}`;
     
-    summaryCard.querySelector('h3').textContent = `Room ${g_room.roomNumber} Summary`;
-    summaryCard.querySelector('p.flex:nth-child(1) span').textContent = g_block.blockName;
-    summaryCard.querySelector('p.flex:nth-child(2) span').textContent = g_room.floor;
-    summaryCard.querySelector('p.flex:nth-child(3) span').textContent = `${g_room.capacity} Beds`;
-    
+    // Safety check for elements before setting text
+    const hostelEl = document.getElementById('room-summary-hostel');
+    if(hostelEl) hostelEl.textContent = g_block.blockName;
+
+    const floorEl = document.getElementById('room-summary-floor');
+    if(floorEl) floorEl.textContent = g_room.floor;
+
+    const capEl = document.getElementById('room-summary-capacity');
+    if(capEl) capEl.textContent = `${g_room.capacity} Beds`;
+
+    // 3. Occupancy Logic
     const occupancy = g_roommates.length + 1;    
     const occupancyText = `${occupancy}/${g_room.capacity}`;
-    const occupancyEl = summaryCard.querySelector('p.flex:nth-child(4) span');
-    occupancyEl.textContent = occupancyText;
+    const occupancyEl = document.getElementById('room-summary-occupancy');
     
-    if (occupancy >= g_room.capacity) {
-        occupancyEl.textContent = `Full (${occupancyText})`;
-        occupancyEl.classList.add('text-accent-red');
-        occupancyEl.classList.remove('text-accent-green');
-    } else {
-        occupancyEl.textContent = `Available (${occupancyText})`;
-        occupancyEl.classList.add('text-accent-green');
-        occupancyEl.classList.remove('text-accent-red');
+    if (occupancyEl) {
+        occupancyEl.textContent = occupancyText;
+        if (occupancy >= g_room.capacity) {
+            occupancyEl.textContent = `Full (${occupancyText})`;
+            occupancyEl.className = "font-bold text-accent-red bg-red-50 px-2 py-1 rounded text-xs";
+        } else {
+            occupancyEl.textContent = `Available (${occupancyText})`;
+            occupancyEl.className = "font-bold text-accent-green bg-green-50 px-2 py-1 rounded text-xs";
+        }
     }
 
+    // 4. Update Header Badge
+    const badgeEl = document.getElementById('roommates-count-badge');
+    if(badgeEl) badgeEl.textContent = `${g_roommates.length} Roommates`;
+
+    // 5. Populate Roommates List
     const roommatesList = document.getElementById('roommates-list');
     roommatesList.innerHTML = '';
-    roommatesList.previousElementSibling.textContent = `Current Roommates (${g_roommates.length})`;
-
-    g_roommates.forEach(mate => {    
-        if (!mate) return;
-        
-        const mateCard = document.createElement('div');
-        mateCard.className = `bg-light-bg p-4 rounded-lg shadow-soft flex items-center space-x-4 border-l-4 border-primary-blue`;
-        mateCard.innerHTML = `
-            <img src="${mate.profileImageUrl || './default-avatar.png'}" alt="${mate.name}" class="h-12 w-12 rounded-full object-cover flex-shrink-0">
-            <div class="overflow-hidden">
-                <p class="font-bold text-accent-dark truncate">${mate.name}</p>
-                <p class="text-sm text-secondary-gray truncate">${mate.department || 'N/A'} - ${mate.year || 'N/A'}</p>
-            </div>
-        `;
-        roommatesList.appendChild(mateCard);
-    });
 
     if (g_roommates.length === 0) {
-        roommatesList.innerHTML = `<p class="text-secondary-gray col-span-2">You are currently the sole occupant of Room ${g_room.roomNumber}.</p>`;
+        roommatesList.innerHTML = `
+            <div class="col-span-full flex flex-col items-center justify-center text-secondary-gray h-32 border-2 border-dashed border-gray-100 rounded-lg">
+                <i class="fa-solid fa-user-slash text-2xl mb-2 opacity-30"></i>
+                <p class="text-sm">You are the sole occupant.</p>
+            </div>
+        `;
+    } else {
+        g_roommates.forEach(mate => {    
+            if (!mate) return;
+            
+            const mateCard = document.createElement('div');
+            // Compact card styling with Font Awesome fallback
+            mateCard.className = `bg-gray-50 p-3 rounded-lg border border-gray-100 flex items-center space-x-3 hover:shadow-md transition duration-200`;
+            mateCard.innerHTML = `
+                <div class="h-10 w-10 rounded-full bg-white flex-shrink-0 flex items-center justify-center text-primary-blue border border-gray-200 overflow-hidden">
+                    <img src="${mate.profileImageUrl || ''}" onerror="this.style.display='none'" class="h-full w-full object-cover">
+                    <i class="fa-solid fa-user text-sm ${mate.profileImageUrl ? 'hidden' : ''}"></i>
+                </div>
+                <div class="overflow-hidden min-w-0">
+                    <p class="font-bold text-sm text-accent-dark truncate">${mate.name}</p>
+                    <p class="text-xs text-secondary-gray truncate">${mate.department || 'Student'} • ${mate.year || ''}</p>
+                </div>
+            `;
+            roommatesList.appendChild(mateCard);
+        });
     }
 }
 
