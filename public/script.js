@@ -1227,53 +1227,83 @@ function renderLeaveView() {
     function renderDetailView(blockKey) {
         const block = appState.blocks.find(b => b.blockKey === blockKey);
         if (!block) { alert('Error: Could not find block data.'); backToDashboardBtn.click(); return; }
+        
         detailView.dataset.currentHostelKey = block.blockKey;
         const theme = themes[block.blockTheme] || themes.blue;
-        detailHostelName.innerHTML = `<span class="p-2 ${theme.bg} ${theme.text} rounded-lg mr-2"><hero-icon-solid name="${theme.icon}" class="h-6 w-6 inline-block"></hero-icon-solid></span> ${block.blockName}`;
+        
+        // Update Header with FA Icon
+        detailHostelName.innerHTML = `<i class="fa-solid ${theme.icon} ${theme.text} mr-2"></i> ${block.blockName}`;
+        
         let hostelCapacity = 0, hostelOccupancy = 0;
         roomListContainer.innerHTML = '';
-        studentRoomSelect.innerHTML = '<option value="" disabled selected>-- Select an available room --</option>';
+        studentRoomSelect.innerHTML = '<option value="" disabled selected>-- Select Room --</option>';
+        
         const rooms = block.rooms || [];
         rooms.sort((a, b) => a.roomNumber.localeCompare(b.roomNumber, undefined, { numeric: true, sensitivity: 'base' }));
 
         rooms.forEach(room => {
             const current = room.students ? room.students.length : 0;
-            const max = room.capacity;  hostelOccupancy += current;
-            const status = getStatus(current, max); const percent = max > 0 ? (current / max) * 100 : 0;
-            const studentNames = (room.students && room.students.length > 0) ? room.students.map(s => s.name).join(', ') : 'None';
-            const imageUrl = room.imageUrl || `https://via.placeholder.com/300x150/e0e0e0/909090?text=${room.roomNumber}`;
+            const max = room.capacity;  
+            hostelOccupancy += current;
+            const status = getStatus(current, max); 
+            const percent = max > 0 ? (current / max) * 100 : 0;
+            const studentNames = (room.students && room.students.length > 0) ? room.students.map(s => s.name).join(', ') : 'Empty';
+            
+            // Compact Room Card HTML
             const roomHTML = `
-                <div class="room-card bg-white rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl hover:scale-105 cursor-pointer" data-room-id="${room.roomNumber}" data-room-status="${status.text}">
-                   <button class="edit-room-btn absolute top-3 right-3 p-0.5 text-blue-500 hover:bg-blue-100 rounded-full transition-colors duration-200 z-10" data-room-id="${room._id}" data-room-number="${room.roomNumber}" title="Edit Room">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4">
-                            <path d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.18 1.18c.045.305.071.615.071.931c0 1.637-.62 3.208-1.751 4.34a6.75 6.75 0 0 1-6.721 1.761l1.767 1.767c1.132-1.132 2.703-1.752 4.34-1.752c.316 0 .626.026.931.071l1.18-1.18a2.625 2.625 0 0 0 0-3.712l-.644-.644Zm-1.543 5.433l-4.225-4.225l-2.025 2.025l4.225 4.225l2.025-2.025ZM6.594 13.5l1.455 1.455c-.218.423-.339.882-.339 1.364c0 1.73.74 3.342 2.016 4.475c-1.132 1.132-2.703 1.752-4.34 1.752c-.316 0-.626-.026-.931-.071l-1.18 1.18a2.625 2.625 0 0 1-3.712 0l-.644-.644a2.625 2.625 0 0 1 0-3.712l1.18-1.18c.045-.305.071-.615.071-.931c0-1.637-.62-3.208-1.751-4.34a6.75 6.75 0 0 1 6.721-1.761l-1.767-1.767c-1.132 1.132-2.703 1.752-4.34 1.752c-.316 0-.626-.026-.931-.071l-1.18 1.18a2.625 2.625 0 0 1 0 3.712l.644.644Z" />
-                        </svg>
+                <div class="room-card bg-white rounded border border-gray-200 p-3 hover:shadow-md hover:border-indigo-300 transition-all cursor-pointer group relative" data-room-id="${room.roomNumber}" data-room-status="${status.text}">
+                   
+                   <button class="edit-room-btn absolute top-2 right-2 h-6 w-6 flex items-center justify-center text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-full transition-colors z-10" data-room-id="${room._id}" data-room-number="${room.roomNumber}" title="Edit Room">
+                        <i class="fa-solid fa-pen text-[10px]"></i>
                     </button>
-                <img src="${imageUrl}" alt="Room ${room.roomNumber}" class="activity-card-image">
-                    <div class="p-5">
-                        <div class="flex justify-between items-center mb-2">
-                            <h3 class="text-xl font-bold text-gray-800">${room.roomNumber}</h3>
-                            <span class="text-xs font-bold px-3 py-1 rounded-full ${status.classes}">${status.text}</span>
+
+                    <div class="flex justify-between items-start mb-2">
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-800 leading-none">${room.roomNumber}</h3>
+                            <span class="text-[10px] text-gray-500 font-medium">${room.floor || 'Floor N/A'}</span>
                         </div>
-                        <p class="text-sm text-gray-500 mb-4">${room.floor}</p>
-                        <div class="progress-bar mb-2">
-                            <div class="progress-bar-inner ${status.progress}" style="width: ${percent}%;"></div>
+                    </div>
+
+                    <div class="w-full bg-gray-100 rounded-full h-1.5 mb-2 overflow-hidden">
+                        <div class="h-full ${status.progress} transition-all duration-500" style="width: ${percent}%"></div>
+                    </div>
+
+                    <div class="flex justify-between items-end">
+                        <div>
+                            <p class="text-[10px] text-gray-400 uppercase font-bold tracking-wide">Occupants</p>
+                            <div class="flex items-center gap-1 mt-0.5">
+                                <i class="fa-solid fa-users text-gray-400 text-xs"></i>
+                                <span class="text-xs font-bold text-gray-700">${current} <span class="text-gray-400 font-normal">/ ${max}</span></span>
+                            </div>
                         </div>
-                        <p class="text-sm text-gray-700 font-medium">Occupancy: <span class="font-normal">${current}/${max}</span></p>
-                        <p class="text-sm text-gray-700 font-medium truncate">Students: <span class="font-normal">${studentNames}</span></p>
+                        
+                        <span class="text-[10px] font-bold px-2 py-0.5 rounded border ${status.text === 'Full' ? 'bg-red-50 text-red-600 border-red-100' : 'bg-emerald-50 text-emerald-600 border-emerald-100'}">
+                            ${status.text}
+                        </span>
+                    </div>
+                    
+                    <div class="mt-2 pt-2 border-t border-gray-50 hidden group-hover:block animate-fade-in">
+                        <p class="text-[10px] text-gray-500 truncate"><i class="fa-regular fa-user mr-1"></i> ${studentNames}</p>
                     </div>
                 </div>
             `;
             roomListContainer.innerHTML += roomHTML;
-            if (status.text === 'Available') { studentRoomSelect.innerHTML += `<option value="${room._id}">${room.roomNumber} (${current}/${max})</option>`; }
+            if (status.text === 'Available') { 
+                studentRoomSelect.innerHTML += `<option value="${room._id}">${room.roomNumber} (${current}/${max})</option>`; 
+            }
         });
-        if (rooms.length === 0) { roomListContainer.innerHTML = '<p class="text-gray-500 text-center col-span-full">No rooms added to this block yet.</p>'; }
-       const displayedCapacity = block.blockCapacity || hostelCapacity; // Use set limit, fallback to sum of rooms
-    
-    detailStatCapacity.textContent = displayedCapacity; 
-    detailStatOccupancy.textContent = hostelOccupancy; 
-    detailStatAvailable.textContent = displayedCapacity - hostelOccupancy;
-        roomSearchInput.value = ''; roomFilterSelect.value = 'All';
+
+        if (rooms.length === 0) { 
+            roomListContainer.innerHTML = '<p class="text-gray-400 text-center col-span-full italic py-8">No rooms added to this block yet.</p>'; 
+        }
+
+        const displayedCapacity = block.blockCapacity || hostelCapacity;
+        detailStatCapacity.textContent = displayedCapacity; 
+        detailStatOccupancy.textContent = hostelOccupancy; 
+        detailStatAvailable.textContent = displayedCapacity - hostelOccupancy;
+        
+        roomSearchInput.value = ''; 
+        roomFilterSelect.value = 'All';
     }
     
     function renderRoomDetailsModal(room, block) {
