@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IIT Secure Checkout | Payment Gateway</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .loader { border-top-color: #4f46e5; animation: spinner 1.5s linear infinite; }
+        @keyframes spinner { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        input:focus { outline: 2px solid #4f46e5; border-color: transparent; }
+    </style>
+</head>
+<body class="bg-slate-50 font-sans text-slate-900">
+
+    <div id="dashboard-section" class="max-w-6xl mx-auto p-6">
+        <nav class="flex justify-between items-center mb-10 bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
+            <div class="flex items-center gap-3 font-bold text-xl text-indigo-900">
+                <i class="fas fa-university text-2xl text-indigo-600"></i> IIT Portal
+            </div>
+            <div class="flex items-center gap-4">
+                <span class="hidden md:inline text-sm font-semibold text-gray-400">Academic Year: 2024-25</span>
+                <div class="flex items-center gap-2 bg-slate-100 px-3 py-1 rounded-full">
+                    <span class="text-xs font-bold">RAJESH KUMAR</span>
+                    <div class="h-8 w-8 bg-indigo-600 rounded-full flex items-center justify-center text-white text-xs font-bold">RK</div>
+                </div>
+            </div>
+        </nav>
+
+        <div class="bg-white rounded-3xl shadow-xl overflow-hidden max-w-4xl mx-auto border border-slate-100">
+            <div class="p-8 border-b bg-indigo-50/50 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <h2 class="text-2xl font-black text-slate-800">Fee Payment Dashboard</h2>
+                    <p class="text-slate-500 font-medium">Student ID: <span class="text-indigo-600">IIT-9920-CS</span></p>
+                </div>
+                <div class="text-left md:text-right">
+                    <p class="text-xs font-bold text-indigo-600 uppercase tracking-widest">Net Payable Amount</p>
+                    <p class="text-4xl font-black text-slate-900">₹75,500</p>
+                    <p class="text-[10px] text-red-500 font-bold">*Includes ₹500 Late Fine</p>
+                </div>
+            </div>
+
+            <div class="p-8">
+                <h3 class="text-sm font-bold text-slate-400 uppercase mb-4 tracking-wider">Step 1: Verify Academic Details</h3>
+                <div class="grid md:grid-cols-2 gap-6 mb-8">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-2 uppercase">Degree / Course</label>
+                        <select class="w-full border-2 border-slate-100 p-3 rounded-xl bg-white font-medium">
+                            <option>B.Tech Computer Science</option>
+                            <option>B.Tech Electrical Engineering</option>
+                            <option>M.Tech Data Science</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-2 uppercase">Semester</label>
+                        <select class="w-full border-2 border-slate-100 p-3 rounded-xl bg-white font-medium">
+                            <option>Semester IV (Current)</option>
+                            <option>Semester III (Backlog Fees)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <h3 class="text-sm font-bold text-slate-400 uppercase mb-4 tracking-wider">Step 2: Fee Breakdown</h3>
+                <div class="bg-slate-50 rounded-2xl p-6 space-y-4 mb-8">
+                    <div class="flex justify-between items-center text-slate-600">
+                        <span>Tuition & Academic Fees</span>
+                        <span class="font-bold text-slate-900">₹60,000</span>
+                    </div>
+                    <div class="flex justify-between items-center text-slate-600">
+                        <span>Hostel & Mess Charges</span>
+                        <span class="font-bold text-slate-900">12,000</span>
+                    </div>
+                    <div class="flex justify-between items-center text-slate-600 border-b border-slate-200 pb-4">
+                        <span>Library & Insurance</span>
+                        <span class="font-bold text-slate-900">₹3,000</span>
+                    </div>
+                    <div class="flex justify-between items-center pt-2">
+                        <span class="text-red-500 font-bold italic">Late Fee Penalty (Due Date: 10/12/2024)</span>
+                        <span class="font-bold text-red-500">₹500</span>
+                    </div>
+                </div>
+
+                <button onclick="showPaymentPage()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-5 rounded-2xl font-bold text-lg shadow-lg shadow-indigo-100 transition-all hover:-translate-y-1 active:scale-95 flex items-center justify-center gap-3">
+                    Proceed to Payment Gateway <i class="fas fa-arrow-right text-sm"></i>
+                </button>
+                <p class="text-center text-[11px] text-slate-400 mt-4 uppercase font-bold tracking-tighter">Secure 256-bit SSL Encrypted Transaction</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="payment-section" class="hidden fixed inset-0 bg-slate-100 z-50 overflow-y-auto py-10">
+        <div class="max-w-4xl mx-auto px-4">
+            <button onclick="hidePaymentPage()" class="mb-6 text-slate-500 hover:text-indigo-600 font-bold flex items-center gap-2">
+                <i class="fas fa-chevron-left"></i> Cancel and Return
+            </button>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="md:col-span-2 bg-white rounded-3xl shadow-sm p-8 border border-slate-200">
+                    <h3 class="text-xl font-black mb-8 text-slate-800">Choose Payment Method</h3>
+                    
+                    <div onclick="switchTab('upi')" class="cursor-pointer border-2 rounded-2xl p-5 mb-4 transition-all hover:bg-slate-50 flex items-center gap-4" id="btn-upi">
+                        <div class="w-12 h-12 bg-indigo-50 rounded-full flex items-center justify-center">
+                            <i class="fas fa-mobile-alt text-indigo-600"></i>
+                        </div>
+                        <div class="flex-1">
+                            <p class="font-black text-slate-800">UPI Payments</p>
+                            <p class="text-xs text-slate-500">Google Pay, PhonePe, Paytm, Any UPI ID</p>
+                        </div>
+                        <i class="fas fa-check-circle text-indigo-600 opacity-0" id="check-upi"></i>
+                    </div>
+
+                    <div onclick="switchTab('card')" class="cursor-pointer border-2 rounded-2xl p-5 mb-4 transition-all hover:bg-slate-50 flex items-center gap-4" id="btn-card">
+                        <div class="w-12 h-12 bg-indigo-50 rounded-full flex items-center justify-center">
+                            <i class="fas fa-credit-card text-indigo-600"></i>
+                        </div>
+                        <div class="flex-1">
+                            <p class="font-black text-slate-800">Debit / Credit Card</p>
+                            <p class="text-xs text-slate-500">All Indian and International Cards accepted</p>
+                        </div>
+                        <i class="fas fa-check-circle text-indigo-600 opacity-0" id="check-card"></i>
+                    </div>
+
+                    <div class="mt-8 p-6 bg-slate-50 rounded-2xl">
+                        <div id="tab-upi" class="tab-content">
+                            <label class="block text-sm font-black text-slate-700 mb-3">Enter UPI ID (VPA)</label>
+                            <input type="text" placeholder="username@bank" class="w-full border-2 border-slate-200 p-4 rounded-xl bg-white focus:ring-4 focus:ring-indigo-100 transition-all outline-none">
+                            <p class="text-[11px] text-slate-400 mt-3 font-medium">Verify your UPI ID before clicking 'Pay'</p>
+                        </div>
+
+                        <div id="tab-card" class="tab-content active">
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-black text-slate-700 mb-2">Card Holder Name</label>
+                                    <input type="text" placeholder="As per card" class="w-full border-2 border-slate-200 p-3 rounded-xl">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-black text-slate-700 mb-2">Card Number</label>
+                                    <input type="text" placeholder="XXXX XXXX XXXX XXXX" class="w-full border-2 border-slate-200 p-3 rounded-xl">
+                                </div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-black text-slate-700 mb-2">Expiry Date</label>
+                                        <input type="text" placeholder="MM / YY" class="w-full border-2 border-slate-200 p-3 rounded-xl">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-black text-slate-700 mb-2">CVV</label>
+                                        <input type="password" placeholder="123" class="w-full border-2 border-slate-200 p-3 rounded-xl">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 flex items-start gap-3">
+                        <input type="checkbox" id="terms-check" class="mt-1 h-5 w-5 rounded border-slate-300 text-indigo-600">
+                        <label for="terms-check" class="text-xs text-slate-500 font-medium leading-relaxed">
+                            I authorize the institution to debit the amount. I have verified the Student ID and Semester details. No refunds will be processed for successful transactions.
+                        </label>
+                    </div>
+
+                    <button onclick="processPayment()" class="w-full mt-8 bg-green-600 hover:bg-green-700 text-white py-5 rounded-2xl font-black text-xl shadow-xl shadow-green-100 transition-all">
+                        PAY ₹75,500
+                    </button>
+                </div>
+
+                <div class="md:col-span-1">
+                    <div class="bg-indigo-900 text-white rounded-3xl p-8 sticky top-6 shadow-2xl">
+                        <h4 class="font-bold opacity-50 uppercase text-xs tracking-widest mb-6">Payment Order</h4>
+                        <div class="space-y-4 pb-6 border-b border-white/10">
+                            <div class="flex justify-between text-sm"><span>Base Fee</span><span>₹75,000</span></div>
+                            <div class="flex justify-between text-sm"><span>Late Fine</span><span>₹500</span></div>
+                            <div class="flex justify-between text-sm text-green-400 font-bold"><span>Tax / Conv. Fee</span><span>₹0.00</span></div>
+                        </div>
+                        <div class="pt-6">
+                            <div class="flex justify-between items-center">
+                                <span class="font-bold text-indigo-200">Total Payable</span>
+                                <span class="text-3xl font-black text-white">₹75,500</span>
+                            </div>
+                        </div>
+                        <div class="mt-12 space-y-4">
+                            <div class="flex items-center gap-3 text-xs opacity-60">
+                                <i class="fas fa-shield-alt text-lg"></i>
+                                <span>PCI-DSS Compliant Gateway</span>
+                            </div>
+                            <div class="flex items-center gap-3 text-xs opacity-60">
+                                <i class="fas fa-lock text-lg"></i>
+                                <span>End-to-End Encryption</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="processing-section" class="hidden fixed inset-0 bg-white z-[60] flex flex-col items-center justify-center">
+        <div class="loader ease-linear rounded-full border-4 border-t-4 border-slate-200 h-20 w-20 mb-6"></div>
+        <h2 class="text-2xl font-black text-slate-800">Verifying with Bank...</h2>
+        <p class="text-slate-500 font-medium">Please do not press back or refresh</p>
+    </div>
+
+    <div id="success-section" class="hidden fixed inset-0 bg-slate-900/95 backdrop-blur-xl z-[70] flex items-center justify-center p-4">
+        <div class="bg-white rounded-[3rem] p-12 max-w-md w-full text-center shadow-2xl">
+            <div class="w-24 h-24 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-8 text-4xl animate-bounce">
+                <i class="fas fa-check"></i>
+            </div>
+            <h2 class="text-4xl font-black text-slate-800 mb-2">Success!</h2>
+            <p class="text-slate-500 font-medium mb-8">Fees for Semester IV have been successfully recorded.</p>
+            
+            <div class="bg-slate-50 rounded-2xl p-4 mb-8 text-sm text-left">
+                <div class="flex justify-between mb-2"><span>Transaction ID</span><span class="font-bold">#IIT7729104</span></div>
+                <div class="flex justify-between"><span>Payment Mode</span><span class="font-bold">UPI / G-Pay</span></div>
+            </div>
+            
+            <button onclick="downloadReceipt()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-5 rounded-2xl font-bold flex items-center justify-center gap-3 transition-all mb-4">
+                <i class="fas fa-file-pdf"></i> Download Receipt
+            </button>
+            <button onclick="location.reload()" class="text-slate-400 font-bold uppercase text-xs tracking-widest hover:text-slate-600">Return to Portal</button>
+        </div>
+    </div>
+
+    <div id="receipt-template" class="hidden p-12 bg-white text-slate-800" style="width: 800px;">
+        <div style="border: 2px solid #e2e8f0; padding: 40px; border-radius: 20px;">
+            <h1 style="text-align:center; font-size: 28px; font-weight: 900; color: #1e1b4b; margin-bottom: 5px;">INDIAN INSTITUTE OF TECHNOLOGY</h1>
+            <p style="text-align:center; color: #64748b; margin-bottom: 30px; font-weight: 600;">OFFICIAL E-RECEIPT</p>
+            <hr style="border: none; border-top: 2px dashed #e2e8f0; margin-bottom: 30px;">
+            
+            <div style="display: flex; justify-content: space-between; margin-bottom: 40px;">
+                <div>
+                    <p style="margin: 0; color: #94a3b8; font-size: 12px; font-weight: 700;">PAID BY</p>
+                    <p style="margin: 5px 0 0 0; font-size: 18px; font-weight: 800;">Rajesh Kumar</p>
+                    <p style="margin: 2px 0; color: #64748b;">Roll No: IIT-9920-CS</p>
+                    <p style="margin: 2px 0; color: #64748b;">B.Tech CSE - Sem IV</p>
+                </div>
+                <div style="text-align: right;">
+                    <p style="margin: 0; color: #94a3b8; font-size: 12px; font-weight: 700;">TRANSACTION DETAILS</p>
+                    <p style="margin: 5px 0 0 0; font-weight: 700;">Date: <span id="current-date"></span></p>
+                    <p style="margin: 2px 0; font-weight: 700;">Ref: #IIT7729104</p>
+                    <p style="margin: 2px 0; color: #22c55e; font-weight: 900;">STATUS: SUCCESS</p>
+                </div>
+            </div>
+
+            <table style="width: 100%; border-collapse: collapse; margin-bottom: 30px;">
+                <thead>
+                    <tr style="background: #f8fafc; border-bottom: 2px solid #e2e8f0;">
+                        <th style="padding: 15px; text-align: left; font-size: 13px; color: #64748b;">Fee Description</th>
+                        <th style="padding: 15px; text-align: right; font-size: 13px; color: #64748b;">Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="border-bottom: 1px solid #f1f5f9;"><td style="padding: 15px; font-weight: 600;">Academic & Tuition Fees</td><td style="padding: 15px; text-align: right; font-weight: 600;">₹60,000.00</td></tr>
+                    <tr style="border-bottom: 1px solid #f1f5f9;"><td style="padding: 15px; font-weight: 600;">Hostel & Amenities</td><td style="padding: 15px; text-align: right; font-weight: 600;">₹12,000.00</td></tr>
+                    <tr style="border-bottom: 1px solid #f1f5f9;"><td style="padding: 15px; font-weight: 600;">Other Charges</td><td style="padding: 15px; text-align: right; font-weight: 600;">₹3,000.00</td></tr>
+                    <tr style="border-bottom: 1px solid #f1f5f9;"><td style="padding: 15px; font-weight: 600; color: #ef4444;">Late Fee Fine</td><td style="padding: 15px; text-align: right; font-weight: 600; color: #ef4444;">₹500.00</td></tr>
+                </tbody>
+                <tfoot>
+                    <tr style="background: #1e1b4b; color: white;">
+                        <td style="padding: 15px; font-weight: 900; border-radius: 0 0 0 10px;">TOTAL PAID</td>
+                        <td style="padding: 15px; text-align: right; font-weight: 900; border-radius: 0 0 10px 0; font-size: 20px;">₹75,500.00</td>
+                    </tr>
+                </tfoot>
+            </table>
+            <p style="text-align: center; color: #94a3b8; font-size: 10px; margin-top: 40px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">This is a system generated document. No physical signature required.</p>
+        </div>
+    </div>
+
+    <script>
+        function showPaymentPage() { document.getElementById('payment-section').classList.remove('hidden'); }
+        function hidePaymentPage() { document.getElementById('payment-section').classList.add('hidden'); }
+
+        function switchTab(type) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.getElementById('tab-' + type).classList.add('active');
+            
+            // Visual feedback for tabs
+            const upiBtn = document.getElementById('btn-upi');
+            const cardBtn = document.getElementById('btn-card');
+            const upiCheck = document.getElementById('check-upi');
+            const cardCheck = document.getElementById('check-card');
+
+            upiBtn.style.borderColor = (type === 'upi') ? '#4f46e5' : '#e2e8f0';
+            cardBtn.style.borderColor = (type === 'card') ? '#4f46e5' : '#e2e8f0';
+            upiCheck.style.opacity = (type === 'upi') ? '1' : '0';
+            cardCheck.style.opacity = (type === 'card') ? '1' : '0';
+        }
+
+        function processPayment() {
+            const check = document.getElementById('terms-check');
+            if(!check.checked) {
+                alert("Please agree to the Terms & Conditions before paying.");
+                return;
+            }
+
+            document.getElementById('processing-section').classList.remove('hidden');
+            setTimeout(() => {
+                document.getElementById('processing-section').classList.add('hidden');
+                document.getElementById('success-section').classList.remove('hidden');
+            }, 3000);
+        }
+
+        function downloadReceipt() {
+            const element = document.getElementById('receipt-template');
+            element.classList.remove('hidden');
+            document.getElementById('current-date').innerText = new Date().toLocaleDateString('en-IN', {day: '2-digit', month: 'long', year: 'numeric'});
+            
+            const opt = { 
+                margin: 0, 
+                filename: 'IIT_Fee_Receipt_SemIV.pdf', 
+                image: { type: 'jpeg', quality: 1 }, 
+                html2canvas: { scale: 3, useCORS: true }, 
+                jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } 
+            };
+            
+            html2pdf().set(opt).from(element).save().then(() => {
+                element.classList.add('hidden');
+            });
+        }
+    </script>
+</body>
+</html>
