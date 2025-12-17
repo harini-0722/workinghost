@@ -1227,7 +1227,7 @@ function renderLeaveView() {
     // =========================================
     // DETAIL VIEW RENDERER (Fixed: Data URI & Modal Bug)
     // =========================================
-    function renderDetailView(blockKey) {
+function renderDetailView(blockKey) {
         console.log("Rendering detail view for block:", blockKey);
         const block = appState.blocks.find(b => b.blockKey === blockKey);
         if (!block) {
@@ -1245,14 +1245,37 @@ function renderLeaveView() {
         
         let hostelCapacity = 0;
         let hostelOccupancy = 0;
-        roomListContainer.innerHTML = '';
         studentRoomSelect.innerHTML = '<option value="" disabled selected>-- Select Room --</option>';
         
         const rooms = block.rooms || [];
         rooms.sort((a, b) => a.roomNumber.localeCompare(b.roomNumber, undefined, { numeric: true, sensitivity: 'base' }));
 
-        // Internal Placeholder Image (No Internet Required)
+        // Internal Placeholder Image (Data URI - Works Offline)
         const placeholderImage = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='150' viewBox='0 0 300 150'%3E%3Crect fill='%23f3f4f6' width='300' height='150'/%3E%3Ctext fill='%239ca3af' font-family='sans-serif' font-size='20' dy='10.5' font-weight='bold' x='50%25' y='50%25' text-anchor='middle'%3ENo Image%3C/text%3E%3C/svg%3E";
+
+        let allRoomsHTML = ''; // Build one big string for performance
+
+        if (rooms.length === 0) {
+            roomListContainer.innerHTML = `
+                <div class="col-span-full flex flex-col items-center justify-center p-8 text-gray-400 border-2 border-dashed border-gray-200 rounded-lg">
+                    <i class="fa-solid fa-door-open text-4xl mb-2 opacity-50"></i>
+                    <p class="italic">No rooms added to this block yet.</p>
+                    <button id="empty-state-add-room-btn" class="mt-4 px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 rounded hover:bg-indigo-100 transition-colors">
+                        Add Your First Room
+                    </button>
+                </div>`;
+            
+            document.getElementById('empty-state-add-room-btn')?.addEventListener('click', () => {
+                prepareRoomModalForAdd();
+                showModal('add-room-modal'); 
+            });
+            
+            // Update stats even if empty
+            detailStatCapacity.textContent = block.blockCapacity || 0; 
+            detailStatOccupancy.textContent = 0; 
+            detailStatAvailable.textContent = block.blockCapacity || 0;
+            return;
+        }
 
         rooms.forEach(room => {
             const current = room.students ? room.students.length : 0;
@@ -1262,16 +1285,18 @@ function renderLeaveView() {
             const percent = max > 0 ? (current / max) * 100 : 0;
             const studentNames = (room.students && room.students.length > 0) ? room.students.map(s => s.name).join(', ') : 'Empty';
             
-            // Use Data URI fallback if image is missing
-            const imageUrl = room.roomImage && room.roomImage.trim() !== '' 
-                ? room.roomImage 
-                : placeholderImage;
+            // 1. Sanitize Image URL (Fix Windows paths)
+            let imageUrl = placeholderImage;
+            if (room.roomImage && room.roomImage.trim() !== '') {
+                // Replace backslashes with forward slashes for browser compatibility
+                imageUrl = room.roomImage.trim().replace(/\\/g, '/');
+            }
 
-            const roomHTML = `
+            allRoomsHTML += `
                 <div class="room-card bg-white rounded-lg shadow-sm overflow-hidden border border-gray-200 hover:shadow-md hover:border-indigo-300 transition-all cursor-pointer group relative" data-room-id="${room.roomNumber}" data-room-status="${status.text}">
                    
                    <div class="h-28 w-full relative bg-gray-100">
-                        <img src="${imageUrl}" alt="Room ${room.roomNumber}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 error-image-placeholder">
+                        <img src="${imageUrl}" alt="Room ${room.roomNumber}" class="room-img-display w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
                         
                         <button class="edit-room-btn absolute top-2 right-2 h-7 w-7 flex items-center justify-center bg-white/90 text-gray-500 hover:text-indigo-600 rounded-full transition-colors z-10 shadow-sm backdrop-blur-sm" data-room-id="${room._id}" data-room-number="${room.roomNumber}" title="Edit Room">
                             <i class="fa-solid fa-pen text-[10px]"></i>
@@ -1312,29 +1337,25 @@ function renderLeaveView() {
                    </div>
                 </div>
             `;
-            roomListContainer.innerHTML += roomHTML;
 
             if (status.text === 'Available') { 
                 studentRoomSelect.innerHTML += `<option value="${room._id}">${room.roomNumber} (Avail: ${max - current})</option>`; 
             }
         });
 
-        if (rooms.length === 0) {
-            roomListContainer.innerHTML = `
-                <div class="col-span-full flex flex-col items-center justify-center p-8 text-gray-400 border-2 border-dashed border-gray-200 rounded-lg">
-                    <i class="fa-solid fa-door-open text-4xl mb-2 opacity-50"></i>
-                    <p class="italic">No rooms added to this block yet.</p>
-                    <button id="empty-state-add-room-btn" class="mt-4 px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 rounded hover:bg-indigo-100 transition-colors">
-                        Add Your First Room
-                    </button>
-                </div>`;
-                 
-                 // FIX: Changed openModal to showModal here
-                 document.getElementById('empty-state-add-room-btn')?.addEventListener('click', () => {
-                    prepareRoomModalForAdd();
-                    showModal('add-room-modal'); 
-                });
-        }
+        // Inject all HTML at once
+        roomListContainer.innerHTML = allRoomsHTML;
+
+        // Attach Error Handlers to all images after injection
+        const roomImages = roomListContainer.querySelectorAll('.room-img-display');
+        roomImages.forEach(img => {
+            img.onerror = function() {
+                console.warn('Image failed to load, swapping to placeholder:', this.src);
+                this.src = placeholderImage;
+                // Prevent infinite loop if placeholder fails (unlikely for Data URI)
+                this.onerror = null; 
+            };
+        });
 
         const displayedCapacity = block.blockCapacity || hostelCapacity;
         detailStatCapacity.textContent = displayedCapacity; 
@@ -1343,13 +1364,6 @@ function renderLeaveView() {
         
         roomSearchInput.value = ''; 
         roomFilterSelect.value = 'All';
-        
-        // Robust Error Handling using the internal variable
-        document.querySelectorAll('.error-image-placeholder').forEach(img => {
-            img.onerror = function() {
-                 this.src = placeholderImage;
-            };
-        });
     }
     
     function renderRoomDetailsModal(room, block) {
