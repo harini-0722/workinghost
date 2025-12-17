@@ -1383,45 +1383,108 @@ function renderLeaveView() {
     function renderRoomDetailsModal(room, block) {
         if (!room) { console.error("Room data is missing."); return; }
         currentRoomData = room; 
-        modalRoomTitle.textContent = `Room Details: ${room.roomNumber}`;
+        
+        // Update Title
+        modalRoomTitle.innerHTML = `<i class="fa-solid fa-door-open text-indigo-500 mr-2"></i> Room ${room.roomNumber}`;
+        
+        // Update Stats
         modalRoomCapacity.textContent = room.capacity;
         const occupancy = room.students ? room.students.length : 0;
         const available = room.capacity - occupancy;
-        modalRoomOccupancy.textContent = occupancy; modalRoomAvailable.textContent = available;
+        modalRoomOccupancy.textContent = occupancy; 
+        modalRoomAvailable.textContent = available;
+        
         modalOccupantTitle.textContent = `Current Occupants (${occupancy})`;
         modalOccupantContainer.innerHTML = '';
+
+        // Render Students (Compact List Style)
         if (occupancy === 0) {
-            modalOccupantContainer.innerHTML = '<p class="text-gray-500 md:col-span-2">This room is empty.</p>';
+            modalOccupantContainer.innerHTML = `
+                <div class="text-center p-4 border-2 border-dashed border-gray-200 rounded-lg bg-gray-50">
+                    <p class="text-xs text-gray-400 italic">This room is currently empty.</p>
+                </div>`;
         } else {
             room.students.forEach(student => {
                 const feeStatus = student.feeStatus || 'Pending';
-                const statusColor = feeStatus.toLowerCase() === 'paid' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700';
-                let yearColor = 'bg-gray-100 text-gray-700'; 
-                if (student.year && student.year.toLowerCase().includes('3')) yearColor = 'bg-pink-100 text-pink-700';
-                if (student.year && student.year.toLowerCase().includes('2')) yearColor = 'bg-yellow-100 text-yellow-700';
-                if (student.year && student.year.toLowerCase().includes('1')) yearColor = 'bg-blue-100 text-blue-700'; 
+                const isPaid = feeStatus.toLowerCase() === 'paid';
+                const statusColor = isPaid ? 'bg-emerald-100 text-emerald-700 border-emerald-200' : 'bg-red-100 text-red-700 border-red-200';
+                const statusIcon = isPaid ? 'fa-check' : 'fa-clock';
+
+                // Year Badge Color
+                let yearColor = 'bg-gray-100 text-gray-600'; 
+                if (student.year && student.year.toLowerCase().includes('3')) yearColor = 'bg-pink-50 text-pink-600 border-pink-100';
+                if (student.year && student.year.toLowerCase().includes('2')) yearColor = 'bg-amber-50 text-amber-600 border-amber-100';
+                if (student.year && student.year.toLowerCase().includes('1')) yearColor = 'bg-blue-50 text-blue-600 border-blue-100'; 
                 
-                const studentHTML = `<div class="bg-white border rounded-lg p-4 shadow-sm relative"><button class="remove-student-btn absolute top-2 right-2 p-1 text-red-500 hover:bg-red-100 rounded-full transition-colors duration-200 z-10" data-student-id="${student._id}" title="Remove Student"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></button><span class="absolute top-3 left-3 text-xs font-semibold px-2 py-0.5 ${yearColor} rounded">${student.year || 'N/A'}</span><div class="flex items-center gap-4 mt-8"><img src="${student.profileImageUrl || './default-avatar.png'}" alt="${student.name}" class="flex-shrink-0 h-12 w-12 rounded-full bg-indigo-100 object-cover"><div class="overflow-hidden"><h4 class="font-bold text-gray-800 truncate">${student.name}</h4><p class="text-sm text-blue-600 truncate">${student.rollNumber || ''}</p></div></div><div class="mt-4 space-y-2 text-sm text-gray-600"><p class="truncate"><strong>Email:</strong> ${student.email || 'N/A'}</p><p><strong>Phone:</strong> ${student.phone || 'N/A'}</p><p><strong>Joined:</strong> ${student.joiningDate ? new Date(student.joiningDate).toLocaleDateString() : 'N/A'}</p></div><div class="flex justify-between items-center mt-4 pt-3 border-t"><div><span class="text-xs font-medium">Fee Status:</span><span class="text-sm font-bold px-3 py-1 rounded ${statusColor}">${feeStatus === 'Pending' ? 'Pending' : feeStatus}</span></div><a href="/student-profile.html?id=${student._id}" target="_blank" class="view-student-details text-sm font-medium text-blue-600 hover:underline" data-student-id="${student._id}">View Full Details</a></div></div>`;
+                // Image Handling
+                const profileImg = student.profileImageUrl || 'https://via.placeholder.com/150/f3f4f6/9ca3af?text=User';
+
+                const studentHTML = `
+                    <div class="group flex items-center justify-between bg-white border border-gray-200 rounded-lg p-2.5 shadow-sm hover:border-indigo-300 hover:shadow-md transition-all">
+                        
+                        <div class="flex items-center gap-3">
+                            <img src="${profileImg}" alt="${student.name}" class="h-9 w-9 rounded-full object-cover border border-gray-200 bg-gray-50">
+                            <div>
+                                <h4 class="text-sm font-bold text-gray-800 leading-tight">${student.name}</h4>
+                                <div class="flex items-center gap-2 mt-0.5">
+                                    <span class="text-[10px] text-gray-500 font-mono bg-gray-50 px-1 rounded">${student.rollNumber || 'No Roll'}</span>
+                                    <span class="text-[10px] font-semibold px-1.5 py-0 rounded border ${yearColor}">${student.year || 'Year?'}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-2">
+                            <span class="hidden sm:flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded border ${statusColor}">
+                                <i class="fa-solid ${statusIcon} text-[9px]"></i> ${feeStatus}
+                            </span>
+
+                            <div class="h-4 w-px bg-gray-200 mx-1"></div>
+
+                            <a href="/student-profile.html?id=${student._id}" target="_blank" class="text-gray-400 hover:text-indigo-600 transition-colors p-1.5 rounded-full hover:bg-indigo-50" title="View Profile">
+                                <i class="fa-solid fa-address-card text-sm"></i>
+                            </a>
+
+                            <button class="remove-student-btn text-gray-400 hover:text-red-600 transition-colors p-1.5 rounded-full hover:bg-red-50" data-student-id="${student._id}" title="Remove Student">
+                                <i class="fa-solid fa-user-xmark text-sm"></i>
+                            </button>
+                        </div>
+                    </div>`;
                 
                 modalOccupantContainer.innerHTML += studentHTML;
             });
         }
+
+        // Render Complaints (Compact Rows)
         modalIssuesContainer.innerHTML = '';
         const complaints = room.complaints || []; 
-        if (complaints.length === 0 && room.roomNumber === 'A-101') { complaints.push({ title: 'Broken AC/Leakage', status: 'Critical', _id: 'fake123' }); }
+        
         if (complaints.length === 0) {
-            modalIssuesContainer.innerHTML = '<p class="text-gray-500">No open issues reported for this room.</p>';
+            modalIssuesContainer.innerHTML = '<div class="text-xs text-gray-400 italic pl-1">No open issues reported.</div>';
             modalRoomComplaintsBadge.classList.add('hidden');
         } else {
             complaints.forEach(complaint => {
-                const statusColor = complaint.status.toLowerCase() === 'critical' ? 'bg-red-500 text-white' : 'bg-yellow-500 text-white';
-                const issueHTML = `<div class="flex justify-between items-center bg-white p-3 rounded-lg shadow-sm border"><p class="font-medium text-gray-700">${complaint.title}</p><span class="text-xs font-bold px-3 py-1 rounded-full ${statusColor}">${complaint.status}</span></div>`;
+                const isCritical = complaint.status.toLowerCase() === 'critical';
+                const statusClass = isCritical ? 'bg-red-50 text-red-600 border-red-200' : 'bg-amber-50 text-amber-600 border-amber-200';
+                const icon = isCritical ? 'fa-triangle-exclamation' : 'fa-screwdriver-wrench';
+
+                const issueHTML = `
+                    <div class="flex justify-between items-center bg-white px-3 py-2 rounded border border-gray-200 hover:bg-gray-50">
+                        <div class="flex items-center gap-2 overflow-hidden">
+                            <div class="h-6 w-6 rounded bg-gray-100 flex items-center justify-center text-gray-500 flex-shrink-0">
+                                <i class="fa-solid ${icon} text-xs"></i>
+                            </div>
+                            <span class="text-xs font-semibold text-gray-700 truncate">${complaint.title}</span>
+                        </div>
+                        <span class="text-[10px] font-bold px-2 py-0.5 rounded border ${statusClass}">
+                            ${complaint.status}
+                        </span>
+                    </div>`;
                 modalIssuesContainer.innerHTML += issueHTML;
             });
             modalRoomComplaintsCount.textContent = complaints.length;
             modalRoomComplaintsBadge.classList.remove('hidden');
         }
-    } 
+    }
 
     function renderEvents() {
         eventListContainer.innerHTML = '';
