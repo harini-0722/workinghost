@@ -143,13 +143,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // --- 3. THEME/HELPER DATA & UTILITY FUNCTIONS ---
+    // --- 3. THEME/HELPER DATA ---
     const themes = { 
-        pink: { border: 'border-pink-500', bg: 'bg-pink-100', text: 'text-pink-600', icon: 'user-group' },
-        blue: { border: 'border-blue-500', bg: 'bg-blue-100', text: 'text-blue-600', icon: 'user-group' },
-        green: { border: 'border-green-500', bg: 'bg-green-100', text: 'text-green-600', icon: 'building-office' },
-        purple: { border: 'border-purple-500', bg: 'bg-purple-100', text: 'text-purple-600', icon: 'academic-cap' },
-        yellow: { border: 'border-yellow-500', bg: 'bg-yellow-100', text: 'text-yellow-600', icon: 'beaker' },
-        orange: { border: 'border-orange-500', bg: 'bg-orange-100', text: 'text-orange-600', icon: 'paper-airplane' }, // ADDED: Orange Theme
+        pink: { border: 'border-pink-500', bg: 'bg-pink-50', text: 'text-pink-600', icon: 'fa-user-group' },
+        blue: { border: 'border-blue-500', bg: 'bg-blue-50', text: 'text-blue-600', icon: 'fa-user-group' },
+        green: { border: 'border-green-500', bg: 'bg-green-50', text: 'text-green-600', icon: 'fa-building' },
+        purple: { border: 'border-purple-500', bg: 'bg-purple-50', text: 'text-purple-600', icon: 'fa-graduation-cap' },
+        yellow: { border: 'border-yellow-500', bg: 'bg-yellow-50', text: 'text-yellow-600', icon: 'fa-flask' },
+        orange: { border: 'border-orange-500', bg: 'bg-orange-50', text: 'text-orange-600', icon: 'fa-paper-plane' },
     };
     const eventThemes = { 
         'Sports': { border: 'border-green-500', bg: 'bg-green-100', text: 'text-green-700' },
@@ -1070,15 +1071,14 @@ function renderLeaveView() {
             assetInventoryContainer.innerHTML = `<p class="text-red-500 col-span-full">Error: Could not load assets. ${error.message}</p>`;
         }
     }
-
-    function renderDashboard() {
+function renderDashboard() {
         hostelBlockContainer.innerHTML = '';
         let grandTotalCapacity = 0;
         let grandTotalStudents = 0;
         let totalPendingFees = 0;
 
         if (!appState.blocks || appState.blocks.length === 0) {
-            hostelBlockContainer.innerHTML = `<p class="text-gray-500 col-span-full">No hostel blocks found. Add one to get started!</p>`;
+            hostelBlockContainer.innerHTML = `<p class="text-gray-500 col-span-full">No hostel blocks found.</p>`;
         }
 
         for (const block of appState.blocks) {
@@ -1092,52 +1092,52 @@ function renderLeaveView() {
                     const studentsInRoom = room.students ? room.students.length : 0;
                     currentStudents += studentsInRoom;
                     totalCapacity += (room.capacity || 0);
-                    
                     if (room.students) {
                         room.students.forEach(student => {
-                            if (student.feeStatus === 'Pending') {
-                                totalPendingFees++;
-                            }
+                            if (student.feeStatus === 'Pending') totalPendingFees++;
                         });
                     }
                 });
             }
             
             const occupiedRooms = block.rooms ? block.rooms.filter(room => room.students && room.students.length > 0).length : 0;
-            
-            grandTotalCapacity += block.blockCapacity || totalCapacity; // Use the block's set capacity or fallback to sum
+            grandTotalCapacity += block.blockCapacity || totalCapacity;
             grandTotalStudents += currentStudents;
-            
-            // New fields for display
-            const blockMaxRooms = block.maxRooms || '∞'; // NEW: Use maxRooms
-            const blockMaxStudents = block.blockCapacity || totalCapacity; // Use blockCapacity for max students
+            const blockMaxRooms = block.maxRooms || '∞';
+            const blockMaxStudents = block.blockCapacity || totalCapacity;
 
-          // Update block card HTML to display both max rooms and max students
+            // NEW COMPACT CARD HTML
             const blockHTML = `
-                <div class="bg-white rounded-lg shadow-md overflow-hidden border-l-8 ${theme.border} relative transition-all duration-300 hover:shadow-xl hover:scale-105">
-                    <div class="absolute top-3 right-3 flex space-x-2">
-                      
-<button class="edit-block-btn p-0.5 text-blue-500 hover:bg-blue-100 rounded-full transition-colors duration-200 z-10" data-block-id="${block._id}" title="Edit Block">
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-        <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 18.07a4.995 4.995 0 0 1-1.488 1.488l-4.25 1.777l.732-3.351a4.99 4.99 0 0 1 1.488-1.488L16.862 4.487Zm0 0L19.5 7.125"/>
-    </svg>
-</button>
-                        <button class="remove-block-btn p-1 text-red-500 hover:bg-red-100 rounded-full transition-colors duration-200 z-10" data-block-id="${block._id}" data-block-name="${block.blockName}" title="Delete Block">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden relative transition-all duration-300 hover:shadow-lg hover:-translate-y-1 group">
+                    <div class="absolute top-3 right-3 flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                         <button class="edit-block-btn h-7 w-7 flex items-center justify-center text-secondary-gray hover:text-primary-blue bg-white rounded-full shadow-sm border border-gray-200" data-block-id="${block._id}" title="Edit">
+                            <i class="fa-solid fa-pen text-xs"></i>
+                        </button>
+                        <button class="remove-block-btn h-7 w-7 flex items-center justify-center text-secondary-gray hover:text-accent-red bg-white rounded-full shadow-sm border border-gray-200" data-block-id="${block._id}" data-block-name="${block.blockName}" title="Delete">
+                            <i class="fa-solid fa-trash text-xs"></i>
                         </button>
                     </div>
-                    <a href="#" class="block-link block hover:bg-gray-50 p-6" data-hostel-key="${block.blockKey}">
+
+                    <a href="#" class="block-link block p-5" data-hostel-key="${block.blockKey}">
                         <div class="flex items-center mb-4">
-                            <div class="p-3 ${theme.bg} rounded-lg"><hero-icon-solid name="${theme.icon}" class="h-6 w-6 ${theme.text}"></hero-icon-solid></div>
-                            <h3 class="text-2xl font-bold text-gray-900 ml-4">${block.blockName}</h3>
+                            <div class="h-10 w-10 ${theme.bg} ${theme.text} rounded-full flex items-center justify-center mr-3">
+                                <i class="fa-solid ${theme.icon} text-lg"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-bold text-gray-800 leading-tight">${block.blockName}</h3>
+                                <p class="text-xs text-gray-500">${totalRooms} / ${blockMaxRooms} Rooms</p>
+                            </div>
                         </div>
-                        <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
-                            <div><span class="text-gray-500">Rooms (Limit)</span><p class="text-lg font-semibold text-gray-900">${totalRooms} / ${blockMaxRooms}</p></div>
-                            <div><span class="text-gray-500">Occupied Rooms</span><p class="text-lg font-semibold text-gray-900">${occupiedRooms}</p></div>
-                            <div><span class="text-gray-500">Current Students</span><p class="text-lg font-semibold text-gray-900">${currentStudents}</p></div>
-                            <div><span class="text-gray-500">Max Students</span><p class="text-lg font-semibold text-gray-900">${blockMaxStudents}</p></div> 
+
+                        <div class="grid grid-cols-2 gap-3 mt-2">
+                             <div class="bg-gray-50 p-2 rounded-lg text-center border border-gray-100">
+                                <span class="block text-[10px] font-bold text-gray-400 uppercase">Occupied</span>
+                                <span class="block text-sm font-bold text-gray-800">${occupiedRooms}</span>
+                             </div>
+                             <div class="bg-gray-50 p-2 rounded-lg text-center border border-gray-100">
+                                <span class="block text-[10px] font-bold text-gray-400 uppercase">Students</span>
+                                <span class="block text-sm font-bold text-blue-600">${currentStudents}</span>
+                             </div>
                         </div>
                     </a>
                 </div>
@@ -1145,15 +1145,15 @@ function renderLeaveView() {
             hostelBlockContainer.innerHTML += blockHTML;
         }
         
+        // Update Global Stats
         statTotalCapacity.textContent = grandTotalCapacity;
         const occupancyPercent = grandTotalStudents > 0 ? (grandTotalStudents / grandTotalCapacity * 100) : 0;
         statOccupancyPercent.textContent = occupancyPercent.toFixed(1) + '%';
-        statOccupancyLabel.textContent = occupancyPercent.toFixed(0) + '%';
-        statOccupancyRing.style.strokeDashoffset = 100 - occupancyPercent;
-        
+        if(statOccupancyLabel) statOccupancyLabel.textContent = occupancyPercent.toFixed(0) + '%';
+        if(statOccupancyRing) statOccupancyRing.style.strokeDashoffset = 100 - occupancyPercent;
         statFeesPending.textContent = `${totalPendingFees} Pending`;
         updateVisitorCount(); 
-        updateLeaveCount(); // NEW: Update the leave count stat
+        updateLeaveCount();
     }
 
     // Function to set modal state for editing an existing block
@@ -1287,51 +1287,60 @@ function renderLeaveView() {
         }
     } 
 
-    function renderEvents() {
+  function renderEvents() {
         eventListContainer.innerHTML = '';
         if (eventData.length === 0) {
-            eventListContainer.innerHTML = `<p class="text-gray-500 col-span-full">No events or announcements posted yet.</p>`; return;
+            eventListContainer.innerHTML = `<p class="text-gray-500 col-span-full">No events.</p>`; return;
         }
         eventData.slice().reverse().forEach(event => {
             const theme = eventThemes[event.type] || eventThemes.General;
-            const formattedDate = new Date(event.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-            const eventHTML = `<div class="bg-white rounded-lg shadow-md overflow-hidden border-l-8 ${theme.border} transition-all duration-300 hover:shadow-xl hover:scale-105"><div class="p-5"><div class="flex justify-between items-center mb-2"><h3 class="text-xl font-bold text-gray-800">${event.title}</h3><span class="text-xs font-bold px-3 py-1 rounded-full ${theme.bg} ${theme.text}">${event.type}</span></div><p class="text-sm font-medium text-gray-600 mb-3">Date: ${formattedDate}</p><p class="text-sm text-gray-700">${event.description}</p></div></div>`;
+            const formattedDate = new Date(event.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+            
+            // New Card
+            const eventHTML = `
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 hover:shadow-md transition">
+                <div class="flex justify-between items-start mb-2">
+                    <span class="text-xs font-bold px-2 py-1 rounded ${theme.bg} ${theme.text}">${event.type}</span>
+                    <span class="text-xs text-gray-400 font-bold">${formattedDate}</span>
+                </div>
+                <h3 class="text-sm font-bold text-gray-800 mb-1">${event.title}</h3>
+                <p class="text-xs text-gray-500 line-clamp-2">${event.description}</p>
+            </div>`;
             eventListContainer.innerHTML += eventHTML;
         });
     }
-    
     function renderClubActivities(activities) { 
         clubActivityContainer.innerHTML = '';
         if (!activities || activities.length === 0) {
-            clubActivityContainer.innerHTML = `<p class="text-gray-500 col-span-full">No club activities posted yet.</p>`;
+            clubActivityContainer.innerHTML = `<p class="text-gray-500 col-span-full">No activities.</p>`;
             return;
         }
         activities.forEach(activity => {
             const theme = clubActivityThemes[activity.type] || clubActivityThemes.General;
-            const formattedDate = new Date(activity.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-            const imageUrl = activity.imageUrl || `https://via.placeholder.com/300x150/${theme.bg.split('-')[1]}00/FFFFFF?text=${activity.type}`; 
+            const formattedDate = new Date(activity.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            const imageUrl = activity.imageUrl || `https://via.placeholder.com/300x150?text=${activity.type}`; 
             
             const activityHTML = `
-                <div class="bg-white rounded-lg shadow-md overflow-hidden border-l-8 ${theme.border} transition-all duration-300 hover:shadow-xl hover:scale-105 flex flex-col relative">
-                    <button class="remove-activity-btn absolute top-3 right-3 p-1 text-red-500 hover:bg-red-100 rounded-full transition-colors duration-200 z-10" data-activity-id="${activity._id}" data-activity-title="${activity.title}" title="Delete Activity">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden relative hover:shadow-md transition group">
+                    <button class="remove-activity-btn absolute top-2 right-2 h-6 w-6 bg-white rounded-full text-red-500 shadow-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition" data-activity-id="${activity._id}" data-activity-title="${activity.title}">
+                        <i class="fa-solid fa-trash text-[10px]"></i>
                     </button>
-                    <img src="${imageUrl}" alt="${activity.title}" class="activity-card-image">
-                    <div class="p-5 flex flex-col flex-grow">
-                        <div class="flex justify-between items-start mb-2">
-                            <h3 class="text-lg font-bold text-gray-800">${activity.title}</h3>
-                            <span class="text-xs font-bold px-3 py-1 rounded-full ${theme.bg} ${theme.text} flex-shrink-0 ml-2">${activity.type}</span>
+                    <div class="h-24 w-full bg-gray-100 overflow-hidden">
+                        <img src="${imageUrl}" alt="${activity.title}" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-3">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-[10px] font-bold uppercase text-gray-400">${activity.type}</span>
+                            <span class="text-[10px] font-bold text-gray-400"><i class="fa-regular fa-clock mr-1"></i>${formattedDate}</span>
                         </div>
-                        <p class="text-sm font-medium text-gray-600 mb-3">Date: ${formattedDate}</p>
-                        <p class="text-sm text-gray-700 flex-grow">${activity.description || ''}</p>
-                        </div>
+                        <h3 class="text-sm font-bold text-gray-800 truncate">${activity.title}</h3>
+                    </div>
                 </div>
             `;
             clubActivityContainer.innerHTML += activityHTML;
         });
     }
+    
     
     function renderAssets(assets) {
         assetInventoryContainer.innerHTML = '';
