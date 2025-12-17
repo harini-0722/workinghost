@@ -1381,7 +1381,8 @@ function renderLeaveView() {
     }
     
    // =========================================
-    // RENDER ROOM DETAILS MODAL (Updated: Bigger Cards with Text Buttons)
+  // =========================================
+    // RENDER ROOM DETAILS MODAL (Fixed: Links & Close Button)
     // =========================================
     function renderRoomDetailsModal(room, block) {
         if (!room) { console.error("Room data is missing."); return; }
@@ -1414,13 +1415,11 @@ function renderLeaveView() {
                 const statusColor = isPaid ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-red-50 text-red-700 border-red-200';
                 const statusIcon = isPaid ? 'fa-circle-check' : 'fa-circle-exclamation';
 
-                // Year Badge Color
                 let yearColor = 'bg-gray-100 text-gray-600'; 
                 if (student.year && student.year.toLowerCase().includes('3')) yearColor = 'bg-pink-50 text-pink-600 border-pink-100';
                 if (student.year && student.year.toLowerCase().includes('2')) yearColor = 'bg-amber-50 text-amber-600 border-amber-100';
                 if (student.year && student.year.toLowerCase().includes('1')) yearColor = 'bg-blue-50 text-blue-600 border-blue-100'; 
                 
-                // Image Handling
                 const profileImg = student.profileImageUrl || 'https://via.placeholder.com/150/f3f4f6/9ca3af?text=User';
 
                 const studentHTML = `
@@ -1467,7 +1466,7 @@ function renderLeaveView() {
             });
         }
 
-        // Render Complaints (Compact Rows)
+        // Render Complaints
         modalIssuesContainer.innerHTML = '';
         const complaints = room.complaints || []; 
         
@@ -1499,6 +1498,27 @@ function renderLeaveView() {
             });
             modalRoomComplaintsCount.textContent = complaints.length;
             modalRoomComplaintsBadge.classList.remove('hidden');
+        }
+
+        // --- NEW: Attach "View All Tickets" Click Listener ---
+        const viewAllBtn = document.getElementById('modal-view-all-complaints');
+        if (viewAllBtn) {
+            // Remove old listeners to prevent duplicates (cloning trick)
+            const newBtn = viewAllBtn.cloneNode(true);
+            viewAllBtn.parentNode.replaceChild(newBtn, viewAllBtn);
+            
+            newBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                hideModal('room-details-modal'); // Close the popup
+                hideAllViews();                  // Hide current background view
+                complaintsView.classList.remove('hidden'); // Show Complaints Page
+                loadComplaintsData();            // Refresh data
+                
+                // Optional: Pre-fill search with this room number
+                complaintSearchInput.value = room.roomNumber;
+                // We trigger the input event manually to filter the list immediately
+                complaintSearchInput.dispatchEvent(new Event('input'));
+            });
         }
     }
 
@@ -1733,11 +1753,12 @@ function renderLeaveView() {
     }
 
     document.addEventListener('click', (e) => {
-        if (e.target.dataset.modalHide) {
-            hideModal(e.target.dataset.modalHide);
+        // Use .closest() to find the button even if the icon <i> was clicked
+        const closeBtn = e.target.closest('[data-modal-hide]');
+        if (closeBtn) {
+            hideModal(closeBtn.dataset.modalHide);
         }
     });
-
     backToDashboardBtn.addEventListener('click', () => {
         hideAllViews();
         dashboardView.classList.remove('hidden');
