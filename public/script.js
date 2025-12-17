@@ -1227,7 +1227,10 @@ function renderLeaveView() {
     // =========================================
     // DETAIL VIEW RENDERER (Fixed: Data URI & Modal Bug)
     // =========================================
-function renderDetailView(blockKey) {
+// =========================================
+    // DETAIL VIEW RENDERER (Fixed: Leading Slash & Path Debugging)
+    // =========================================
+    function renderDetailView(blockKey) {
         console.log("Rendering detail view for block:", blockKey);
         const block = appState.blocks.find(b => b.blockKey === blockKey);
         if (!block) {
@@ -1253,7 +1256,7 @@ function renderDetailView(blockKey) {
         // Internal Placeholder Image (Data URI - Works Offline)
         const placeholderImage = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='150' viewBox='0 0 300 150'%3E%3Crect fill='%23f3f4f6' width='300' height='150'/%3E%3Ctext fill='%239ca3af' font-family='sans-serif' font-size='20' dy='10.5' font-weight='bold' x='50%25' y='50%25' text-anchor='middle'%3ENo Image%3C/text%3E%3C/svg%3E";
 
-        let allRoomsHTML = ''; // Build one big string for performance
+        let allRoomsHTML = ''; 
 
         if (rooms.length === 0) {
             roomListContainer.innerHTML = `
@@ -1285,11 +1288,23 @@ function renderDetailView(blockKey) {
             const percent = max > 0 ? (current / max) * 100 : 0;
             const studentNames = (room.students && room.students.length > 0) ? room.students.map(s => s.name).join(', ') : 'Empty';
             
-            // 1. Sanitize Image URL (Fix Windows paths)
+            // --- IMAGE PATH FIX ---
             let imageUrl = placeholderImage;
             if (room.roomImage && room.roomImage.trim() !== '') {
-                // Replace backslashes with forward slashes for browser compatibility
-                imageUrl = room.roomImage.trim().replace(/\\/g, '/');
+                let rawPath = room.roomImage.trim();
+                
+                // Debug log to see what the server is actually sending
+                console.log(`Raw Server Image Path for Room ${room.roomNumber}:`, rawPath);
+
+                // 1. Replace Windows backslashes with forward slashes
+                rawPath = rawPath.replace(/\\/g, '/');
+
+                // 2. Ensure path starts with '/' if it's a local file (and not a full URL or data URI)
+                if (!rawPath.startsWith('http') && !rawPath.startsWith('data:') && !rawPath.startsWith('/')) {
+                    rawPath = '/' + rawPath;
+                }
+                
+                imageUrl = rawPath;
             }
 
             allRoomsHTML += `
@@ -1343,16 +1358,15 @@ function renderDetailView(blockKey) {
             }
         });
 
-        // Inject all HTML at once
+        // Inject all HTML
         roomListContainer.innerHTML = allRoomsHTML;
 
-        // Attach Error Handlers to all images after injection
+        // Attach Error Handlers
         const roomImages = roomListContainer.querySelectorAll('.room-img-display');
         roomImages.forEach(img => {
             img.onerror = function() {
-                console.warn('Image failed to load, swapping to placeholder:', this.src);
+                console.warn('Image failed to load (404/Error). Swapping to placeholder. Broken URL:', this.src);
                 this.src = placeholderImage;
-                // Prevent infinite loop if placeholder fails (unlikely for Data URI)
                 this.onerror = null; 
             };
         });
