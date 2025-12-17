@@ -145,12 +145,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- 3. THEME/HELPER DATA & UTILITY FUNCTIONS ---
     // --- 3. THEME/HELPER DATA ---
     const themes = { 
-        pink: { border: 'border-pink-500', bg: 'bg-pink-50', text: 'text-pink-600', icon: 'fa-user-group' },
-        blue: { border: 'border-blue-500', bg: 'bg-blue-50', text: 'text-blue-600', icon: 'fa-user-group' },
-        green: { border: 'border-green-500', bg: 'bg-green-50', text: 'text-green-600', icon: 'fa-building' },
+        pink: { border: 'border-pink-500', bg: 'bg-pink-50', text: 'text-pink-600', icon: 'fa-venus' },
+        blue: { border: 'border-blue-500', bg: 'bg-blue-50', text: 'text-blue-600', icon: 'fa-mars' },
+        green: { border: 'border-green-500', bg: 'bg-green-50', text: 'text-green-600', icon: 'fa-leaf' },
         purple: { border: 'border-purple-500', bg: 'bg-purple-50', text: 'text-purple-600', icon: 'fa-graduation-cap' },
         yellow: { border: 'border-yellow-500', bg: 'bg-yellow-50', text: 'text-yellow-600', icon: 'fa-flask' },
-        orange: { border: 'border-orange-500', bg: 'bg-orange-50', text: 'text-orange-600', icon: 'fa-paper-plane' },
+        orange: { border: 'border-orange-500', bg: 'bg-orange-50', text: 'text-orange-600', icon: 'fa-futbol' },
     };
     const eventThemes = { 
         'Sports': { border: 'border-green-500', bg: 'bg-green-100', text: 'text-green-700' },
@@ -1071,14 +1071,14 @@ function renderLeaveView() {
             assetInventoryContainer.innerHTML = `<p class="text-red-500 col-span-full">Error: Could not load assets. ${error.message}</p>`;
         }
     }
-function renderDashboard() {
+ function renderDashboard() {
         hostelBlockContainer.innerHTML = '';
         let grandTotalCapacity = 0;
         let grandTotalStudents = 0;
         let totalPendingFees = 0;
 
         if (!appState.blocks || appState.blocks.length === 0) {
-            hostelBlockContainer.innerHTML = `<p class="text-gray-500 col-span-full">No hostel blocks found.</p>`;
+            hostelBlockContainer.innerHTML = `<p class="text-gray-500 col-span-full">No hostel blocks found. Add one to get started!</p>`;
         }
 
         for (const block of appState.blocks) {
@@ -1103,13 +1103,15 @@ function renderDashboard() {
             const occupiedRooms = block.rooms ? block.rooms.filter(room => room.students && room.students.length > 0).length : 0;
             grandTotalCapacity += block.blockCapacity || totalCapacity;
             grandTotalStudents += currentStudents;
+            
+            // Explicitly getting the limits you wanted
             const blockMaxRooms = block.maxRooms || '∞';
             const blockMaxStudents = block.blockCapacity || totalCapacity;
 
-            // NEW COMPACT CARD HTML
+            // NEW CARD HTML (Preserving ALL Data Points)
             const blockHTML = `
-                <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden relative transition-all duration-300 hover:shadow-lg hover:-translate-y-1 group">
-                    <div class="absolute top-3 right-3 flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden relative transition-all duration-300 hover:shadow-lg hover:-translate-y-1 group border-l-4 ${theme.border}">
+                    <div class="absolute top-3 right-3 flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
                          <button class="edit-block-btn h-7 w-7 flex items-center justify-center text-secondary-gray hover:text-primary-blue bg-white rounded-full shadow-sm border border-gray-200" data-block-id="${block._id}" title="Edit">
                             <i class="fa-solid fa-pen text-xs"></i>
                         </button>
@@ -1120,23 +1122,28 @@ function renderDashboard() {
 
                     <a href="#" class="block-link block p-5" data-hostel-key="${block.blockKey}">
                         <div class="flex items-center mb-4">
-                            <div class="h-10 w-10 ${theme.bg} ${theme.text} rounded-full flex items-center justify-center mr-3">
+                            <div class="h-10 w-10 ${theme.bg} ${theme.text} rounded-lg flex items-center justify-center mr-3">
                                 <i class="fa-solid ${theme.icon} text-lg"></i>
                             </div>
-                            <div>
-                                <h3 class="text-lg font-bold text-gray-800 leading-tight">${block.blockName}</h3>
-                                <p class="text-xs text-gray-500">${totalRooms} / ${blockMaxRooms} Rooms</p>
-                            </div>
+                            <h3 class="text-xl font-bold text-gray-800 leading-tight">${block.blockName}</h3>
                         </div>
 
-                        <div class="grid grid-cols-2 gap-3 mt-2">
-                             <div class="bg-gray-50 p-2 rounded-lg text-center border border-gray-100">
-                                <span class="block text-[10px] font-bold text-gray-400 uppercase">Occupied</span>
+                        <div class="grid grid-cols-2 gap-y-3 gap-x-4">
+                             <div>
+                                <span class="block text-[10px] font-bold text-gray-400 uppercase tracking-wide">Rooms (Limit)</span>
+                                <span class="block text-sm font-bold text-gray-800">${totalRooms} / ${blockMaxRooms}</span>
+                             </div>
+                             <div>
+                                <span class="block text-[10px] font-bold text-gray-400 uppercase tracking-wide">Occupied Rooms</span>
                                 <span class="block text-sm font-bold text-gray-800">${occupiedRooms}</span>
                              </div>
-                             <div class="bg-gray-50 p-2 rounded-lg text-center border border-gray-100">
-                                <span class="block text-[10px] font-bold text-gray-400 uppercase">Students</span>
-                                <span class="block text-sm font-bold text-blue-600">${currentStudents}</span>
+                             <div>
+                                <span class="block text-[10px] font-bold text-gray-400 uppercase tracking-wide">Current Students</span>
+                                <span class="block text-sm font-bold text-gray-800">${currentStudents}</span>
+                             </div>
+                             <div>
+                                <span class="block text-[10px] font-bold text-gray-400 uppercase tracking-wide">Max Students</span>
+                                <span class="block text-sm font-bold text-gray-800">${blockMaxStudents}</span>
                              </div>
                         </div>
                     </a>
@@ -1145,17 +1152,16 @@ function renderDashboard() {
             hostelBlockContainer.innerHTML += blockHTML;
         }
         
-        // Update Global Stats
         statTotalCapacity.textContent = grandTotalCapacity;
         const occupancyPercent = grandTotalStudents > 0 ? (grandTotalStudents / grandTotalCapacity * 100) : 0;
         statOccupancyPercent.textContent = occupancyPercent.toFixed(1) + '%';
         if(statOccupancyLabel) statOccupancyLabel.textContent = occupancyPercent.toFixed(0) + '%';
         if(statOccupancyRing) statOccupancyRing.style.strokeDashoffset = 100 - occupancyPercent;
+        
         statFeesPending.textContent = `${totalPendingFees} Pending`;
         updateVisitorCount(); 
         updateLeaveCount();
     }
-
     // Function to set modal state for editing an existing block
     async function prepareBlockModalForEdit(blockId) {
         try {
