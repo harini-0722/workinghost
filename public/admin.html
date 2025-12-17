@@ -198,167 +198,160 @@
             </div>
         </div>
     </div>
-    <main class="mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-grow">
+   <main class="mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-grow">
+        
         <div id="dashboard-view">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div class="bg-indigo-50 p-5 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <span class="text-sm font-medium text-indigo-900 opacity-70">TOTAL CAPACITY</span>
-                            <p class="text-3xl font-extrabold text-indigo-900 mt-2" id="stat-total-capacity">0</p>
-                            <p class="text-sm text-indigo-900 opacity-60">Total Hostel Units</p>
-                        </div>
-                        <div class="p-3 bg-white rounded-full shadow-md">
-                            <hero-icon-outline name="building-office-2" class="h-6 w-6 text-indigo-500"></hero-icon-outline>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                
+                <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-4 flex items-center justify-between transition-transform hover:-translate-y-1 hover:shadow-md">
+                    <div>
+                        <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Total Capacity</span>
+                        <h3 class="text-2xl font-extrabold text-gray-800 mt-1" id="stat-total-capacity">0</h3>
+                        <p class="text-xs text-indigo-500 font-medium mt-1">Total Hostel Units</p>
+                    </div>
+                    <div class="h-10 w-10 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600 shadow-sm">
+                        <i class="fa-solid fa-bed text-lg"></i>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-4 flex items-center justify-between transition-transform hover:-translate-y-1 hover:shadow-md">
+                    <div>
+                        <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Occupancy</span>
+                        <h3 class="text-2xl font-extrabold text-gray-800 mt-1" id="stat-occupancy-percent">0%</h3>
+                        <p class="text-xs text-amber-500 font-medium mt-1">Beds Filled</p>
+                    </div>
+                    <div class="relative h-14 w-14">
+                        <svg class="h-full w-full transform -rotate-90" viewBox="0 0 36 36">
+                            <path class="text-gray-100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3" />
+                            <path id="stat-occupancy-ring" class="text-amber-500 transition-all duration-1000 ease-out" stroke-dasharray="100, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3" />
+                        </svg>
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <span class="text-[0.6rem] font-bold text-gray-500" id="stat-occupancy-label">0%</span>
                         </div>
                     </div>
                 </div>
-                <div class="bg-amber-50 p-5 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <span class="text-sm font-medium text-amber-900 opacity-70">OCCUPANCY</span>
-                            <p class="text-3xl font-extrabold text-amber-900 mt-2" id="stat-occupancy-percent">0%</p>
-                            <p class="text-sm text-amber-900 opacity-60">Beds Filled</p>
-                        </div>
-                        <div class="relative h-20 w-20 flex-shrink-0">
-                            <svg class="h-full w-full" width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
-                                <circle cx="18" cy="18" r="16" fill="none" class="text-amber-100" stroke-width="5"></circle>
-                                <circle cx="18" cy="18" r="16" fill="none" class="progress-ring-circle text-amber-400" 
-                                    stroke-width="5" 
-                                    stroke-dasharray="100" 
-                                    stroke-dashoffset="100" 
-                                    stroke-linecap="round" 
-                                    id="stat-occupancy-ring"></circle>
-                            </svg>
-                            <div class="absolute top-0 left-0 flex h-full w-full items-center justify-center">
-                                <span class="progress-ring-text text-amber-600" id="stat-occupancy-label">0%</span>
-                            </div>
+
+                <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-4 flex items-center justify-between transition-transform hover:-translate-y-1 hover:shadow-md">
+                    <div>
+                        <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Open Complaints</span>
+                        <h3 class="text-2xl font-extrabold text-gray-800 mt-1" id="stat-open-complaints">0</h3>
+                        <p class="text-xs text-red-500 font-medium mt-1">Pending Resolution</p>
+                    </div>
+                    <div class="h-10 w-10 rounded-full bg-red-50 flex items-center justify-center text-red-600 shadow-sm">
+                        <i class="fa-solid fa-triangle-exclamation text-lg"></i>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-4 flex items-center justify-between transition-transform hover:-translate-y-1 hover:shadow-md">
+                    <div>
+                        <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Attendance</span>
+                        <h3 class="text-2xl font-extrabold text-gray-800 mt-1" id="stat-attendance-percent">98%</h3>
+                        <p class="text-xs text-emerald-500 font-medium mt-1">Check-in Rate</p>
+                    </div>
+                    <div class="relative h-14 w-14">
+                        <svg class="h-full w-full transform -rotate-90" viewBox="0 0 36 36">
+                            <path class="text-gray-100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3" />
+                            <path id="stat-attendance-ring" class="text-emerald-500 transition-all duration-1000 ease-out" stroke-dasharray="100, 100" stroke-dashoffset="2" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3" />
+                        </svg>
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <span class="text-[0.6rem] font-bold text-gray-500" id="stat-attendance-label">98%</span>
                         </div>
                     </div>
                 </div>
-                <div class="bg-red-50 p-5 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <span class="text-sm font-medium text-red-900 opacity-70">OPEN COMPLAINTS</span>
-                            <p class="text-3xl font-extrabold text-red-900 mt-2" id="stat-open-complaints">0</p>
-                            <p class="text-sm text-red-900 opacity-60">Pending Resolution</p>
-                        </div>
-                        <div class="p-3 bg-white rounded-full shadow-md">
-                            <hero-icon-outline name="exclamation-triangle" class="h-6 w-6 text-red-500"></hero-icon-outline>
-                        </div>
+
+                <div id="show-fees-view-btn" class="bg-white rounded-lg shadow-sm border border-gray-100 p-4 flex items-center justify-between cursor-pointer group hover:border-teal-400 transition-all">
+                    <div>
+                        <span class="text-xs font-bold text-gray-400 uppercase tracking-wider group-hover:text-teal-600 transition-colors">Fees Status</span>
+                        <h3 class="text-xl font-extrabold text-gray-800 mt-1 group-hover:text-teal-700" id="stat-fees-pending">0 Pending</h3>
+                        <p class="text-xs text-gray-400 mt-1">View Dues <i class="fa-solid fa-arrow-right ml-1"></i></p>
+                    </div>
+                    <div class="h-10 w-10 rounded-full bg-teal-50 flex items-center justify-center text-teal-600 group-hover:bg-teal-600 group-hover:text-white transition-colors shadow-sm">
+                        <i class="fa-solid fa-file-invoice-dollar text-lg"></i>
                     </div>
                 </div>
-                <div class="bg-emerald-50 p-5 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <span class="text-sm font-medium text-emerald-900 opacity-70">DAILY ATTENDANCE</span>
-                            <p class="text-3xl font-extrabold text-emerald-900 mt-2" id="stat-attendance-percent">98%</p>
-                            <p class="text-sm text-emerald-900 opacity-60">Latest Check-in Rate</p>
-                        </div>
-                        <div class="relative h-20 w-20 flex-shrink-0">
-                            <svg class="h-full w-full" width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
-                                <circle cx="18" cy="18" r="16" fill="none" class="text-emerald-100" stroke-width="5"></circle>
-                                <circle cx="18" cy="18" r="16" fill="none" class="progress-ring-circle text-emerald-400" 
-                                    stroke-width="5" 
-                                    stroke-dasharray="100" 
-                                    stroke-dashoffset="2" 
-                                    stroke-linecap="round"
-                                    id="stat-attendance-ring"></circle>
-                            </svg>
-                            <div class="absolute top-0 left-0 flex h-full w-full items-center justify-center">
-                                <span class="progress-ring-text text-emerald-600" id="stat-attendance-label">98%</span>
-                            </div>
-                        </div>
+
+                <div id="show-visitors-view-btn" class="bg-white rounded-lg shadow-sm border border-gray-100 p-4 flex items-center justify-between cursor-pointer group hover:border-sky-400 transition-all">
+                    <div>
+                        <span class="text-xs font-bold text-gray-400 uppercase tracking-wider group-hover:text-sky-600 transition-colors">Visitor Logs</span>
+                        <h3 class="text-xl font-extrabold text-gray-800 mt-1 group-hover:text-sky-700" id="stat-visitors-today">0 Today</h3>
+                        <p class="text-xs text-gray-400 mt-1">View Entries <i class="fa-solid fa-arrow-right ml-1"></i></p>
+                    </div>
+                    <div class="h-10 w-10 rounded-full bg-sky-50 flex items-center justify-center text-sky-600 group-hover:bg-sky-600 group-hover:text-white transition-colors shadow-sm">
+                        <i class="fa-solid fa-id-badge text-lg"></i>
                     </div>
                 </div>
-                <div id="show-fees-view-btn" class="bg-teal-50 p-5 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <span class="text-sm font-medium text-teal-900 opacity-70">FEES STATUS</span>
-                            <p class="text-3xl font-extrabold text-teal-900 mt-2" id="stat-fees-pending">0 Pending</p>
-                            <p class="text-sm text-teal-900 opacity-60">Total Dues</p>
-                        </div>
-                        <div class="p-3 bg-white rounded-full shadow-md">
-                            <hero-icon-outline name="banknotes" class="h-6 w-6 text-teal-500"></hero-icon-outline>
-                        </div>
+
+                <div id="show-leave-view-btn" class="bg-white rounded-lg shadow-sm border border-gray-100 p-4 flex items-center justify-between cursor-pointer group hover:border-orange-400 transition-all">
+                    <div>
+                        <span class="text-xs font-bold text-gray-400 uppercase tracking-wider group-hover:text-orange-600 transition-colors">Leave Requests</span>
+                        <h3 class="text-xl font-extrabold text-gray-800 mt-1 group-hover:text-orange-700" id="stat-leave-pending">0 Pending</h3>
+                        <p class="text-xs text-gray-400 mt-1">Awaiting Approval <i class="fa-solid fa-arrow-right ml-1"></i></p>
+                    </div>
+                    <div class="h-10 w-10 rounded-full bg-orange-50 flex items-center justify-center text-orange-600 group-hover:bg-orange-600 group-hover:text-white transition-colors shadow-sm">
+                        <i class="fa-solid fa-paper-plane text-lg"></i>
                     </div>
                 </div>
-                <div id="show-visitors-view-btn" class="bg-sky-50 p-5 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <span class="text-sm font-medium text-sky-900 opacity-70">VISITOR LOGS</span>
-                            <p class="text-3xl font-extrabold text-sky-900 mt-2" id="stat-visitors-today">0 Today</p>
-                            <p class="text-sm text-sky-900 opacity-60">Current Entries</p>
-                        </div>
-                        <div class="p-3 bg-white rounded-full shadow-md">
-                            <hero-icon-outline name="identification" class="h-6 w-6 text-sky-500"></hero-icon-outline>
-                        </div>
-                    </div>
-                </div>
-                <div id="show-leave-view-btn" class="bg-orange-50 p-5 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <span class="text-sm font-medium text-orange-900 opacity-70">LEAVE REQUESTS</span>
-                            <p class="text-3xl font-extrabold text-orange-900 mt-2" id="stat-leave-pending">0 Pending</p>
-                            <p class="text-sm text-orange-900 opacity-60">Awaiting Approval</p>
-                        </div>
-                        <div class="p-3 bg-white rounded-full shadow-md">
-                            <hero-icon-outline name="paper-airplane" class="h-6 w-6 text-orange-500"></hero-icon-outline>
-                        </div>
-                    </div>
-                </div>
-                </div>
-            <div class="mt-10">
+
+            </div>
+            <div class="mt-8">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
-                    <h2 class="text-2xl font-semibold text-gray-900"><span class="icon-space"> </span>Hostel Block Summary</h2>
-                    <button id="show-add-block-modal-btn" class="mt-4 sm:mt-0 flex items-center px-5 py-3 bg-blue-600 text-white font-medium rounded-lg shadow-md hover:bg-blue-700 transition-all duration-300 hover:scale-105">
-                        <hero-icon-solid name="plus" class="h-5 w-5 mr-2"></hero-icon-solid>
-                        <span class="icon-space"> </span>Add New Block
+                    <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+                        <i class="fa-solid fa-building text-gray-400 text-lg"></i> Hostel Block Summary
+                    </h2>
+                    <button id="show-add-block-modal-btn" class="mt-2 sm:mt-0 flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-lg shadow hover:bg-blue-700 transition-transform hover:scale-105">
+                        <i class="fa-solid fa-plus mr-2"></i> Add New Block
                     </button>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="hostel-block-container">
-                </div>
+                    </div>
             </div>
+
             <div class="mt-10">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
-                    <h2 class="text-2xl font-semibold text-gray-900"><span class="icon-space"> </span>Events & Announcements</h2>
-                    <button id="show-add-event-modal-btn" class="mt-4 sm:mt-0 flex items-center px-5 py-3 bg-blue-600 text-white font-medium rounded-lg shadow-md hover:bg-blue-700 transition-all duration-300 hover:scale-105">
-                        <hero-icon-solid name="calendar-days" class="h-5 w-5 mr-2"></hero-icon-solid>
-                        <span class="icon-space"> </span>Add New Event
+                    <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+                        <i class="fa-solid fa-bullhorn text-gray-400 text-lg"></i> Events & Announcements
+                    </h2>
+                    <button id="show-add-event-modal-btn" class="mt-2 sm:mt-0 flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-lg shadow hover:bg-blue-700 transition-transform hover:scale-105">
+                        <i class="fa-solid fa-calendar-plus mr-2"></i> Add New Event
                     </button>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="event-list-container">
-                </div>
+                    </div>
             </div>
+
             <div class="mt-10">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
-                    <h2 class="text-2xl font-semibold text-gray-900"><span class="icon-space"> </span>Club Activities / Gymkhana</h2>
-                    <button id="show-add-club-activity-modal-btn" class="mt-4 sm:mt-0 flex items-center px-5 py-3 bg-blue-600 text-white font-medium rounded-lg shadow-md hover:bg-blue-700 transition-all duration-300 hover:scale-105">
-                        <hero-icon-solid name="puzzle-piece" class="h-5 w-5 mr-2"></hero-icon-solid>
-                        <span class="icon-space"> </span>Add New Activity
+                    <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+                        <i class="fa-solid fa-medal text-gray-400 text-lg"></i> Club Activities / Gymkhana
+                    </h2>
+                    <button id="show-add-club-activity-modal-btn" class="mt-2 sm:mt-0 flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-lg shadow hover:bg-blue-700 transition-transform hover:scale-105">
+                        <i class="fa-solid fa-puzzle-piece mr-2"></i> Add New Activity
                     </button>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="club-activity-container">
-                </div>
+                    </div>
             </div>
+
             <div class="mt-10">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
-                    <h2 class="text-2xl font-semibold text-gray-900"><span class="icon-space"> </span>Hostel Asset Inventory</h2>
-                    <button id="show-add-asset-modal-btn" class="mt-4 sm:mt-0 flex items-center px-5 py-3 bg-blue-600 text-white font-medium rounded-lg shadow-md hover:bg-blue-700 transition-all duration-300 hover:scale-105">
-                        <hero-icon-solid name="archive-box-arrow-down" class="h-5 w-5 mr-2"></hero-icon-solid>
-                        <span class="icon-space"> </span>Add New Asset
+                    <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+                        <i class="fa-solid fa-boxes-stacked text-gray-400 text-lg"></i> Hostel Asset Inventory
+                    </h2>
+                    <button id="show-add-asset-modal-btn" class="mt-2 sm:mt-0 flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-lg shadow hover:bg-blue-700 transition-transform hover:scale-105">
+                        <i class="fa-solid fa-box-open mr-2"></i> Add New Asset
                     </button>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="asset-inventory-container">
-                    <p class="text-gray-500 col-span-full"><span class="icon-space"> </span>No assets added yet. Add assets to the inventory.</p>
+                    <p class="text-gray-500 col-span-full text-sm italic">No assets added yet. Add assets to the inventory.</p>
                 </div>
             </div>
-        </div>
+
+        </div> 
         <div id="detail-view" class="hidden">
             <div class="relative mb-6 pb-4">
                 <button id="back-to-dashboard-btn" class="flex items-center text-sm font-medium text-gray-600 hover:text-gray-900">
-                    <hero-icon-solid name="arrow-left" class="h-4 w-4 mr-2"></hero-icon-solid>
-                    <span class="icon-space"> </span>Back to Dashboard
+                    <i class="fa-solid fa-arrow-left mr-2"></i> Back to Dashboard
                 </button>
                 <div class="flex items-center justify-center absolute inset-x-0 top-0 -z-10">
                     <h1 id="detail-hostel-name" class="text-xl sm:text-3xl font-bold text-gray-800" style="color: #4b0082;"></h1>
@@ -367,15 +360,15 @@
             <div class="bg-white p-4 sm:p-6 rounded-lg shadow-md border-l-8 border-blue-500 mb-8">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
                     <div>
-                        <span class="text-gray-500"><span class="icon-space"> </span>Capacity: </span>
+                        <span class="text-gray-500">Capacity: </span>
                         <span class="text-xl sm:text-2xl font-bold" style="color: #800080;" id="detail-stat-capacity">0</span>
                     </div>
                     <div>
-                        <span class="text-gray-500"><span class="icon-space"> </span>Occupancy: </span>
+                        <span class="text-gray-500">Occupancy: </span>
                         <span class="text-xl sm:text-2xl font-bold" style="color: #ffa500;" id="detail-stat-occupancy">0</span>
                     </div>
                     <div>
-                        <span class="text-gray-500"><span class="icon-space"> </span>Available Beds: </span>
+                        <span class="text-gray-500">Available Beds: </span>
                         <span class="text-xl sm:text-2xl font-bold" style="color: #008000;" id="detail-stat-available">0</span>
                     </div>
                 </div>
@@ -383,12 +376,10 @@
             <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
                 <div class="flex flex-wrap gap-4">
                     <button id="show-add-student-modal-btn" class="flex items-center px-5 py-3 bg-blue-600 text-white font-medium rounded-lg shadow-md hover:bg-blue-700 transition-all duration-300 hover:scale-105">
-                        <hero-icon-solid name="user-plus" class="h-5 w-5 mr-2"></hero-icon-solid>
-                        <span class="icon-space"> </span>Add New Student
+                        <i class="fa-solid fa-user-plus mr-2"></i> Add New Student
                     </button>
                     <button id="show-add-room-modal-btn" class="flex items-center px-5 py-3 bg-blue-600 text-white font-medium rounded-lg shadow-md hover:bg-blue-700 transition-all duration-300 hover:scale-105">
-                        <hero-icon-solid name="building-office-plus" class="h-5 w-5 mr-2"></hero-icon-solid>
-                        <span class="icon-space"> </span>Add New Room
+                        <i class="fa-solid fa-building-circle-check mr-2"></i> Add New Room
                     </button>
                 </div>
                 <div class="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
@@ -400,19 +391,16 @@
                     </select>
                 </div>
             </div>
-            <div id="room-list-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            </div>
+            <div id="room-list-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
         </div>
+
         <div id="fees-view" class="hidden">
             <div class="relative mb-6 pb-4">
                 <button id="back-to-dashboard-from-fees-btn" class="flex items-center text-sm font-medium text-gray-600 hover:text-gray-900">
-                    <hero-icon-solid name="arrow-left" class="h-4 w-4 mr-2"></hero-icon-solid>
-                    <span class="icon-space"> </span>Back to Dashboard
+                    <i class="fa-solid fa-arrow-left mr-2"></i> Back to Dashboard
                 </button>
                 <div class="flex items-center justify-center absolute inset-x-0 top-0 -z-10">
-                    <h1 class="text-xl sm:text-3xl font-bold text-teal-700">
-                        Fees Management
-                    </h1>
+                    <h1 class="text-xl sm:text-3xl font-bold text-teal-700">Fees Management</h1>
                 </div>
             </div>
             <div class="flex flex-col md:flex-row justify-end items-center mb-6 gap-4">
@@ -435,62 +423,56 @@
                                 <th class="px-6 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Action</th>
                             </tr>
                         </thead>
-                        <tbody id="fees-student-list-container" class="divide-y divide-gray-200">
-                            </tbody>
+                        <tbody id="fees-student-list-container" class="divide-y divide-gray-200"></tbody>
                     </table>
                 </div>
             </div>
         </div>
+
         <div id="visitors-view" class="hidden">
             <div class="relative mb-6 pb-4">
                 <button id="back-to-dashboard-from-visitors-btn" class="flex items-center text-sm font-medium text-gray-600 hover:text-gray-900">
-                    <hero-icon-solid name="arrow-left" class="h-4 w-4 mr-2"></hero-icon-solid>
-                    <span class="icon-space"> </span>Back to Dashboard
+                    <i class="fa-solid fa-arrow-left mr-2"></i> Back to Dashboard
                 </button>
                 <div class="flex items-center justify-center absolute inset-x-0 top-0 -z-10">
-                    <h1 class="text-xl sm:text-3xl font-bold text-sky-700">
-                        Visitor Logs
-                    </h1>
+                    <h1 class="text-xl sm:text-3xl font-bold text-sky-700">Visitor Logs</h1>
                 </div>
             </div>
             <div class="flex flex-col md:flex-row justify-end items-center mb-6 gap-4">
-                <input type="text" id="visitor-search-input" placeholder="Search by visitor or student name..." class="px-4 py-2 border rounded-lg shadow-sm w-full md:w-auto">
+                <input type="text" id="visitor-search-input" placeholder="Search..." class="px-4 py-2 border rounded-lg shadow-sm w-full md:w-auto">
                 <input type="date" id="visitor-date-filter" class="px-4 py-2 border rounded-lg shadow-sm w-full md:w-auto">
             </div>
             <div class="bg-white rounded-lg shadow-lg overflow-hidden">
                 <div class="overflow-x-auto">
                     <table class="w-full min-w-max">
-                       <thead class="bg-gray-100 border-b border-gray-200">
-    <tr>
-        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Visitor Name</th>
-        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Student / Room</th>
-        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Requested Period</th>
-        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
-        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Time In / Out</th>
-        <th class="px-6 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Action</th>
-    </tr>
-</thead>
-                        <tbody id="visitor-log-container" class="divide-y divide-gray-200">
-                            </tbody>
+                        <thead class="bg-gray-100 border-b border-gray-200">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Visitor Name</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Student / Room</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Requested Period</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Time In / Out</th>
+                                <th class="px-6 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="visitor-log-container" class="divide-y divide-gray-200"></tbody>
                     </table>
                 </div>
             </div>
         </div>
+
         <div id="complaints-view" class="hidden">
             <div class="relative mb-6 pb-4">
                 <button id="back-to-dashboard-from-complaints-btn" class="flex items-center text-sm font-medium text-gray-600 hover:text-gray-900">
-                    <hero-icon-solid name="arrow-left" class="h-4 w-4 mr-2"></hero-icon-solid>
-                    <span class="icon-space"> </span>Back to Dashboard
+                    <i class="fa-solid fa-arrow-left mr-2"></i> Back to Dashboard
                 </button>
                 <div class="flex items-center justify-center absolute inset-x-0 top-0 -z-10">
-                    <h1 class="text-xl sm:text-3xl font-bold text-red-700">
-                        Student Complaints
-                    </h1>
+                    <h1 class="text-xl sm:text-3xl font-bold text-red-700">Student Complaints</h1>
                 </div>
             </div>
             <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
                 <div class="flex flex-col md:flex-row gap-4 w-full md:w-auto">
-                    <input type="text" id="complaint-search-input" placeholder="Search by student name or room..." class="px-4 py-2 border rounded-lg shadow-sm w-full md:w-auto">
+                    <input type="text" id="complaint-search-input" placeholder="Search..." class="px-4 py-2 border rounded-lg shadow-sm w-full md:w-auto">
                     <select id="complaint-status-filter" class="px-4 py-2 border rounded-lg shadow-sm w-full md:w-auto">
                         <option value="All">All Status</option>
                         <option value="Pending">Pending</option>
@@ -509,8 +491,7 @@
                     </select>
                 </div>
                 <button id="refresh-complaints-btn" class="flex items-center px-4 py-2 bg-blue-600 text-white font-medium rounded-lg shadow-md hover:bg-blue-700 transition-all duration-300">
-                    <hero-icon-solid name="arrow-path" class="h-5 w-5 mr-2"></hero-icon-solid>
-                    Refresh
+                    <i class="fa-solid fa-arrow-rotate-right mr-2"></i> Refresh
                 </button>
             </div>
             <div class="bg-white rounded-lg shadow-lg overflow-hidden">
@@ -527,28 +508,24 @@
                                 <th class="px-6 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Actions</th>
                             </tr>
                         </thead>
-                        <tbody id="complaints-list-container" class="divide-y divide-gray-200">
-                        </tbody>
+                        <tbody id="complaints-list-container" class="divide-y divide-gray-200"></tbody>
                     </table>
                 </div>
             </div>
         </div>
-        
+
         <div id="leave-view" class="hidden">
             <div class="relative mb-6 pb-4">
                 <button id="back-to-dashboard-from-leave-btn" class="flex items-center text-sm font-medium text-gray-600 hover:text-gray-900">
-                    <hero-icon-solid name="arrow-left" class="h-4 w-4 mr-2"></hero-icon-solid>
-                    <span class="icon-space"> </span>Back to Dashboard
+                    <i class="fa-solid fa-arrow-left mr-2"></i> Back to Dashboard
                 </button>
                 <div class="flex items-center justify-center absolute inset-x-0 top-0 -z-10">
-                    <h1 class="text-xl sm:text-3xl font-bold text-orange-700">
-                        Leave Request Management
-                    </h1>
+                    <h1 class="text-xl sm:text-3xl font-bold text-orange-700">Leave Request Management</h1>
                 </div>
             </div>
             <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
                 <div class="flex flex-col md:flex-row gap-4 w-full md:w-auto">
-                    <input type="text" id="leave-search-input" placeholder="Search by student or room..." class="px-4 py-2 border rounded-lg shadow-sm w-full md:w-auto">
+                    <input type="text" id="leave-search-input" placeholder="Search..." class="px-4 py-2 border rounded-lg shadow-sm w-full md:w-auto">
                     <select id="leave-status-filter" class="px-4 py-2 border rounded-lg shadow-sm w-full md:w-auto">
                         <option value="All">All Status</option>
                         <option value="Pending">Pending</option>
@@ -557,8 +534,7 @@
                     </select>
                 </div>
                 <button id="refresh-leaves-btn" class="flex items-center px-4 py-2 bg-blue-600 text-white font-medium rounded-lg shadow-md hover:bg-blue-700 transition-all duration-300">
-                    <hero-icon-solid name="arrow-path" class="h-5 w-5 mr-2"></hero-icon-solid>
-                    Refresh
+                    <i class="fa-solid fa-arrow-rotate-right mr-2"></i> Refresh
                 </button>
             </div>
             <div class="bg-white rounded-lg shadow-lg overflow-hidden">
@@ -574,13 +550,13 @@
                                 <th class="px-6 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Action</th>
                             </tr>
                         </thead>
-                        <tbody id="leave-request-container" class="divide-y divide-gray-200">
-                        </tbody>
+                        <tbody id="leave-request-container" class="divide-y divide-gray-200"></tbody>
                     </table>
                 </div>
             </div>
         </div>
-        </main>
+
+    </main>
     <footer class="mt-12 py-6 border-t border-gray-200 bg-white">
         <div class="w-full mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <p class="text-sm text-gray-500">
