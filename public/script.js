@@ -1380,6 +1380,9 @@ function renderLeaveView() {
         roomFilterSelect.value = 'All';
     }
     
+   // =========================================
+    // RENDER ROOM DETAILS MODAL (Updated: Bigger Cards with Text Buttons)
+    // =========================================
     function renderRoomDetailsModal(room, block) {
         if (!room) { console.error("Room data is missing."); return; }
         currentRoomData = room; 
@@ -1397,18 +1400,19 @@ function renderLeaveView() {
         modalOccupantTitle.textContent = `Current Occupants (${occupancy})`;
         modalOccupantContainer.innerHTML = '';
 
-        // Render Students (Compact List Style)
+        // Render Students
         if (occupancy === 0) {
             modalOccupantContainer.innerHTML = `
-                <div class="text-center p-4 border-2 border-dashed border-gray-200 rounded-lg bg-gray-50">
-                    <p class="text-xs text-gray-400 italic">This room is currently empty.</p>
+                <div class="text-center p-6 border-2 border-dashed border-gray-200 rounded-lg bg-gray-50">
+                    <i class="fa-solid fa-bed text-gray-300 text-2xl mb-2"></i>
+                    <p class="text-sm text-gray-500 italic">This room is currently empty.</p>
                 </div>`;
         } else {
             room.students.forEach(student => {
                 const feeStatus = student.feeStatus || 'Pending';
                 const isPaid = feeStatus.toLowerCase() === 'paid';
-                const statusColor = isPaid ? 'bg-emerald-100 text-emerald-700 border-emerald-200' : 'bg-red-100 text-red-700 border-red-200';
-                const statusIcon = isPaid ? 'fa-check' : 'fa-clock';
+                const statusColor = isPaid ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-red-50 text-red-700 border-red-200';
+                const statusIcon = isPaid ? 'fa-circle-check' : 'fa-circle-exclamation';
 
                 // Year Badge Color
                 let yearColor = 'bg-gray-100 text-gray-600'; 
@@ -1420,32 +1424,41 @@ function renderLeaveView() {
                 const profileImg = student.profileImageUrl || 'https://via.placeholder.com/150/f3f4f6/9ca3af?text=User';
 
                 const studentHTML = `
-                    <div class="group flex items-center justify-between bg-white border border-gray-200 rounded-lg p-2.5 shadow-sm hover:border-indigo-300 hover:shadow-md transition-all">
+                    <div class="group flex flex-col sm:flex-row sm:items-center justify-between bg-white border border-gray-200 rounded-lg p-3.5 shadow-sm hover:border-indigo-300 hover:shadow-md transition-all gap-3">
                         
-                        <div class="flex items-center gap-3">
-                            <img src="${profileImg}" alt="${student.name}" class="h-9 w-9 rounded-full object-cover border border-gray-200 bg-gray-50">
+                        <div class="flex items-center gap-4">
+                            <img src="${profileImg}" alt="${student.name}" class="h-12 w-12 rounded-full object-cover border-2 border-white shadow-sm bg-gray-100">
                             <div>
-                                <h4 class="text-sm font-bold text-gray-800 leading-tight">${student.name}</h4>
-                                <div class="flex items-center gap-2 mt-0.5">
-                                    <span class="text-[10px] text-gray-500 font-mono bg-gray-50 px-1 rounded">${student.rollNumber || 'No Roll'}</span>
-                                    <span class="text-[10px] font-semibold px-1.5 py-0 rounded border ${yearColor}">${student.year || 'Year?'}</span>
+                                <h4 class="text-base font-bold text-gray-800 leading-tight">${student.name}</h4>
+                                <div class="flex items-center gap-2 mt-1.5 flex-wrap">
+                                    <span class="text-[11px] text-gray-600 font-mono bg-gray-100 px-1.5 py-0.5 rounded border border-gray-200">
+                                        ${student.rollNumber || 'No Roll'}
+                                    </span>
+                                    <span class="text-[10px] font-bold px-2 py-0.5 rounded border ${yearColor}">
+                                        ${student.year || 'Year?'}
+                                    </span>
+                                    <span class="sm:hidden text-[10px] font-bold px-2 py-0.5 rounded border ${statusColor}">
+                                        ${feeStatus}
+                                    </span>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="flex items-center gap-2">
-                            <span class="hidden sm:flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded border ${statusColor}">
-                                <i class="fa-solid ${statusIcon} text-[9px]"></i> ${feeStatus}
-                            </span>
+                        <div class="flex items-center justify-end gap-2 w-full sm:w-auto mt-2 sm:mt-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-gray-100">
+                            
+                            <div class="hidden sm:flex flex-col items-end mr-2">
+                                <span class="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Fees</span>
+                                <span class="text-xs font-bold ${isPaid ? 'text-emerald-600' : 'text-red-600'} flex items-center gap-1">
+                                    <i class="fa-solid ${statusIcon}"></i> ${feeStatus}
+                                </span>
+                            </div>
 
-                            <div class="h-4 w-px bg-gray-200 mx-1"></div>
-
-                            <a href="/student-profile.html?id=${student._id}" target="_blank" class="text-gray-400 hover:text-indigo-600 transition-colors p-1.5 rounded-full hover:bg-indigo-50" title="View Profile">
-                                <i class="fa-solid fa-address-card text-sm"></i>
+                            <a href="/student-profile.html?id=${student._id}" target="_blank" class="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 py-2 bg-indigo-50 text-indigo-600 text-xs font-bold rounded-md hover:bg-indigo-100 transition-colors border border-indigo-100">
+                                <i class="fa-solid fa-id-card"></i> Profile
                             </a>
 
-                            <button class="remove-student-btn text-gray-400 hover:text-red-600 transition-colors p-1.5 rounded-full hover:bg-red-50" data-student-id="${student._id}" title="Remove Student">
-                                <i class="fa-solid fa-user-xmark text-sm"></i>
+                            <button class="remove-student-btn flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 py-2 bg-white text-red-600 text-xs font-bold rounded-md hover:bg-red-50 transition-colors border border-red-200 shadow-sm" data-student-id="${student._id}">
+                                <i class="fa-solid fa-user-minus"></i> Remove
                             </button>
                         </div>
                     </div>`;
@@ -1459,7 +1472,10 @@ function renderLeaveView() {
         const complaints = room.complaints || []; 
         
         if (complaints.length === 0) {
-            modalIssuesContainer.innerHTML = '<div class="text-xs text-gray-400 italic pl-1">No open issues reported.</div>';
+            modalIssuesContainer.innerHTML = `
+                <div class="flex items-center gap-2 p-3 bg-gray-50 rounded border border-gray-100 text-gray-400 italic text-xs">
+                    <i class="fa-solid fa-check-circle text-green-400"></i> No open issues reported.
+                </div>`;
             modalRoomComplaintsBadge.classList.add('hidden');
         } else {
             complaints.forEach(complaint => {
@@ -1468,12 +1484,12 @@ function renderLeaveView() {
                 const icon = isCritical ? 'fa-triangle-exclamation' : 'fa-screwdriver-wrench';
 
                 const issueHTML = `
-                    <div class="flex justify-between items-center bg-white px-3 py-2 rounded border border-gray-200 hover:bg-gray-50">
-                        <div class="flex items-center gap-2 overflow-hidden">
-                            <div class="h-6 w-6 rounded bg-gray-100 flex items-center justify-center text-gray-500 flex-shrink-0">
+                    <div class="flex justify-between items-center bg-white px-3 py-2.5 rounded border border-gray-200 hover:bg-red-50 transition-colors group">
+                        <div class="flex items-center gap-3 overflow-hidden">
+                            <div class="h-7 w-7 rounded bg-red-100 flex items-center justify-center text-red-500 flex-shrink-0">
                                 <i class="fa-solid ${icon} text-xs"></i>
                             </div>
-                            <span class="text-xs font-semibold text-gray-700 truncate">${complaint.title}</span>
+                            <span class="text-sm font-semibold text-gray-700 truncate group-hover:text-red-700">${complaint.title}</span>
                         </div>
                         <span class="text-[10px] font-bold px-2 py-0.5 rounded border ${statusClass}">
                             ${complaint.status}
