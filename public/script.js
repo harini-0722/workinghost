@@ -165,6 +165,17 @@ document.addEventListener('DOMContentLoaded', () => {
         'Workshop': { border: 'border-yellow-500', bg: 'bg-yellow-50', text: 'text-yellow-700', icon: 'fa-chalkboard-user' },
         'General': { border: 'border-gray-500', bg: 'bg-gray-50', text: 'text-gray-700', icon: 'fa-users' },
     };
+    const assetThemes = {
+        'Table': { border: 'border-blue-500', bg: 'bg-blue-50', text: 'text-blue-700', icon: 'fa-table' },
+        'Chair': { border: 'border-blue-500', bg: 'bg-blue-50', text: 'text-blue-700', icon: 'fa-chair' },
+        'Bed': { border: 'border-purple-500', bg: 'bg-purple-50', text: 'text-purple-700', icon: 'fa-bed' },
+        'Mattress': { border: 'border-purple-500', bg: 'bg-purple-50', text: 'text-purple-700', icon: 'fa-layer-group' },
+        'Cupboard': { border: 'border-yellow-500', bg: 'bg-yellow-50', text: 'text-yellow-700', icon: 'fa-door-closed' },
+        'Fan': { border: 'border-green-500', bg: 'bg-green-50', text: 'text-green-700', icon: 'fa-fan' },
+        'Light': { border: 'border-yellow-500', bg: 'bg-yellow-50', text: 'text-yellow-700', icon: 'fa-lightbulb' },
+        'System': { border: 'border-gray-500', bg: 'bg-gray-50', text: 'text-gray-700', icon: 'fa-desktop' },
+        'Other': { border: 'border-indigo-500', bg: 'bg-indigo-50', text: 'text-indigo-700', icon: 'fa-box-open' }
+    };
     const getStatus = (current, max) => { 
         if (current >= max) return { text: 'Full', classes: 'bg-red-500 text-white', progress: 'bg-red-500' };
         return { text: 'Available', classes: 'bg-green-500 text-white', progress: 'bg-green-500' };
@@ -1391,30 +1402,44 @@ function renderLeaveView() {
     function renderAssets(assets) {
         assetInventoryContainer.innerHTML = '';
         if (!assets || assets.length === 0) {
-            assetInventoryContainer.innerHTML = `<p class="text-gray-500 col-span-full">No assets found in inventory.</p>`;
+            assetInventoryContainer.innerHTML = `<p class="text-gray-500 col-span-full italic text-sm">No assets found in inventory.</p>`;
             return;
         }
         
         assets.forEach(asset => {
+            // Determine theme based on type, or fallback to 'Other'
+            const theme = assetThemes[asset.type] || assetThemes['Other'];
             const assetName = asset.name;
-            const imageUrl = asset.imageUrl || `https://via.placeholder.com/300x150/e0e0e0/909090?text=${assetName.replace(' ', '+')}`;
+            // Fallback image generator
+            const imageUrl = asset.imageUrl || `https://via.placeholder.com/300x150/${theme.bg.split('-')[1]}00/FFFFFF?text=${assetName.substring(0,3)}`;
             
-            const icon = ''; // Emoji replaced with empty space
-
             const assetHTML = `
-                <div class="bg-white rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl hover:scale-105 flex flex-col relative">
-                    <button class="remove-asset-btn absolute top-3 right-3 p-1 text-red-500 hover:bg-red-100 rounded-full transition-colors duration-200 z-10" data-asset-id="${asset._id}" data-asset-name="${assetName}" title="Delete Asset">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
+                <div class="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100 transition-all duration-300 hover:shadow-md hover:-translate-y-1 group relative flex flex-col h-full">
+                    
+                    <button class="remove-asset-btn absolute top-2 right-2 p-1.5 bg-white/90 text-red-500 hover:text-red-700 rounded-full shadow-sm z-10 transition-transform transform scale-90 hover:scale-100" data-asset-id="${asset._id}" data-asset-name="${assetName}" title="Delete Asset">
+                        <i class="fa-solid fa-trash text-xs"></i>
                     </button>
-                    <img src="${imageUrl}" alt="${assetName}" class="activity-card-image">
-                    <div class="p-5 flex flex-col flex-grow">
-                        <div class="flex justify-between items-start mb-2">
-                            <h3 class="text-lg font-bold text-gray-800"><span class="icon-space">${icon} </span>${assetName}</h3>
-                            <span class="text-lg font-bold text-blue-600">x ${asset.quantity}</span>
+
+                    <div class="h-24 w-full relative overflow-hidden bg-gray-50">
+                        <img src="${imageUrl}" alt="${assetName}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                        <div class="absolute bottom-2 left-2">
+                            <span class="text-[10px] font-bold px-2 py-1 rounded-md shadow-sm bg-white/95 text-gray-800 flex items-center gap-1">
+                                <i class="fa-solid ${theme.icon} ${theme.text}"></i> ${asset.type || 'Asset'}
+                            </span>
                         </div>
-                        <p class="text-sm text-gray-700 flex-grow">${asset.description || 'No description provided.'}</p>
+                    </div>
+
+                    <div class="p-3 flex flex-col flex-grow">
+                        <div class="flex justify-between items-start mb-1">
+                            <h3 class="text-sm font-bold text-gray-800 leading-tight truncate pr-2" title="${assetName}">${assetName}</h3>
+                            <span class="flex-shrink-0 text-[10px] font-bold px-2 py-0.5 rounded-full ${theme.bg} ${theme.text} border border-${theme.border.split('-')[1]}-200">
+                                x${asset.quantity}
+                            </span>
+                        </div>
+                        
+                        <div class="text-xs text-gray-600 line-clamp-2 leading-relaxed flex-grow mt-1">
+                            ${asset.description || 'No description provided.'}
+                        </div>
                     </div>
                 </div>
             `;
