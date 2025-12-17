@@ -1225,8 +1225,14 @@ function renderLeaveView() {
     }
 
     function renderDetailView(blockKey) {
+        console.log("Rendering detail view for block:", blockKey);
         const block = appState.blocks.find(b => b.blockKey === blockKey);
-        if (!block) { alert('Error: Could not find block data.'); backToDashboardBtn.click(); return; }
+        if (!block) {
+            console.error('Block not found corresponding to key:', blockKey);
+            alert('Error: Could not find block data.');
+            backToDashboardBtn.click();
+            return;
+        }
         
         detailView.dataset.currentHostelKey = block.blockKey;
         const theme = themes[block.blockTheme] || themes.blue;
@@ -1234,11 +1240,14 @@ function renderLeaveView() {
         // Update Header with FA Icon
         detailHostelName.innerHTML = `<i class="fa-solid ${theme.icon} ${theme.text} mr-2"></i> ${block.blockName}`;
         
-        let hostelCapacity = 0, hostelOccupancy = 0;
+        let hostelCapacity = 0;
+        let hostelOccupancy = 0;
         roomListContainer.innerHTML = '';
         studentRoomSelect.innerHTML = '<option value="" disabled selected>-- Select Room --</option>';
         
+        // Safely access rooms array
         const rooms = block.rooms || [];
+        // Sort rooms naturally (e.g., 101, 102, A1, B2)
         rooms.sort((a, b) => a.roomNumber.localeCompare(b.roomNumber, undefined, { numeric: true, sensitivity: 'base' }));
 
         rooms.forEach(room => {
@@ -1249,61 +1258,99 @@ function renderLeaveView() {
             const percent = max > 0 ? (current / max) * 100 : 0;
             const studentNames = (room.students && room.students.length > 0) ? room.students.map(s => s.name).join(', ') : 'Empty';
             
-            // Compact Room Card HTML
+            // 1. Handle Image URL (Fallback if missing)
+            // Assuming your form saves the URL into a property named 'roomImage'
+            const imageUrl = room.roomImage && room.roomImage.trim() !== '' 
+                ? room.roomImage 
+                : `https://via.placeholder.com/300x150/f3f4f6/9ca3af?text=No+Image`;
+
+            // 2. New Compact Room Card with Image
             const roomHTML = `
-                <div class="room-card bg-white rounded border border-gray-200 p-3 hover:shadow-md hover:border-indigo-300 transition-all cursor-pointer group relative" data-room-id="${room.roomNumber}" data-room-status="${status.text}">
+                <div class="room-card bg-white rounded-lg shadow-sm overflow-hidden border border-gray-200 hover:shadow-md hover:border-indigo-300 transition-all cursor-pointer group relative" data-room-id="${room.roomNumber}" data-room-status="${status.text}">
                    
-                   <button class="edit-room-btn absolute top-2 right-2 h-6 w-6 flex items-center justify-center text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-full transition-colors z-10" data-room-id="${room._id}" data-room-number="${room.roomNumber}" title="Edit Room">
-                        <i class="fa-solid fa-pen text-[10px]"></i>
-                    </button>
-
-                    <div class="flex justify-between items-start mb-2">
-                        <div>
-                            <h3 class="text-lg font-bold text-gray-800 leading-none">${room.roomNumber}</h3>
-                            <span class="text-[10px] text-gray-500 font-medium">${room.floor || 'Floor N/A'}</span>
+                   <div class="h-28 w-full relative bg-gray-100">
+                        <img src="${imageUrl}" alt="Room ${room.roomNumber}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 error-image-placeholder">
+                        
+                        <button class="edit-room-btn absolute top-2 right-2 h-7 w-7 flex items-center justify-center bg-white/90 text-gray-500 hover:text-indigo-600 rounded-full transition-colors z-10 shadow-sm backdrop-blur-sm" data-room-id="${room._id}" data-room-number="${room.roomNumber}" title="Edit Room">
+                            <i class="fa-solid fa-pen text-[10px]"></i>
+                        </button>
+                        
+                        <div class="absolute bottom-2 left-2">
+                             <span class="text-[10px] font-bold px-2 py-0.5 rounded-md bg-white/90 text-gray-600 shadow-sm backdrop-blur-sm">
+                                <i class="fa-solid fa-layer-group mr-1 text-gray-400"></i>${room.floor || 'G'}
+                             </span>
                         </div>
-                    </div>
+                   </div>
 
-                    <div class="w-full bg-gray-100 rounded-full h-1.5 mb-2 overflow-hidden">
-                        <div class="h-full ${status.progress} transition-all duration-500" style="width: ${percent}%"></div>
-                    </div>
+                   <div class="p-3">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="text-lg font-bold text-gray-800 leading-none">Room ${room.roomNumber}</h3>
+                            <span class="text-[10px] font-bold px-2 py-0.5 rounded border ${status.text === 'Full' ? 'bg-red-50 text-red-600 border-red-100' : 'bg-emerald-50 text-emerald-600 border-emerald-100'}">
+                                ${status.text}
+                            </span>
+                        </div>
 
-                    <div class="flex justify-between items-end">
+                        <div class="w-full bg-gray-100 rounded-full h-1.5 mb-2 overflow-hidden">
+                            <div class="h-full ${status.progress} transition-all duration-500" style="width: ${percent}%"></div>
+                        </div>
+
                         <div>
-                            <p class="text-[10px] text-gray-400 uppercase font-bold tracking-wide">Occupants</p>
-                            <div class="flex items-center gap-1 mt-0.5">
-                                <i class="fa-solid fa-users text-gray-400 text-xs"></i>
-                                <span class="text-xs font-bold text-gray-700">${current} <span class="text-gray-400 font-normal">/ ${max}</span></span>
+                            <div class="flex items-center justify-between">
+                                <span class="text-[10px] text-gray-400 uppercase font-bold tracking-wide">Occupancy</span>
+                                <div class="flex items-center gap-1">
+                                    <i class="fa-solid fa-users text-gray-400 text-xs"></i>
+                                    <span class="text-xs font-bold text-gray-700">${current} <span class="text-gray-400 font-normal">/ ${max}</span></span>
+                                </div>
                             </div>
                         </div>
                         
-                        <span class="text-[10px] font-bold px-2 py-0.5 rounded border ${status.text === 'Full' ? 'bg-red-50 text-red-600 border-red-100' : 'bg-emerald-50 text-emerald-600 border-emerald-100'}">
-                            ${status.text}
-                        </span>
-                    </div>
-                    
-                    <div class="mt-2 pt-2 border-t border-gray-50 hidden group-hover:block animate-fade-in">
-                        <p class="text-[10px] text-gray-500 truncate"><i class="fa-regular fa-user mr-1"></i> ${studentNames}</p>
-                    </div>
+                        <div class="mt-2 pt-2 border-t border-gray-50 hidden group-hover:block animate-fade-in">
+                            <p class="text-[10px] text-gray-500 truncate" title="${studentNames}"><i class="fa-regular fa-user mr-1"></i> ${studentNames}</p>
+                        </div>
+                   </div>
                 </div>
             `;
             roomListContainer.innerHTML += roomHTML;
+
+            // Populate select dropdown for adding students
             if (status.text === 'Available') { 
-                studentRoomSelect.innerHTML += `<option value="${room._id}">${room.roomNumber} (${current}/${max})</option>`; 
+                studentRoomSelect.innerHTML += `<option value="${room._id}">${room.roomNumber} (Avail: ${max - current})</option>`; 
             }
         });
 
-        if (rooms.length === 0) { 
-            roomListContainer.innerHTML = '<p class="text-gray-400 text-center col-span-full italic py-8">No rooms added to this block yet.</p>'; 
+        if (rooms.length === 0) {
+            roomListContainer.innerHTML = `
+                <div class="col-span-full flex flex-col items-center justify-center p-8 text-gray-400 border-2 border-dashed border-gray-200 rounded-lg">
+                    <i class="fa-solid fa-door-open text-4xl mb-2 opacity-50"></i>
+                    <p class="italic">No rooms added to this block yet.</p>
+                    <button id="empty-state-add-room-btn" class="mt-4 px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 rounded hover:bg-indigo-100 transition-colors">
+                        Add Your First Room
+                    </button>
+                </div>`;
+                 // Add event listener to the empty state button right after creating it
+                 document.getElementById('empty-state-add-room-btn')?.addEventListener('click', () => {
+                    openModal('add-room-modal');
+                });
         }
 
+        // Calculate displayed capacity (allow manual override from block data if present)
         const displayedCapacity = block.blockCapacity || hostelCapacity;
+        
+        // Update Header Stats
         detailStatCapacity.textContent = displayedCapacity; 
         detailStatOccupancy.textContent = hostelOccupancy; 
         detailStatAvailable.textContent = displayedCapacity - hostelOccupancy;
         
+        // Reset filters
         roomSearchInput.value = ''; 
         roomFilterSelect.value = 'All';
+        
+        // Add error handling for images that fail to load
+        document.querySelectorAll('.error-image-placeholder').forEach(img => {
+            img.onerror = function() {
+                 this.src = 'https://via.placeholder.com/300x150/f3f4f6/9ca3af?text=Image+Error';
+            };
+        });
     }
     
     function renderRoomDetailsModal(room, block) {
