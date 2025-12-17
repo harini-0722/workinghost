@@ -1224,11 +1224,8 @@ function renderLeaveView() {
         if(blockKeyInput) blockKeyInput.disabled = false; // Allow key editing for new blocks
     }
 
-    // =========================================
-    // DETAIL VIEW RENDERER (Fixed: Data URI & Modal Bug)
-    // =========================================
-// =========================================
-    // DETAIL VIEW RENDERER (Fixed: Leading Slash & Path Debugging)
+   // =========================================
+    // DETAIL VIEW RENDERER (Fixed: Smarter Path Cleaning)
     // =========================================
     function renderDetailView(blockKey) {
         console.log("Rendering detail view for block:", blockKey);
@@ -1288,23 +1285,25 @@ function renderLeaveView() {
             const percent = max > 0 ? (current / max) * 100 : 0;
             const studentNames = (room.students && room.students.length > 0) ? room.students.map(s => s.name).join(', ') : 'Empty';
             
-            // --- IMAGE PATH FIX ---
+            // --- SMART IMAGE PATH FIX ---
             let imageUrl = placeholderImage;
             if (room.roomImage && room.roomImage.trim() !== '') {
-                let rawPath = room.roomImage.trim();
+                let path = room.roomImage.trim();
                 
-                // Debug log to see what the server is actually sending
-                console.log(`Raw Server Image Path for Room ${room.roomNumber}:`, rawPath);
-
-                // 1. Replace Windows backslashes with forward slashes
-                rawPath = rawPath.replace(/\\/g, '/');
-
-                // 2. Ensure path starts with '/' if it's a local file (and not a full URL or data URI)
-                if (!rawPath.startsWith('http') && !rawPath.startsWith('data:') && !rawPath.startsWith('/')) {
-                    rawPath = '/' + rawPath;
+                // 1. Remove 'public/' or 'public\' prefix if present (Common server folder issue)
+                path = path.replace(/^public[\\\/]/i, ''); 
+                
+                // 2. Normalize backslashes to forward slashes (Windows fix)
+                path = path.replace(/\\/g, '/');
+                
+                // 3. Ensure path starts with '/' if it's not a full URL or Data URI
+                if (!path.startsWith('http') && !path.startsWith('data:') && !path.startsWith('/')) {
+                    path = '/' + path;
                 }
                 
-                imageUrl = rawPath;
+                imageUrl = path;
+                // Debug: Check your console (F12) to see exactly what URL is generated
+                console.log(`🖼️ Room ${room.roomNumber} Generated URL:`, imageUrl);
             }
 
             allRoomsHTML += `
@@ -1365,7 +1364,8 @@ function renderLeaveView() {
         const roomImages = roomListContainer.querySelectorAll('.room-img-display');
         roomImages.forEach(img => {
             img.onerror = function() {
-                console.warn('Image failed to load (404/Error). Swapping to placeholder. Broken URL:', this.src);
+                // If the smart fix didn't work, revert to placeholder to avoid ugly broken icon
+                console.warn('❌ Image failed to load (404). URL tried:', this.src);
                 this.src = placeholderImage;
                 this.onerror = null; 
             };
