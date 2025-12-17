@@ -145,12 +145,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- 3. THEME/HELPER DATA & UTILITY FUNCTIONS ---
     // --- 3. THEME/HELPER DATA ---
     const themes = { 
-        pink: { border: 'border-pink-500', bg: 'bg-pink-50', text: 'text-pink-600', icon: 'fa-venus' },
-        blue: { border: 'border-blue-500', bg: 'bg-blue-50', text: 'text-blue-600', icon: 'fa-mars' },
-        green: { border: 'border-green-500', bg: 'bg-green-50', text: 'text-green-600', icon: 'fa-leaf' },
+        pink: { border: 'border-pink-500', bg: 'bg-pink-50', text: 'text-pink-600', icon: 'fa-user-group' },
+        blue: { border: 'border-blue-500', bg: 'bg-blue-50', text: 'text-blue-600', icon: 'fa-user-group' },
+        green: { border: 'border-green-500', bg: 'bg-green-50', text: 'text-green-600', icon: 'fa-building' },
         purple: { border: 'border-purple-500', bg: 'bg-purple-50', text: 'text-purple-600', icon: 'fa-graduation-cap' },
         yellow: { border: 'border-yellow-500', bg: 'bg-yellow-50', text: 'text-yellow-600', icon: 'fa-flask' },
-        orange: { border: 'border-orange-500', bg: 'bg-orange-50', text: 'text-orange-600', icon: 'fa-futbol' },
+        orange: { border: 'border-orange-500', bg: 'bg-orange-50', text: 'text-orange-600', icon: 'fa-paper-plane' },
     };
     const eventThemes = { 
         'Sports': { border: 'border-green-500', bg: 'bg-green-100', text: 'text-green-700' },
@@ -1292,8 +1292,7 @@ function renderLeaveView() {
             modalRoomComplaintsBadge.classList.remove('hidden');
         }
     } 
-
-  function renderEvents() {
+function renderEvents() {
         eventListContainer.innerHTML = '';
         if (eventData.length === 0) {
             eventListContainer.innerHTML = `<p class="text-gray-500 col-span-full">No events.</p>`; return;
@@ -1315,6 +1314,7 @@ function renderLeaveView() {
             eventListContainer.innerHTML += eventHTML;
         });
     }
+  
     function renderClubActivities(activities) { 
         clubActivityContainer.innerHTML = '';
         if (!activities || activities.length === 0) {
@@ -1346,7 +1346,6 @@ function renderLeaveView() {
             clubActivityContainer.innerHTML += activityHTML;
         });
     }
-    
     
     function renderAssets(assets) {
         assetInventoryContainer.innerHTML = '';

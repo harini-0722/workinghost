@@ -4,16 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hostel Admin Dashboard</title>
-    
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
 
+    <link rel="stylesheet" href="style.css">
     <style>
+        /* 2. Color Palette & Body (Matches Student Portal) */
         :root {
-            --color-text-body: #1f2937;
             --color-mild-bg-start: #E8F5FF;
             --color-mild-bg-end: #CDE8F9;
+            --color-text-body: #1f2937;
         }
 
         body {
@@ -27,14 +28,14 @@
 
         nav { background-color: white; }
 
-        /* Compact Card Style */
+        /* 3. Professional "Compact" Card Style */
         .stat-card-compact {
             background-color: white;
-            border-radius: 0.75rem;
+            border-radius: 0.75rem; /* rounded-xl */
             padding: 1rem;
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
             border: 1px solid #f3f4f6;
-            border-left-width: 4px;
+            border-left-width: 4px; /* Colored Accent Border */
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
@@ -45,46 +46,75 @@
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
         }
 
-        /* Modal Styles */
-        .modal-backdrop { background-color: rgba(0, 0, 0, 0.5); transition: opacity 0.2s; @apply fixed inset-0 z-40; }
-        .modal { transition: opacity 0.2s; opacity: 0; pointer-events: none; @apply fixed inset-0 z-50 flex items-center justify-center; }
-        .modal.active { opacity: 1; pointer-events: auto; }
-        .modal-content { transform: scale(0.95); transition: transform 0.2s; }
-        .modal.active .modal-content { transform: scale(1); }
+        /* 4. Tabular Numbers for Stats */
+        .stat-value {
+            font-feature-settings: "tnum";
+            font-variant-numeric: tabular-nums;
+        }
 
-        .progress-ring-circle { transition: stroke-dashoffset 0.5s ease-out; transform: rotate(-90deg); transform-origin: 50% 50%; }
+        /* 5. Modal Styles */
+        .modal-backdrop { 
+            background-color: rgba(0, 0, 0, 0.5); 
+            transition: opacity 0.2s ease-in-out; 
+            @apply fixed inset-0 z-30;
+        }
+        .modal-content { 
+            transition: all 0.2s ease-in-out; 
+            transform: scale(0.95); 
+            opacity: 0; 
+        }
+        .modal { 
+            transition: opacity 0.2s ease; 
+            opacity: 0; 
+            pointer-events: none; 
+            @apply fixed inset-0 z-30 flex items-center justify-center;
+        }
+        .modal.active { opacity: 1; pointer-events: auto; }
+        .modal.active .modal-backdrop { opacity: 1; }
+        .modal.active .modal-content { transform: scale(1); opacity: 1; }
+
+        /* 6. Progress Ring */
+        .progress-ring-circle { 
+            transition: stroke-dashoffset 0.5s ease-out; 
+            transform: rotate(-90deg); 
+            transform-origin: 50% 50%; 
+        }
         .activity-card-image { width: 100%; height: 140px; object-fit: cover; }
     </style>
 </head>
-<body class="flex flex-col min-h-screen">
+<body class="min-h-screen flex flex-col">
 
-    <nav class="sticky top-0 z-30 shadow-sm border-b border-gray-100 h-16">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
-            <div class="flex justify-between items-center h-full">
-                <div class="flex items-center">
-                    <h1 class="text-xl font-bold text-gray-800 flex items-center">
+    <nav class="shadow-sm sticky top-0 z-50 border-b border-gray-100">
+        <div class="w-full mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex-shrink-0 flex items-center">
+                    <h1 class="text-lg font-bold text-gray-800 flex items-center">
                         <i class="fa-solid fa-graduation-cap text-indigo-600 mr-2"></i>
                         HOSTEL ADMIN
                     </h1>
                     <span class="ml-2 text-gray-400 text-xs hidden sm:inline">| IIT Portal</span>
                 </div>
-
+                
                 <div class="flex items-center space-x-1 sm:space-x-4">
-                    <a href="addstaff.html" class="px-3 py-2 rounded-md text-xs font-bold text-gray-500 hover:text-indigo-600 transition flex items-center">
+                    <a href="addstaff.html" class="px-3 py-2 rounded-md text-xs font-bold text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 transition flex items-center">
                         <i class="fa-solid fa-user-tie mr-2"></i> Staff
                     </a>
-                    <a href="feedback.html" class="px-3 py-2 rounded-md text-xs font-bold text-gray-500 hover:text-purple-600 transition flex items-center">
+                    <a href="feedback.html" class="px-3 py-2 rounded-md text-xs font-bold text-gray-500 hover:text-purple-600 hover:bg-purple-50 transition flex items-center">
                         <i class="fa-solid fa-comments mr-2"></i> Feedback
                     </a>
-                    <button id="show-complaints-view-btn" class="px-3 py-2 rounded-md text-xs font-bold text-gray-500 hover:text-red-600 transition flex items-center">
+                    <button id="show-complaints-view-btn" class="px-3 py-2 rounded-md text-xs font-bold text-gray-500 hover:text-red-600 hover:bg-red-50 transition flex items-center">
                         <i class="fa-solid fa-triangle-exclamation mr-2"></i> Complaints
                     </button>
-                    <a href="adminhandlegymkhana.html" class="px-3 py-2 rounded-md text-xs font-bold text-gray-500 hover:text-purple-600 transition flex items-center">
+                    <a href="adminhandlegymkhana.html" class="px-3 py-2 rounded-md text-xs font-bold text-gray-500 hover:text-purple-600 hover:bg-purple-50 transition flex items-center">
                         <i class="fa-solid fa-dumbbell mr-2"></i> Gymkhana
                     </a>
+                    
                     <div class="h-6 w-px bg-gray-200 mx-2 hidden sm:block"></div>
-                    <div class="flex items-center gap-2">
-                        <div class="h-8 w-8 rounded-full bg-yellow-400 flex items-center justify-center text-white text-xs font-bold shadow-sm">A</div>
+
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <span class="inline-flex items-center justify-center h-8 w-8 rounded-full bg-indigo-600 shadow-md text-white text-xs font-bold">A</span>
+                        </div>
                     </div>
                     <button id="admin-logout-btn" class="ml-2 text-gray-400 hover:text-red-600 transition" title="Logout">
                         <i class="fa-solid fa-right-from-bracket text-lg"></i>
@@ -94,16 +124,17 @@
         </div>
     </nav>
 
-    <main class="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
+    <main class="mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-grow max-w-7xl">
         
         <div id="dashboard-view">
             
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                
                 <div class="stat-card-compact border-indigo-500">
                     <div>
                         <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Total Capacity</span>
-                        <p class="text-2xl font-extrabold text-gray-800 mt-1" id="stat-total-capacity">0</p>
-                        <p class="text-[10px] font-semibold text-indigo-500">Total Hostel Units</p>
+                        <p class="text-2xl font-extrabold text-gray-800 mt-1 stat-value" id="stat-total-capacity">0</p>
+                        <p class="text-[10px] font-semibold text-indigo-500">Hostel Units</p>
                     </div>
                     <div class="h-10 w-10 bg-indigo-50 rounded-full flex items-center justify-center shadow-sm">
                         <i class="fa-solid fa-building text-indigo-600"></i>
@@ -113,7 +144,7 @@
                 <div class="stat-card-compact border-amber-500">
                     <div>
                         <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Occupancy</span>
-                        <p class="text-2xl font-extrabold text-gray-800 mt-1" id="stat-occupancy-percent">0%</p>
+                        <p class="text-2xl font-extrabold text-gray-800 mt-1 stat-value" id="stat-occupancy-percent">0%</p>
                         <p class="text-[10px] font-semibold text-amber-500">Beds Filled</p>
                     </div>
                     <div class="relative h-12 w-12 flex-shrink-0">
@@ -128,7 +159,7 @@
                 <div class="stat-card-compact border-red-500 cursor-pointer hover:bg-red-50" onclick="document.getElementById('show-complaints-view-btn').click()">
                     <div>
                         <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Open Complaints</span>
-                        <p class="text-2xl font-extrabold text-gray-800 mt-1" id="stat-open-complaints">0</p>
+                        <p class="text-2xl font-extrabold text-gray-800 mt-1 stat-value" id="stat-open-complaints">0</p>
                         <p class="text-[10px] font-semibold text-red-500">Pending Resolution</p>
                     </div>
                     <div class="h-10 w-10 bg-red-50 rounded-full flex items-center justify-center shadow-sm">
@@ -138,23 +169,23 @@
 
                 <div class="stat-card-compact border-emerald-500">
                     <div>
-                        <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Daily Attendance</span>
-                        <p class="text-2xl font-extrabold text-gray-800 mt-1" id="stat-attendance-percent">98%</p>
-                        <p class="text-[10px] font-semibold text-emerald-500">Latest Check-in Rate</p>
+                        <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Attendance</span>
+                        <p class="text-2xl font-extrabold text-gray-800 mt-1 stat-value" id="stat-attendance-percent">0%</p>
+                        <p class="text-[10px] font-semibold text-emerald-500">Checked In</p>
                     </div>
                     <div class="relative h-12 w-12 flex-shrink-0">
                         <svg class="h-full w-full" viewBox="0 0 36 36">
                             <path class="text-emerald-100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="4" />
                             <path id="stat-attendance-ring" class="text-emerald-500 progress-ring-circle" stroke-dasharray="100, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="4" />
                         </svg>
-                        <div class="absolute inset-0 flex items-center justify-center text-[9px] font-bold text-emerald-600" id="stat-attendance-label">98%</div>
+                        <div class="absolute inset-0 flex items-center justify-center text-[9px] font-bold text-emerald-600" id="stat-attendance-label">0%</div>
                     </div>
                 </div>
 
                 <div id="show-fees-view-btn" class="stat-card-compact border-teal-500 cursor-pointer hover:bg-teal-50">
                     <div>
                         <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Fees Status</span>
-                        <p class="text-xl font-extrabold text-gray-800 mt-1" id="stat-fees-pending">0 Pending</p>
+                        <p class="text-xl font-extrabold text-gray-800 mt-1 stat-value" id="stat-fees-pending">0 Pending</p>
                         <p class="text-[10px] font-semibold text-teal-600">Total Dues</p>
                     </div>
                     <div class="h-10 w-10 bg-teal-50 rounded-full flex items-center justify-center shadow-sm">
@@ -165,8 +196,8 @@
                 <div id="show-visitors-view-btn" class="stat-card-compact border-sky-500 cursor-pointer hover:bg-sky-50">
                     <div>
                         <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Visitor Logs</span>
-                        <p class="text-xl font-extrabold text-gray-800 mt-1" id="stat-visitors-today">0 Today</p>
-                        <p class="text-[10px] font-semibold text-sky-600">Current Entries</p>
+                        <p class="text-xl font-extrabold text-gray-800 mt-1 stat-value" id="stat-visitors-today">0 Today</p>
+                        <p class="text-[10px] font-semibold text-sky-600">Active Entries</p>
                     </div>
                     <div class="h-10 w-10 bg-sky-50 rounded-full flex items-center justify-center shadow-sm">
                         <i class="fa-solid fa-id-card text-sky-600"></i>
@@ -176,7 +207,7 @@
                 <div id="show-leave-view-btn" class="stat-card-compact border-orange-500 cursor-pointer hover:bg-orange-50">
                     <div>
                         <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Leave Requests</span>
-                        <p class="text-xl font-extrabold text-gray-800 mt-1" id="stat-leave-pending">0 Pending</p>
+                        <p class="text-xl font-extrabold text-gray-800 mt-1 stat-value" id="stat-leave-pending">0 Pending</p>
                         <p class="text-[10px] font-semibold text-orange-600">Awaiting Approval</p>
                     </div>
                     <div class="h-10 w-10 bg-orange-50 rounded-full flex items-center justify-center shadow-sm">
@@ -186,12 +217,11 @@
             </div>
 
             <div class="space-y-10">
-                
                 <div>
-                    <div class="flex flex-col sm:flex-row justify-between items-center mb-4 pb-2 border-b border-gray-200">
-                        <h2 class="text-xl font-bold text-gray-800 flex items-center"><i class="fa-solid fa-cubes text-indigo-500 mr-2"></i> Hostel Block Summary</h2>
-                        <button id="show-add-block-modal-btn" class="mt-2 sm:mt-0 px-4 py-2 bg-blue-600 text-white text-xs font-bold rounded-lg shadow-sm hover:bg-blue-700 transition flex items-center">
-                            <i class="fa-solid fa-plus mr-2"></i> Add New Block
+                    <div class="flex flex-col sm:flex-row justify-between items-center mb-4 border-b border-gray-200 pb-2">
+                        <h2 class="text-xl font-bold text-gray-800 flex items-center"><i class="fa-solid fa-cubes text-indigo-500 mr-2"></i> Hostel Blocks</h2>
+                        <button id="show-add-block-modal-btn" class="mt-2 sm:mt-0 px-4 py-2 bg-indigo-600 text-white text-xs font-bold rounded-lg shadow-sm hover:bg-indigo-700 transition flex items-center">
+                            <i class="fa-solid fa-plus mr-2"></i> Add Block
                         </button>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4" id="hostel-block-container">
@@ -199,30 +229,30 @@
                 </div>
 
                 <div>
-                    <div class="flex flex-col sm:flex-row justify-between items-center mb-4 pb-2 border-b border-gray-200">
-                        <h2 class="text-xl font-bold text-gray-800 flex items-center"><i class="fa-solid fa-calendar-days text-blue-500 mr-2"></i> Events & Announcements</h2>
+                    <div class="flex flex-col sm:flex-row justify-between items-center mb-4 border-b border-gray-200 pb-2">
+                        <h2 class="text-xl font-bold text-gray-800 flex items-center"><i class="fa-solid fa-calendar-days text-blue-500 mr-2"></i> Events & Notices</h2>
                         <button id="show-add-event-modal-btn" class="mt-2 sm:mt-0 px-4 py-2 bg-blue-600 text-white text-xs font-bold rounded-lg shadow-sm hover:bg-blue-700 transition flex items-center">
-                            <i class="fa-solid fa-calendar-plus mr-2"></i> Add New Event
+                            <i class="fa-solid fa-calendar-plus mr-2"></i> Add Event
                         </button>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4" id="event-list-container"></div>
                 </div>
 
                 <div>
-                    <div class="flex flex-col sm:flex-row justify-between items-center mb-4 pb-2 border-b border-gray-200">
-                        <h2 class="text-xl font-bold text-gray-800 flex items-center"><i class="fa-solid fa-medal text-purple-500 mr-2"></i> Club Activities / Gymkhana</h2>
+                    <div class="flex flex-col sm:flex-row justify-between items-center mb-4 border-b border-gray-200 pb-2">
+                        <h2 class="text-xl font-bold text-gray-800 flex items-center"><i class="fa-solid fa-medal text-purple-500 mr-2"></i> Club Activities</h2>
                         <button id="show-add-club-activity-modal-btn" class="mt-2 sm:mt-0 px-4 py-2 bg-purple-600 text-white text-xs font-bold rounded-lg shadow-sm hover:bg-purple-700 transition flex items-center">
-                            <i class="fa-solid fa-puzzle-piece mr-2"></i> Add New Activity
+                            <i class="fa-solid fa-puzzle-piece mr-2"></i> Add Activity
                         </button>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4" id="club-activity-container"></div>
                 </div>
 
                 <div>
-                    <div class="flex flex-col sm:flex-row justify-between items-center mb-4 pb-2 border-b border-gray-200">
-                        <h2 class="text-xl font-bold text-gray-800 flex items-center"><i class="fa-solid fa-boxes-stacked text-emerald-600 mr-2"></i> Hostel Asset Inventory</h2>
+                    <div class="flex flex-col sm:flex-row justify-between items-center mb-4 border-b border-gray-200 pb-2">
+                        <h2 class="text-xl font-bold text-gray-800 flex items-center"><i class="fa-solid fa-boxes-stacked text-emerald-600 mr-2"></i> Asset Inventory</h2>
                         <button id="show-add-asset-modal-btn" class="mt-2 sm:mt-0 px-4 py-2 bg-emerald-600 text-white text-xs font-bold rounded-lg shadow-sm hover:bg-emerald-700 transition flex items-center">
-                            <i class="fa-solid fa-box-open mr-2"></i> Add New Asset
+                            <i class="fa-solid fa-box-open mr-2"></i> Add Asset
                         </button>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4" id="asset-inventory-container">
@@ -239,96 +269,139 @@
                 </button>
                 <h1 id="detail-hostel-name" class="text-2xl font-bold text-gray-800"></h1>
             </div>
+            
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6">
                 <div class="grid grid-cols-3 gap-4 text-center divide-x divide-gray-100">
-                    <div><span class="text-xs font-bold text-gray-400 uppercase">Capacity</span><p class="text-2xl font-bold text-indigo-700 mt-1 stat-value" id="detail-stat-capacity">0</p></div>
-                    <div><span class="text-xs font-bold text-gray-400 uppercase">Occupancy</span><p class="text-2xl font-bold text-amber-600 mt-1 stat-value" id="detail-stat-occupancy">0</p></div>
-                    <div><span class="text-xs font-bold text-gray-400 uppercase">Available Beds</span><p class="text-2xl font-bold text-emerald-600 mt-1 stat-value" id="detail-stat-available">0</p></div>
+                    <div>
+                        <p class="text-xs font-bold text-gray-400 uppercase">Capacity</p>
+                        <p class="text-2xl font-bold text-indigo-700 mt-1 stat-value" id="detail-stat-capacity">0</p>
+                    </div>
+                    <div>
+                        <p class="text-xs font-bold text-gray-400 uppercase">Occupancy</p>
+                        <p class="text-2xl font-bold text-amber-600 mt-1 stat-value" id="detail-stat-occupancy">0</p>
+                    </div>
+                    <div>
+                        <p class="text-xs font-bold text-gray-400 uppercase">Available</p>
+                        <p class="text-2xl font-bold text-emerald-600 mt-1 stat-value" id="detail-stat-available">0</p>
+                    </div>
                 </div>
             </div>
+
             <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
                 <div class="flex gap-3">
-                    <button id="show-add-student-modal-btn" class="px-4 py-2 bg-indigo-600 text-white text-xs font-bold rounded-lg shadow-sm hover:bg-indigo-700 transition flex items-center"><i class="fa-solid fa-user-plus mr-2"></i> Add New Student</button>
-                    <button id="show-add-room-modal-btn" class="px-4 py-2 bg-gray-800 text-white text-xs font-bold rounded-lg shadow-sm hover:bg-gray-900 transition flex items-center"><i class="fa-solid fa-door-open mr-2"></i> Add New Room</button>
+                    <button id="show-add-student-modal-btn" class="px-4 py-2 bg-indigo-600 text-white text-xs font-bold rounded-lg shadow-sm hover:bg-indigo-700 transition flex items-center">
+                        <i class="fa-solid fa-user-plus mr-2"></i> Add Student
+                    </button>
+                    <button id="show-add-room-modal-btn" class="px-4 py-2 bg-gray-800 text-white text-xs font-bold rounded-lg shadow-sm hover:bg-gray-900 transition flex items-center">
+                        <i class="fa-solid fa-door-open mr-2"></i> Add Room
+                    </button>
                 </div>
                 <div class="flex gap-3 w-full md:w-auto">
-                    <input type="text" id="room-search-input" placeholder="Search room number..." class="px-4 py-2 border rounded-lg shadow-sm text-sm w-full">
-                    <select id="room-filter-select" class="px-4 py-2 border rounded-lg shadow-sm text-sm bg-white"><option value="All">All Rooms</option><option value="Full">Full</option><option value="Available">Available</option></select>
+                    <input type="text" id="room-search-input" placeholder="Search room..." class="px-4 py-2 border rounded-lg shadow-sm text-sm w-full">
+                    <select id="room-filter-select" class="px-4 py-2 border rounded-lg shadow-sm text-sm bg-white">
+                        <option value="All">All Rooms</option>
+                        <option value="Full">Full</option>
+                        <option value="Available">Available</option>
+                    </select>
                 </div>
             </div>
+            
             <div id="room-list-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"></div>
         </div>
 
         <div id="fees-view" class="hidden">
-            <div class="mb-6 flex justify-between items-center"><button id="back-to-dashboard-from-fees-btn" class="flex items-center text-sm font-bold text-gray-500 hover:text-indigo-600"><i class="fa-solid fa-arrow-left mr-2"></i> Back</button><h1 class="text-2xl font-bold text-teal-700">Fees Management</h1></div>
-            <div class="flex justify-end gap-4 mb-4"><input type="text" id="fees-search-input" placeholder="Search..." class="px-3 py-2 border rounded-lg text-sm w-64"><select id="fees-filter-select" class="px-3 py-2 border rounded-lg text-sm bg-white"><option>All Statuses</option><option>Paid</option><option>Pending</option></select></div>
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden"><table class="w-full text-sm text-left"><thead class="bg-gray-50 text-xs font-bold text-gray-500 uppercase border-b"><tr><th class="px-6 py-3">Student Name</th><th class="px-6 py-3">Roll Number</th><th class="px-6 py-3">Block / Room</th><th class="px-6 py-3">Status</th><th class="px-6 py-3 text-center">Action</th></tr></thead><tbody id="fees-student-list-container" class="divide-y divide-gray-100"></tbody></table></div>
+            <div class="mb-6 flex justify-between items-center">
+                <button id="back-to-dashboard-from-fees-btn" class="flex items-center text-sm font-bold text-gray-500 hover:text-indigo-600 transition">
+                    <i class="fa-solid fa-arrow-left mr-2"></i> Back
+                </button>
+                <h1 class="text-2xl font-bold text-teal-700">Fees Management</h1>
+            </div>
+            <div class="flex justify-end gap-4 mb-4">
+                 <input type="text" id="fees-search-input" placeholder="Search..." class="px-3 py-2 border rounded-lg text-sm w-64">
+                 <select id="fees-filter-select" class="px-3 py-2 border rounded-lg text-sm bg-white"><option>All</option><option>Pending</option></select>
+            </div>
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                <table class="w-full text-sm text-left">
+                    <thead class="bg-gray-50 text-xs font-bold text-gray-500 uppercase border-b">
+                        <tr><th class="px-6 py-3">Student</th><th class="px-6 py-3">Roll No</th><th class="px-6 py-3">Room</th><th class="px-6 py-3">Status</th><th class="px-6 py-3 text-center">Action</th></tr>
+                    </thead>
+                    <tbody id="fees-student-list-container" class="divide-y divide-gray-100"></tbody>
+                </table>
+            </div>
         </div>
+
         <div id="visitors-view" class="hidden">
-            <div class="mb-6 flex justify-between items-center"><button id="back-to-dashboard-from-visitors-btn" class="flex items-center text-sm font-bold text-gray-500 hover:text-indigo-600"><i class="fa-solid fa-arrow-left mr-2"></i> Back</button><h1 class="text-2xl font-bold text-sky-700">Visitor Logs</h1></div>
-            <div class="flex justify-end gap-4 mb-4"><input type="text" id="visitor-search-input" placeholder="Search..." class="px-3 py-2 border rounded-lg text-sm"><input type="date" id="visitor-date-filter" class="px-3 py-2 border rounded-lg text-sm bg-white"></div>
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden"><table class="w-full text-sm text-left"><thead class="bg-gray-50 text-xs font-bold text-gray-500 uppercase border-b"><tr><th class="px-6 py-3">Visitor Name</th><th class="px-6 py-3">Student / Room</th><th class="px-6 py-3">Requested Period</th><th class="px-6 py-3">Status</th><th class="px-6 py-3">Time In / Out</th><th class="px-6 py-3 text-center">Action</th></tr></thead><tbody id="visitor-log-container" class="divide-y divide-gray-100"></tbody></table></div>
+            <div class="mb-6 flex justify-between items-center">
+                 <button id="back-to-dashboard-from-visitors-btn" class="flex items-center text-sm font-bold text-gray-500 hover:text-indigo-600 transition"><i class="fa-solid fa-arrow-left mr-2"></i> Back</button>
+                 <h1 class="text-2xl font-bold text-sky-700">Visitor Logs</h1>
+            </div>
+            <div class="flex justify-end gap-4 mb-4">
+                 <input type="text" id="visitor-search-input" placeholder="Search..." class="px-3 py-2 border rounded-lg text-sm">
+                 <input type="date" id="visitor-date-filter" class="px-3 py-2 border rounded-lg text-sm bg-white">
+            </div>
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                <table class="w-full text-sm text-left"><thead class="bg-gray-50 text-xs font-bold text-gray-500 uppercase border-b"><tr><th class="px-6 py-3">Visitor</th><th class="px-6 py-3">Student</th><th class="px-6 py-3">Period</th><th class="px-6 py-3">Status</th><th class="px-6 py-3">Time</th><th class="px-6 py-3 text-center">Action</th></tr></thead><tbody id="visitor-log-container" class="divide-y divide-gray-100"></tbody></table>
+            </div>
         </div>
+
         <div id="complaints-view" class="hidden">
-            <div class="mb-6 flex justify-between items-center"><button id="back-to-dashboard-from-complaints-btn" class="flex items-center text-sm font-bold text-gray-500 hover:text-indigo-600"><i class="fa-solid fa-arrow-left mr-2"></i> Back</button><h1 class="text-2xl font-bold text-red-700">Student Complaints</h1></div>
-            <div class="flex justify-between items-center mb-4"><div class="flex gap-3"><input type="text" id="complaint-search-input" placeholder="Search..." class="px-3 py-2 border rounded-lg text-sm"><select id="complaint-status-filter" class="px-3 py-2 border rounded-lg text-sm bg-white"><option value="All">All Status</option><option>Pending</option></select></div><button id="refresh-complaints-btn" class="text-sm text-blue-600 font-bold hover:underline"><i class="fa-solid fa-rotate mr-1"></i> Refresh</button></div>
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden"><table class="w-full text-sm text-left"><thead class="bg-gray-50 text-xs font-bold text-gray-500 uppercase border-b"><tr><th class="px-6 py-3">Student</th><th class="px-6 py-3">Room</th><th class="px-6 py-3">Complaint Type</th><th class="px-6 py-3">Description</th><th class="px-6 py-3">Date</th><th class="px-6 py-3">Status</th><th class="px-6 py-3 text-center">Actions</th></tr></thead><tbody id="complaints-list-container" class="divide-y divide-gray-100"></tbody></table></div>
+            <div class="mb-6 flex justify-between items-center">
+                 <button id="back-to-dashboard-from-complaints-btn" class="flex items-center text-sm font-bold text-gray-500 hover:text-indigo-600 transition"><i class="fa-solid fa-arrow-left mr-2"></i> Back</button>
+                 <h1 class="text-2xl font-bold text-red-700">Complaints</h1>
+            </div>
+            <div class="flex justify-between items-center mb-4">
+                 <div class="flex gap-3">
+                     <input type="text" id="complaint-search-input" placeholder="Search..." class="px-3 py-2 border rounded-lg text-sm">
+                     <select id="complaint-status-filter" class="px-3 py-2 border rounded-lg text-sm bg-white"><option value="All">All Status</option><option>Pending</option></select>
+                 </div>
+                 <button id="refresh-complaints-btn" class="text-sm text-blue-600 font-bold hover:underline"><i class="fa-solid fa-rotate mr-1"></i> Refresh</button>
+            </div>
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                <table class="w-full text-sm text-left"><thead class="bg-gray-50 text-xs font-bold text-gray-500 uppercase border-b"><tr><th class="px-6 py-3">Student</th><th class="px-6 py-3">Room</th><th class="px-6 py-3">Type</th><th class="px-6 py-3">Desc</th><th class="px-6 py-3">Date</th><th class="px-6 py-3">Status</th><th class="px-6 py-3 text-center">Action</th></tr></thead><tbody id="complaints-list-container" class="divide-y divide-gray-100"></tbody></table>
+            </div>
         </div>
+
         <div id="leave-view" class="hidden">
-            <div class="mb-6 flex justify-between items-center"><button id="back-to-dashboard-from-leave-btn" class="flex items-center text-sm font-bold text-gray-500 hover:text-indigo-600"><i class="fa-solid fa-arrow-left mr-2"></i> Back</button><h1 class="text-2xl font-bold text-orange-700">Leave Request Management</h1></div>
-            <div class="flex justify-between items-center mb-4"><div class="flex gap-3"><input type="text" id="leave-search-input" placeholder="Search..." class="px-3 py-2 border rounded-lg text-sm"><select id="leave-status-filter" class="px-3 py-2 border rounded-lg text-sm bg-white"><option value="All">All Status</option><option>Pending</option></select></div><button id="refresh-leaves-btn" class="text-sm text-blue-600 font-bold hover:underline"><i class="fa-solid fa-rotate mr-1"></i> Refresh</button></div>
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden"><table class="w-full text-sm text-left"><thead class="bg-gray-50 text-xs font-bold text-gray-500 uppercase border-b"><tr><th class="px-6 py-3">Student / Room</th><th class="px-6 py-3">Period</th><th class="px-6 py-3">Reason</th><th class="px-6 py-3">Applied On</th><th class="px-6 py-3">Status</th><th class="px-6 py-3 text-center">Action</th></tr></thead><tbody id="leave-request-container" class="divide-y divide-gray-100"></tbody></table></div>
+            <div class="mb-6 flex justify-between items-center">
+                 <button id="back-to-dashboard-from-leave-btn" class="flex items-center text-sm font-bold text-gray-500 hover:text-indigo-600 transition"><i class="fa-solid fa-arrow-left mr-2"></i> Back</button>
+                 <h1 class="text-2xl font-bold text-orange-700">Leave Requests</h1>
+            </div>
+             <div class="flex justify-between items-center mb-4">
+                 <div class="flex gap-3">
+                     <input type="text" id="leave-search-input" placeholder="Search..." class="px-3 py-2 border rounded-lg text-sm">
+                     <select id="leave-status-filter" class="px-3 py-2 border rounded-lg text-sm bg-white"><option value="All">All Status</option><option>Pending</option></select>
+                 </div>
+                 <button id="refresh-leaves-btn" class="text-sm text-blue-600 font-bold hover:underline"><i class="fa-solid fa-rotate mr-1"></i> Refresh</button>
+            </div>
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                <table class="w-full text-sm text-left"><thead class="bg-gray-50 text-xs font-bold text-gray-500 uppercase border-b"><tr><th class="px-6 py-3">Student</th><th class="px-6 py-3">Period</th><th class="px-6 py-3">Reason</th><th class="px-6 py-3">Applied</th><th class="px-6 py-3">Status</th><th class="px-6 py-3 text-center">Action</th></tr></thead><tbody id="leave-request-container" class="divide-y divide-gray-100"></tbody></table>
+            </div>
         </div>
 
     </main>
-
+    
     <footer class="mt-12 py-6 border-t border-gray-200 bg-white">
         <div class="w-full mx-auto px-4 text-center">
-            <p class="text-xs text-gray-400 font-semibold">&copy; 2025 Indian Institute of Technology. All rights reserved.</p>
+            <p class="text-xs text-gray-400 font-semibold">
+                &copy; 2025 Indian Institute of Technology. All rights reserved.
+            </p>
         </div>
     </footer>
 
     <div id="add-block-modal" class="modal hidden">
         <div class="modal-backdrop" data-modal-hide="add-block-modal"></div>
-        <div class="modal-content bg-white p-6 rounded-xl shadow-2xl z-50 w-full max-w-md mx-4 relative">
-            <h2 id="block-modal-title" class="text-lg font-bold text-gray-800 mb-6">Add New Hostel Block</h2>
+        <div class="modal-content bg-white p-6 rounded-xl shadow-2xl z-40 w-full max-w-md mx-4">
+            <h2 id="block-modal-title" class="text-lg font-bold text-gray-800 mb-4 flex items-center"><i class="fa-solid fa-building mr-2 text-indigo-500"></i> Add Hostel Block</h2>
             <form id="add-block-form" class="space-y-4">
                 <input type="hidden" id="block-id" name="blockId">
-                
-                <div>
-                    <label class="block text-sm font-medium text-gray-600 mb-1">Block Name</label>
-                    <input type="text" id="block-name" name="blockName" class="w-full rounded-lg border-gray-200 bg-gray-50 p-2.5 text-sm focus:border-blue-500 focus:ring-blue-500" placeholder="e.g., Sarojini Hall" required>
-                </div>
-                
-                <div>
-                    <label class="block text-sm font-medium text-gray-600 mb-1">Unique Key</label>
-                    <input type="text" id="block-key" name="blockKey" class="w-full rounded-lg border-gray-200 bg-gray-50 p-2.5 text-sm focus:border-blue-500 focus:ring-blue-500" placeholder="e.g., 'sarojini' (lowercase, no spaces)" required>
-                </div>
-                
-                <div>
-                    <label class="block text-sm font-medium text-gray-600 mb-1">Total Student Capacity</label>
-                    <input type="number" id="block-capacity" name="blockCapacity" class="w-full rounded-lg border-gray-200 bg-gray-50 p-2.5 text-sm font-bold text-center focus:border-blue-500 focus:ring-blue-500" value="100" required>
-                </div>
-                
-                <div>
-                    <label class="block text-sm font-medium text-gray-600 mb-1">Maximum Rooms Allowed</label>
-                    <input type="number" id="block-max-rooms" name="maxRooms" class="w-full rounded-lg border-gray-200 bg-gray-50 p-2.5 text-sm font-bold text-center focus:border-blue-500 focus:ring-blue-500" value="50" required>
-                </div>
-                
-                <div>
-                    <label class="block text-sm font-medium text-gray-600 mb-1">Theme Color</label>
-                    <select id="block-theme" name="blockTheme" class="w-full rounded-lg border-gray-200 bg-gray-50 p-2.5 text-sm focus:border-blue-500 focus:ring-blue-500">
-                        <option value="pink">Pink (Women)</option>
-                        <option value="blue">Blue (Men)</option>
-                        <option value="green">Green</option>
-                        <option value="purple">Purple</option>
-                        <option value="yellow">Yellow</option>
-                    </select>
-                </div>
-                
+                <div><label class="block text-xs font-bold text-gray-500 uppercase">Block Name</label><input type="text" id="block-name" name="blockName" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm text-sm p-2 border" required></div>
+                <div><label class="block text-xs font-bold text-gray-500 uppercase">Unique Key</label><input type="text" id="block-key" name="blockKey" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm text-sm p-2 border" required></div>
+                <div><label class="block text-xs font-bold text-gray-500 uppercase">Capacity</label><input type="number" id="block-capacity" name="blockCapacity" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm text-sm p-2 border" value="100" required></div>
+                <div><label class="block text-xs font-bold text-gray-500 uppercase">Max Rooms</label><input type="number" id="block-max-rooms" name="maxRooms" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm text-sm p-2 border" value="50" required></div>
+                <div><label class="block text-xs font-bold text-gray-500 uppercase">Theme</label><select id="block-theme" name="blockTheme" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm text-sm p-2 border"><option value="pink">Pink</option><option value="blue">Blue</option><option value="green">Green</option><option value="purple">Purple</option><option value="yellow">Yellow</option></select></div>
                 <div class="flex justify-end space-x-3 pt-4">
-                    <button type="button" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg text-sm font-medium hover:bg-gray-300 transition" data-modal-hide="add-block-modal">Cancel</button>
-                    <button type="submit" id="block-submit-btn" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition">Save Block</button>
+                    <button type="button" class="px-4 py-2 text-sm font-bold text-gray-500 hover:text-gray-800" data-modal-hide="add-block-modal">Cancel</button>
+                    <button type="submit" id="block-submit-btn" class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-bold hover:bg-indigo-700 shadow-sm">Save Block</button>
                 </div>
             </form>
         </div>
@@ -336,24 +409,31 @@
 
     <div id="add-room-modal" class="modal hidden">
         <div class="modal-backdrop" data-modal-hide="add-room-modal"></div>
-        <div class="modal-content bg-white p-6 rounded-xl shadow-2xl z-50 w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto">
-            <h2 class="text-lg font-bold mb-4">Add New Room</h2>
+        <div class="modal-content bg-white p-6 rounded-xl shadow-2xl z-40 w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto">
+            <h2 class="text-lg font-bold mb-4 flex items-center"><i class="fa-solid fa-door-open mr-2 text-gray-600"></i> Add New Room</h2>
             <form id="add-room-form" class="space-y-4">
                 <input type="hidden" id="room-edit-id-input" name="roomId">
-                <div><label class="block text-xs font-bold text-gray-500 uppercase">Room ID / Number</label><input type="text" id="room-id" class="w-full rounded-lg border p-2 text-sm" placeholder="e.g. A-101" required></div>
-                <div><label class="block text-xs font-bold text-gray-500 uppercase">Floor Details</label><input type="text" id="room-floor" class="w-full rounded-lg border p-2 text-sm" placeholder="e.g. 1st Floor" required></div>
-                <div><label class="block text-xs font-bold text-gray-500 uppercase">Total Capacity</label><input type="number" id="room-capacity" class="w-full rounded-lg border p-2 text-sm" value="2" required></div>
-                <div><label class="block text-xs font-bold text-gray-500 uppercase">Assign Assets</label><div id="room-asset-assignment-container" class="mt-2 space-y-2"></div><button type="button" id="add-room-asset-row-btn" class="text-xs font-bold text-blue-600 mt-2 flex items-center"><i class="fa-solid fa-plus-circle mr-1"></i> Add Asset</button></div>
-                <div><label class="block text-xs font-bold text-gray-500 uppercase">Upload Room Image</label><input type="file" id="room-image-file" class="text-sm"></div>
-                <div class="flex justify-end space-x-3 pt-4"><button type="button" class="px-4 py-2 text-sm font-bold text-gray-500" data-modal-hide="add-room-modal">Cancel</button><button type="submit" class="px-4 py-2 bg-gray-800 text-white rounded-lg text-sm font-bold">Save Room</button></div>
+                <div><label class="block text-xs font-bold text-gray-500 uppercase">Room No</label><input type="text" id="room-id" class="w-full rounded-lg border p-2 text-sm" required></div>
+                <div><label class="block text-xs font-bold text-gray-500 uppercase">Floor</label><input type="text" id="room-floor" class="w-full rounded-lg border p-2 text-sm" required></div>
+                <div><label class="block text-xs font-bold text-gray-500 uppercase">Capacity</label><input type="number" id="room-capacity" class="w-full rounded-lg border p-2 text-sm" value="2" required></div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase">Assets</label>
+                    <div id="room-asset-assignment-container" class="mt-2 space-y-2"></div>
+                    <button type="button" id="add-room-asset-row-btn" class="text-xs font-bold text-blue-600 mt-2 flex items-center"><i class="fa-solid fa-plus-circle mr-1"></i> Add Asset</button>
+                </div>
+                <div><label class="block text-xs font-bold text-gray-500 uppercase">Image</label><input type="file" id="room-image-file" class="text-sm"></div>
+                <div class="flex justify-end space-x-3 pt-4">
+                    <button type="button" class="px-4 py-2 text-sm font-bold text-gray-500" data-modal-hide="add-room-modal">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-gray-800 text-white rounded-lg text-sm font-bold">Save Room</button>
+                </div>
             </form>
         </div>
     </div>
 
     <div id="add-student-modal" class="modal hidden">
         <div class="modal-backdrop" data-modal-hide="add-student-modal"></div>
-        <div class="modal-content bg-white p-6 rounded-xl shadow-2xl z-50 w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto">
-            <h2 class="text-lg font-bold mb-4">Add New Student</h2>
+        <div class="modal-content bg-white p-6 rounded-xl shadow-2xl z-40 w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto">
+            <h2 class="text-lg font-bold mb-4"><i class="fa-solid fa-user-plus mr-2"></i> Add Student</h2>
             <form id="add-student-form" class="space-y-4">
                 <input type="text" id="student-username" placeholder="Username" class="w-full rounded-lg border p-2 text-sm mb-2" required>
                 <input type="password" id="student-password" placeholder="Password" class="w-full rounded-lg border p-2 text-sm mb-2" required>
@@ -362,34 +442,38 @@
                 <input type="text" id="student-roll-number" placeholder="Roll No" class="w-full rounded-lg border p-2 text-sm mb-2" required>
                 <div id="student-asset-assignment-container" class="mt-2 space-y-2"></div>
                 <button type="button" id="add-student-asset-row-btn" class="text-xs font-bold text-blue-600 mt-2 flex items-center"><i class="fa-solid fa-plus-circle mr-1"></i> Add Asset</button>
+                
                  <div class="flex justify-end space-x-3 pt-4">
                     <button type="button" class="px-4 py-2 text-sm font-bold text-gray-500" data-modal-hide="add-student-modal">Cancel</button>
-                    <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-bold">Add Student</button>
+                    <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-bold">Save Student</button>
                 </div>
             </form>
         </div>
     </div>
 
+    <div id="add-event-modal" class="modal hidden"><div class="modal-backdrop" data-modal-hide="add-event-modal"></div><div class="modal-content bg-white p-6 rounded-xl w-full max-w-md mx-4"><form id="add-event-form"><h2 class="font-bold mb-4">Add Event</h2><input id="event-title" class="w-full border p-2 rounded mb-2" placeholder="Title"><input type="date" id="event-date" class="w-full border p-2 rounded mb-2"><select id="event-type" class="w-full border p-2 rounded mb-2"><option value="General">General</option><option value="Sports">Sports</option></select><textarea id="event-description" class="w-full border p-2 rounded mb-2" placeholder="Desc"></textarea><button type="submit" class="bg-blue-600 text-white p-2 rounded w-full font-bold">Post</button></form></div></div>
+    
+    <div id="add-club-activity-modal" class="modal hidden"><div class="modal-backdrop" data-modal-hide="add-club-activity-modal"></div><div class="modal-content bg-white p-6 rounded-xl w-full max-w-md mx-4"><form id="add-club-activity-form"><h2 class="font-bold mb-4">Add Activity</h2><input id="club-activity-title" class="w-full border p-2 rounded mb-2" placeholder="Title"><input type="date" id="club-activity-date" class="w-full border p-2 rounded mb-2"><select id="club-activity-type" class="w-full border p-2 rounded mb-2"><option>Sports</option><option>Cultural</option></select><button type="submit" class="bg-purple-600 text-white p-2 rounded w-full font-bold">Post</button></form></div></div>
+    
+    <div id="add-asset-modal" class="modal hidden"><div class="modal-backdrop" data-modal-hide="add-asset-modal"></div><div class="modal-content bg-white p-6 rounded-xl w-full max-w-md mx-4"><form id="add-asset-form"><h2 class="font-bold mb-4">Add Asset</h2><select id="asset-type" class="w-full border p-2 rounded mb-2"><option>Table</option><option>Bed</option></select><input id="asset-quantity" type="number" class="w-full border p-2 rounded mb-2" value="1"><button type="submit" class="bg-emerald-600 text-white p-2 rounded w-full font-bold">Save</button></form></div></div>
+
     <div id="room-details-modal" class="modal hidden">
         <div class="modal-backdrop" data-modal-hide="room-details-modal"></div>
-        <div class="modal-content bg-white p-6 rounded-xl w-full max-w-3xl mx-4 z-50">
+        <div class="modal-content bg-white p-6 rounded-xl w-full max-w-3xl mx-4">
             <div class="flex justify-between items-center mb-4"><h2 id="modal-room-title" class="text-xl font-bold">Room Detail</h2><button data-modal-hide="room-details-modal"><i class="fa-solid fa-xmark text-xl"></i></button></div>
-            <div id="modal-room-complaints-badge" class="hidden mb-2 text-red-500 font-bold flex items-center"><i class="fa-solid fa-circle-exclamation mr-2"></i> Complaints <span id="modal-room-complaints-count" class="ml-1"></span></div>
-            <div class="flex justify-between mb-4 bg-gray-50 p-3 rounded-lg border border-gray-100"><span id="modal-room-capacity" class="font-bold"></span> <span id="modal-room-occupancy" class="font-bold"></span> <span id="modal-room-available" class="font-bold"></span></div>
+            <div id="modal-room-complaints-badge" class="hidden mb-2 text-red-500 font-bold"><i class="fa-solid fa-circle-exclamation"></i> Complaints <span id="modal-room-complaints-count"></span></div>
+            <div class="flex justify-between mb-4 bg-gray-50 p-2 rounded"><span id="modal-room-capacity"></span> <span id="modal-room-occupancy"></span> <span id="modal-room-available"></span></div>
             <div id="modal-occupant-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
             <div id="modal-issues-container" class="mt-4"></div>
-            <div class="mt-4 flex justify-between"><button id="modal-delete-room-btn" class="text-red-600 font-bold flex items-center"><i class="fa-solid fa-trash mr-2"></i> Delete Room</button></div>
+            <div class="mt-4 flex justify-between"><button id="modal-delete-room-btn" class="text-red-600 font-bold"><i class="fa-solid fa-trash mr-1"></i> Delete Room</button></div>
         </div>
     </div>
     
-    <div id="complaint-details-modal" class="modal hidden"><div class="modal-backdrop" data-modal-hide="complaint-details-modal"></div><div class="modal-content bg-white p-6 rounded-xl mx-4 max-w-lg z-50"><div id="complaint-details-content"></div><button class="mt-4 text-gray-500 font-bold" data-modal-hide="complaint-details-modal">Close</button></div></div>
-    <div id="leave-details-modal" class="modal hidden"><div class="modal-backdrop" data-modal-hide="leave-details-modal"></div><div class="modal-content bg-white p-6 rounded-xl mx-4 max-w-lg z-50"><div id="leave-details-content"></div><button class="mt-4 text-gray-500 font-bold" data-modal-hide="leave-details-modal">Close</button></div></div>
-    <div id="visitor-details-modal" class="modal hidden"><div class="modal-backdrop" data-modal-hide="visitor-details-modal"></div><div class="modal-content bg-white p-6 rounded-xl mx-4 max-w-lg z-50"><div id="visitor-details-content"></div><button class="mt-4 text-gray-500 font-bold" data-modal-hide="visitor-details-modal">Close</button></div></div>
-    <div id="reassign-students-modal" class="modal hidden"><div class="modal-backdrop"></div><div class="modal-content bg-white p-6 rounded-xl mx-4 max-w-lg z-50"><h2 class="font-bold text-red-600 mb-2">Reassign Students</h2><p class="text-sm">Deleting room <span id="reassign-modal-room-number"></span>. Move <span id="reassign-modal-student-count"></span> students.</p><div id="reassign-student-list-container" class="my-4"></div><div class="flex justify-end mt-4"><button type="button" class="mr-2" data-modal-hide="reassign-students-modal">Cancel</button><button id="final-delete-room-btn" class="bg-red-600 text-white px-4 py-2 rounded font-bold">Confirm</button></div></div></div>
+    <div id="complaint-details-modal" class="modal hidden"><div class="modal-backdrop" data-modal-hide="complaint-details-modal"></div><div class="modal-content bg-white p-6 rounded-xl mx-4 max-w-lg"><div id="complaint-details-content"></div><button class="mt-4 text-gray-500 font-bold" data-modal-hide="complaint-details-modal">Close</button></div></div>
+    <div id="leave-details-modal" class="modal hidden"><div class="modal-backdrop" data-modal-hide="leave-details-modal"></div><div class="modal-content bg-white p-6 rounded-xl mx-4 max-w-lg"><div id="leave-details-content"></div><button class="mt-4 text-gray-500 font-bold" data-modal-hide="leave-details-modal">Close</button></div></div>
+    <div id="visitor-details-modal" class="modal hidden"><div class="modal-backdrop" data-modal-hide="visitor-details-modal"></div><div class="modal-content bg-white p-6 rounded-xl mx-4 max-w-lg"><div id="visitor-details-content"></div><button class="mt-4 text-gray-500 font-bold" data-modal-hide="visitor-details-modal">Close</button></div></div>
     
-    <div id="add-event-modal" class="modal hidden"><div class="modal-backdrop" data-modal-hide="add-event-modal"></div><div class="modal-content bg-white p-6 rounded-xl w-full max-w-md mx-4 z-50"><form id="add-event-form"><h2 class="font-bold mb-4">Add Event</h2><input id="event-title" class="w-full border p-2 rounded mb-2"><input type="date" id="event-date" class="w-full border p-2 rounded mb-2"><button type="submit" class="bg-blue-600 text-white p-2 rounded w-full font-bold">Post</button></form></div></div>
-    <div id="add-club-activity-modal" class="modal hidden"><div class="modal-backdrop" data-modal-hide="add-club-activity-modal"></div><div class="modal-content bg-white p-6 rounded-xl w-full max-w-md mx-4 z-50"><form id="add-club-activity-form"><h2 class="font-bold mb-4">Add Activity</h2><input id="club-activity-title" class="w-full border p-2 rounded mb-2"><button type="submit" class="bg-purple-600 text-white p-2 rounded w-full font-bold">Post</button></form></div></div>
-    <div id="add-asset-modal" class="modal hidden"><div class="modal-backdrop" data-modal-hide="add-asset-modal"></div><div class="modal-content bg-white p-6 rounded-xl w-full max-w-md mx-4 z-50"><form id="add-asset-form"><h2 class="font-bold mb-4">Add Asset</h2><input id="asset-quantity" type="number" class="w-full border p-2 rounded mb-2" value="1"><button type="submit" class="bg-emerald-600 text-white p-2 rounded w-full font-bold">Save</button></form></div></div>
+    <div id="reassign-students-modal" class="modal hidden"><div class="modal-backdrop"></div><div class="modal-content bg-white p-6 rounded-xl mx-4 max-w-lg"><h2 class="font-bold text-red-600 mb-2">Reassign Students</h2><p class="text-sm">Deleting room <span id="reassign-modal-room-number"></span>. Move <span id="reassign-modal-student-count"></span> students.</p><div id="reassign-student-list-container" class="my-4"></div><div class="flex justify-end mt-4"><button type="button" class="mr-2" data-modal-hide="reassign-students-modal">Cancel</button><button id="final-delete-room-btn" class="bg-red-600 text-white px-4 py-2 rounded font-bold">Confirm</button></div></div></div>
 
     <script src="script.js"></script>
 </body>
