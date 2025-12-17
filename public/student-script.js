@@ -242,41 +242,51 @@ function toggleLeaveReason() {
     }
 }
 async function loadExternalFees() {
-    // 1. Switch the view immediately so the user sees the loader
+    // 1. Show the view and the loader immediately
     showView('student-fees-view');
     
     const container = document.getElementById('student-fees-view');
-    if (!container) return; // Guard clause to prevent the null error
+    if (!container) {
+        console.error("Target div 'student-fees-view' missing in student.html");
+        return;
+    }
 
     try {
         // 2. Fetch the external HTML file
+        // IMPORTANT: Browser security requires you to run this via "Live Server"
         const response = await fetch('fees.html');
-        if (!response.ok) throw new Error('Fees page could not be reached');
         
-        const html = await response.text(); // Use .text() for HTML, not .json()
+        if (!response.ok) {
+            throw new Error(`HTTP Error: ${response.status} - File not found`);
+        }
         
-        // 3. Smooth transition: Fade in the content
+        const html = await response.text();
+        
+        // 3. Smooth transition: Clear loader and inject HTML
         container.style.opacity = '0';
         container.innerHTML = html;
         
         setTimeout(() => {
-            container.style.transition = 'opacity 0.3s ease-in';
+            container.style.transition = 'opacity 0.4s ease-in-out';
             container.style.opacity = '1';
             
-            // 4. Initialize any specific logic inside fees.html if it exists
+            // 4. Initialize any logic specific to the fees page if needed
             if (typeof initializeFeeLogic === "function") {
                 initializeFeeLogic();
             }
-        }, 100);
+        }, 50);
 
     } catch (error) {
-        console.error("Fee Portal Error:", error);
+        console.error("Fee Portal Load Failure:", error);
         container.innerHTML = `
-            <div class="p-12 text-center">
+            <div class="p-12 text-center bg-white rounded-2xl shadow-sm border border-gray-100">
                 <i class="fa-solid fa-circle-exclamation text-accent-red text-5xl mb-4"></i>
-                <h2 class="text-xl font-bold text-accent-dark">Connection Failed</h2>
-                <p class="text-secondary-gray mt-2">Could not load fees.html. Check if the file exists in your public folder.</p>
-                <button onclick="loadExternalFees()" class="mt-6 px-6 py-2 bg-primary-blue text-white rounded-lg font-bold">Retry</button>
+                <h2 class="text-xl font-bold text-accent-dark">Portal Unavailable</h2>
+                <p class="text-secondary-gray mt-2">Could not connect to the fee system.</p>
+                <p class="text-xs text-gray-400 mt-2 italic">Error: ${error.message}</p>
+                <button onclick="loadExternalFees()" class="mt-6 px-8 py-2 bg-primary-blue text-white rounded-lg font-bold hover:bg-blue-700 transition">
+                    Retry Connection
+                </button>
             </div>`;
     }
 }

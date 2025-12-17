@@ -215,6 +215,12 @@
 </div>
     <div class="main-wrapper">
         <div class="content-padding">
+            <div id="student-fees-view" class="view hidden h-full flex flex-col overflow-hidden">
+    <div id="fees-loader" class="flex flex-col items-center justify-center h-64">
+        <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-primary-blue mb-4"></div>
+        <p class="text-xs font-bold text-primary-blue animate-pulse uppercase tracking-widest">Connecting to Secure Gateway...</p>
+    </div>
+</div>
 
           <div id="student-dashboard-view" class="view h-full flex flex-col overflow-hidden">
     <div class="flex-shrink-0 flex justify-between items-end mb-3 pt-2">
@@ -226,12 +232,7 @@
             <i class="fa-solid fa-clock mr-2 text-primary-blue"></i> Session: 2025-26
         </div>
     </div>
-<div id="student-fees-view" class="view hidden h-full flex flex-col overflow-hidden">
-    <div id="fees-loader" class="flex flex-col items-center justify-center h-64">
-        <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-primary-blue mb-4"></div>
-        <p class="text-xs font-bold text-primary-blue animate-pulse">CONNECTING TO SECURE GATEWAY...</p>
-    </div>
-</div>
+
     <div class="flex-shrink-0 grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
         
         <div onclick="showView('student-room-view')" class="stat-card-compact border-l-4 border-primary-blue cursor-pointer bg-white p-4 rounded-xl shadow-sm flex items-center justify-between transition hover:-translate-y-1">
