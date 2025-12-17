@@ -1224,6 +1224,9 @@ function renderLeaveView() {
         if(blockKeyInput) blockKeyInput.disabled = false; // Allow key editing for new blocks
     }
 
+    // =========================================
+    // DETAIL VIEW RENDERER (Fixed: Data URI & Modal Bug)
+    // =========================================
     function renderDetailView(blockKey) {
         console.log("Rendering detail view for block:", blockKey);
         const block = appState.blocks.find(b => b.blockKey === blockKey);
@@ -1237,7 +1240,7 @@ function renderLeaveView() {
         detailView.dataset.currentHostelKey = block.blockKey;
         const theme = themes[block.blockTheme] || themes.blue;
         
-        // Update Header with FA Icon
+        // Update Header
         detailHostelName.innerHTML = `<i class="fa-solid ${theme.icon} ${theme.text} mr-2"></i> ${block.blockName}`;
         
         let hostelCapacity = 0;
@@ -1245,10 +1248,11 @@ function renderLeaveView() {
         roomListContainer.innerHTML = '';
         studentRoomSelect.innerHTML = '<option value="" disabled selected>-- Select Room --</option>';
         
-        // Safely access rooms array
         const rooms = block.rooms || [];
-        // Sort rooms naturally (e.g., 101, 102, A1, B2)
         rooms.sort((a, b) => a.roomNumber.localeCompare(b.roomNumber, undefined, { numeric: true, sensitivity: 'base' }));
+
+        // Internal Placeholder Image (No Internet Required)
+        const placeholderImage = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='150' viewBox='0 0 300 150'%3E%3Crect fill='%23f3f4f6' width='300' height='150'/%3E%3Ctext fill='%239ca3af' font-family='sans-serif' font-size='20' dy='10.5' font-weight='bold' x='50%25' y='50%25' text-anchor='middle'%3ENo Image%3C/text%3E%3C/svg%3E";
 
         rooms.forEach(room => {
             const current = room.students ? room.students.length : 0;
@@ -1258,13 +1262,11 @@ function renderLeaveView() {
             const percent = max > 0 ? (current / max) * 100 : 0;
             const studentNames = (room.students && room.students.length > 0) ? room.students.map(s => s.name).join(', ') : 'Empty';
             
-            // 1. Handle Image URL (Fallback if missing)
-            // Assuming your form saves the URL into a property named 'roomImage'
+            // Use Data URI fallback if image is missing
             const imageUrl = room.roomImage && room.roomImage.trim() !== '' 
                 ? room.roomImage 
-                : `https://via.placeholder.com/300x150/f3f4f6/9ca3af?text=No+Image`;
+                : placeholderImage;
 
-            // 2. New Compact Room Card with Image
             const roomHTML = `
                 <div class="room-card bg-white rounded-lg shadow-sm overflow-hidden border border-gray-200 hover:shadow-md hover:border-indigo-300 transition-all cursor-pointer group relative" data-room-id="${room.roomNumber}" data-room-status="${status.text}">
                    
@@ -1312,7 +1314,6 @@ function renderLeaveView() {
             `;
             roomListContainer.innerHTML += roomHTML;
 
-            // Populate select dropdown for adding students
             if (status.text === 'Available') { 
                 studentRoomSelect.innerHTML += `<option value="${room._id}">${room.roomNumber} (Avail: ${max - current})</option>`; 
             }
@@ -1327,28 +1328,26 @@ function renderLeaveView() {
                         Add Your First Room
                     </button>
                 </div>`;
-                 // Add event listener to the empty state button right after creating it
+                 
+                 // FIX: Changed openModal to showModal here
                  document.getElementById('empty-state-add-room-btn')?.addEventListener('click', () => {
-                    openModal('add-room-modal');
+                    prepareRoomModalForAdd();
+                    showModal('add-room-modal'); 
                 });
         }
 
-        // Calculate displayed capacity (allow manual override from block data if present)
         const displayedCapacity = block.blockCapacity || hostelCapacity;
-        
-        // Update Header Stats
         detailStatCapacity.textContent = displayedCapacity; 
         detailStatOccupancy.textContent = hostelOccupancy; 
         detailStatAvailable.textContent = displayedCapacity - hostelOccupancy;
         
-        // Reset filters
         roomSearchInput.value = ''; 
         roomFilterSelect.value = 'All';
         
-        // Add error handling for images that fail to load
+        // Robust Error Handling using the internal variable
         document.querySelectorAll('.error-image-placeholder').forEach(img => {
             img.onerror = function() {
-                 this.src = 'https://via.placeholder.com/300x150/f3f4f6/9ca3af?text=Image+Error';
+                 this.src = placeholderImage;
             };
         });
     }
