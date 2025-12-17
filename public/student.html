@@ -155,9 +155,8 @@
             </a>
             <a href="#" onclick="showStudentDetails(); hideMobileMenu();" class="nav-link-mobile block pl-3 pr-4 py-2 text-base font-medium text-gray-600">
                 <i class="fa-solid fa-user w-6"></i> My Profile
-            </a>
-        <a href="#" onclick="loadExternalFees()" id="nav-student-fees-view" class="nav-link-desktop">
-    <i class="fa-solid fa-indian-rupee-sign mr-2"></i> Pay Fees
+            <a href="#" onclick="loadExternalFees(); hideMobileMenu();" class="nav-link-mobile block pl-3 pr-4 py-2 text-base font-medium text-gray-600">
+    <i class="fa-solid fa-indian-rupee-sign w-6"></i> Pay Fees
 </a>
             <a href="#" onclick="showView('student-room-view'); hideMobileMenu();" class="nav-link-mobile block pl-3 pr-4 py-2 text-base font-medium text-gray-600">
                 <i class="fa-solid fa-bed w-6"></i> My Room
@@ -190,8 +189,8 @@
             <a href="#" onclick="showStudentDetails()" id="nav-student-profile-view" class="nav-link-desktop">
                 <i class="fa-solid fa-user mr-2"></i> My Profile
             </a>
-            <a href="#" onclick="loadExternalFees(); hideMobileMenu();" class="nav-link-mobile block pl-3 pr-4 py-2 text-base font-medium text-gray-600">
-    <i class="fa-solid fa-indian-rupee-sign w-6"></i> Pay Fees
+            <a href="#" onclick="loadExternalFees()" id="nav-student-fees-view" class="nav-link-desktop">
+    <i class="fa-solid fa-indian-rupee-sign mr-2"></i> Pay Fees
 </a>
             <a href="#" onclick="showView('student-room-view')" id="nav-student-room-view" class="nav-link-desktop">
                 <i class="fa-solid fa-bed mr-2"></i> My Room
@@ -227,7 +226,12 @@
             <i class="fa-solid fa-clock mr-2 text-primary-blue"></i> Session: 2025-26
         </div>
     </div>
-
+<div id="student-fees-view" class="view hidden h-full flex flex-col overflow-hidden">
+    <div id="fees-loader" class="flex flex-col items-center justify-center h-64">
+        <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-primary-blue mb-4"></div>
+        <p class="text-xs font-bold text-primary-blue animate-pulse">CONNECTING TO SECURE GATEWAY...</p>
+    </div>
+</div>
     <div class="flex-shrink-0 grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
         
         <div onclick="showView('student-room-view')" class="stat-card-compact border-l-4 border-primary-blue cursor-pointer bg-white p-4 rounded-xl shadow-sm flex items-center justify-between transition hover:-translate-y-1">

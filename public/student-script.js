@@ -242,30 +242,41 @@ function toggleLeaveReason() {
     }
 }
 async function loadExternalFees() {
-    // 1. Show the view container
+    // 1. Switch the view immediately so the user sees the loader
     showView('student-fees-view');
     
     const container = document.getElementById('student-fees-view');
-    
+    if (!container) return; // Guard clause to prevent the null error
+
     try {
-        // 2. Fetch the external HTML file from the public folder
+        // 2. Fetch the external HTML file
         const response = await fetch('fees.html');
-        if (!response.ok) throw new Error('Fees page not found');
+        if (!response.ok) throw new Error('Fees page could not be reached');
         
-        const html = await response.json();
+        const html = await response.text(); // Use .text() for HTML, not .json()
         
-        // 3. Inject the HTML
+        // 3. Smooth transition: Fade in the content
+        container.style.opacity = '0';
         container.innerHTML = html;
         
-        // 4. Re-initialize any specific fee logic if needed
-        if (typeof initializeFeeLogic === "function") {
-            initializeFeeLogic();
-        }
+        setTimeout(() => {
+            container.style.transition = 'opacity 0.3s ease-in';
+            container.style.opacity = '1';
+            
+            // 4. Initialize any specific logic inside fees.html if it exists
+            if (typeof initializeFeeLogic === "function") {
+                initializeFeeLogic();
+            }
+        }, 100);
+
     } catch (error) {
+        console.error("Fee Portal Error:", error);
         container.innerHTML = `
-            <div class="p-8 text-center text-red-500">
-                <i class="fa-solid fa-circle-exclamation text-4xl mb-4"></i>
-                <p>Failed to load the payment portal. Please try again later.</p>
+            <div class="p-12 text-center">
+                <i class="fa-solid fa-circle-exclamation text-accent-red text-5xl mb-4"></i>
+                <h2 class="text-xl font-bold text-accent-dark">Connection Failed</h2>
+                <p class="text-secondary-gray mt-2">Could not load fees.html. Check if the file exists in your public folder.</p>
+                <button onclick="loadExternalFees()" class="mt-6 px-6 py-2 bg-primary-blue text-white rounded-lg font-bold">Retry</button>
             </div>`;
     }
 }
