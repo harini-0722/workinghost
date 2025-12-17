@@ -10,7 +10,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
-        /* Shared Styles from Student Portal */
         :root {
             --color-text-body: #1f2937;
             --color-mild-bg-start: #E8F5FF;
@@ -33,7 +32,7 @@
             background-color: white;
             border-radius: 0.75rem;
             padding: 1rem;
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
             border: 1px solid #f3f4f6;
             border-left-width: 4px;
             transition: all 0.3s ease;
@@ -71,23 +70,20 @@
                 </div>
 
                 <div class="flex items-center space-x-1 sm:space-x-4">
-                    <a href="addstaff.html" class="px-3 py-2 rounded-md text-xs font-bold text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 transition flex items-center">
+                    <a href="addstaff.html" class="px-3 py-2 rounded-md text-xs font-bold text-gray-500 hover:text-indigo-600 transition flex items-center">
                         <i class="fa-solid fa-user-tie mr-2"></i> Staff
                     </a>
-                    <a href="feedback.html" class="px-3 py-2 rounded-md text-xs font-bold text-gray-500 hover:text-purple-600 hover:bg-purple-50 transition flex items-center">
+                    <a href="feedback.html" class="px-3 py-2 rounded-md text-xs font-bold text-gray-500 hover:text-purple-600 transition flex items-center">
                         <i class="fa-solid fa-comments mr-2"></i> Feedback
                     </a>
-                    <button id="show-complaints-view-btn" class="px-3 py-2 rounded-md text-xs font-bold text-gray-500 hover:text-red-600 hover:bg-red-50 transition flex items-center">
+                    <button id="show-complaints-view-btn" class="px-3 py-2 rounded-md text-xs font-bold text-gray-500 hover:text-red-600 transition flex items-center">
                         <i class="fa-solid fa-triangle-exclamation mr-2"></i> Complaints
                     </button>
-                    <a href="adminhandlegymkhana.html" class="px-3 py-2 rounded-md text-xs font-bold text-gray-500 hover:text-purple-600 hover:bg-purple-50 transition flex items-center">
+                    <a href="adminhandlegymkhana.html" class="px-3 py-2 rounded-md text-xs font-bold text-gray-500 hover:text-purple-600 transition flex items-center">
                         <i class="fa-solid fa-dumbbell mr-2"></i> Gymkhana
                     </a>
-                    
                     <div class="h-6 w-px bg-gray-200 mx-2 hidden sm:block"></div>
-
                     <div class="flex items-center gap-2">
-                        <span class="hidden sm:block text-xs font-bold text-gray-700">Admin</span>
                         <div class="h-8 w-8 rounded-full bg-yellow-400 flex items-center justify-center text-white text-xs font-bold shadow-sm">A</div>
                     </div>
                     <button id="admin-logout-btn" class="ml-2 text-gray-400 hover:text-red-600 transition" title="Logout">
@@ -389,7 +385,6 @@
     <div id="complaint-details-modal" class="modal hidden"><div class="modal-backdrop" data-modal-hide="complaint-details-modal"></div><div class="modal-content bg-white p-6 rounded-xl mx-4 max-w-lg z-50"><div id="complaint-details-content"></div><button class="mt-4 text-gray-500 font-bold" data-modal-hide="complaint-details-modal">Close</button></div></div>
     <div id="leave-details-modal" class="modal hidden"><div class="modal-backdrop" data-modal-hide="leave-details-modal"></div><div class="modal-content bg-white p-6 rounded-xl mx-4 max-w-lg z-50"><div id="leave-details-content"></div><button class="mt-4 text-gray-500 font-bold" data-modal-hide="leave-details-modal">Close</button></div></div>
     <div id="visitor-details-modal" class="modal hidden"><div class="modal-backdrop" data-modal-hide="visitor-details-modal"></div><div class="modal-content bg-white p-6 rounded-xl mx-4 max-w-lg z-50"><div id="visitor-details-content"></div><button class="mt-4 text-gray-500 font-bold" data-modal-hide="visitor-details-modal">Close</button></div></div>
-    
     <div id="reassign-students-modal" class="modal hidden"><div class="modal-backdrop"></div><div class="modal-content bg-white p-6 rounded-xl mx-4 max-w-lg z-50"><h2 class="font-bold text-red-600 mb-2">Reassign Students</h2><p class="text-sm">Deleting room <span id="reassign-modal-room-number"></span>. Move <span id="reassign-modal-student-count"></span> students.</p><div id="reassign-student-list-container" class="my-4"></div><div class="flex justify-end mt-4"><button type="button" class="mr-2" data-modal-hide="reassign-students-modal">Cancel</button><button id="final-delete-room-btn" class="bg-red-600 text-white px-4 py-2 rounded font-bold">Confirm</button></div></div></div>
     
     <div id="add-event-modal" class="modal hidden"><div class="modal-backdrop" data-modal-hide="add-event-modal"></div><div class="modal-content bg-white p-6 rounded-xl w-full max-w-md mx-4 z-50"><form id="add-event-form"><h2 class="font-bold mb-4">Add Event</h2><input id="event-title" class="w-full border p-2 rounded mb-2"><input type="date" id="event-date" class="w-full border p-2 rounded mb-2"><button type="submit" class="bg-blue-600 text-white p-2 rounded w-full font-bold">Post</button></form></div></div>
