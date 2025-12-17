@@ -241,7 +241,34 @@ function toggleLeaveReason() {
         manualInput.value = '';
     }
 }
-
+async function loadExternalFees() {
+    // 1. Show the view container
+    showView('student-fees-view');
+    
+    const container = document.getElementById('student-fees-view');
+    
+    try {
+        // 2. Fetch the external HTML file from the public folder
+        const response = await fetch('fees.html');
+        if (!response.ok) throw new Error('Fees page not found');
+        
+        const html = await response.json();
+        
+        // 3. Inject the HTML
+        container.innerHTML = html;
+        
+        // 4. Re-initialize any specific fee logic if needed
+        if (typeof initializeFeeLogic === "function") {
+            initializeFeeLogic();
+        }
+    } catch (error) {
+        container.innerHTML = `
+            <div class="p-8 text-center text-red-500">
+                <i class="fa-solid fa-circle-exclamation text-4xl mb-4"></i>
+                <p>Failed to load the payment portal. Please try again later.</p>
+            </div>`;
+    }
+}
 async function submitLeave() {
     const start = document.getElementById('leave-start').value;
     const end = document.getElementById('leave-end').value;
