@@ -152,17 +152,18 @@ document.addEventListener('DOMContentLoaded', () => {
         orange: { border: 'border-orange-500', bg: 'bg-orange-100', text: 'text-orange-600', icon: 'fa-paper-plane' },
     };
     const eventThemes = { 
-        'Sports': { border: 'border-green-500', bg: 'bg-green-100', text: 'text-green-700' },
-        'Club Activity': { border: 'border-purple-500', bg: 'bg-purple-100', text: 'text-purple-700' },
-        'Announcement': { border: 'border-red-500', bg: 'bg-red-100', text: 'text-red-700' },
-        'General': { border: 'border-blue-500', bg: 'bg-blue-100', text: 'text-blue-700' },
+        'Sports': { border: 'border-green-500', bg: 'bg-green-50', text: 'text-green-700', icon: 'fa-trophy' },
+        'Club Activity': { border: 'border-purple-500', bg: 'bg-purple-50', text: 'text-purple-700', icon: 'fa-puzzle-piece' },
+        'Announcement': { border: 'border-red-500', bg: 'bg-red-50', text: 'text-red-700', icon: 'fa-bullhorn' },
+        'General': { border: 'border-blue-500', bg: 'bg-blue-50', text: 'text-blue-700', icon: 'fa-calendar-check' },
     };
+
     const clubActivityThemes = { 
-        'Sports': { border: 'border-orange-500', bg: 'bg-orange-100', text: 'text-orange-700' },
-        'Cultural': { border: 'border-pink-500', bg: 'bg-pink-100', text: 'text-pink-700' },
-        'Technical': { border: 'border-indigo-500', bg: 'bg-indigo-100', text: 'text-indigo-700' },
-        'Workshop': { border: 'border-yellow-500', bg: 'bg-yellow-100', text: 'text-yellow-700' },
-        'General': { border: 'border-gray-500', bg: 'bg-gray-100', text: 'text-gray-700' },
+        'Sports': { border: 'border-orange-500', bg: 'bg-orange-50', text: 'text-orange-700', icon: 'fa-futbol' },
+        'Cultural': { border: 'border-pink-500', bg: 'bg-pink-50', text: 'text-pink-700', icon: 'fa-masks-theater' },
+        'Technical': { border: 'border-indigo-500', bg: 'bg-indigo-50', text: 'text-indigo-700', icon: 'fa-microchip' },
+        'Workshop': { border: 'border-yellow-500', bg: 'bg-yellow-50', text: 'text-yellow-700', icon: 'fa-chalkboard-user' },
+        'General': { border: 'border-gray-500', bg: 'bg-gray-50', text: 'text-gray-700', icon: 'fa-users' },
     };
     const getStatus = (current, max) => { 
         if (current >= max) return { text: 'Full', classes: 'bg-red-500 text-white', progress: 'bg-red-500' };
@@ -1310,12 +1311,33 @@ function renderLeaveView() {
     function renderEvents() {
         eventListContainer.innerHTML = '';
         if (eventData.length === 0) {
-            eventListContainer.innerHTML = `<p class="text-gray-500 col-span-full">No events or announcements posted yet.</p>`; return;
+            eventListContainer.innerHTML = `<p class="text-gray-500 col-span-full italic text-sm">No events or announcements posted yet.</p>`; return;
         }
         eventData.slice().reverse().forEach(event => {
             const theme = eventThemes[event.type] || eventThemes.General;
-            const formattedDate = new Date(event.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-            const eventHTML = `<div class="bg-white rounded-lg shadow-md overflow-hidden border-l-8 ${theme.border} transition-all duration-300 hover:shadow-xl hover:scale-105"><div class="p-5"><div class="flex justify-between items-center mb-2"><h3 class="text-xl font-bold text-gray-800">${event.title}</h3><span class="text-xs font-bold px-3 py-1 rounded-full ${theme.bg} ${theme.text}">${event.type}</span></div><p class="text-sm font-medium text-gray-600 mb-3">Date: ${formattedDate}</p><p class="text-sm text-gray-700">${event.description}</p></div></div>`;
+            const formattedDate = new Date(event.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+            
+            // Compact Event Card HTML
+            const eventHTML = `
+                <div class="bg-white rounded-lg shadow-sm border-l-4 ${theme.border} p-4 transition-all duration-300 hover:shadow-md hover:-translate-y-1 flex items-start gap-3">
+                    <div class="flex-shrink-0">
+                        <div class="h-10 w-10 rounded-full ${theme.bg} flex items-center justify-center">
+                            <i class="fa-solid ${theme.icon} ${theme.text} text-sm"></i>
+                        </div>
+                    </div>
+                    <div class="flex-grow min-w-0">
+                        <div class="flex justify-between items-start">
+                            <h3 class="text-sm font-bold text-gray-800 truncate pr-2">${event.title}</h3>
+                            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-gray-100 text-gray-600 border border-gray-200 whitespace-nowrap">${event.type}</span>
+                        </div>
+                        <p class="text-[11px] font-semibold text-gray-500 mt-0.5">
+                            <i class="fa-regular fa-calendar mr-1"></i> ${formattedDate}
+                        </p>
+                        <p class="text-xs text-gray-600 mt-2 line-clamp-2 leading-relaxed">
+                            ${event.description}
+                        </p>
+                    </div>
+                </div>`;
             eventListContainer.innerHTML += eventHTML;
         });
     }
@@ -1323,30 +1345,43 @@ function renderLeaveView() {
     function renderClubActivities(activities) { 
         clubActivityContainer.innerHTML = '';
         if (!activities || activities.length === 0) {
-            clubActivityContainer.innerHTML = `<p class="text-gray-500 col-span-full">No club activities posted yet.</p>`;
+            clubActivityContainer.innerHTML = `<p class="text-gray-500 col-span-full italic text-sm">No club activities posted yet.</p>`;
             return;
         }
         activities.forEach(activity => {
             const theme = clubActivityThemes[activity.type] || clubActivityThemes.General;
-            const formattedDate = new Date(activity.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-            const imageUrl = activity.imageUrl || `https://via.placeholder.com/300x150/${theme.bg.split('-')[1]}00/FFFFFF?text=${activity.type}`; 
+            const formattedDate = new Date(activity.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+            // Fallback image handling
+            const imageUrl = activity.imageUrl || `https://via.placeholder.com/300x150/${theme.bg.split('-')[1]}00/FFFFFF?text=${activity.type.substring(0,3)}`; 
             
+            // Compact Activity Card HTML
             const activityHTML = `
-                <div class="bg-white rounded-lg shadow-md overflow-hidden border-l-8 ${theme.border} transition-all duration-300 hover:shadow-xl hover:scale-105 flex flex-col relative">
-                    <button class="remove-activity-btn absolute top-3 right-3 p-1 text-red-500 hover:bg-red-100 rounded-full transition-colors duration-200 z-10" data-activity-id="${activity._id}" data-activity-title="${activity.title}" title="Delete Activity">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
+                <div class="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100 transition-all duration-300 hover:shadow-md hover:-translate-y-1 group relative flex flex-col h-full">
+                    
+                    <button class="remove-activity-btn absolute top-2 right-2 p-1.5 bg-white/90 text-red-500 hover:text-red-700 rounded-full shadow-sm z-10 transition-transform transform scale-90 hover:scale-100" data-activity-id="${activity._id}" data-activity-title="${activity.title}" title="Delete Activity">
+                        <i class="fa-solid fa-trash text-xs"></i>
                     </button>
-                    <img src="${imageUrl}" alt="${activity.title}" class="activity-card-image">
-                    <div class="p-5 flex flex-col flex-grow">
-                        <div class="flex justify-between items-start mb-2">
-                            <h3 class="text-lg font-bold text-gray-800">${activity.title}</h3>
-                            <span class="text-xs font-bold px-3 py-1 rounded-full ${theme.bg} ${theme.text} flex-shrink-0 ml-2">${activity.type}</span>
+
+                    <div class="h-28 w-full relative overflow-hidden bg-gray-100">
+                        <img src="${imageUrl}" alt="${activity.title}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                        <div class="absolute bottom-2 left-2">
+                            <span class="text-[10px] font-bold px-2 py-1 rounded-md shadow-sm bg-white/95 text-gray-800 flex items-center gap-1">
+                                <i class="fa-solid ${theme.icon} ${theme.text}"></i> ${activity.type}
+                            </span>
                         </div>
-                        <p class="text-sm font-medium text-gray-600 mb-3">Date: ${formattedDate}</p>
-                        <p class="text-sm text-gray-700 flex-grow">${activity.description || ''}</p>
+                    </div>
+
+                    <div class="p-3 flex flex-col flex-grow">
+                        <h3 class="text-sm font-bold text-gray-800 leading-tight mb-1 line-clamp-1" title="${activity.title}">${activity.title}</h3>
+                        
+                        <p class="text-[11px] font-medium text-gray-500 mb-2 flex items-center">
+                            <i class="fa-regular fa-clock mr-1"></i> ${formattedDate}
+                        </p>
+                        
+                        <div class="text-xs text-gray-600 line-clamp-3 leading-relaxed flex-grow">
+                            ${activity.description || 'No description provided.'}
                         </div>
+                    </div>
                 </div>
             `;
             clubActivityContainer.innerHTML += activityHTML;
