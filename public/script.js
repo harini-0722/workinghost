@@ -144,12 +144,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- 3. THEME/HELPER DATA & UTILITY FUNCTIONS ---
     const themes = { 
-        pink: { border: 'border-pink-500', bg: 'bg-pink-100', text: 'text-pink-600', icon: 'user-group' },
-        blue: { border: 'border-blue-500', bg: 'bg-blue-100', text: 'text-blue-600', icon: 'user-group' },
-        green: { border: 'border-green-500', bg: 'bg-green-100', text: 'text-green-600', icon: 'building-office' },
-        purple: { border: 'border-purple-500', bg: 'bg-purple-100', text: 'text-purple-600', icon: 'academic-cap' },
-        yellow: { border: 'border-yellow-500', bg: 'bg-yellow-100', text: 'text-yellow-600', icon: 'beaker' },
-        orange: { border: 'border-orange-500', bg: 'bg-orange-100', text: 'text-orange-600', icon: 'paper-airplane' }, // ADDED: Orange Theme
+        pink: { border: 'border-pink-500', bg: 'bg-pink-100', text: 'text-pink-600', icon: 'fa-person-dress' },
+        blue: { border: 'border-blue-500', bg: 'bg-blue-100', text: 'text-blue-600', icon: 'fa-person' },
+        green: { border: 'border-green-500', bg: 'bg-green-100', text: 'text-green-600', icon: 'fa-building' },
+        purple: { border: 'border-purple-500', bg: 'bg-purple-100', text: 'text-purple-600', icon: 'fa-graduation-cap' },
+        yellow: { border: 'border-yellow-500', bg: 'bg-yellow-100', text: 'text-yellow-600', icon: 'fa-flask' },
+        orange: { border: 'border-orange-500', bg: 'bg-orange-100', text: 'text-orange-600', icon: 'fa-paper-plane' },
     };
     const eventThemes = { 
         'Sports': { border: 'border-green-500', bg: 'bg-green-100', text: 'text-green-700' },
@@ -1113,35 +1113,55 @@ function renderLeaveView() {
             const blockMaxStudents = block.blockCapacity || totalCapacity; // Use blockCapacity for max students
 
           // Update block card HTML to display both max rooms and max students
+            // --- REPLACED BLOCK HTML START ---
             const blockHTML = `
-                <div class="bg-white rounded-lg shadow-md overflow-hidden border-l-8 ${theme.border} relative transition-all duration-300 hover:shadow-xl hover:scale-105">
-                    <div class="absolute top-3 right-3 flex space-x-2">
-                      
-<button class="edit-block-btn p-0.5 text-blue-500 hover:bg-blue-100 rounded-full transition-colors duration-200 z-10" data-block-id="${block._id}" title="Edit Block">
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-        <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 18.07a4.995 4.995 0 0 1-1.488 1.488l-4.25 1.777l.732-3.351a4.99 4.99 0 0 1 1.488-1.488L16.862 4.487Zm0 0L19.5 7.125"/>
-    </svg>
-</button>
-                        <button class="remove-block-btn p-1 text-red-500 hover:bg-red-100 rounded-full transition-colors duration-200 z-10" data-block-id="${block._id}" data-block-name="${block.blockName}" title="Delete Block">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
+                <div class="bg-white rounded-lg shadow-sm overflow-hidden border-l-4 ${theme.border} relative group transition-all duration-300 hover:shadow-md hover:-translate-y-1">
+                    
+                    <div class="absolute top-2 right-2 flex space-x-1">
+                        <button class="edit-block-btn p-1.5 text-blue-500 hover:bg-blue-50 rounded-full transition-colors" data-block-id="${block._id}" title="Edit Block">
+                            <i class="fa-solid fa-pen text-xs"></i>
+                        </button>
+                        <button class="remove-block-btn p-1.5 text-red-500 hover:bg-red-50 rounded-full transition-colors" data-block-id="${block._id}" data-block-name="${block.blockName}" title="Delete Block">
+                            <i class="fa-solid fa-trash text-xs"></i>
                         </button>
                     </div>
-                    <a href="#" class="block-link block hover:bg-gray-50 p-6" data-hostel-key="${block.blockKey}">
-                        <div class="flex items-center mb-4">
-                            <div class="p-3 ${theme.bg} rounded-lg"><hero-icon-solid name="${theme.icon}" class="h-6 w-6 ${theme.text}"></hero-icon-solid></div>
-                            <h3 class="text-2xl font-bold text-gray-900 ml-4">${block.blockName}</h3>
+
+                    <a href="#" class="block-link block hover:bg-gray-50 p-4" data-hostel-key="${block.blockKey}">
+                        
+                        <div class="flex items-center mb-3">
+                            <div class="h-8 w-8 flex items-center justify-center ${theme.bg} rounded-full mr-3 shadow-sm">
+                                <i class="fa-solid ${theme.icon} ${theme.text} text-sm"></i>
+                            </div>
+                            <h3 class="text-base font-bold text-gray-800 leading-tight truncate pr-12">${block.blockName}</h3>
                         </div>
-                        <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
-                            <div><span class="text-gray-500">Rooms (Limit)</span><p class="text-lg font-semibold text-gray-900">${totalRooms} / ${blockMaxRooms}</p></div>
-                            <div><span class="text-gray-500">Occupied Rooms</span><p class="text-lg font-semibold text-gray-900">${occupiedRooms}</p></div>
-                            <div><span class="text-gray-500">Current Students</span><p class="text-lg font-semibold text-gray-900">${currentStudents}</p></div>
-                            <div><span class="text-gray-500">Max Students</span><p class="text-lg font-semibold text-gray-900">${blockMaxStudents}</p></div> 
+
+                        <div class="grid grid-cols-2 gap-2">
+                            
+                            <div class="bg-gray-50 p-2 rounded border border-gray-100">
+                                <span class="text-gray-400 block text-[10px] uppercase font-bold tracking-wider">Rooms</span>
+                                <p class="text-sm font-bold text-gray-800">${totalRooms} <span class="text-gray-400 font-normal text-xs">/ ${blockMaxRooms}</span></p>
+                            </div>
+
+                            <div class="bg-gray-50 p-2 rounded border border-gray-100">
+                                <span class="text-gray-400 block text-[10px] uppercase font-bold tracking-wider">Occupied</span>
+                                <p class="text-sm font-bold text-gray-800">${occupiedRooms} <span class="text-gray-400 font-normal text-xs">Filled</span></p>
+                            </div>
+
+                            <div class="bg-gray-50 p-2 rounded border border-gray-100">
+                                <span class="text-gray-400 block text-[10px] uppercase font-bold tracking-wider">Students</span>
+                                <p class="text-sm font-bold text-gray-800">${currentStudents} <span class="text-gray-400 font-normal text-xs">Active</span></p>
+                            </div>
+
+                            <div class="bg-gray-50 p-2 rounded border border-gray-100">
+                                <span class="text-gray-400 block text-[10px] uppercase font-bold tracking-wider">Capacity</span>
+                                <p class="text-sm font-bold text-gray-800">${blockMaxStudents} <span class="text-gray-400 font-normal text-xs">Max</span></p>
+                            </div> 
+
                         </div>
                     </a>
                 </div>
             `;
+            // --- REPLACED BLOCK HTML END ---
             hostelBlockContainer.innerHTML += blockHTML;
         }
         
