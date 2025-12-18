@@ -63,30 +63,34 @@
         }
 
         /* 4. Modal and Transition Styles (Your Provided Styles) */
-       /* Update these sections in your style tags */
-.modal-backdrop { 
-    background-color: rgba(0, 0, 0, 0.5); 
-    transition: opacity 0.3s ease-in-out; 
-    /* Increased z-index to 60 to be above the nav bar's 50 */
-    @apply fixed inset-0 z-[60]; 
-}
+        .modal-backdrop { 
+            background-color: rgba(0, 0, 0, 0.5); 
+            transition: opacity 0.3s ease-in-out; 
+            @apply fixed inset-0 z-30;
+        }
+        .modal-content { 
+            transition: all 0.3s ease-in-out; 
+            transform: translateY(-20px); 
+            opacity: 0; 
+        }
+        .modal { 
+            transition: opacity 0.3s ease; 
+            opacity: 0; 
+            pointer-events: none; 
+            @apply fixed inset-0 z-30 flex items-center justify-center;
+        }
+        .modal.active { 
+            opacity: 1; 
+            pointer-events: auto; 
+        }
+        .modal.active .modal-backdrop { 
+            opacity: 1; 
+        }
+        .modal.active .modal-content { 
+            transform: translateY(0); 
+            opacity: 1; 
+        }
 
-.modal { 
-    transition: opacity 0.3s ease; 
-    opacity: 0; 
-    pointer-events: none; 
-    /* Increased z-index to 70 and ensured it centers with padding */
-    @apply fixed inset-0 z-[70] flex items-center justify-center p-4 sm:p-6;
-}
-
-.modal-content { 
-    transition: all 0.3s ease-in-out; 
-    transform: translateY(-20px); 
-    opacity: 0; 
-    /* Added max-height to ensure the form stays within the screen view */
-    max-height: 90vh;
-    overflow-y: auto;
-}
         /* 5. Progress & Image Styles (Your Provided Styles) */
         .progress-bar { 
             background-color: #e9ecef; 
@@ -662,109 +666,105 @@
             </form>
         </div>
     </div>
-    <div id="add-student-modal" class="modal hidden fixed inset-0 z-[70] flex items-center justify-center">
-    <div class="modal-backdrop fixed inset-0" data-modal-hide="add-student-modal"></div>
-    <div class="modal-content bg-white rounded-lg shadow-xl z-[80] w-full max-w-md mx-4 max-h-[85vh] overflow-hidden flex flex-col">
-        
-        <div class="px-6 py-4 border-b bg-white sticky top-0 flex justify-between items-center z-10">
-            <h2 class="text-xl font-semibold"><span class="icon-space"> </span>Add New Student</h2>
-            <button data-modal-hide="add-student-modal" class="text-gray-400 hover:text-red-500 transition-colors">
-                <i class="fa-solid fa-xmark text-xl"></i>
-            </button>
+    <div id="add-student-modal" class="modal hidden fixed inset-0 z-30 flex items-center justify-center">
+        <div class="modal-backdrop fixed inset-0" data-modal-hide="add-student-modal"></div>
+        <div class="modal-content bg-white p-6 rounded-lg shadow-xl z-40 w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto">
+            <h2 class="text-xl font-semibold mb-4"><span class="icon-space"> </span>Add New Student</h2>
+            <form id="add-student-form" class="space-y-4">
+                <h3 class="text-sm font-medium text-gray-500 border-b pb-1"><span class="icon-space"> </span>Login Details</h3>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label for="student-username" class="block text-sm font-medium text-gray-700"><span class="icon-space"> </span>Username</label>
+                        <input type="text" id="student-username" name="username" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
+                    </div>
+                    <div>
+                        <label for="student-password" class="block text-sm font-medium text-gray-700"><span class="icon-space"> </span>Password</label>
+                        <input type="password" id="student-password" name="password" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
+                    </div>
+                </div>
+                <h3 class="text-sm font-medium text-gray-500 border-b pt-2 pb-1"><span class="icon-space"> </span>Hostel Details</h3>
+                <div>
+                    <label for="student-room-id" class="block text-sm font-medium text-gray-700"><span class="icon-space"> </span>Select Room</label>
+                    <select id="student-room-id" name="roomId" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" required>
+                    </select>
+                </div>
+                <div>
+                    <label for="student-joining-date" class="block text-sm font-medium text-gray-700"><span class="icon-space"> </span>Joining Date</label>
+                    <input type="date" id="student-joining-date" name="joiningDate" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label for="student-fee-status" class="block text-sm font-medium text-gray-700"><span class="icon-space"> </span>Fee Status</label>
+                        <select id="student-fee-status" name="feeStatus" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
+                            <option value="Paid">Paid</option>
+                            <option value="Pending" selected>Pending</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="student-payment-method" class="block text-sm font-medium text-gray-700"><span class="icon-space"> </span>Payment Method</label>
+                        <select id="student-payment-method" name="paymentMethod" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                            <option value="Not Paid">Not Paid</option>
+                            <option value="Cash">Cash</option>
+                            <option value="Card">Card</option>
+                            <option value="Online">Online</option>
+                        </select>
+                    </div>
+                </div>
+                <h3 class="text-sm font-medium text-gray-500 border-b pt-2 pb-1"><span class="icon-space"> </span>Personal & Academic</h3>
+                <div>
+                    <label for="student-name" class="block text-sm font-medium text-gray-700"><span class="icon-space"> </span>Student Name</label>
+                    <input type="text" id="student-name" name="name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="Enter full name" required>
+                </div>
+                <div>
+                    <label for="student-roll-number" class="block text-sm font-medium text-gray-700"><span class="icon-space"> </span>Roll Number</label>
+                    <input type="text" id="student-roll-number" name="rollNumber" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="e.g., 21CS10001" required>
+                </div>
+                <div>
+                    <label for="student-course" class="block text-sm font-medium text-gray-700"><span class="icon-space"> </span>Course</label>
+                    <input type="text" id="student-course" name="course" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="e.g., B.Tech">
+                </div>
+                <div>
+                    <label for="student-department" class="block text-sm font-medium text-gray-700"><span class="icon-space"> </span>Department</label>
+                    <input type="text" id="student-department" name="department" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="e.g., CSE">
+                </div>
+                <div>
+                    <label for="student-year" class="block text-sm font-medium text-gray-700"><span class="icon-space"> </span>Year</label>
+                    <input type="text" id="student-year" name="year" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="e.g., 3rd Year">
+                </div>
+                <div>
+                    <label for="student-email" class="block text-sm font-medium text-gray-700"><span class="icon-space"> </span>Email</label>
+                    <input type="email" id="student-email" name="email" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="student@iit.edu">
+                </div>
+                <div>
+                    <label for="student-phone" class="block text-sm font-medium text-gray-700"><span class="icon-space"> </span>Phone</label>
+                    <input type="tel" id="student-phone" name="phone" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="+91 XXXXX XXXXX">
+                </div>
+                <div>
+                    <label for="student-profile-image" class="block text-sm font-medium text-gray-700"><span class="icon-space"> </span>Upload Profile Photo</label>
+                    <input type="file" id="student-profile-image" name="profileImage" class="mt-1 block w-full text-sm text-gray-500
+                                file:mr-4 file:py-2 file:px-4
+                                file:rounded-full file:border-0
+                                file:text-sm file:font-semibold
+                                file:bg-blue-50 file:text-blue-700
+                                hover:file:bg-blue-100"
+                                accept="image/*">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700"><span class="icon-space"> </span>Assign Assets to Student</label>
+                    <div id="student-asset-assignment-container" class="mt-2 space-y-3">
+                                        </div>
+                    <button type="button" id="add-student-asset-row-btn" class="mt-2 text-sm font-medium text-blue-600 hover:text-blue-800 flex items-center">
+                        <hero-icon-solid name="plus-circle" class="h-5 w-5 mr-1"></hero-icon-solid>
+                        Add Asset
+                    </button>
+                </div>
+                <div class="flex justify-end space-x-3 pt-4">
+                    <button type="button" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300" data-modal-hide="add-student-modal"><span class="icon-space"> </span>Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"><span class="icon-space"> </span>Add Student</button>
+                </div>
+            </form>
         </div>
-
-        <form id="add-student-form" class="p-6 space-y-4 overflow-y-auto">
-            <h3 class="text-sm font-medium text-gray-500 border-b pb-1"><span class="icon-space"> </span>Login Details</h3>
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <label for="student-username" class="block text-sm font-medium text-gray-700"><span class="icon-space"> </span>Username</label>
-                    <input type="text" id="student-username" name="username" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
-                </div>
-                <div>
-                    <label for="student-password" class="block text-sm font-medium text-gray-700"><span class="icon-space"> </span>Password</label>
-                    <input type="password" id="student-password" name="password" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
-                </div>
-            </div>
-
-            <h3 class="text-sm font-medium text-gray-500 border-b pt-2 pb-1"><span class="icon-space"> </span>Hostel Details</h3>
-            <div>
-                <label for="student-room-id" class="block text-sm font-medium text-gray-700"><span class="icon-space"> </span>Select Room</label>
-                <select id="student-room-id" name="roomId" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" required>
-                </select>
-            </div>
-            <div>
-                <label for="student-joining-date" class="block text-sm font-medium text-gray-700"><span class="icon-space"> </span>Joining Date</label>
-                <input type="date" id="student-joining-date" name="joiningDate" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
-            </div>
-
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <label for="student-fee-status" class="block text-sm font-medium text-gray-700"><span class="icon-space"> </span>Fee Status</label>
-                    <select id="student-fee-status" name="feeStatus" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
-                        <option value="Paid">Paid</option>
-                        <option value="Pending" selected>Pending</option>
-                    </select>
-                </div>
-                <div>
-                    <label for="student-payment-method" class="block text-sm font-medium text-gray-700"><span class="icon-space"> </span>Payment Method</label>
-                    <select id="student-payment-method" name="paymentMethod" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
-                        <option value="Not Paid">Not Paid</option>
-                        <option value="Cash">Cash</option>
-                        <option value="Card">Card</option>
-                        <option value="Online">Online</option>
-                    </select>
-                </div>
-            </div>
-
-            <h3 class="text-sm font-medium text-gray-500 border-b pt-2 pb-1"><span class="icon-space"> </span>Personal & Academic</h3>
-            <div>
-                <label for="student-name" class="block text-sm font-medium text-gray-700"><span class="icon-space"> </span>Student Name</label>
-                <input type="text" id="student-name" name="name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="Enter full name" required>
-            </div>
-            <div>
-                <label for="student-roll-number" class="block text-sm font-medium text-gray-700"><span class="icon-space"> </span>Roll Number</label>
-                <input type="text" id="student-roll-number" name="rollNumber" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="e.g., 21CS10001" required>
-            </div>
-            <div>
-                <label for="student-course" class="block text-sm font-medium text-gray-700"><span class="icon-space"> </span>Course</label>
-                <input type="text" id="student-course" name="course" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="e.g., B.Tech">
-            </div>
-            <div>
-                <label for="student-department" class="block text-sm font-medium text-gray-700"><span class="icon-space"> </span>Department</label>
-                <input type="text" id="student-department" name="department" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="e.g., CSE">
-            </div>
-            <div>
-                <label for="student-year" class="block text-sm font-medium text-gray-700"><span class="icon-space"> </span>Year</label>
-                <input type="text" id="student-year" name="year" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="e.g., 3rd Year">
-            </div>
-            <div>
-                <label for="student-email" class="block text-sm font-medium text-gray-700"><span class="icon-space"> </span>Email</label>
-                <input type="email" id="student-email" name="email" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="student@iit.edu">
-            </div>
-            <div>
-                <label for="student-phone" class="block text-sm font-medium text-gray-700"><span class="icon-space"> </span>Phone</label>
-                <input type="tel" id="student-phone" name="phone" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="+91 XXXXX XXXXX">
-            </div>
-            <div>
-                <label for="student-profile-image" class="block text-sm font-medium text-gray-700"><span class="icon-space"> </span>Upload Profile Photo</label>
-                <input type="file" id="student-profile-image" name="profileImage" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" accept="image/*">
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700"><span class="icon-space"> </span>Assign Assets to Student</label>
-                <div id="student-asset-assignment-container" class="mt-2 space-y-3"></div>
-                <button type="button" id="add-student-asset-row-btn" class="mt-2 text-sm font-medium text-blue-600 hover:text-blue-800 flex items-center">
-                    <hero-icon-solid name="plus-circle" class="h-5 w-5 mr-1"></hero-icon-solid>
-                    Add Asset
-                </button>
-            </div>
-
-            <div class="sticky bottom-0 bg-white pt-4 pb-2 border-t flex justify-end space-x-3">
-                <button type="button" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300" data-modal-hide="add-student-modal"><span class="icon-space"> </span>Cancel</button>
-                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 shadow-md">Add Student</button>
-            </div>
-        </form>
     </div>
-</div>
     <div id="add-event-modal" class="modal hidden fixed inset-0 z-30 flex items-center justify-center">
         <div class="modal-backdrop fixed inset-0" data-modal-hide="add-event-modal"></div>
         <div class="modal-content bg-white p-6 rounded-lg shadow-xl z-40 w-full max-w-md mx-4">
