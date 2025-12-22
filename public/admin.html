@@ -123,18 +123,33 @@
         }
         /* Full Page Modal Style */
 /* Full Page Modal Style */
+/* Optimized Full Page Modal Style */
 .modal-full-screen {
-    @apply fixed inset-0 z-40 bg-white flex flex-col;
-    top: 64px; /* Adjust based on your header height (h-16 = 64px) */
-    bottom: 60px; /* Adjust based on your footer height */
+    @apply fixed inset-0 z-50 bg-white flex flex-col;
+    top: 0 !important; /* Forces it to the absolute top of the viewport */
+    height: 100vh;
     opacity: 1 !important;
     pointer-events: auto !important;
 }
 
-/* Ensure the form inside is scrollable but fills space */
+/* Form Container: Removing large paddings and centering */
 .modal-full-screen .modal-content {
-    @apply w-full max-w-full h-full shadow-none rounded-none overflow-y-auto p-8;
+    @apply w-full max-w-7xl mx-auto h-full shadow-none rounded-none overflow-y-auto p-4 sm:p-6;
     transform: none !important;
+}
+
+/* Compressing spacing for form fields */
+.modal-full-screen .space-y-8 > :not([hidden]) ~ :not([hidden]) {
+    margin-top: 1rem; /* Reduced from default Tailwind space-y-8 */
+}
+
+.modal-full-screen .grid {
+    gap: 1rem; /* Tighter grid gaps */
+}
+
+.modal-full-screen input, 
+.modal-full-screen select {
+    @apply py-2; /* Slimmer input fields */
 }
         /* Custom style to maintain space where the emoji/letter placeholder was */
         .icon-space { display: inline-block; width: 0.5em; overflow: hidden; } 
@@ -680,8 +695,8 @@
             </form>
         </div>
     </div>
-   <div id="add-student-modal" class="modal hidden fixed z-30 flex items-center justify-center bg-white">
-    <div class="modal-content bg-white w-full h-full p-6 sm:p-10 overflow-y-auto">
+  <div id="add-student-modal" class="modal hidden fixed z-50 flex items-center justify-center bg-white">
+    <div class="modal-content bg-white w-full h-full p-4 overflow-y-auto">
         <div class="max-w-4xl mx-auto"> <div class="flex justify-between items-center mb-8 border-b pb-4">
                 <h2 class="text-2xl font-extrabold text-gray-800"><i class="fa-solid fa-user-plus text-indigo-600 mr-2"></i> Register New Student</h2>
                 <button type="button" class="text-gray-400 hover:text-red-500 text-2xl" data-modal-hide="add-student-modal">&times;</button>

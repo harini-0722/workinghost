@@ -1723,28 +1723,31 @@ function renderLeaveView() {
     
     // --- 5. MODAL & VIEW-SWITCHING LOGIC ---
     function showModal(modalId) {
-        const modal = document.getElementById(modalId);
-        if (!modal) return;
-       // Check if it's the student modal to apply full-page styling
+    const modal = document.getElementById(modalId);
+    if (!modal) return;
+
     if (modalId === 'add-student-modal') {
         modal.classList.add('modal-full-screen');
+        document.body.style.overflow = 'hidden'; // Prevent background scrolling
     } 
-        modal.classList.remove('hidden', 'active');
-        void modal.offsetWidth;
-        modal.classList.remove('hidden');
-        requestAnimationFrame(() => {
-            modal.classList.add('active');
-        });
-    }
+    
+    modal.classList.remove('hidden');
+    setTimeout(() => {
+        modal.classList.add('active');
+    }, 10);
+}
 
-    function hideModal(modalId) {
-        const modal = document.getElementById(modalId);
-        if (!modal) return;
-        modal.classList.remove('active');
-        setTimeout(() => {
-            modal.classList.add('hidden');
-        }, 300); 
-    }
+function hideModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (!modal) return;
+    
+    modal.classList.remove('active');
+    document.body.style.overflow = ''; // Restore scrolling
+    
+    setTimeout(() => {
+        modal.classList.add('hidden');
+    }, 300); 
+}
     
     function hideAllViews() {
         dashboardView.classList.add('hidden');
