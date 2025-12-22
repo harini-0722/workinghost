@@ -758,23 +758,71 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 pt-8 border-t border-gray-100">
-                    <div>
-                        <h3 class="text-lg font-bold text-gray-900">3. Assignment </h3>
-                        <p class="text-sm text-gray-500 mt-1">Room allocation and current fee status.</p>
-                    </div>
-                    <div class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="md:col-span-2">
-                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Assign Room</label>
-                            <select id="student-room-id" name="roomId" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none bg-white font-semibold" required></select>
-                        </div>
-                        
-                        <div>
-                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Joining Date</label>
-                            <input type="date" name="joiningDate" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none">
-                        </div>
-                    </div>
+               <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 pt-8 border-t border-gray-100">
+    <div>
+        <h3 class="text-lg font-bold text-gray-900">3. Fees & Payment Management</h3>
+        <p class="text-sm text-gray-500 mt-1">Capture total fees, payment methods, and transaction proofs.</p>
+    </div>
+    <div class="lg:col-span-2 space-y-6">
+        <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="md:col-span-2">
+                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Assign Room</label>
+                <select id="student-room-id" name="roomId" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none bg-white font-semibold" required></select>
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Joining Date</label>
+                <input type="date" name="joiningDate" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none">
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Primary Fee Status</label>
+                <select name="feeStatus" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none bg-white">
+                    <option value="Pending">Pending</option>
+                    <option value="Partial">Partial</option>
+                    <option value="Paid">Paid</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="bg-emerald-50/30 p-6 rounded-2xl border border-emerald-100 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <label class="block text-xs font-bold text-emerald-600 uppercase mb-1">Total Semester Fee</label>
+                <div class="relative">
+                    <span class="absolute left-3 top-3 text-gray-400">₹</span>
+                    <input type="number" name="totalFee" class="w-full pl-8 p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none" placeholder="0.00">
                 </div>
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-emerald-600 uppercase mb-1">Amount Paid (On Spot/Pre-paid)</label>
+                <div class="relative">
+                    <span class="absolute left-3 top-3 text-gray-400">₹</span>
+                    <input type="number" name="paidAmount" class="w-full pl-8 p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none" placeholder="0.00">
+                </div>
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Payment Method</label>
+                <select name="paymentMethod" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none bg-white">
+                    <option value="Not Paid">Not Paid Yet</option>
+                    <option value="On-Spot Cash">On-Spot Cash</option>
+                    <option value="UPI">UPI (GPay/PhonePe)</option>
+                    <option value="Net Banking">Net Banking</option>
+                    <option value="Bank Deposit">Bank Deposit</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Bank Name / App Used</label>
+                <input type="text" name="bankName" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none" placeholder="e.g. SBI, HDFC, GPay">
+            </div>
+            <div class="md:col-span-2">
+                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Transaction ID / Reference Number</label>
+                <input type="text" name="transactionId" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none" placeholder="Enter the 12-digit transaction ID">
+            </div>
+            <div class="md:col-span-2">
+                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Payment Screenshot / Receipt</label>
+                <input type="file" name="feeReceipt" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 transition-all" accept="image/*,.pdf">
+            </div>
+        </div>
+    </div>
+</div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 pt-8 border-t border-gray-100">
                     <div>
