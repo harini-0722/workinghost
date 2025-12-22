@@ -3,161 +3,173 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Profile | Modern View</title>
+    <title>Student Profile | IIT Hostel Portal</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script defer src="https://unpkg.com/heroicons@2.1.1/umd/solid.js"></script>
     <script defer src="https://unpkg.com/heroicons@2.1.1/umd/outline.js"></script>
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
-        /* Smooth fade in for content */
-        .fade-in { animation: fadeIn 0.5s ease-in; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #F8FAFC; }
+        .glass-header { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); border-bottom: 1px solid #e2e8f0; }
+        .profile-gradient { background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%); }
     </style>
 </head>
-<body class="text-slate-800">
+<body class="text-slate-800 min-h-screen flex flex-col">
 
-    <nav class="bg-white border-b border-slate-200 sticky top-0 z-30">
+    <nav class="glass-header sticky top-0 z-40">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16 items-center">
-                <div class="flex items-center gap-2">
-                    <div class="bg-blue-600 text-white p-1.5 rounded-lg">
+                <div class="flex items-center gap-3">
+                    <div class="bg-blue-600 text-white p-2 rounded-xl shadow-lg shadow-blue-200">
                         <hero-icon-solid name="academic-cap" class="h-6 w-6"></hero-icon-solid>
                     </div>
-                    <span class="font-bold text-lg tracking-tight text-slate-900">HOSTEL ADMIN</span>
+                    <div>
+                        <h1 class="text-lg font-bold text-slate-900 tracking-tight leading-none">IIT HOSTEL</h1>
+                        <p class="text-[10px] font-semibold text-slate-500 uppercase tracking-widest">Portal</p>
+                    </div>
                 </div>
-                <div class="flex items-center gap-3">
-                    <span class="text-xs font-semibold text-slate-500 bg-slate-100 px-3 py-1 rounded-full border border-slate-200">Admin View</span>
-                    <div class="h-8 w-8 rounded-full bg-slate-900 flex items-center justify-center text-white text-sm font-bold">A</div>
+
+                <div class="flex items-center gap-4">
+                    <button onclick="window.history.back()" class="text-sm font-semibold text-slate-500 hover:text-blue-600 transition-colors flex items-center gap-2">
+                        <hero-icon-solid name="arrow-left" class="h-4 w-4"></hero-icon-solid>
+                        Back
+                    </button>
+                    <div class="h-6 w-px bg-slate-200"></div>
+                    <button class="p-2 text-slate-400 hover:text-blue-600 transition-colors">
+                        <hero-icon-outline name="bell" class="h-6 w-6"></hero-icon-outline>
+                    </button>
                 </div>
             </div>
         </div>
     </nav>
 
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        
-        <div class="mb-8">
-            <a href="admin.html" class="inline-flex items-center text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors">
-                <hero-icon-solid name="arrow-left" class="h-4 w-4 mr-2"></hero-icon-solid>
-                Back to Dashboard
-            </a>
-        </div>
+    <main class="flex-grow py-8 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            
             <div class="lg:col-span-4 space-y-6">
                 
-                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 flex flex-col items-center text-center fade-in relative overflow-hidden">
-                    <div class="absolute top-0 left-0 w-full h-24 bg-gradient-to-r from-blue-500 to-indigo-600"></div>
+                <div class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden relative">
+                    <div class="h-32 profile-gradient w-full"></div>
                     
-                    <div class="relative mt-4 mb-4">
-                        <img id="student-profile-pic" src="./default-avatar.png" alt="Profile" 
-                             class="h-48 w-48 rounded-full object-cover border-4 border-white shadow-lg bg-white relative z-10">
-                        <span id="student-initials" 
-                              class="hidden h-48 w-48 rounded-full bg-slate-800 text-white text-5xl font-bold items-center justify-center border-4 border-white shadow-lg relative z-10">
-                            PS
-                        </span>
-                    </div>
+                    <div class="px-8 pb-8 flex flex-col items-center text-center -mt-16">
+                        <div class="relative group">
+                            <img id="student-profile-pic" src="./default-avatar.png" alt="Profile" 
+                                 class="h-40 w-40 rounded-3xl object-cover border-[6px] border-white shadow-xl bg-white">
+                            <span id="student-initials" 
+                                  class="hidden h-40 w-40 rounded-3xl bg-slate-800 text-white text-5xl font-bold items-center justify-center border-[6px] border-white shadow-xl">
+                                PS
+                            </span>
+                            <div class="absolute bottom-2 right-2 h-5 w-5 bg-green-500 border-2 border-white rounded-full"></div>
+                        </div>
 
-                    <h1 class="text-2xl font-bold text-slate-900 mb-1" id="student-name">Loading...</h1>
-                    <p class="text-lg font-medium text-blue-600 mb-4" id="student-roll-number">...</p>
+                        <div class="mt-4">
+                            <h2 class="text-2xl font-bold text-slate-900" id="student-name">Loading...</h2>
+                            <p class="text-lg font-medium text-blue-600 mt-1" id="student-roll-number">...</p>
+                        </div>
 
-                    <div class="flex flex-wrap justify-center gap-2 mb-6">
-                        <span id="student-year" class="px-3 py-1 bg-slate-100 text-slate-600 text-xs font-bold uppercase tracking-wide rounded-full border border-slate-200"></span>
-                        <span id="student-course" class="px-3 py-1 bg-blue-50 text-blue-700 text-xs font-bold uppercase tracking-wide rounded-full border border-blue-100"></span>
-                    </div>
+                        <div class="flex flex-wrap justify-center gap-2 mt-4">
+                            <span id="student-course" class="px-3 py-1 bg-slate-100 text-slate-600 text-xs font-bold uppercase rounded-lg border border-slate-200">...</span>
+                            <span id="student-year" class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold uppercase rounded-lg border border-blue-100">...</span>
+                        </div>
 
-                    <div class="w-full pt-6 border-t border-slate-100 flex items-center justify-center text-slate-500 gap-2">
-                        <hero-icon-solid name="map-pin" class="h-4 w-4"></hero-icon-solid>
-                        <span class="text-sm font-medium" id="student-location">Loading...</span>
+                        <div class="mt-6 w-full pt-6 border-t border-slate-100">
+                            <div class="flex items-center justify-center gap-2 text-slate-500">
+                                <hero-icon-solid name="map-pin" class="h-5 w-5 text-red-500"></hero-icon-solid>
+                                <span class="font-semibold text-sm" id="student-location">Loading Room...</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 fade-in">
-                    <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4">Fee Overview</h3>
+                <div class="bg-white rounded-3xl shadow-sm border border-slate-200 p-6">
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">Financial Status</h3>
+                    
                     <div class="flex items-center justify-between mb-4">
-                        <span class="text-sm text-slate-600">Current Status</span>
-                        <span id="fee-status" class="text-sm font-bold px-3 py-1 rounded-full">...</span>
+                        <div class="flex items-center gap-3">
+                            <div class="p-2 bg-slate-100 rounded-lg text-slate-500">
+                                <hero-icon-solid name="banknotes" class="h-6 w-6"></hero-icon-solid>
+                            </div>
+                            <div>
+                                <p class="text-xs text-slate-500 font-bold">Fee Status</p>
+                                <p class="text-sm font-bold text-slate-900" id="fee-status">...</p>
+                            </div>
+                        </div>
                     </div>
-                    <div class="flex items-center justify-between">
-                        <span class="text-sm text-slate-600">Method</span>
-                        <span id="payment-method" class="text-sm font-semibold text-slate-900">...</span>
-                    </div>
-                    <div class="mt-4 pt-4 border-t border-slate-100 text-center">
-                         <p class="text-xs text-slate-400">Next Due Date</p>
-                         <p class="text-sm font-bold text-slate-800">2026-05-01</p>
+
+                    <div class="flex items-center justify-between pt-4 border-t border-slate-100">
+                        <div>
+                            <p class="text-xs text-slate-500 font-bold">Method</p>
+                            <p class="text-sm font-semibold text-slate-900" id="payment-method">...</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-xs text-slate-500 font-bold">Next Due</p>
+                            <p class="text-sm font-semibold text-slate-900">May 1, 2026</p>
+                        </div>
                     </div>
                 </div>
 
             </div>
 
-            <div class="lg:col-span-8 space-y-6">
+            <div class="lg:col-span-8 space-y-8">
 
-                <section class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden fade-in">
-                    <div class="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex items-center gap-2">
+                <section class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="px-8 py-5 border-b border-slate-100 bg-slate-50/50 flex items-center gap-3">
                         <hero-icon-solid name="identification" class="h-5 w-5 text-blue-500"></hero-icon-solid>
-                        <h2 class="font-bold text-slate-800">Contact Details</h2>
+                        <h3 class="font-bold text-slate-800">Contact Information</h3>
                     </div>
-                    <div class="p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div class="flex items-start gap-3">
-                            <div class="p-2 bg-blue-50 text-blue-600 rounded-lg"><hero-icon-solid name="envelope" class="h-5 w-5"></hero-icon-solid></div>
-                            <div>
-                                <p class="text-xs text-slate-400 font-bold uppercase">Email</p>
-                                <p class="text-sm font-medium text-slate-900 break-all" id="student-email">...</p>
-                            </div>
+                    <div class="p-8 grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <p class="text-xs font-bold text-slate-400 uppercase mb-1">Email Address</p>
+                            <p class="text-base font-semibold text-slate-900 break-words" id="student-email">...</p>
                         </div>
-                        <div class="flex items-start gap-3">
-                            <div class="p-2 bg-emerald-50 text-emerald-600 rounded-lg"><hero-icon-solid name="phone" class="h-5 w-5"></hero-icon-solid></div>
-                            <div>
-                                <p class="text-xs text-slate-400 font-bold uppercase">Phone</p>
-                                <p class="text-sm font-medium text-slate-900" id="student-phone">...</p>
-                            </div>
+                        <div>
+                            <p class="text-xs font-bold text-slate-400 uppercase mb-1">Phone Number</p>
+                            <p class="text-base font-semibold text-slate-900" id="student-phone">...</p>
                         </div>
-                        <div class="flex items-start gap-3">
-                            <div class="p-2 bg-purple-50 text-purple-600 rounded-lg"><hero-icon-solid name="calendar-days" class="h-5 w-5"></hero-icon-solid></div>
-                            <div>
-                                <p class="text-xs text-slate-400 font-bold uppercase">Joined</p>
-                                <p class="text-sm font-medium text-slate-900" id="student-join-date">...</p>
-                            </div>
+                        <div>
+                            <p class="text-xs font-bold text-slate-400 uppercase mb-1">Date Joined</p>
+                            <p class="text-base font-semibold text-slate-900" id="student-join-date">...</p>
                         </div>
                     </div>
                 </section>
 
-                <section class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden fade-in">
-                    <div class="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex items-center gap-2">
+                <section class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="px-8 py-5 border-b border-slate-100 bg-slate-50/50 flex items-center gap-3">
                         <hero-icon-solid name="archive-box" class="h-5 w-5 text-orange-500"></hero-icon-solid>
-                        <h2 class="font-bold text-slate-800">Assigned Assets</h2>
+                        <h3 class="font-bold text-slate-800">Assigned Room Assets</h3>
                     </div>
-                    <div id="assigned-assets-list" class="p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                        <p class="text-slate-400 italic text-sm">Loading assets...</p>
+                    <div id="assigned-assets-list" class="p-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <p class="text-slate-400 italic">Loading inventory...</p>
                     </div>
                 </section>
 
-                <section class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden fade-in">
-                    <div class="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex items-center gap-2">
-                        <hero-icon-solid name="clock" class="h-5 w-5 text-indigo-500"></hero-icon-solid>
-                        <h2 class="font-bold text-slate-800">Attendance Log</h2>
+                <section class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="px-8 py-5 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <hero-icon-solid name="clock" class="h-5 w-5 text-emerald-500"></hero-icon-solid>
+                            <h3 class="font-bold text-slate-800">Attendance Log</h3>
+                        </div>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse">
-                            <thead class="bg-slate-50 text-slate-500 text-xs uppercase font-semibold">
+                            <thead class="bg-slate-50 text-xs uppercase text-slate-500 font-bold">
                                 <tr>
-                                    <th class="px-6 py-3">Date</th>
-                                    <th class="px-6 py-3">Check In</th>
-                                    <th class="px-6 py-3">Check Out</th>
-                                    <th class="px-6 py-3">Status</th>
+                                    <th class="px-8 py-4">Date</th>
+                                    <th class="px-8 py-4">Check In</th>
+                                    <th class="px-8 py-4">Check Out</th>
+                                    <th class="px-8 py-4 text-right">Status</th>
                                 </tr>
                             </thead>
-                            <tbody id="attendance-log-table" class="text-sm divide-y divide-slate-100">
+                            <tbody id="attendance-log-table" class="divide-y divide-slate-100 text-sm">
                                 </tbody>
                         </table>
                     </div>
                 </section>
 
-                <section class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden fade-in">
-                    <div class="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex items-center gap-2">
+                <section class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="px-8 py-5 border-b border-slate-100 bg-slate-50/50 flex items-center gap-3">
                         <hero-icon-solid name="clipboard-document-list" class="h-5 w-5 text-red-500"></hero-icon-solid>
-                        <h2 class="font-bold text-slate-800">Recent Complaints</h2>
+                        <h3 class="font-bold text-slate-800">Complaints & Issues</h3>
                     </div>
                     <div id="complaints-list" class="divide-y divide-slate-100">
                         </div>
@@ -167,9 +179,9 @@
         </div>
     </main>
 
-    <footer class="mt-12 py-8 border-t border-slate-200 bg-white text-center">
-        <p class="text-sm text-slate-400">
-            &copy; 2025 Indian Institute of Technology. All rights reserved.
+    <footer class="mt-auto py-8 text-center border-t border-slate-200 bg-white">
+        <p class="text-sm font-medium text-slate-400">
+            &copy; 2025 Indian Institute of Technology. Secure Portal.
         </p>
     </footer>
 
@@ -179,18 +191,18 @@
             const studentId = urlParams.get('id');
 
             if (!studentId) {
-                alert('No student selected.');
-                window.location.href = 'admin.html';
+                // If viewing without an ID (e.g. direct file open), warn user.
+                alert('No student ID found. Please access this via the dashboard.');
+                // In a real app, you might redirect to login here.
                 return;
             }
 
-            // --- Helper: Format Date ---
+            // --- Helpers ---
             function formatDate(dateString) {
                 if (!dateString) return 'N/A';
                 return new Date(dateString).toLocaleDateString('en-CA');
             }
             
-            // --- Helper: Asset Emoji ---
             function getAssetEmoji(name) {
                 if (!name) return '📝';
                 const lowerName = name.toLowerCase();
@@ -201,7 +213,7 @@
                 if (lowerName.includes('cupboard')) return '🚪';
                 if (lowerName.includes('fan')) return '💨';
                 if (lowerName.includes('light')) return '💡';
-                if (lowerName.includes('system') || lowerName.includes('pc')) return '💻';
+                if (lowerName.includes('pc')) return '💻';
                 return '📦';
             }
 
@@ -209,16 +221,15 @@
             fetch(`https://workinghost.onrender.com/api/student/${studentId}`)
                 .then(res => res.json())
                 .then(data => {
-                    if (!data.success) {
-                        throw new Error(data.message);
-                    }
+                    if (!data.success) throw new Error(data.message);
                     
                     const { student, roomNumber, blockName, attendance, complaints } = data;
 
-                    // 1. Identity
+                    // 1. Identity Card
                     document.getElementById('student-name').textContent = student.name;
                     document.getElementById('student-roll-number').textContent = student.rollNumber || 'N/A';
                     
+                    // Profile Picture
                     const profilePicEl = document.getElementById('student-profile-pic');
                     const initialsEl = document.getElementById('student-initials');
                     
@@ -238,36 +249,36 @@
                     document.getElementById('student-course').textContent = `${student.course || ''} ${student.department ? '• ' + student.department : ''}`;
                     document.getElementById('student-location').textContent = `${blockName} - Room ${roomNumber}`;
 
-                    // 2. Contact
-                    document.getElementById('student-email').textContent = student.email || 'N/A';
-                    document.getElementById('student-phone').textContent = student.phone || 'N/A';
-                    document.getElementById('student-join-date').textContent = formatDate(student.joiningDate);
-
-                    // 3. Fees
+                    // 2. Financial Status
                     const feeStatusEl = document.getElementById('fee-status');
                     document.getElementById('payment-method').textContent = student.paymentMethod || 'Not Paid';
                     
-                    feeStatusEl.textContent = student.feeStatus || 'Pending';
                     if (student.feeStatus === 'Paid') {
-                        feeStatusEl.className = 'text-xs font-bold px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 border border-emerald-200 uppercase tracking-wide';
+                        feeStatusEl.textContent = 'PAID';
+                        feeStatusEl.className = 'text-sm font-bold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-100';
                     } else {
-                        feeStatusEl.textContent = 'Due';
-                        feeStatusEl.className = 'text-xs font-bold px-3 py-1 rounded-full bg-red-100 text-red-700 border border-red-200 uppercase tracking-wide';
+                        feeStatusEl.textContent = 'DUE';
+                        feeStatusEl.className = 'text-sm font-bold text-red-600 bg-red-50 px-3 py-1 rounded-full border border-red-100';
                     }
+
+                    // 3. Contact Info
+                    document.getElementById('student-email').textContent = student.email || 'N/A';
+                    document.getElementById('student-phone').textContent = student.phone || 'N/A';
+                    document.getElementById('student-join-date').textContent = formatDate(student.joiningDate);
                     
                     // 4. Assets
                     const assignedAssetsList = document.getElementById('assigned-assets-list');
                     if (!student.assets || student.assets.length === 0) {
-                        assignedAssetsList.innerHTML = '<p class="text-slate-400 italic col-span-full">No assets assigned.</p>';
+                        assignedAssetsList.innerHTML = '<p class="text-slate-400 italic col-span-full text-center">No assets currently assigned.</p>';
                     } else {
                         assignedAssetsList.innerHTML = '';
                         student.assets.forEach(asset => {
                             assignedAssetsList.innerHTML += `
-                            <div class="flex items-center gap-4 bg-slate-50 p-4 rounded-xl border border-slate-100 hover:border-blue-200 transition-colors">
+                            <div class="flex items-center gap-4 bg-slate-50 p-4 rounded-xl border border-slate-100">
                                 <span class="text-2xl">${getAssetEmoji(asset.name)}</span>
                                 <div>
                                     <p class="text-sm font-bold text-slate-800">${asset.name}</p>
-                                    <p class="text-xs text-slate-500 font-medium">Qty: ${asset.quantity}</p>
+                                    <p class="text-xs text-slate-500 font-medium">Quantity: ${asset.quantity}</p>
                                 </div>
                             </div>`;
                         });
@@ -276,18 +287,18 @@
                     // 5. Attendance
                     const attendanceTable = document.getElementById('attendance-log-table');
                     if (!attendance || attendance.length === 0) {
-                        attendanceTable.innerHTML = '<tr><td colspan="4" class="p-6 text-center text-slate-400 italic">No attendance data found.</td></tr>';
+                        attendanceTable.innerHTML = '<tr><td colspan="4" class="p-8 text-center text-slate-400 italic">No attendance records found.</td></tr>';
                     } else {
                         attendanceTable.innerHTML = '';
                         attendance.forEach(log => {
                             const isPresent = log.status === 'Present';
                             attendanceTable.innerHTML += `
                                 <tr class="hover:bg-slate-50 transition-colors">
-                                    <td class="px-6 py-4 font-medium text-slate-700">${formatDate(log.date)}</td>
-                                    <td class="px-6 py-4 text-slate-500">${log.checkIn || '-'}</td>
-                                    <td class="px-6 py-4 text-slate-500">${log.checkOut || '-'}</td>
-                                    <td class="px-6 py-4">
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold ${isPresent ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800'}">
+                                    <td class="px-8 py-4 font-medium text-slate-700">${formatDate(log.date)}</td>
+                                    <td class="px-8 py-4 text-slate-500">${log.checkIn || '-'}</td>
+                                    <td class="px-8 py-4 text-slate-500">${log.checkOut || '-'}</td>
+                                    <td class="px-8 py-4 text-right">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded text-xs font-bold uppercase tracking-wider ${isPresent ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800'}">
                                             ${log.status}
                                         </span>
                                     </td>
@@ -298,21 +309,18 @@
                     // 6. Complaints
                     const complaintsList = document.getElementById('complaints-list');
                     if (!complaints || complaints.length === 0) {
-                        complaintsList.innerHTML = '<p class="p-6 text-slate-400 italic">No complaints filed.</p>';
+                        complaintsList.innerHTML = '<p class="p-8 text-center text-slate-400 italic">No history of complaints.</p>';
                     } else {
                         complaintsList.innerHTML = '';
                         complaints.forEach(complaint => {
                             const isResolved = complaint.status === 'Resolved';
                             complaintsList.innerHTML += `
-                                <div class="flex justify-between items-center p-5 hover:bg-slate-50 transition-colors">
+                                <div class="flex justify-between items-center p-6 hover:bg-slate-50 transition-colors">
                                     <div>
-                                        <p class="font-semibold text-slate-800 text-sm mb-1">${complaint.title}</p>
-                                        <p class="text-xs text-slate-500 flex items-center gap-1">
-                                            <hero-icon-solid name="calendar" class="h-3 w-3"></hero-icon-solid> 
-                                            ${formatDate(complaint.date)}
-                                        </p>
+                                        <p class="font-bold text-slate-800 text-sm mb-1">${complaint.title}</p>
+                                        <p class="text-xs text-slate-400">Filed on ${formatDate(complaint.date)}</p>
                                     </div>
-                                    <span class="text-[10px] uppercase font-bold px-2 py-1 rounded border ${isResolved ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 'bg-amber-50 text-amber-700 border-amber-100'}">
+                                    <span class="text-[10px] uppercase font-bold px-3 py-1 rounded-full border ${isResolved ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 'bg-amber-50 text-amber-700 border-amber-100'}">
                                         ${complaint.status}
                                     </span>
                                 </div>`;
@@ -321,11 +329,10 @@
 
                 })
                 .catch(error => {
-                    console.error('Failed to load student profile:', error);
-                    // alert(`Error: ${error.message}`);
+                    console.error('Error fetching data:', error);
+                    // alert('Error loading profile data.');
                 });
         });
     </script>
-
 </body>
 </html>
