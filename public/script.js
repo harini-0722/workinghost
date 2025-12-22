@@ -1723,31 +1723,24 @@ function renderLeaveView() {
     
     // --- 5. MODAL & VIEW-SWITCHING LOGIC ---
     function showModal(modalId) {
-    const modal = document.getElementById(modalId);
-    if (!modal) return;
-    
-    // Add this line to prevent background scrolling
-    document.body.classList.add('modal-open');
+        const modal = document.getElementById(modalId);
+        if (!modal) return;
+        modal.classList.remove('hidden', 'active');
+        void modal.offsetWidth;
+        modal.classList.remove('hidden');
+        requestAnimationFrame(() => {
+            modal.classList.add('active');
+        });
+    }
 
-    modal.classList.remove('hidden');
-    // Force reflow for transition
-    void modal.offsetWidth; 
-    modal.classList.add('active');
-}
-
-function hideModal(modalId) {
-    const modal = document.getElementById(modalId);
-    if (!modal) return;
-    
-    modal.classList.remove('active');
-    
-    // Remove background scroll lock
-    document.body.classList.remove('modal-open');
-
-    setTimeout(() => {
-        modal.classList.add('hidden');
-    }, 400); // Matches the 0.4s CSS transition
-}
+    function hideModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (!modal) return;
+        modal.classList.remove('active');
+        setTimeout(() => {
+            modal.classList.add('hidden');
+        }, 300); 
+    }
     
     function hideAllViews() {
         dashboardView.classList.add('hidden');
