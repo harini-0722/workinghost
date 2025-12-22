@@ -1725,6 +1725,10 @@ function renderLeaveView() {
     function showModal(modalId) {
         const modal = document.getElementById(modalId);
         if (!modal) return;
+       // Check if it's the student modal to apply full-page styling
+    if (modalId === 'add-student-modal') {
+        modal.classList.add('modal-full-screen');
+    } 
         modal.classList.remove('hidden', 'active');
         void modal.offsetWidth;
         modal.classList.remove('hidden');
