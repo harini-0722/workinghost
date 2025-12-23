@@ -1834,6 +1834,53 @@ document.getElementById('download-fee-report-btn').addEventListener('click', dow
     setTimeout(() => {
         modal.classList.add('active');
     }, 10);
+    // --- STUDENT REMOVAL LOGIC ---
+modalOccupantContainer.addEventListener('click', async (e) => {
+    const removeBtn = e.target.closest('.remove-student-btn');
+    if (removeBtn) {
+        const studentId = removeBtn.dataset.studentId;
+        
+        // Find student name for confirmation
+        const student = findStudentById(studentId);
+        const studentName = student ? student.name : "this student";
+
+        if (confirm(`Are you sure you want to remove ${studentName} from this room? Any assets assigned to them will be returned to inventory.`)) {
+            try {
+                const res = await fetch(`/api/students/${studentId}`, {
+                    method: 'DELETE'
+                });
+
+                const data = await res.json();
+
+                if (data.success) {
+                    showSuccess(data.message);
+                    
+                    // 1. Refresh global data
+                    await loadHostelData();
+                    await loadAssetData();
+
+                    // 2. Update the modal UI without closing it
+                    const blockKey = detailView.dataset.currentHostelKey;
+                    const block = appState.blocks.find(b => b.blockKey === blockKey);
+                    const currentRoom = block.rooms.find(r => r._id === currentRoomData._id);
+                    
+                    if (currentRoom) {
+                        renderRoomDetailsModal(currentRoom, block);
+                    } else {
+                        hideModal('room-details-modal');
+                    }
+                    
+                    // 3. Refresh the underlying detail view
+                    renderDetailView(blockKey);
+                } else {
+                    throw new Error(data.message);
+                }
+            } catch (error) {
+                showError("Failed to remove student: " + error.message);
+            }
+        }
+    }
+});
 }
 
 function hideModal(modalId) {
