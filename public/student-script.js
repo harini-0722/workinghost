@@ -573,44 +573,32 @@ function hideMobileMenu() {
     document.getElementById('mobile-menu').classList.add('hidden');
 }
 
-/**
- * Switches between Report sub-tabs (Complaints, Feedback, Lost & Found)
- * and triggers database refreshes for each section.
- */
 function showReportTab(tabName) {
-    // 1. Hide all tab content sections
-    const allContents = document.querySelectorAll('.report-tab-content');
-    allContents.forEach(content => {
+    // 1. Hide all tab contents
+    document.querySelectorAll('.report-tab-content').forEach(content => {
         content.classList.add('hidden');
     });
 
-    // 2. Fetch fresh data from DB based on the selected tab
-    // This ensures the tables stay updated without a full page refresh
+    // 2. Refresh data based on the selected tab
     if (tabName === 'feedback') {
-        populateFeedbackHistory(); // Calls GET /api/feedback/student/:id
+        populateFeedbackHistory(); 
     } else if (tabName === 'lost-found') {
-        populateLostAndFound();   // Calls GET /api/lost-found/found-items
+        populateLostAndFound(); // This triggers the database fetch
     } else if (tabName === 'complaints') {
-        populateStudentComplaintHistory(); // Uses g_complaints or fetches fresh
+        populateStudentComplaintHistory();
     }
 
-    // 3. Reset all tabs styling to inactive state
-    const allTabs = document.querySelectorAll('.report-tab');
-    allTabs.forEach(tab => {
-        tab.classList.remove('active', 'border-primary-blue', 'text-primary-blue');
-        tab.classList.add('border-transparent', 'text-secondary-gray');
-        // If your CSS uses font-bold for active tabs, remove it here too
-        tab.classList.remove('font-bold');
-        tab.classList.add('font-medium');
+    // 3. Reset all tabs styling
+    document.querySelectorAll('.report-tab').forEach(tab => {
+        tab.classList.remove('active', 'border-primary-blue', 'text-primary-blue', 'font-bold');
+        tab.classList.add('border-transparent', 'text-secondary-gray', 'font-medium');
     });
     
-    // 4. Show the selected content div
+    // 4. Show the selected content
     const content = document.getElementById(`report-tab-content-${tabName}`);
-    if (content) {
-        content.classList.remove('hidden');
-    }
+    if (content) content.classList.remove('hidden');
     
-    // 5. Apply active styling to the clicked tab
+    // 5. Activate selected tab styling
     const activeTab = document.getElementById(`tab-${tabName}`);
     if (activeTab) {
         activeTab.classList.remove('border-transparent', 'text-secondary-gray', 'font-medium');
@@ -1348,6 +1336,7 @@ function populateVisitorRequestHistory() {
 }
 
 // Function to submit a LOST item report to the DB
+// Function to submit a LOST item report to the DB
 async function submitLostReport() {
     const itemName = document.getElementById('lost-item-name').value;
     const lastSeenLocation = document.getElementById('lost-item-location').value;
@@ -1368,8 +1357,9 @@ async function submitLostReport() {
         const data = await response.json();
         if (data.success) {
             alert('Lost report filed successfully! Admin has been notified.');
-            document.getElementById('lost-found-form').reset();
-            // Refresh the table to see if it was matched (optional)
+            document.getElementById('lost-item-name').value = '';
+            document.getElementById('lost-item-location').value = '';
+            // Refresh the "Recently Found Items" table
             populateLostAndFound();
         }
     } catch (err) {
@@ -1383,14 +1373,15 @@ async function populateLostAndFound() {
     const tableBody = document.getElementById('lost-found-body');
     if (!tableBody) return;
 
-    // Show loading state
+    // Show loading indicator
     tableBody.innerHTML = `<tr><td colspan="4" class="py-4 text-center text-xs text-gray-400">Loading found items...</td></tr>`;
     
     try {
+        // Fetch from the route defined in lostFound.js: router.get('/found-items', ...)
         const response = await fetch('/api/lost-found/found-items');
         const data = await response.json();
 
-        if (data.success && data.foundItems.length > 0) {
+        if (data.success && data.foundItems && data.foundItems.length > 0) {
             tableBody.innerHTML = ''; // Clear loader
             data.foundItems.forEach(item => {
                 const statusClass = item.status === 'Pending' 
@@ -1417,7 +1408,7 @@ async function populateLostAndFound() {
         }
     } catch (error) {
         console.error('Fetch Lost & Found Error:', error);
-        tableBody.innerHTML = `<tr><td colspan="4" class="py-4 text-center text-red-500 text-xs">Error loading items from server.</td></tr>`;
+        tableBody.innerHTML = `<tr><td colspan="4" class="py-4 text-center text-red-500 text-xs">Error loading data.</td></tr>`;
     }
 }
 
