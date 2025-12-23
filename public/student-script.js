@@ -11,7 +11,7 @@ let g_complaints = [];
 let g_visitorRequests = []; 
 let g_clubActivities = []; 
 let g_leaveHistory = []; // ADDED: Store leave history
-let g_lostFoundItems = [];
+
 let g_attendanceStatus = { status: 'Checked Out', lastActionTime: null };
 
 // --- Mock data (Only for Lost & Found and Announcements now) ---
@@ -290,183 +290,6 @@ async function loadExternalFees() {
             </div>`;
     }
 }
-// Function to populate the Fee Dashboard after fees.html is loaded
-function initializeFeeLogic() {
-    if (!g_student) return;
-
-    const balance = (g_student.totalFee || 0) - (g_student.paidAmount || 0);
-    
-    // 1. Update Header Info
-    document.getElementById('student-id-display').textContent = g_student.rollNumber || 'N/A';
-    document.getElementById('net-payable-amount').textContent = `₹${balance.toLocaleString('en-IN')}`;
-    
-    // 2. Update Fee Breakdown
-    document.getElementById('breakdown-total').textContent = `₹${(g_student.totalFee || 0).toLocaleString('en-IN')}`;
-    document.getElementById('breakdown-paid').textContent = `₹${(g_student.paidAmount || 0).toLocaleString('en-IN')}`;
-    document.getElementById('breakdown-balance').textContent = `₹${balance.toLocaleString('en-IN')}`;
-
-    // 3. Update Success Modal Template
-    document.getElementById('receipt-student-name').textContent = g_student.name;
-    document.getElementById('receipt-student-roll').textContent = g_student.rollNumber;
-    
-    // 4. Update the "Pay" button text
-    const payBtn = document.getElementById('final-pay-button');
-    if (payBtn) {
-        payBtn.textContent = balance > 0 ? `PAY ₹${balance.toLocaleString()}` : "FEES CLEARED";
-        payBtn.disabled = balance <= 0;
-        if(balance <= 0) payBtn.classList.add('opacity-50', 'cursor-not-allowed');
-    }
-}
-
-// Function to call the backend and update fee status
-async function processFeePayment() {
-    if(!document.getElementById('inner-terms-check').checked) { alert("Please agree to terms."); return; }
-    
-    const processingSection = document.getElementById('inner-processing-section');
-    processingSection.classList.remove('hidden');
-
-    const paymentAmount = (g_student.totalFee || 0) - (g_student.paidAmount || 0);
-    const transactionId = "TXN" + Math.floor(Math.random() * 1000000000);
-
-    try {
-        const response = await fetch(`/api/student/${g_student._id}/pay-fees`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                amount: paymentAmount,
-                transactionId: transactionId,
-                method: document.getElementById('tab-upi-inner').classList.contains('active') ? 'UPI' : 'Card'
-            })
-        });
-
-        const data = await response.json();
-        if (data.success) {
-            // Update local global variable
-            g_student.paidAmount = g_student.totalFee;
-            g_student.feeStatus = 'Paid';
-            
-            processingSection.classList.add('hidden');
-            document.getElementById('inner-success-section').classList.remove('hidden');
-            document.getElementById('success-ref-id').textContent = `#${transactionId}`;
-        } else {
-            throw new Error(data.message);
-        }
-    } catch (error) {
-        alert("Payment Failed: " + error.message);
-        processingSection.classList.add('hidden');
-    }
-}
-// --- Globals for Fees (Attached to window for dynamic HTML scope) ---
-
-window.showPaymentPage = function() {
-    if (!g_student) return;
-    const balance = (g_student.totalFee || 0) - (g_student.paidAmount || 0);
-    document.getElementById('modal-pay-amount').textContent = `₹${balance.toLocaleString('en-IN')}`;
-    document.getElementById('payment-section-inner').classList.remove('hidden');
-};
-
-window.hidePaymentPage = function() {
-    document.getElementById('payment-section-inner').classList.add('hidden');
-};
-
-window.initializeFeeLogic = function() {
-    if (!g_student) return;
-
-    const balance = (g_student.totalFee || 0) - (g_student.paidAmount || 0);
-    
-    // Update IDs inside the injected fees.html
-    document.getElementById('student-id-display').textContent = g_student.rollNumber || 'N/A';
-    document.getElementById('net-payable-amount').textContent = `₹${balance.toLocaleString('en-IN')}`;
-    document.getElementById('breakdown-total').textContent = `₹${(g_student.totalFee || 0).toLocaleString('en-IN')}`;
-    document.getElementById('breakdown-paid').textContent = `₹${(g_student.paidAmount || 0).toLocaleString('en-IN')}`;
-    document.getElementById('breakdown-balance').textContent = `₹${balance.toLocaleString('en-IN')}`;
-
-    const payBtn = document.getElementById('final-pay-button');
-    if (balance <= 0) {
-        payBtn.textContent = "FEES ALREADY CLEARED ✅";
-        payBtn.disabled = true;
-        payBtn.classList.add('bg-emerald-500', 'cursor-not-allowed', 'opacity-70');
-    }
-
-    // Populate Transaction History Table
-    const historyTable = document.getElementById('payment-history-table');
-    if (g_student.paymentHistory && g_student.paymentHistory.length > 0) {
-        historyTable.innerHTML = g_student.paymentHistory.sort((a,b) => new Date(b.date) - new Date(a.date)).map(pay => `
-            <tr class="border-b border-slate-50 group hover:bg-slate-50 transition-colors">
-                <td class="py-4 text-slate-500">${new Date(pay.date).toLocaleDateString('en-GB')}</td>
-                <td class="py-4 font-mono text-indigo-600 font-black">${pay.transactionId || 'MANUAL'}</td>
-                <td class="py-4 text-slate-500">${pay.method || 'N/A'}</td>
-                <td class="py-4 text-slate-900 font-bold">₹${pay.amount.toLocaleString()}</td>
-                <td class="py-4 text-right"><span class="bg-emerald-50 text-emerald-700 px-2 py-1 rounded-lg text-[10px] font-black uppercase">Success</span></td>
-            </tr>
-        `).join('');
-    } else {
-        historyTable.innerHTML = '<tr><td colspan="5" class="py-10 text-center text-slate-400 italic">No previous records found.</td></tr>';
-    }
-};
-
-window.processFeePayment = async function() {
-    const payBtn = document.querySelector('#payment-section-inner button[onclick="processFeePayment()"]');
-    payBtn.disabled = true;
-    payBtn.textContent = "Processing Securely...";
-
-    const amountToPay = (g_student.totalFee || 0) - (g_student.paidAmount || 0);
-    const transactionId = "TXN" + Math.floor(100000 + Math.random() * 900000);
-    const selectedMethod = document.querySelector('input[name="pay-method"]:checked')?.value || 'UPI';
-
-    try {
-        const response = await fetch(`/api/student/${g_student._id}/pay-fees`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                amount: amountToPay,
-                transactionId: transactionId,
-                method: selectedMethod
-            })
-        });
-
-        const data = await response.json();
-        if (data.success) {
-            // Update local state
-            g_student.paidAmount = g_student.totalFee;
-            g_student.feeStatus = 'Paid';
-            
-            // Show Success Overlay
-            document.getElementById('payment-section-inner').classList.add('hidden');
-            document.getElementById('inner-success-section').classList.remove('hidden');
-            document.getElementById('success-ref-id').textContent = `#${transactionId}`;
-            
-            // Prepare Receipt Template
-            document.getElementById('receipt-student-name').textContent = g_student.name;
-            document.getElementById('receipt-student-roll').textContent = g_student.rollNumber;
-            document.getElementById('inner-current-date').textContent = new Date().toLocaleDateString();
-        } else {
-            throw new Error(data.message);
-        }
-    } catch (err) {
-        alert("Payment Error: " + err.message);
-        payBtn.disabled = false;
-        payBtn.textContent = "COMPLETE PAYMENT";
-    }
-};
-
-window.downloadInnerReceipt = function() {
-    const element = document.getElementById('inner-receipt-template');
-    element.classList.remove('hidden');
-    
-    const opt = {
-        margin: 0.5,
-        filename: `IIT_Receipt_${g_student.rollNumber}.pdf`,
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 3 },
-        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-    };
-
-    html2pdf().set(opt).from(element).save().then(() => {
-        element.classList.add('hidden');
-    });
-};
-
 async function submitLeave() {
     const start = document.getElementById('leave-start').value;
     const end = document.getElementById('leave-end').value;
@@ -1441,144 +1264,35 @@ function populateVisitorRequestHistory() {
     });
 }
 
-async function populateLostAndFound() {
+function populateLostAndFound() {
     const tableBody = document.getElementById('lost-found-body');
-    if (!tableBody) return;
-
-    tableBody.innerHTML = `
-        <tr>
-            <td colspan="4" class="py-8 text-center text-secondary-gray text-xs">
-                <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-primary-blue mx-auto mb-2"></div>
-                Searching inventory...
-            </td>
-        </tr>`;
-
-    try {
-        const response = await fetch('/api/lost-found/found-items');
-        const data = await response.json();
-
-        if (data.success) {
-            g_lostFoundItems = data.foundItems;
-            tableBody.innerHTML = '';
-
-            if (g_lostFoundItems.length === 0) {
-                tableBody.innerHTML = `<tr><td colspan="4" class="py-8 text-center text-secondary-gray text-xs">No items currently reported found.</td></tr>`;
-                return;
-            }
-
-            g_lostFoundItems.forEach(item => {
-                // Map DB status to UI styles
-                const statusStyles = {
-                    'Pending': 'text-info-yellow bg-yellow-50 border-yellow-100',
-                    'Retrieved': 'text-accent-green bg-green-50 border-green-100',
-                    'Closed': 'text-secondary-gray bg-gray-100 border-gray-200'
-                };
-                const statusClass = statusStyles[item.status] || statusStyles['Pending'];
-                
-                tableBody.innerHTML += `
-                    <tr class="hover:bg-gray-50 transition duration-150">
-                        <td class="py-2 px-4 whitespace-nowrap text-xs font-bold text-accent-dark">
-                            <i class="fa-solid fa-box-open mr-2 text-primary-blue opacity-50"></i>${item.itemName}
-                        </td>
-                        <td class="py-2 px-4 whitespace-nowrap text-xs text-secondary-gray">${formatDate(item.submissionDate)}</td>
-                        <td class="py-2 px-4 whitespace-nowrap text-xs text-secondary-gray">${item.location}</td>
-                        <td class="py-2 px-4 whitespace-nowrap">
-                            <span class="${statusClass} px-2 py-0.5 rounded text-[10px] font-bold border">
-                                ${item.status === 'Pending' ? 'Available' : item.status}
-                            </span>
-                        </td>
-                    </tr>
-                `;
-            });
-        }
-    } catch (error) {
-        console.error('Fetch Found Items Error:', error);
-        tableBody.innerHTML = `<tr><td colspan="4" class="py-8 text-center text-accent-red text-xs">Failed to load items.</td></tr>`;
+    tableBody.innerHTML = '';
+    
+    if (mockLostFound.length === 0) {
+            tableBody.innerHTML = `<tr><td colspan="4" class="py-8 text-center text-secondary-gray text-xs">No items reported found.</td></tr>`;
+            return;
     }
-}
-// --- 2. FETCH AND DISPLAY FOUND ITEMS ---
-async function populateLostAndFound() {
-    const tableBody = document.getElementById('lost-found-body');
-    if (!tableBody) return;
-
-    tableBody.innerHTML = `
-        <tr>
-            <td colspan="4" class="py-8 text-center text-secondary-gray text-xs">
-                <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-primary-blue mx-auto mb-2"></div>
-                Searching inventory...
-            </td>
-        </tr>`;
-
-    try {
-        const response = await fetch('/api/lost-found/found-items');
-        const data = await response.json();
-
-        if (data.success) {
-            g_lostFoundItems = data.foundItems;
-            tableBody.innerHTML = '';
-
-            if (g_lostFoundItems.length === 0) {
-                tableBody.innerHTML = `<tr><td colspan="4" class="py-8 text-center text-secondary-gray text-xs">No items currently reported found.</td></tr>`;
-                return;
-            }
-
-            g_lostFoundItems.forEach(item => {
-                const statusStyles = {
-                    'Pending': 'text-info-yellow bg-yellow-50 border-yellow-100',
-                    'Retrieved': 'text-accent-green bg-green-50 border-green-100',
-                    'Closed': 'text-secondary-gray bg-gray-100 border-gray-200'
-                };
-                const statusClass = statusStyles[item.status] || statusStyles['Pending'];
-                
-                tableBody.innerHTML += `
-                    <tr class="hover:bg-gray-50 transition duration-150">
-                        <td class="py-2 px-4 whitespace-nowrap text-xs font-bold text-accent-dark">
-                            <i class="fa-solid fa-box-open mr-2 text-primary-blue opacity-50"></i>${item.itemName}
-                        </td>
-                        <td class="py-2 px-4 whitespace-nowrap text-xs text-secondary-gray">${new Date(item.submissionDate).toLocaleDateString()}</td>
-                        <td class="py-2 px-4 whitespace-nowrap text-xs text-secondary-gray">${item.location}</td>
-                        <td class="py-2 px-4 whitespace-nowrap">
-                            <span class="${statusClass} px-2 py-0.5 rounded text-[10px] font-bold border">
-                                ${item.status === 'Pending' ? 'Available' : item.status}
-                            </span>
-                        </td>
-                    </tr>
-                `;
-            });
-        }
-    } catch (error) {
-        console.error('Fetch Found Items Error:', error);
-        tableBody.innerHTML = `<tr><td colspan="4" class="py-8 text-center text-accent-red text-xs">Failed to load items.</td></tr>`;
-    }
+    
+    mockLostFound.forEach(item => {
+        const statusClass = item.status === 'Available' ? 'text-accent-green bg-green-50 border-green-100' : 'text-secondary-gray bg-gray-50 border-gray-200';
+        
+        tableBody.innerHTML += `
+            <tr class="hover:bg-gray-50 transition duration-150">
+                <td class="py-2 px-4 whitespace-nowrap text-xs font-bold text-accent-dark">
+                    <i class="fa-solid fa-box-open mr-2 text-primary-blue opacity-50"></i>${item.item}
+                </td>
+                <td class="py-2 px-4 whitespace-nowrap text-xs text-secondary-gray">${item.dateFound}</td>
+                <td class="py-2 px-4 whitespace-nowrap text-xs text-secondary-gray">${item.location}</td>
+                <td class="py-2 px-4 whitespace-nowrap">
+                    <span class="${statusClass} px-2 py-0.5 rounded text-[10px] font-bold border">
+                        ${item.status}
+                    </span>
+                </td>
+            </tr>
+        `;
+    });
 }
 
-async function submitLostItem() {
-    const itemName = document.getElementById('lost-item-name').value;
-    const location = document.getElementById('lost-item-location').value;
-    const studentId = localStorage.getItem('currentStudentId');
-
-    if (!itemName || !location) {
-        alert('Please provide item name and last seen location.');
-        return;
-    }
-
-    try {
-        const response = await fetch('/api/lost-found/report-lost', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ studentId, itemName, lastSeenLocation: location })
-        });
-
-        const data = await response.json();
-        if (data.success) {
-            alert(data.message);
-            document.getElementById('lost-item-name').value = '';
-            document.getElementById('lost-item-location').value = '';
-        }
-    } catch (error) {
-        alert('Error filing report: ' + error.message);
-    }
-}
 // --- Announcement Modal Functions ---
 function openAnnouncementsModal() {
     document.getElementById('announcement-modal').classList.remove('hidden');
