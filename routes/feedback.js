@@ -1,28 +1,32 @@
 const express = require('express');
 const router = express.Router();
-const Feedback = require('../models/Feedback');
+const Feedback = require('../models/Feedback'); // Ensure you have this model
 
 // POST: Submit new feedback
 router.post('/', async (req, res) => {
     try {
-        const { studentId, category, description, isAnonymous } = req.body;
-
+        const { studentId, category, description, anonymous } = req.body;
         const newFeedback = new Feedback({
-            studentId,
+            student: studentId,
             category,
             description,
-            isAnonymous
+            anonymous: anonymous || false
         });
-
         await newFeedback.save();
-
-        res.status(201).json({ 
-            success: true, 
-            message: 'Feedback submitted successfully! We appreciate your input.' 
-        });
+        res.status(201).json({ success: true, message: 'Feedback submitted successfully!' });
     } catch (error) {
-        console.error('Feedback Error:', error);
-        res.status(500).json({ success: false, message: 'Server error saving feedback.' });
+        res.status(500).json({ success: false, message: 'Error saving feedback.' });
+    }
+});
+
+// GET: Fetch feedback for a specific student
+router.get('/student/:studentId', async (req, res) => {
+    try {
+        const feedback = await Feedback.find({ student: req.params.studentId })
+            .sort({ createdAt: -1 });
+        res.json({ success: true, feedback });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Error fetching feedback.' });
     }
 });
 

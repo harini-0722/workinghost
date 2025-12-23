@@ -169,7 +169,67 @@ async function submitComplaint() {
         alert(`Failed to submit complaint: ${error.message}`);
     }
 }
+// Function to submit feedback to the database
+async function submitFeedback() {
+    const category = document.getElementById('feedback-category').value;
+    const description = document.getElementById('feedback-description').value;
+    const anonymous = document.getElementById('feedback-anonymous').checked;
+    const studentId = g_student._id;
 
+    if (!description) {
+        alert('Please enter your feedback message.');
+        return;
+    }
+
+    try {
+        const response = await fetch('/api/feedback', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ studentId, category, description, anonymous })
+        });
+
+        const data = await response.json();
+        if (data.success) {
+            alert('Feedback submitted successfully!');
+            document.getElementById('feedback-form').reset();
+            populateFeedbackHistory(); // Refresh the table automatically
+        }
+    } catch (error) {
+        console.error('Feedback Submission Error:', error);
+        alert('Failed to submit feedback.');
+    }
+}
+
+// Function to fetch and display feedback history in the table
+async function populateFeedbackHistory() {
+    const tableBody = document.getElementById('student-feedback-history');
+    if (!tableBody || !g_student) return;
+
+    try {
+        const response = await fetch(`/api/feedback/student/${g_student._id}`);
+        const data = await response.json();
+
+        if (data.success && data.feedback.length > 0) {
+            tableBody.innerHTML = '';
+            data.feedback.forEach(f => {
+                tableBody.innerHTML += `
+                    <tr class="hover:bg-gray-50 transition duration-150">
+                        <td class="py-2 px-4 whitespace-nowrap text-xs text-accent-dark">${formatDate(f.createdAt)}</td>
+                        <td class="py-2 px-4 whitespace-nowrap text-xs font-bold text-primary-blue">${f.category}</td>
+                        <td class="py-2 px-4 text-xs text-secondary-gray italic truncate max-w-xs" title="${f.description}">
+                            "${f.description}"
+                        </td>
+                    </tr>
+                `;
+            });
+        } else {
+            tableBody.innerHTML = `<tr><td colspan="3" class="py-8 text-center text-secondary-gray text-xs">No feedback history found.</td></tr>`;
+        }
+    } catch (error) {
+        console.error('Fetch Feedback History Error:', error);
+        tableBody.innerHTML = `<tr><td colspan="3" class="py-4 text-center text-red-500 text-xs">Error loading history.</td></tr>`;
+    }
+}
 async function submitVisitorRequest() {
     const name = document.getElementById('visitor-name').value;
     const startDate = document.getElementById('visitor-start-date').value;
@@ -511,24 +571,33 @@ function hideMobileMenu() {
 }
 
 function showReportTab(tabName) {
-    // Hide all contents
+    // 1. Hide all tab contents
     document.querySelectorAll('.report-tab-content').forEach(content => {
         content.classList.add('hidden');
     });
-    
-    // Reset all tabs styling
+
+    // 2. Fetch specific data based on the selected tab
+    if (tabName === 'feedback') {
+        populateFeedbackHistory(); // Fetch and display feedback from DB
+    } else if (tabName === 'lost-found') {
+        populateLostAndFound(); // Fetch items from DB
+    } else if (tabName === 'complaints') {
+        populateStudentComplaintHistory(); // Fetch complaints from DB
+    }
+
+    // 3. Reset all tabs styling
     document.querySelectorAll('.report-tab').forEach(tab => {
         tab.classList.remove('active', 'border-primary-blue', 'text-primary-blue');
         tab.classList.add('border-transparent', 'text-secondary-gray');
     });
     
-    // Show selected content
+    // 4. Show the selected content
     const content = document.getElementById(`report-tab-content-${tabName}`);
-    if(content) content.classList.remove('hidden');
+    if (content) content.classList.remove('hidden');
     
-    // Activate selected tab styling
+    // 5. Activate selected tab styling
     const activeTab = document.getElementById(`tab-${tabName}`);
-    if(activeTab) {
+    if (activeTab) {
         activeTab.classList.remove('border-transparent', 'text-secondary-gray');
         activeTab.classList.add('active', 'border-primary-blue', 'text-primary-blue');
     }
