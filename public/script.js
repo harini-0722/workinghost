@@ -1083,163 +1083,111 @@ function renderLeaveView() {
         }
     }
 
-    // Global variable to track the chart instance to prevent "already in use" errors
+    function renderDashboard() {
+        hostelBlockContainer.innerHTML = '';
+        let grandTotalCapacity = 0;
+        let grandTotalStudents = 0;
+        let totalPendingFees = 0;
 
+        if (!appState.blocks || appState.blocks.length === 0) {
+            hostelBlockContainer.innerHTML = `<p class="text-gray-500 col-span-full">No hostel blocks found. Add one to get started!</p>`;
+        }
 
-function renderDashboard() {
-    // 1. Reset Container and Stats
-    hostelBlockContainer.innerHTML = '';
-    let grandTotalCapacity = 0;
-    let grandTotalStudents = 0;
-    let totalPendingFees = 0;
+        for (const block of appState.blocks) {
+            const theme = themes[block.blockTheme] || themes.blue;
+            const totalRooms = block.rooms ? block.rooms.length : 0;
+            let currentStudents = 0;
+            let totalCapacity = 0;
+            
+            if (block.rooms) {
+                block.rooms.forEach(room => {
+                    const studentsInRoom = room.students ? room.students.length : 0;
+                    currentStudents += studentsInRoom;
+                    totalCapacity += (room.capacity || 0);
+                    
+                    if (room.students) {
+                        room.students.forEach(student => {
+                            if (student.feeStatus === 'Pending') {
+                                totalPendingFees++;
+                            }
+                        });
+                    }
+                });
+            }
+            
+            const occupiedRooms = block.rooms ? block.rooms.filter(room => room.students && room.students.length > 0).length : 0;
+            
+            grandTotalCapacity += block.blockCapacity || totalCapacity; // Use the block's set capacity or fallback to sum
+            grandTotalStudents += currentStudents;
+            
+            // New fields for display
+            const blockMaxRooms = block.maxRooms || '∞'; // NEW: Use maxRooms
+            const blockMaxStudents = block.blockCapacity || totalCapacity; // Use blockCapacity for max students
 
-    // 2. Handle Empty State
-    if (!appState.blocks || appState.blocks.length === 0) {
-        hostelBlockContainer.innerHTML = `<p class="text-gray-500 col-span-full py-10 text-center">No hostel blocks found. Add one to get started!</p>`;
-    }
+          // Update block card HTML to display both max rooms and max students
+            // --- REPLACED BLOCK HTML START ---
+            const blockHTML = `
+                <div class="bg-white rounded-lg shadow-sm overflow-hidden border-l-4 ${theme.border} relative group transition-all duration-300 hover:shadow-md hover:-translate-y-1">
+                    
+                    <div class="absolute top-2 right-2 flex space-x-1">
+                        <button class="edit-block-btn p-1.5 text-blue-500 hover:bg-blue-50 rounded-full transition-colors" data-block-id="${block._id}" title="Edit Block">
+                            <i class="fa-solid fa-pen text-xs"></i>
+                        </button>
+                        <button class="remove-block-btn p-1.5 text-red-500 hover:bg-red-50 rounded-full transition-colors" data-block-id="${block._id}" data-block-name="${block.blockName}" title="Delete Block">
+                            <i class="fa-solid fa-trash text-xs"></i>
+                        </button>
+                    </div>
 
-    // 3. Process Each Block
-    for (const block of appState.blocks) {
-        const theme = themes[block.blockTheme] || themes.blue;
-        const totalRooms = block.rooms ? block.rooms.length : 0;
-        let currentStudents = 0;
-        let totalCapacity = 0;
-        
-        if (block.rooms) {
-            block.rooms.forEach(room => {
-                const studentsInRoom = room.students ? room.students.length : 0;
-                currentStudents += studentsInRoom;
-                totalCapacity += (room.capacity || 0);
-                
-                // Track Pending Fees for the Global Stat box
-                if (room.students) {
-                    room.students.forEach(student => {
-                        if (student.feeStatus === 'Pending') {
-                            totalPendingFees++;
-                        }
-                    });
-                }
-            });
+                    <a href="#" class="block-link block hover:bg-gray-50 p-4" data-hostel-key="${block.blockKey}">
+                        
+                        <div class="flex items-center mb-3">
+                            <div class="h-8 w-8 flex items-center justify-center ${theme.bg} rounded-full mr-3 shadow-sm">
+                                <i class="fa-solid ${theme.icon} ${theme.text} text-sm"></i>
+                            </div>
+                            <h3 class="text-base font-bold text-gray-800 leading-tight truncate pr-12">${block.blockName}</h3>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2">
+                            
+                            <div class="bg-gray-50 p-2 rounded border border-gray-100">
+                                <span class="text-gray-400 block text-[10px] uppercase font-bold tracking-wider">Rooms</span>
+                                <p class="text-sm font-bold text-gray-800">${totalRooms} <span class="text-gray-400 font-normal text-xs">/ ${blockMaxRooms}</span></p>
+                            </div>
+
+                            <div class="bg-gray-50 p-2 rounded border border-gray-100">
+                                <span class="text-gray-400 block text-[10px] uppercase font-bold tracking-wider">Occupied</span>
+                                <p class="text-sm font-bold text-gray-800">${occupiedRooms} <span class="text-gray-400 font-normal text-xs">Filled</span></p>
+                            </div>
+
+                            <div class="bg-gray-50 p-2 rounded border border-gray-100">
+                                <span class="text-gray-400 block text-[10px] uppercase font-bold tracking-wider">Students</span>
+                                <p class="text-sm font-bold text-gray-800">${currentStudents} <span class="text-gray-400 font-normal text-xs">Active</span></p>
+                            </div>
+
+                            <div class="bg-gray-50 p-2 rounded border border-gray-100">
+                                <span class="text-gray-400 block text-[10px] uppercase font-bold tracking-wider">Capacity</span>
+                                <p class="text-sm font-bold text-gray-800">${blockMaxStudents} <span class="text-gray-400 font-normal text-xs">Max</span></p>
+                            </div> 
+
+                        </div>
+                    </a>
+                </div>
+            `;
+            // --- REPLACED BLOCK HTML END ---
+            hostelBlockContainer.innerHTML += blockHTML;
         }
         
-        const occupiedRooms = block.rooms ? block.rooms.filter(room => room.students && room.students.length > 0).length : 0;
+        statTotalCapacity.textContent = grandTotalCapacity;
+        const occupancyPercent = grandTotalStudents > 0 ? (grandTotalStudents / grandTotalCapacity * 100) : 0;
+        statOccupancyPercent.textContent = occupancyPercent.toFixed(1) + '%';
+        statOccupancyLabel.textContent = occupancyPercent.toFixed(0) + '%';
+        statOccupancyRing.style.strokeDashoffset = 100 - occupancyPercent;
         
-        // Use block's set capacity or fallback to the sum of room capacities
-        const blockMaxStudents = block.blockCapacity || totalCapacity;
-        const blockMaxRooms = block.maxRooms || '∞';
-
-        grandTotalCapacity += blockMaxStudents;
-        grandTotalStudents += currentStudents;
-        
-        // 4. Generate Block Card HTML
-        const blockHTML = `
-            <div class="bg-white rounded-lg shadow-sm overflow-hidden border-l-4 ${theme.border} relative group transition-all duration-300 hover:shadow-md hover:-translate-y-1">
-                <div class="absolute top-2 right-2 flex space-x-1">
-                    <button class="edit-block-btn p-1.5 text-blue-500 hover:bg-blue-50 rounded-full transition-colors" data-block-id="${block._id}" title="Edit Block">
-                        <i class="fa-solid fa-pen text-xs"></i>
-                    </button>
-                    <button class="remove-block-btn p-1.5 text-red-500 hover:bg-red-50 rounded-full transition-colors" data-block-id="${block._id}" data-block-name="${block.blockName}" title="Delete Block">
-                        <i class="fa-solid fa-trash text-xs"></i>
-                    </button>
-                </div>
-
-                <a href="#" class="block-link block hover:bg-gray-50 p-4" data-hostel-key="${block.blockKey}">
-                    <div class="flex items-center mb-3">
-                        <div class="h-8 w-8 flex items-center justify-center ${theme.bg} rounded-full mr-3 shadow-sm">
-                            <i class="fa-solid ${theme.icon} ${theme.text} text-sm"></i>
-                        </div>
-                        <h3 class="text-base font-bold text-gray-800 leading-tight truncate pr-12">${block.blockName}</h3>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-2">
-                        <div class="bg-gray-50 p-2 rounded border border-gray-100">
-                            <span class="text-gray-400 block text-[10px] uppercase font-bold tracking-wider">Rooms</span>
-                            <p class="text-sm font-bold text-gray-800">${totalRooms} <span class="text-gray-400 font-normal text-xs">/ ${blockMaxRooms}</span></p>
-                        </div>
-
-                        <div class="bg-gray-50 p-2 rounded border border-gray-100">
-                            <span class="text-gray-400 block text-[10px] uppercase font-bold tracking-wider">Occupied</span>
-                            <p class="text-sm font-bold text-gray-800">${occupiedRooms} <span class="text-gray-400 font-normal text-xs">Filled</span></p>
-                        </div>
-
-                        <div class="bg-gray-50 p-2 rounded border border-gray-100">
-                            <span class="text-gray-400 block text-[10px] uppercase font-bold tracking-wider">Students</span>
-                            <p class="text-sm font-bold text-gray-800">${currentStudents} <span class="text-gray-400 font-normal text-xs">Active</span></p>
-                        </div>
-
-                        <div class="bg-gray-50 p-2 rounded border border-gray-100">
-                            <span class="text-gray-400 block text-[10px] uppercase font-bold tracking-wider">Capacity</span>
-                            <p class="text-sm font-bold text-gray-800">${blockMaxStudents} <span class="text-gray-400 font-normal text-xs">Max</span></p>
-                        </div> 
-                    </div>
-                </a>
-            </div>
-        `;
-        hostelBlockContainer.innerHTML += blockHTML;
-    }
-    
-    // 5. Update Global Statistics
-    document.getElementById('stat-total-capacity').textContent = grandTotalCapacity;
-    document.getElementById('total-beds-count').textContent = grandTotalCapacity;
-    document.getElementById('beds-filled-count').textContent = grandTotalStudents;
-
-    // 6. Calculate Percentage for Chart
-    const occupancyPercent = grandTotalCapacity > 0 ? Math.round((grandTotalStudents / grandTotalCapacity) * 100) : 0;
-    
-    // Update labels for both the old ring system (if still present) and new Pie Chart center text
-    const occupancyPercentDisplay = occupancyPercent + '%';
-    if (document.getElementById('stat-occupancy-percent')) document.getElementById('stat-occupancy-percent').textContent = occupancyPercentDisplay;
-    if (document.getElementById('occupancy-percent-center')) document.getElementById('occupancy-percent-center').textContent = occupancyPercentDisplay;
-    
-    // Legacy support for the SVG Ring if you are using it
-    if (document.getElementById('stat-occupancy-label')) document.getElementById('stat-occupancy-label').textContent = occupancyPercentDisplay;
-    if (document.getElementById('stat-occupancy-ring')) {
-        document.getElementById('stat-occupancy-ring').style.strokeDashoffset = 100 - occupancyPercent;
+        statFeesPending.textContent = `${totalPendingFees} Pending`;
+        updateVisitorCount(); 
+        updateLeaveCount(); // NEW: Update the leave count stat
     }
 
-    // 7. Update Pie/Doughnut Chart on the Right
-    const ctx = document.getElementById('occupancyPieChart').getContext('2d');
-    const availableBeds = grandTotalCapacity - grandTotalStudents;
-
-    if (occupancyChartInstance) {
-        // Efficiently update the existing chart instance
-        occupancyChartInstance.data.datasets[0].data = [grandTotalStudents, availableBeds];
-        occupancyChartInstance.update();
-    } else {
-        // Create the new beautiful Pie Chart instance
-        occupancyChartInstance = new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Occupied', 'Available'],
-                datasets: [{
-                    data: [grandTotalStudents, availableBeds],
-                    backgroundColor: ['#4F46E5', '#F1F5F9'], // Indigo for Occupied, Light Slate for Available
-                    hoverOffset: 4,
-                    borderWidth: 0,
-                    borderRadius: 5
-                }]
-            },
-            options: {
-                cutout: '80%', // Sleek thin ring
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false }, // Center text used instead
-                    tooltip: {
-                        callbacks: {
-                            label: (item) => ` ${item.label}: ${item.raw} Beds`
-                        }
-                    }
-                }
-            }
-        });
-    }
-
-    // 8. Final Stat Updates
-    statFeesPending.textContent = `${totalPendingFees} Pending`;
-    if (typeof updateVisitorCount === "function") updateVisitorCount(); 
-    if (typeof updateLeaveCount === "function") updateLeaveCount(); 
-}
     // Function to set modal state for editing an existing block
     async function prepareBlockModalForEdit(blockId) {
         try {
