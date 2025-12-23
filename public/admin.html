@@ -226,60 +226,64 @@
    <main class="mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-grow">
         
         <div id="dashboard-view">
-<div class="grid grid-cols-1 lg:grid-cols-4 gap-4 mb-8">
-    
-    <div class="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-col md:flex-row items-center justify-between transition-all hover:shadow-md">
-        <div class="w-full md:w-1/2 space-y-4">
-            <div>
-                <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Hostel Utilization</span>
-                <h3 class="text-3xl font-black text-gray-800 mt-1" id="stat-occupancy-percent">0%</h3>
-                <p class="text-xs text-indigo-500 font-medium">Bed Utilization Rate</p>
-            </div>
-            <div class="grid grid-cols-2 gap-4 pt-2">
-                <div class="bg-indigo-50 p-3 rounded-lg border border-indigo-100">
-                    <span class="text-[10px] font-bold text-indigo-400 uppercase">Total Capacity</span>
-                    <p class="text-xl font-extrabold text-indigo-700" id="stat-total-capacity">0</p>
-                </div>
-                <div class="bg-amber-50 p-3 rounded-lg border border-amber-100">
-                    <span class="text-[10px] font-bold text-amber-400 uppercase">Beds Filled</span>
-                    <p class="text-xl font-extrabold text-amber-700" id="stat-occupancy-label-value">0</p>
-                </div>
-            </div>
-        </div>
-        <div class="w-40 h-40 mt-6 md:mt-0 relative flex items-center justify-center">
-            <canvas id="occupancyPieChart"></canvas>
-        </div>
-    </div>
 
-    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 flex items-center justify-between transition-transform hover:-translate-y-1 hover:shadow-md">
-        <div>
-            <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Open Complaints</span>
-            <h3 class="text-2xl font-extrabold text-gray-800 mt-1" id="stat-open-complaints">0</h3>
-            <p class="text-xs text-red-500 font-medium mt-1">Pending Resolution</p>
-        </div>
-        <div class="h-10 w-10 rounded-full bg-red-50 flex items-center justify-center text-red-600 shadow-sm">
-            <i class="fa-solid fa-triangle-exclamation text-lg"></i>
-        </div>
-    </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                
+                <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-4 flex items-center justify-between transition-transform hover:-translate-y-1 hover:shadow-md">
+                    <div>
+                        <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Total Capacity</span>
+                        <h3 class="text-2xl font-extrabold text-gray-800 mt-1" id="stat-total-capacity">0</h3>
+                        <p class="text-xs text-indigo-500 font-medium mt-1">Total Hostel Units</p>
+                    </div>
+                    <div class="h-10 w-10 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600 shadow-sm">
+                        <i class="fa-solid fa-bed text-lg"></i>
+                    </div>
+                </div>
 
-    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 flex items-center justify-between transition-transform hover:-translate-y-1 hover:shadow-md">
-        <div>
-            <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Attendance</span>
-            <h3 class="text-2xl font-extrabold text-gray-800 mt-1" id="stat-attendance-percent">98%</h3>
-            <p class="text-xs text-emerald-500 font-medium mt-1">Check-in Rate</p>
-        </div>
-        <div class="relative h-14 w-14">
-            <svg class="h-full w-full transform -rotate-90" viewBox="0 0 36 36">
-                <path class="text-gray-100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3" />
-                <path id="stat-attendance-ring" class="text-emerald-500" stroke-dasharray="98, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3" />
-            </svg>
-            <div class="absolute inset-0 flex items-center justify-center">
-                <span class="text-[0.6rem] font-bold text-gray-500" id="stat-attendance-label">98%</span>
-            </div>
-        </div>
-    </div>
-</div>
-           
+                <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-4 flex items-center justify-between transition-transform hover:-translate-y-1 hover:shadow-md">
+                    <div>
+                        <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Occupancy</span>
+                        <h3 class="text-2xl font-extrabold text-gray-800 mt-1" id="stat-occupancy-percent">0%</h3>
+                        <p class="text-xs text-amber-500 font-medium mt-1">Beds Filled</p>
+                    </div>
+                    <div class="relative h-14 w-14">
+                        <svg class="h-full w-full transform -rotate-90" viewBox="0 0 36 36">
+                            <path class="text-gray-100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3" />
+                            <path id="stat-occupancy-ring" class="text-amber-500 transition-all duration-1000 ease-out" stroke-dasharray="100, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3" />
+                        </svg>
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <span class="text-[0.6rem] font-bold text-gray-500" id="stat-occupancy-label">0%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-4 flex items-center justify-between transition-transform hover:-translate-y-1 hover:shadow-md">
+                    <div>
+                        <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Open Complaints</span>
+                        <h3 class="text-2xl font-extrabold text-gray-800 mt-1" id="stat-open-complaints">0</h3>
+                        <p class="text-xs text-red-500 font-medium mt-1">Pending Resolution</p>
+                    </div>
+                    <div class="h-10 w-10 rounded-full bg-red-50 flex items-center justify-center text-red-600 shadow-sm">
+                        <i class="fa-solid fa-triangle-exclamation text-lg"></i>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-4 flex items-center justify-between transition-transform hover:-translate-y-1 hover:shadow-md">
+                    <div>
+                        <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Attendance</span>
+                        <h3 class="text-2xl font-extrabold text-gray-800 mt-1" id="stat-attendance-percent">98%</h3>
+                        <p class="text-xs text-emerald-500 font-medium mt-1">Check-in Rate</p>
+                    </div>
+                    <div class="relative h-14 w-14">
+                        <svg class="h-full w-full transform -rotate-90" viewBox="0 0 36 36">
+                            <path class="text-gray-100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3" />
+                            <path id="stat-attendance-ring" class="text-emerald-500 transition-all duration-1000 ease-out" stroke-dasharray="100, 100" stroke-dashoffset="2" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3" />
+                        </svg>
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <span class="text-[0.6rem] font-bold text-gray-500" id="stat-attendance-label">98%</span>
+                        </div>
+                    </div>
+                </div>
 
                 <div id="show-fees-view-btn" class="bg-white rounded-lg shadow-sm border border-gray-100 p-4 flex items-center justify-between cursor-pointer group hover:border-teal-400 transition-all">
                     <div>

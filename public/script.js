@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-   let occupancyChartInstance = null;
     // --- 1. GLOBAL STATE ---
     let appState = { 
         blocks: [], 
@@ -1178,48 +1177,11 @@ function renderLeaveView() {
             hostelBlockContainer.innerHTML += blockHTML;
         }
         
-        // ... inside renderDashboard() after grand totals are calculated ...
-    
-    statTotalCapacity.textContent = grandTotalCapacity;
-    const occupancyPercent = grandTotalCapacity > 0 ? (grandTotalStudents / grandTotalCapacity * 100) : 0;
-    statOccupancyPercent.textContent = occupancyPercent.toFixed(1) + '%';
-    
-    // Update the Beds Filled numeric stat
-    document.getElementById('stat-occupancy-label-value').textContent = grandTotalStudents;
-
-    // --- INITIALIZE/UPDATE PIE CHART ---
-    const ctx = document.getElementById('occupancyPieChart').getContext('2d');
-    const availableBeds = grandTotalCapacity - grandTotalStudents;
-
-    if (occupancyChartInstance) {
-        // Update existing chart
-        occupancyChartInstance.data.datasets[0].data = [grandTotalStudents, availableBeds];
-        occupancyChartInstance.update();
-    } else {
-        // Create new chart
-        occupancyChartInstance = new Chart(ctx, {
-            type: 'doughnut', // Doughnut looks cleaner for this data
-            data: {
-                labels: ['Occupied', 'Available'],
-                datasets: [{
-                    data: [grandTotalStudents, availableBeds],
-                    backgroundColor: ['#F59E0B', '#E8F5FF'], // Amber for occupied, light blue for empty
-                    borderWidth: 0,
-                    hoverOffset: 4
-                }]
-            },
-            options: {
-                cutout: '70%',
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: { enabled: true }
-                }
-            }
-        });
-    
-}
+        statTotalCapacity.textContent = grandTotalCapacity;
+        const occupancyPercent = grandTotalStudents > 0 ? (grandTotalStudents / grandTotalCapacity * 100) : 0;
+        statOccupancyPercent.textContent = occupancyPercent.toFixed(1) + '%';
+        statOccupancyLabel.textContent = occupancyPercent.toFixed(0) + '%';
+        statOccupancyRing.style.strokeDashoffset = 100 - occupancyPercent;
         
         statFeesPending.textContent = `${totalPendingFees} Pending`;
         updateVisitorCount(); 
