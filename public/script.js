@@ -1759,7 +1759,66 @@ document.getElementById('fees-student-list-container').addEventListener('click',
         alert(`Reminder Notice Sent to: ${email}\n\nSubject: Hostel Fee Payment Outstanding`);
     }
 });
-  
+  // Function to generate and download the CSV report
+function downloadFeeReport() {
+    // 1. Flatten all students from all blocks into one array
+    const allStudents = appState.blocks.flatMap(block => 
+        (block.rooms || []).flatMap(room => 
+            (room.students || []).map(student => ({
+                Name: student.name,
+                RollNumber: student.rollNumber,
+                Block: block.blockName,
+                Room: room.roomNumber,
+                TotalFee: student.totalFee || 0,
+                PaidAmount: student.paidAmount || 0,
+                Balance: (student.totalFee || 0) - (student.paidAmount || 0),
+                Status: student.feeStatus,
+                Method: student.paymentMethod || 'N/A',
+                TransactionID: student.transactionId || 'N/A'
+            }))
+        )
+    );
+
+    if (allStudents.length === 0) {
+        alert("No student data available to export.");
+        return;
+    }
+
+    // 2. Define CSV Headers
+    const headers = ["Name", "Roll Number", "Block", "Room", "Total Fee (INR)", "Paid Amount (INR)", "Balance Due (INR)", "Status", "Payment Method", "Transaction ID"];
+    
+    // 3. Convert data to CSV rows
+    const csvRows = [
+        headers.join(','), // Header row
+        ...allStudents.map(row => [
+            `"${row.Name}"`,
+            `"${row.RollNumber}"`,
+            `"${row.Block}"`,
+            `"${row.Room}"`,
+            row.TotalFee,
+            row.PaidAmount,
+            row.Balance,
+            `"${row.Status}"`,
+            `"${row.Method}"`,
+            `"${row.TransactionID}"`
+        ].join(','))
+    ].join('\n');
+
+    // 4. Create a Blob and trigger download
+    const blob = new Blob([csvRows], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    
+    link.setAttribute("href", url);
+    link.setAttribute("download", `Hostel_Fee_Report_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+// 5. Attach the event listener (Put this inside your DOMContentLoaded block)
+document.getElementById('download-fee-report-btn').addEventListener('click', downloadFeeReport);
     
     // --- 5. MODAL & VIEW-SWITCHING LOGIC ---
     function showModal(modalId) {
