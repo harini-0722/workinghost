@@ -656,48 +656,60 @@
                         <i class="fa-solid fa-circle-exclamation mr-2"></i> Report Lost Item
                     </h3>
                 </div>
-                <form onsubmit="event.preventDefault(); alert('Lost item report submitted.');" class="p-4 space-y-3">
-                    <div>
-                        <label class="block text-xs font-bold text-secondary-gray mb-1">Item Name</label>
-                        <input type="text" id="lost-item-name" placeholder="e.g., Blue Umbrella" class="w-full p-2 text-sm border border-gray-200 rounded-lg focus:ring-1 focus:ring-accent-red bg-gray-50" required>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-secondary-gray mb-1">Last Seen Location</label>
-                        <input type="text" id="lost-item-location" placeholder="e.g., Common Room" class="w-full p-2 text-sm border border-gray-200 rounded-lg focus:ring-1 focus:ring-accent-red bg-gray-50">
-                    </div>
-                     <div>
-                        <label class="block text-xs font-bold text-secondary-gray mb-1">Date Lost</label>
-                        <input type="date" class="w-full p-2 text-sm border border-gray-200 rounded-lg focus:ring-1 focus:ring-accent-red bg-gray-50">
-                    </div>
-                    <button type="submit" class="w-full py-2 rounded-lg bg-accent-red text-white text-xs font-bold shadow-sm hover:bg-red-700 transition flex justify-center items-center mt-2">
-                        <i class="fa-solid fa-bullhorn mr-2"></i> Report Lost
-                    </button>
-                </form>
-            </div>
-
-            <div class="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-100 flex flex-col overflow-hidden">
-                <div class="p-3 border-b border-gray-100 bg-gray-50 flex justify-between items-center flex-shrink-0">
-                    <h3 class="text-sm font-bold text-accent-dark">
-                        <i class="fa-brands fa-searchengin mr-2 text-primary-blue"></i> Recently Found Items
-                    </h3>
-                </div>
-                <div class="overflow-y-auto flex-1">
-                    <table class="min-w-full divide-y divide-gray-100">
-                        <thead class="bg-gray-50 sticky top-0 z-10">
-                            <tr>
-                                <th class="py-2 px-4 text-left text-[10px] font-bold text-secondary-gray uppercase">Item</th>
-                                <th class="py-2 px-4 text-left text-[10px] font-bold text-secondary-gray uppercase">Date Found</th>
-                                <th class="py-2 px-4 text-left text-[10px] font-bold text-secondary-gray uppercase">Location</th>
-                                <th class="py-2 px-4 text-left text-[10px] font-bold text-secondary-gray uppercase">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="lost-found-body" class="bg-white divide-y divide-gray-50">
-                            </tbody>
-                    </table>
-                </div>
-            </div>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="p-3 border-b border-gray-100 bg-gray-50 flex items-center">
+            <h3 class="text-sm font-bold text-accent-red">
+                <i class="fa-solid fa-circle-exclamation mr-2"></i> Report Lost Item
+            </h3>
         </div>
+        <form id="lost-item-form" onsubmit="event.preventDefault(); submitLostItem();" class="p-4 space-y-3">
+            <div>
+                <label class="block text-xs font-bold text-secondary-gray mb-1">Item Name</label>
+                <input type="text" id="lost-item-name" placeholder="e.g., Blue Umbrella" class="w-full p-2 text-sm border border-gray-200 rounded-lg focus:ring-1 focus:ring-accent-red bg-gray-50" required>
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-secondary-gray mb-1">Last Seen Location</label>
+                <input type="text" id="lost-item-location" placeholder="e.g., Common Room" class="w-full p-2 text-sm border border-gray-200 rounded-lg focus:ring-1 focus:ring-accent-red bg-gray-50" required>
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-secondary-gray mb-1">Date Lost</label>
+                <input type="date" id="lost-item-date" class="w-full p-2 text-sm border border-gray-200 rounded-lg focus:ring-1 focus:ring-accent-red bg-gray-50" required>
+            </div>
+            <button type="submit" class="w-full py-2 rounded-lg bg-accent-red text-white text-xs font-bold shadow-sm hover:bg-red-700 transition flex justify-center items-center mt-2">
+                <i class="fa-solid fa-bullhorn mr-2"></i> Report Lost
+            </button>
+        </form>
+    </div>
 
+    <div class="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-100 flex flex-col overflow-hidden">
+        <div class="p-3 border-b border-gray-100 bg-gray-50 flex justify-between items-center flex-shrink-0">
+            <h3 class="text-sm font-bold text-accent-dark">
+                <i class="fa-brands fa-searchengin mr-2 text-primary-blue"></i> Recently Found Items
+            </h3>
+            <button onclick="populateLostAndFound()" class="text-[10px] text-primary-blue hover:underline font-bold">
+                <i class="fa-solid fa-sync-alt mr-1"></i> Refresh
+            </button>
+        </div>
+        <div class="overflow-y-auto flex-1">
+            <table class="min-w-full divide-y divide-gray-100">
+                <thead class="bg-gray-50 sticky top-0 z-10">
+                    <tr>
+                        <th class="py-2 px-4 text-left text-[10px] font-bold text-secondary-gray uppercase tracking-wider">Item</th>
+                        <th class="py-2 px-4 text-left text-[10px] font-bold text-secondary-gray uppercase tracking-wider">Date Found</th>
+                        <th class="py-2 px-4 text-left text-[10px] font-bold text-secondary-gray uppercase tracking-wider">Location</th>
+                        <th class="py-2 px-4 text-left text-[10px] font-bold text-secondary-gray uppercase tracking-wider">Status</th>
+                    </tr>
+                </thead>
+                <tbody id="lost-found-body" class="bg-white divide-y divide-gray-50">
+                    <tr>
+                        <td colspan="4" class="py-8 text-center text-secondary-gray text-xs italic">
+                            Loading items from database...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 

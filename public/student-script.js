@@ -1496,11 +1496,78 @@ async function populateLostAndFound() {
         tableBody.innerHTML = `<tr><td colspan="4" class="py-8 text-center text-accent-red text-xs">Failed to load items.</td></tr>`;
     }
 }
-// Replace the inline onsubmit for the lost item form in student.html 
-// OR replace it here in student-script.js:
+// --- 2. FETCH AND DISPLAY FOUND ITEMS ---
+async function populateLostAndFound() {
+    const tableBody = document.getElementById('lost-found-body');
+    if (!tableBody) return;
+
+    // Show loading state
+    tableBody.innerHTML = `
+        <tr>
+            <td colspan="4" class="py-8 text-center text-secondary-gray text-xs">
+                <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-primary-blue mx-auto mb-2"></div>
+                Searching inventory...
+            </td>
+        </tr>`;
+
+    try {
+        // Fetch real data from the backend API
+        const response = await fetch('/api/lost-found/found-items');
+        const data = await response.json();
+
+        if (data.success) {
+            g_lostFoundItems = data.foundItems; // Store in global state
+            tableBody.innerHTML = '';
+
+            if (g_lostFoundItems.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="4" class="py-8 text-center text-secondary-gray text-xs">No items currently reported found.</td></tr>`;
+                return;
+            }
+
+            // Loop through database items and build table rows
+            g_lostFoundItems.forEach(item => {
+                // Map database status to UI CSS classes
+                const statusStyles = {
+                    'Pending': 'text-info-yellow bg-yellow-50 border-yellow-100',
+                    'Retrieved': 'text-accent-green bg-green-50 border-green-100',
+                    'Closed': 'text-secondary-gray bg-gray-100 border-gray-200'
+                };
+                
+                const statusClass = statusStyles[item.status] || statusStyles['Pending'];
+                
+                // Format the date using the existing formatDate helper
+                const displayDate = typeof formatDate === 'function' ? formatDate(item.submissionDate) : new Date(item.submissionDate).toLocaleDateString();
+
+                tableBody.innerHTML += `
+                    <tr class="hover:bg-gray-50 transition duration-150">
+                        <td class="py-2 px-4 whitespace-nowrap text-xs font-bold text-accent-dark">
+                            <i class="fa-solid fa-box-open mr-2 text-primary-blue opacity-50"></i>${item.itemName}
+                        </td>
+                        <td class="py-2 px-4 whitespace-nowrap text-xs text-secondary-gray">${displayDate}</td>
+                        <td class="py-2 px-4 whitespace-nowrap text-xs text-secondary-gray">${item.location}</td>
+                        <td class="py-2 px-4 whitespace-nowrap">
+                            <span class="${statusClass} px-2 py-0.5 rounded text-[10px] font-bold border">
+                                ${item.status === 'Pending' ? 'Available' : item.status}
+                            </span>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+    } catch (error) {
+        console.error('Fetch Found Items Error:', error);
+        tableBody.innerHTML = `<tr><td colspan="4" class="py-8 text-center text-accent-red text-xs">Failed to load items. Please try again.</td></tr>`;
+    }
+}
+
+// --- 3. SUBMIT LOST ITEM REPORT ---
 async function submitLostItem() {
-    const itemName = document.getElementById('lost-item-name').value;
-    const location = document.getElementById('lost-item-location').value;
+    const itemNameInput = document.getElementById('lost-item-name');
+    const locationInput = document.getElementById('lost-item-location');
+    const dateInput = document.getElementById('lost-item-date'); // Added to match HTML
+    
+    const itemName = itemNameInput.value.trim();
+    const location = locationInput.value.trim();
     const studentId = localStorage.getItem('currentStudentId');
 
     if (!itemName || !location) {
@@ -1512,17 +1579,27 @@ async function submitLostItem() {
         const response = await fetch('/api/lost-found/report-lost', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ studentId, itemName, lastSeenLocation: location })
+            body: JSON.stringify({ 
+                studentId, 
+                itemName, 
+                lastSeenLocation: location 
+            })
         });
 
         const data = await response.json();
         if (data.success) {
             alert(data.message);
-            document.getElementById('lost-item-name').value = '';
-            document.getElementById('lost-item-location').value = '';
-            // Note: Reported lost items don't appear in the "Found" table until found by admin
+            // Clear the form fields
+            itemNameInput.value = '';
+            locationInput.value = '';
+            if(dateInput) dateInput.value = '';
+            
+            // Note: Lost reports will not appear in the "Found" table immediately
+        } else {
+            alert('Error: ' + data.message);
         }
     } catch (error) {
+        console.error('Submission error:', error);
         alert('Error filing report: ' + error.message);
     }
 }
