@@ -290,6 +290,72 @@ async function loadExternalFees() {
             </div>`;
     }
 }
+// Function to populate the Fee Dashboard after fees.html is loaded
+function initializeFeeLogic() {
+    if (!g_student) return;
+
+    const balance = (g_student.totalFee || 0) - (g_student.paidAmount || 0);
+    
+    // 1. Update Header Info
+    document.getElementById('student-id-display').textContent = g_student.rollNumber || 'N/A';
+    document.getElementById('net-payable-amount').textContent = `₹${balance.toLocaleString('en-IN')}`;
+    
+    // 2. Update Fee Breakdown
+    document.getElementById('breakdown-total').textContent = `₹${(g_student.totalFee || 0).toLocaleString('en-IN')}`;
+    document.getElementById('breakdown-paid').textContent = `₹${(g_student.paidAmount || 0).toLocaleString('en-IN')}`;
+    document.getElementById('breakdown-balance').textContent = `₹${balance.toLocaleString('en-IN')}`;
+
+    // 3. Update Success Modal Template
+    document.getElementById('receipt-student-name').textContent = g_student.name;
+    document.getElementById('receipt-student-roll').textContent = g_student.rollNumber;
+    
+    // 4. Update the "Pay" button text
+    const payBtn = document.getElementById('final-pay-button');
+    if (payBtn) {
+        payBtn.textContent = balance > 0 ? `PAY ₹${balance.toLocaleString()}` : "FEES CLEARED";
+        payBtn.disabled = balance <= 0;
+        if(balance <= 0) payBtn.classList.add('opacity-50', 'cursor-not-allowed');
+    }
+}
+
+// Function to call the backend and update fee status
+async function processFeePayment() {
+    if(!document.getElementById('inner-terms-check').checked) { alert("Please agree to terms."); return; }
+    
+    const processingSection = document.getElementById('inner-processing-section');
+    processingSection.classList.remove('hidden');
+
+    const paymentAmount = (g_student.totalFee || 0) - (g_student.paidAmount || 0);
+    const transactionId = "TXN" + Math.floor(Math.random() * 1000000000);
+
+    try {
+        const response = await fetch(`/api/student/${g_student._id}/pay-fees`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                amount: paymentAmount,
+                transactionId: transactionId,
+                method: document.getElementById('tab-upi-inner').classList.contains('active') ? 'UPI' : 'Card'
+            })
+        });
+
+        const data = await response.json();
+        if (data.success) {
+            // Update local global variable
+            g_student.paidAmount = g_student.totalFee;
+            g_student.feeStatus = 'Paid';
+            
+            processingSection.classList.add('hidden');
+            document.getElementById('inner-success-section').classList.remove('hidden');
+            document.getElementById('success-ref-id').textContent = `#${transactionId}`;
+        } else {
+            throw new Error(data.message);
+        }
+    } catch (error) {
+        alert("Payment Failed: " + error.message);
+        processingSection.classList.add('hidden');
+    }
+}
 async function submitLeave() {
     const start = document.getElementById('leave-start').value;
     const end = document.getElementById('leave-end').value;
