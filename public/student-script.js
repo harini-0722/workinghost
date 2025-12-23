@@ -573,39 +573,50 @@ function hideMobileMenu() {
     document.getElementById('mobile-menu').classList.add('hidden');
 }
 
+/**
+ * Switches between Report sub-tabs (Complaints, Feedback, Lost & Found)
+ * and triggers database refreshes for each section.
+ */
 function showReportTab(tabName) {
-    // 1. Hide all tab contents
-    document.querySelectorAll('.report-tab-content').forEach(content => {
+    // 1. Hide all tab content sections
+    const allContents = document.querySelectorAll('.report-tab-content');
+    allContents.forEach(content => {
         content.classList.add('hidden');
     });
 
-    // 2. Fetch specific data based on the selected tab
+    // 2. Fetch fresh data from DB based on the selected tab
+    // This ensures the tables stay updated without a full page refresh
     if (tabName === 'feedback') {
-        populateFeedbackHistory(); // Fetch and display feedback from DB
+        populateFeedbackHistory(); // Calls GET /api/feedback/student/:id
     } else if (tabName === 'lost-found') {
-        populateLostAndFound(); // Fetch items from DB
+        populateLostAndFound();   // Calls GET /api/lost-found/found-items
     } else if (tabName === 'complaints') {
-        populateStudentComplaintHistory(); // Fetch complaints from DB
+        populateStudentComplaintHistory(); // Uses g_complaints or fetches fresh
     }
 
-    // 3. Reset all tabs styling
-    document.querySelectorAll('.report-tab').forEach(tab => {
+    // 3. Reset all tabs styling to inactive state
+    const allTabs = document.querySelectorAll('.report-tab');
+    allTabs.forEach(tab => {
         tab.classList.remove('active', 'border-primary-blue', 'text-primary-blue');
         tab.classList.add('border-transparent', 'text-secondary-gray');
+        // If your CSS uses font-bold for active tabs, remove it here too
+        tab.classList.remove('font-bold');
+        tab.classList.add('font-medium');
     });
     
-    // 4. Show the selected content
+    // 4. Show the selected content div
     const content = document.getElementById(`report-tab-content-${tabName}`);
-    if (content) content.classList.remove('hidden');
+    if (content) {
+        content.classList.remove('hidden');
+    }
     
-    // 5. Activate selected tab styling
+    // 5. Apply active styling to the clicked tab
     const activeTab = document.getElementById(`tab-${tabName}`);
     if (activeTab) {
-        activeTab.classList.remove('border-transparent', 'text-secondary-gray');
-        activeTab.classList.add('active', 'border-primary-blue', 'text-primary-blue');
+        activeTab.classList.remove('border-transparent', 'text-secondary-gray', 'font-medium');
+        activeTab.classList.add('active', 'border-primary-blue', 'text-primary-blue', 'font-bold');
     }
 }
-
 function logout() {
     localStorage.removeItem('currentStudentId');    
     window.location.href = "login.html";    
@@ -1336,33 +1347,78 @@ function populateVisitorRequestHistory() {
     });
 }
 
-function populateLostAndFound() {
-    const tableBody = document.getElementById('lost-found-body');
-    tableBody.innerHTML = '';
-    
-    if (mockLostFound.length === 0) {
-            tableBody.innerHTML = `<tr><td colspan="4" class="py-8 text-center text-secondary-gray text-xs">No items reported found.</td></tr>`;
-            return;
+// Function to submit a LOST item report to the DB
+async function submitLostReport() {
+    const itemName = document.getElementById('lost-item-name').value;
+    const lastSeenLocation = document.getElementById('lost-item-location').value;
+    const studentId = g_student._id;
+
+    if (!itemName || !lastSeenLocation) {
+        alert('Please fill in all fields.');
+        return;
     }
+
+    try {
+        const response = await fetch('/api/lost-found/report-lost', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ studentId, itemName, lastSeenLocation })
+        });
+
+        const data = await response.json();
+        if (data.success) {
+            alert('Lost report filed successfully! Admin has been notified.');
+            document.getElementById('lost-found-form').reset();
+            // Refresh the table to see if it was matched (optional)
+            populateLostAndFound();
+        }
+    } catch (err) {
+        console.error("Lost Report Error:", err);
+        alert('Failed to submit report.');
+    }
+}
+
+// Function to fetch FOUND items from DB and display in the table
+async function populateLostAndFound() {
+    const tableBody = document.getElementById('lost-found-body');
+    if (!tableBody) return;
+
+    // Show loading state
+    tableBody.innerHTML = `<tr><td colspan="4" class="py-4 text-center text-xs text-gray-400">Loading found items...</td></tr>`;
     
-    mockLostFound.forEach(item => {
-        const statusClass = item.status === 'Available' ? 'text-accent-green bg-green-50 border-green-100' : 'text-secondary-gray bg-gray-50 border-gray-200';
-        
-        tableBody.innerHTML += `
-            <tr class="hover:bg-gray-50 transition duration-150">
-                <td class="py-2 px-4 whitespace-nowrap text-xs font-bold text-accent-dark">
-                    <i class="fa-solid fa-box-open mr-2 text-primary-blue opacity-50"></i>${item.item}
-                </td>
-                <td class="py-2 px-4 whitespace-nowrap text-xs text-secondary-gray">${item.dateFound}</td>
-                <td class="py-2 px-4 whitespace-nowrap text-xs text-secondary-gray">${item.location}</td>
-                <td class="py-2 px-4 whitespace-nowrap">
-                    <span class="${statusClass} px-2 py-0.5 rounded text-[10px] font-bold border">
-                        ${item.status}
-                    </span>
-                </td>
-            </tr>
-        `;
-    });
+    try {
+        const response = await fetch('/api/lost-found/found-items');
+        const data = await response.json();
+
+        if (data.success && data.foundItems.length > 0) {
+            tableBody.innerHTML = ''; // Clear loader
+            data.foundItems.forEach(item => {
+                const statusClass = item.status === 'Pending' 
+                    ? 'text-accent-green bg-green-50 border-green-100' 
+                    : 'text-secondary-gray bg-gray-50 border-gray-200';
+                
+                tableBody.innerHTML += `
+                    <tr class="hover:bg-gray-50 transition duration-150">
+                        <td class="py-2 px-4 whitespace-nowrap text-xs font-bold text-accent-dark">
+                            <i class="fa-solid fa-box-open mr-2 text-primary-blue opacity-50"></i>${item.itemName}
+                        </td>
+                        <td class="py-2 px-4 whitespace-nowrap text-xs text-secondary-gray">${formatDate(item.submissionDate)}</td>
+                        <td class="py-2 px-4 whitespace-nowrap text-xs text-secondary-gray">${item.location}</td>
+                        <td class="py-2 px-4 whitespace-nowrap">
+                            <span class="${statusClass} px-2 py-0.5 rounded text-[10px] font-bold border">
+                                ${item.status}
+                            </span>
+                        </td>
+                    </tr>
+                `;
+            });
+        } else {
+            tableBody.innerHTML = `<tr><td colspan="4" class="py-8 text-center text-secondary-gray text-xs">No items reported found.</td></tr>`;
+        }
+    } catch (error) {
+        console.error('Fetch Lost & Found Error:', error);
+        tableBody.innerHTML = `<tr><td colspan="4" class="py-4 text-center text-red-500 text-xs">Error loading items from server.</td></tr>`;
+    }
 }
 
 // --- Announcement Modal Functions ---
