@@ -1649,77 +1649,117 @@ function renderLeaveView() {
             assetInventoryContainer.innerHTML += assetHTML;
         });
     }
+    let feesPieChart = null; // Global variable to track chart instance
+
+function renderFeesView() {
+    const statusFilter = feesFilterSelect.value;
+    const searchTerm = feesSearchInput.value.toLowerCase();
+    feesStudentListContainer.innerHTML = '';
     
-    function renderFeesView() {
-        const statusFilter = feesFilterSelect.value;
-        const searchTerm = feesSearchInput.value.toLowerCase();
-        feesStudentListContainer.innerHTML = '';
-        
-        const allStudents = appState.blocks.flatMap(block => 
-            (block.rooms || []).flatMap(room => 
-                (room.students || []).map(student => ({
-                    ...student,
-                    roomNumber: room.roomNumber,
-                    blockName: block.blockName
-                }))
-            )
-        );
-        
-        const filteredStudents = allStudents.filter(student => {
-            const statusMatch = (statusFilter === 'All') || (student.feeStatus === statusFilter);
-            const searchMatch = (student.name.toLowerCase().includes(searchTerm)) || 
-                                 (student.rollNumber.toLowerCase().includes(searchTerm));
-            return statusMatch && searchMatch;
-        });
+    // Financial Accumulators
+    let stats = { Paid: 0, Partial: 0, Pending: 0, totalRevenue: 0, totalCollected: 0 };
 
-        if (filteredStudents.length === 0) {
-            feesStudentListContainer.innerHTML = `<tr><td colspan="5" class="text-center text-gray-500 py-6">No students match the criteria.</td></tr>`;
-            return;
-        }
-        
-        filteredStudents.forEach(student => {
-            const isPaid = student.feeStatus === 'Paid';
-            const statusIcon = 'check'; // Kept 'check' as it's a heroicon, not an emoji
-            const statusClass = isPaid ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700';
-            const buttonClass = isPaid ? 'bg-yellow-500 hover:bg-yellow-600' : 'bg-green-500 hover:bg-green-600';
-            const buttonText = isPaid ? 'Mark Pending' : 'Mark Paid';
+    const allStudents = appState.blocks.flatMap(block => 
+        (block.rooms || []).flatMap(room => 
+            (room.students || []).map(student => ({
+                ...student,
+                roomNumber: room.roomNumber,
+                blockName: block.blockName
+            }))
+        )
+    );
+    
+    const filteredStudents = allStudents.filter(student => {
+        const statusMatch = (statusFilter === 'All') || (student.feeStatus === statusFilter);
+        const searchMatch = (student.name.toLowerCase().includes(searchTerm)) || 
+                             (student.rollNumber.toLowerCase().includes(searchTerm));
+        return statusMatch && searchMatch;
+    });
 
-            const rowHTML = `
-                <tr class="hover:bg-gray-50">
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="flex items-center">
-                            <div class="flex-shrink-0 h-10 w-10">
-                                <img class="h-10 w-10 rounded-full object-cover" src="${student.profileImageUrl || './default-avatar.png'}" alt="${student.name}">
-                            </div>
-                            <div class="ml-4">
-                                <div class="text-sm font-medium text-gray-900">${student.name}</div>
-                                <div class="text-sm text-gray-500">${student.email || 'N/A'}</div>
-                            </div>
-                        </div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-900">${student.rollNumber}</div>
-                        <div class="text-sm text-gray-500">${student.department || 'N/A'}</div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                        ${student.blockName} / <strong>${student.roomNumber}</strong>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${statusClass}">
-                            ${student.feeStatus}
-                        </span>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
-                        <button class="toggle-fee-status-btn px-3 py-2 text-white text-xs font-medium rounded-md shadow-sm ${buttonClass} flex items-center justify-center" data-student-id="${student._id}">
-                            <hero-icon-solid name="${statusIcon}" class="h-4 w-4 mr-1"></hero-icon-solid>
-                            ${buttonText}
-                        </button>
-                    </td>
-                </tr>
-            `;
-            feesStudentListContainer.innerHTML += rowHTML;
-        });
+    allStudents.forEach(s => {
+        stats[s.feeStatus]++;
+        stats.totalRevenue += Number(s.totalFee || 0);
+        stats.totalCollected += Number(s.paidAmount || 0);
+    });
+
+    // Update Summary UI
+    document.getElementById('fee-total-revenue').textContent = `₹${stats.totalRevenue.toLocaleString()}`;
+    document.getElementById('fee-total-collected').textContent = `₹${stats.totalCollected.toLocaleString()}`;
+    document.getElementById('fee-total-pending').textContent = `₹${(stats.totalRevenue - stats.totalCollected).toLocaleString()}`;
+
+    // Render Pie Chart
+    updateFeesChart(stats);
+
+    if (filteredStudents.length === 0) {
+        feesStudentListContainer.innerHTML = `<tr><td colspan="5" class="text-center text-gray-500 py-6">No data found.</td></tr>`;
+        return;
     }
+    
+    filteredStudents.forEach(student => {
+        const balance = (student.totalFee || 0) - (student.paidAmount || 0);
+        const statusColors = { Paid: 'bg-emerald-100 text-emerald-700', Partial: 'bg-amber-100 text-amber-700', Pending: 'bg-red-100 text-red-700' };
+
+        const rowHTML = `
+            <tr class="hover:bg-gray-50">
+                <td class="px-6 py-4">
+                    <div class="text-sm font-bold text-gray-900">${student.name}</div>
+                    <div class="text-xs text-gray-500">${student.rollNumber} | ${student.roomNumber}</div>
+                </td>
+                <td class="px-6 py-4">
+                    <div class="text-xs text-gray-400">Paid: <span class="text-emerald-600 font-bold">₹${student.paidAmount || 0}</span></div>
+                    <div class="text-xs text-gray-400">Total: ₹${student.totalFee || 0}</div>
+                    <div class="text-xs font-black text-red-500">Due: ₹${balance}</div>
+                </td>
+                <td class="px-6 py-4">
+                    <div class="text-xs font-bold text-gray-700">${student.paymentMethod || 'N/A'}</div>
+                    <div class="text-[10px] text-gray-400 truncate w-24">${student.transactionId || ''}</div>
+                    ${student.feeReceiptUrl ? `<a href="${student.feeReceiptUrl}" target="_blank" class="text-[10px] text-blue-600 underline">View Receipt</a>` : ''}
+                </td>
+                <td class="px-6 py-4">
+                    <span class="px-2 py-1 text-[10px] font-black rounded-full ${statusColors[student.feeStatus]} uppercase">
+                        ${student.feeStatus}
+                    </span>
+                </td>
+                <td class="px-6 py-4 text-center">
+                    ${student.feeStatus !== 'Paid' ? `
+                        <button class="send-reminder-btn px-3 py-1 bg-red-50 text-red-600 border border-red-200 rounded-md text-[10px] font-bold hover:bg-red-600 hover:text-white" data-email="${student.email}">
+                            SEND REMINDER
+                        </button>
+                    ` : '<span class="text-emerald-500 text-xs font-bold">CLEARED</span>'}
+                </td>
+            </tr>
+        `;
+        feesStudentListContainer.innerHTML += rowHTML;
+    });
+}
+
+function updateFeesChart(stats) {
+    const ctx = document.getElementById('feesPieChart').getContext('2d');
+    if (feesPieChart) feesPieChart.destroy();
+    
+    feesPieChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: ['Paid', 'Partial', 'Pending'],
+            datasets: [{
+                data: [stats.Paid, stats.Partial, stats.Pending],
+                backgroundColor: ['#10b981', '#f59e0b', '#ef4444'],
+                borderWidth: 0
+            }]
+        },
+        options: { plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } } } }
+    });
+}
+
+// Handler for Reminders
+document.getElementById('fees-student-list-container').addEventListener('click', (e) => {
+    const btn = e.target.closest('.send-reminder-btn');
+    if (btn) {
+        const email = btn.dataset.email;
+        alert(`Reminder Notice Sent to: ${email}\n\nSubject: Hostel Fee Payment Outstanding`);
+    }
+});
+  
     
     // --- 5. MODAL & VIEW-SWITCHING LOGIC ---
     function showModal(modalId) {
