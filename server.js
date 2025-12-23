@@ -555,116 +555,150 @@ app.patch("/api/rooms/:id", async (req, res) => {
 // ------------------------------------------
 // --- HOSTEL: STUDENT API ROUTES ---
 // ------------------------------------------
-app.post('/api/students', upload.single('profileImage'), async (req, res) => {
-    try {
-        const {
-            roomId, name, course, department, year, email, phone,
-            feeStatus, paymentMethod, joiningDate, username, password,
-            rollNumber, assets
-        } = req.body;
-        if (!roomId || !name || !username || !password || !rollNumber) {
-            return res.status(400).json({ success: false, message: 'Room, Name, Roll Number, Username, and Password are required.' });
-        }
-        const parentRoom = await Room.findById(roomId);
-        if (!parentRoom) {
-            return res.status(404).json({ success: false, message: 'Room not found.' });
-        }
-        if (parentRoom.students.length >= parentRoom.capacity) {
-            return res.status(400).json({ success: false, message: 'This room is already full.' });
-        }
-        const existingStudent = await Student.findOne({ $or: [{ username: username }, { rollNumber: rollNumber }] });
-        if (existingStudent) {
-            return res.status(400).json({ success: false, message: 'This username or roll number is already taken.' });
-        }
-        let assetsToAssign = [];
-        if (assets) {
-            assetsToAssign = JSON.parse(assets);
-        }
-        for (const item of assetsToAssign) {
-            const stockAsset = await Asset.findOne({ name: item.name });
-            if (!stockAsset || stockAsset.quantity < item.quantity) {
-                return res.status(400).json({ success: false, message: `Not enough stock for ${item.name}. Available: ${stockAsset?.quantity || 0}` });
-            }
-        }
-        for (const item of assetsToAssign) {
-            await Asset.updateOne(
-                { name: item.name },
-                { $inc: { quantity: -item.quantity } }
-            );
-        }
-        let imageUrl = '';
-        if (req.file) {
-            imageUrl = '/uploads/' + req.file.filename;
-        }
-        const newStudent = new Student({
-            room: roomId, name, course, department, year, email, phone,
-            feeStatus, paymentMethod, joiningDate, username, password,
-            rollNumber: rollNumber,
-            assets: assetsToAssign,
-            profileImageUrl: imageUrl,
-        });
-        await newStudent.save();
-        parentRoom.students.push(newStudent._id);
-        await parentRoom.save();
-        res.status(201).json({ success: true, message: 'Student added successfully!' });
-    } catch (error) {
-        console.error("❌ Error adding student:", error);
-        res.status(500).json({ success: false, message: 'Error adding student' });
-    }
+// POST: Register a new student with extended fee fields
+app.post('/api/students', upload.fields([
+    { name: 'profileImage', maxCount: 1 },
+    { name: 'feeReceipt', maxCount: 1 }
+]), async (req, res) => {
+    try {
+        const {
+            roomId, name, course, department, year, email, phone,
+            feeStatus, paymentMethod, joiningDate, username, password,
+            rollNumber, assets, 
+            // New Fee Fields from req.body
+            totalFee, paidAmount, bankName, transactionId 
+        } = req.body;
+
+        // Validation for required fields
+        if (!roomId || !name || !username || !password || !rollNumber) {
+            return res.status(400).json({ success: false, message: 'Room, Name, Roll Number, Username, and Password are required.' });
+        }
+
+        const parentRoom = await Room.findById(roomId);
+        if (!parentRoom) {
+            return res.status(404).json({ success: false, message: 'Room not found.' });
+        }
+
+        if (parentRoom.students.length >= parentRoom.capacity) {
+            return res.status(400).json({ success: false, message: 'This room is already full.' });
+        }
+
+        const existingStudent = await Student.findOne({ $or: [{ username: username }, { rollNumber: rollNumber }] });
+        if (existingStudent) {
+            return res.status(400).json({ success: false, message: 'This username or roll number is already taken.' });
+        }
+
+        // Handle Asset Logic
+        let assetsToAssign = [];
+        if (assets) {
+            assetsToAssign = JSON.parse(assets);
+        }
+
+        for (const item of assetsToAssign) {
+            const stockAsset = await Asset.findOne({ name: item.name });
+            if (!stockAsset || stockAsset.quantity < item.quantity) {
+                return res.status(400).json({ success: false, message: `Not enough stock for ${item.name}. Available: ${stockAsset?.quantity || 0}` });
+            }
+        }
+
+        for (const item of assetsToAssign) {
+            await Asset.updateOne(
+                { name: item.name },
+                { $inc: { quantity: -item.quantity } }
+            );
+        }
+
+        // Handle File Uploads
+        let profileImageUrl = '';
+        let feeReceiptUrl = '';
+
+        if (req.files) {
+            if (req.files['profileImage']) {
+                profileImageUrl = '/uploads/' + req.files['profileImage'][0].filename;
+            }
+            if (req.files['feeReceipt']) {
+                feeReceiptUrl = '/uploads/' + req.files['feeReceipt'][0].filename;
+            }
+        }
+
+        // Save New Student with New Fields
+        const newStudent = new Student({
+            room: roomId, 
+            name, course, department, year, email, phone,
+            feeStatus, paymentMethod, joiningDate, username, password,
+            rollNumber: rollNumber,
+            assets: assetsToAssign,
+            profileImageUrl: profileImageUrl,
+            // New Fee Fields
+            totalFee: Number(totalFee) || 0,
+            paidAmount: Number(paidAmount) || 0,
+            bankName,
+            transactionId,
+            feeReceiptUrl: feeReceiptUrl
+        });
+
+        await newStudent.save();
+
+        parentRoom.students.push(newStudent._id);
+        await parentRoom.save();
+
+        res.status(201).json({ success: true, message: 'Student added successfully!' });
+    } catch (error) {
+        console.error("❌ Error adding student:", error);
+        res.status(500).json({ success: false, message: 'Error adding student' });
+    }
 });
 
+// GET: Fetch full student profile including new fee data
 app.get('/api/student/:id', async (req, res) => {
-    try {
-        const studentId = req.params.id;
-        const student = await Student.findById(studentId);
-            
-        if (!student) {
-            return res.status(404).json({ success: false, message: 'Student not found.' });
-        }
+    try {
+        const studentId = req.params.id;
+        const student = await Student.findById(studentId);
+            
+        if (!student) {
+            return res.status(404).json({ success: false, message: 'Student not found.' });
+        }
 
-        const room = await Room.findById(student.room);
-        if (!room) {
-            return res.status(404).json({ success: false, message: 'Room not found for student.' });
-        }
+        const room = await Room.findById(student.room);
+        if (!room) {
+            return res.status(404).json({ success: false, message: 'Room not found for student.' });
+        }
 
-        const block = await Block.findById(room.block);
-        if (!block) {
-            return res.status(404).json({ success: false, message: 'Block not found for room.' });
-        }
+        const block = await Block.findById(room.block);
+        if (!block) {
+            return res.status(404).json({ success: false, message: 'Block not found for room.' });
+        }
 
-        // Find roommates in the same room, excluding the student
-        const roommates = await Student.find({
-            room: room._id,
-            _id: { $ne: studentId } // $ne means "not equal"
-        });
+        const roommates = await Student.find({
+            room: room._id,
+            _id: { $ne: studentId }
+        });
 
-        // Fetch real attendance records
-        const realAttendance = await Attendance.find({ student: studentId })
-            .sort({ date: -1 })
-            .limit(30);
+        const realAttendance = await Attendance.find({ student: studentId })
+            .sort({ date: -1 })
+            .limit(30);
 
-        // Fetch REAL complaints from the database for this student
-        const realComplaints = await Complaint.find({ student: studentId })
-            .sort({ submissionDate: -1 }) // Show newest first
-            .limit(20);
-        
-        res.json({
-            success: true,
-            student: student,
-            room: room, // Send the full room object
-            blockName: block.blockName,
-            roommates: roommates,
-            attendance: realAttendance,
-            complaints: realComplaints,  // <-- Send the real data
-            roomNumber: room.roomNumber // Keep this for convenience
-        });
+        const realComplaints = await Complaint.find({ student: studentId })
+            .sort({ submissionDate: -1 })
+            .limit(20);
+        
+        // The 'student' object now automatically includes totalFee, paidAmount, etc.
+        res.json({
+            success: true,
+            student: student, 
+            room: room,
+            blockName: block.blockName,
+            roommates: roommates,
+            attendance: realAttendance,
+            complaints: realComplaints,
+            roomNumber: room.roomNumber
+        });
 
-    } catch (error) {
-        console.error("❌ Error fetching student profile:", error);
-        res.status(500).json({ success: false, message: 'Error fetching student profile' });
-    }
+    } catch (error) {
+        console.error("❌ Error fetching student profile:", error);
+        res.status(500).json({ success: false, message: 'Error fetching student profile' });
+    }
 });
-
 app.delete('/api/students/:id', async (req, res) => {
     try {
         const studentId = req.params.id;

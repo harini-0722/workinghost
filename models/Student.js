@@ -1,59 +1,38 @@
 // models/Student.js
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema; // Use Schema for consistency
+const Schema = mongoose.Schema;
 
 const studentSchema = new Schema({
-    name: {
-        type: String,
-        required: true,
-    },
-    rollNumber: {
-        type: String,
-        required: true,
-        unique: true,
-    },
-    username: {
-        type: String,
-        required: true,
-        unique: true,
-    },
-    password: {
-        type: String,
-        required: true,
-    },
-    room: {
-        type: Schema.Types.ObjectId,
-        ref: 'Room',
-        required: true
-    },
+    name: { type: String, required: true },
+    rollNumber: { type: String, required: true, unique: true },
+    username: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+    room: { type: Schema.Types.ObjectId, ref: 'Room', required: true },
     course: String,
     department: String,
     year: String,
     email: String,
     phone: String,
     joiningDate: Date,
-    feeStatus: {
-        type: String,
-        default: 'Pending'
-    },
+    
+    // --- UPDATED FEE FIELDS ---
+    feeStatus: { type: String, default: 'Pending' }, // "Pending", "Partial", "Paid"
+    totalFee: Number,
+    paidAmount: Number,
     paymentMethod: String,
-    profileImageUrl: {
-        type: String // Path to profile image, e.g., /uploads/student-123.jpg
-    },
-    // This stores a snapshot of assets assigned to the student
+    bankName: String,
+    transactionId: String,
+    feeReceiptUrl: String, // URL/Path to the uploaded receipt image
+    
+    profileImageUrl: String,
     assets: [{
         name: String,
         quantity: Number
     }],
-
-    // --- THIS IS THE FIX ---
-    // The complaints array must be INSIDE the schema definition
     complaints: [{
         type: Schema.Types.ObjectId,
         ref: 'Complaint'
     }]
-    
 }, { timestamps: true });
-
 
 module.exports = mongoose.model('Student', studentSchema);
