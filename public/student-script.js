@@ -353,6 +353,94 @@ async function loadExternalFees() {
             </div>`;
     }
 }
+// =========================================================================
+// FEE PORTAL LOGIC (Required for fees.html)
+// =========================================================================
+
+function initializeFeeLogic() {
+    if (!g_student) return;
+    
+    // Update Display IDs
+    const idDisplay = document.getElementById('student-id-display');
+    if (idDisplay) idDisplay.textContent = g_student.rollNumber || g_student._id.slice(-6);
+
+    // Calculate Amounts
+    const total = g_student.totalFee || 0;
+    const paid = g_student.paidAmount || 0;
+    const balance = Math.max(0, total - paid);
+
+    // Update UI Elements
+    if (document.getElementById('net-payable-amount')) {
+        document.getElementById('net-payable-amount').textContent = `₹${balance.toLocaleString('en-IN')}`;
+        document.getElementById('breakdown-total').textContent = `₹${total.toLocaleString('en-IN')}`;
+        document.getElementById('breakdown-paid').textContent = `₹${paid.toLocaleString('en-IN')}`;
+        document.getElementById('breakdown-balance').textContent = `₹${balance.toLocaleString('en-IN')}`;
+        document.getElementById('modal-pay-amount').textContent = `₹${balance.toLocaleString('en-IN')}`;
+    }
+
+    // Disable button if already paid
+    const payBtn = document.getElementById('final-pay-button');
+    if (payBtn && balance <= 0) {
+        payBtn.disabled = true;
+        payBtn.innerHTML = 'Fees Paid Successfully <i class="fas fa-check-circle ml-2"></i>';
+        payBtn.classList.replace('bg-indigo-600', 'bg-emerald-600');
+    }
+
+    populateFeeHistory();
+}
+
+function showPaymentPage() {
+    document.getElementById('payment-section-inner').classList.remove('hidden');
+}
+
+function hidePaymentPage() {
+    document.getElementById('payment-section-inner').classList.add('hidden');
+}
+
+async function processFeePayment() {
+    const method = document.querySelector('input[name="pay-method"]:checked').value;
+    const balance = (g_student.totalFee || 0) - (g_student.paidAmount || 0);
+    const transactionId = "TXN" + Math.random().toString(36).substr(2, 9).toUpperCase();
+
+    try {
+        const response = await fetch(`/api/student/${g_student._id}/pay-fees`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                amount: balance,
+                transactionId: transactionId,
+                method: method
+            })
+        });
+
+        const data = await response.json();
+        if (data.success) {
+            hidePaymentPage();
+            document.getElementById('inner-success-section').classList.remove('hidden');
+            document.getElementById('success-ref-id').textContent = `#${transactionId}`;
+            
+            // Refresh global data
+            await loadStudentData();
+        }
+    } catch (error) {
+        alert("Payment Failed: " + error.message);
+    }
+}
+
+function populateFeeHistory() {
+    const table = document.getElementById('payment-history-table');
+    if (!table || !g_student.paymentHistory) return;
+
+    table.innerHTML = g_student.paymentHistory.map(history => `
+        <tr class="border-b border-slate-50">
+            <td class="py-4">${new Date(history.date).toLocaleDateString()}</td>
+            <td class="py-4 font-mono text-xs">${history.transactionId}</td>
+            <td class="py-4">${history.method}</td>
+            <td class="py-4 font-bold">₹${history.amount.toLocaleString()}</td>
+            <td class="py-4 text-right"><span class="bg-emerald-100 text-emerald-700 px-2 py-1 rounded text-[10px]">SUCCESS</span></td>
+        </tr>
+    `).join('');
+}
 async function submitLeave() {
     const start = document.getElementById('leave-start').value;
     const end = document.getElementById('leave-end').value;
