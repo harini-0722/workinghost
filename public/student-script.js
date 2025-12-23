@@ -530,22 +530,34 @@ function updateActiveMenuItem(viewId) {
     }
 }
 
+// student-script.js
+
 function showView(viewId) {
     const views = document.querySelectorAll('.view');
+    
     views.forEach(view => {
         if (view.id === viewId) {
-            view.classList.remove('hidden', 'opacity-0', 'translate-x-20');
-            view.classList.add('opacity-100', 'translate-x-0');
-            view.style.display = 'block'; // Ensure block display
+            // Reset state for smooth fade-in
+            view.style.display = 'block';
+            view.classList.remove('hidden');
+            view.classList.add('opacity-0', 'transition-opacity', 'duration-500');
+            
+            // Trigger the fade-in after a micro-task
+            setTimeout(() => {
+                view.classList.remove('opacity-0');
+                view.classList.add('opacity-100');
+            }, 10);
         } else {
-            view.classList.add('hidden', 'opacity-0', 'translate-x-20');
-            view.classList.remove('opacity-100', 'translate-x-0');
-            view.style.display = 'none'; // Ensure hidden
+            // Hide others immediately to prevent layout shifts (the "blue lines")
+            view.classList.add('hidden');
+            view.style.display = 'none';
+            view.classList.remove('opacity-100');
         }
     });
+
     updateActiveMenuItem(viewId);
     
-    // Call correct functions for each view
+    // Call specific population functions
     if (viewId === 'student-details-view' || viewId === 'student-profile-view') {
         populateStudentProfileView();    
     } else if (viewId === 'student-room-view') {
@@ -684,6 +696,7 @@ function displayClubActivitiesOnDashboard() {
         `;
         container.innerHTML += activityHTML;
     });
+    
 }
 
 function displayAllActivities(filterType = 'All') {
@@ -854,7 +867,10 @@ function initializeDashboard() {
     if (openRequestsEl) {
         openRequestsEl.textContent = String(pendingComplaints.length).padStart(2, '0');
     }
-
+// At the end of displayClubActivitiesOnDashboard()
+const container = document.getElementById('club-activities-dashboard');
+container.classList.remove('opacity-0');
+container.classList.add('opacity-100');
     // 6. Display Club Activities (Now this will finally run!)
     displayClubActivitiesOnDashboard();
 }
