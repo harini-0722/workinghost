@@ -212,9 +212,12 @@ async function populateFeedbackHistory() {
         if (data.success && data.feedback.length > 0) {
             tableBody.innerHTML = '';
             data.feedback.forEach(f => {
+                // IMPORTANT: Use f.createdAt to match the model
+                const dateDisplay = f.createdAt ? formatDate(f.createdAt) : 'N/A';
+                
                 tableBody.innerHTML += `
                     <tr class="hover:bg-gray-50 transition duration-150">
-                        <td class="py-2 px-4 whitespace-nowrap text-xs text-accent-dark">${formatDate(f.createdAt)}</td>
+                        <td class="py-2 px-4 whitespace-nowrap text-xs text-accent-dark">${dateDisplay}</td>
                         <td class="py-2 px-4 whitespace-nowrap text-xs font-bold text-primary-blue">${f.category}</td>
                         <td class="py-2 px-4 text-xs text-secondary-gray italic truncate max-w-xs" title="${f.description}">
                             "${f.description}"

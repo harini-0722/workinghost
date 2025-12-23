@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
 
 const feedbackSchema = new mongoose.Schema({
-    studentId: {
+    student: { // Changed from studentId to student to match route
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Student', // Assuming your student model is named 'Student'
+        ref: 'Student',
         required: true
     },
     category: {
@@ -14,11 +14,11 @@ const feedbackSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    isAnonymous: {
+    anonymous: { // Changed from isAnonymous to anonymous
         type: Boolean,
         default: false
     },
-    date: {
+    createdAt: { // Changed from date to createdAt
         type: Date,
         default: Date.now
     }
