@@ -11,7 +11,7 @@ let g_complaints = [];
 let g_visitorRequests = []; 
 let g_clubActivities = []; 
 let g_leaveHistory = []; // ADDED: Store leave history
-
+let g_lostFoundItems = [];
 let g_attendanceStatus = { status: 'Checked Out', lastActionTime: null };
 
 // --- Mock data (Only for Lost & Found and Announcements now) ---
@@ -1441,35 +1441,91 @@ function populateVisitorRequestHistory() {
     });
 }
 
-function populateLostAndFound() {
+async function populateLostAndFound() {
     const tableBody = document.getElementById('lost-found-body');
-    tableBody.innerHTML = '';
-    
-    if (mockLostFound.length === 0) {
-            tableBody.innerHTML = `<tr><td colspan="4" class="py-8 text-center text-secondary-gray text-xs">No items reported found.</td></tr>`;
-            return;
-    }
-    
-    mockLostFound.forEach(item => {
-        const statusClass = item.status === 'Available' ? 'text-accent-green bg-green-50 border-green-100' : 'text-secondary-gray bg-gray-50 border-gray-200';
-        
-        tableBody.innerHTML += `
-            <tr class="hover:bg-gray-50 transition duration-150">
-                <td class="py-2 px-4 whitespace-nowrap text-xs font-bold text-accent-dark">
-                    <i class="fa-solid fa-box-open mr-2 text-primary-blue opacity-50"></i>${item.item}
-                </td>
-                <td class="py-2 px-4 whitespace-nowrap text-xs text-secondary-gray">${item.dateFound}</td>
-                <td class="py-2 px-4 whitespace-nowrap text-xs text-secondary-gray">${item.location}</td>
-                <td class="py-2 px-4 whitespace-nowrap">
-                    <span class="${statusClass} px-2 py-0.5 rounded text-[10px] font-bold border">
-                        ${item.status}
-                    </span>
-                </td>
-            </tr>
-        `;
-    });
-}
+    if (!tableBody) return;
 
+    tableBody.innerHTML = `
+        <tr>
+            <td colspan="4" class="py-8 text-center text-secondary-gray text-xs">
+                <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-primary-blue mx-auto mb-2"></div>
+                Searching inventory...
+            </td>
+        </tr>`;
+
+    try {
+        const response = await fetch('/api/lost-found/found-items');
+        const data = await response.json();
+
+        if (data.success) {
+            g_lostFoundItems = data.foundItems;
+            tableBody.innerHTML = '';
+
+            if (g_lostFoundItems.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="4" class="py-8 text-center text-secondary-gray text-xs">No items currently reported found.</td></tr>`;
+                return;
+            }
+
+            g_lostFoundItems.forEach(item => {
+                // Map DB status to UI styles
+                const statusStyles = {
+                    'Pending': 'text-info-yellow bg-yellow-50 border-yellow-100',
+                    'Retrieved': 'text-accent-green bg-green-50 border-green-100',
+                    'Closed': 'text-secondary-gray bg-gray-100 border-gray-200'
+                };
+                const statusClass = statusStyles[item.status] || statusStyles['Pending'];
+                
+                tableBody.innerHTML += `
+                    <tr class="hover:bg-gray-50 transition duration-150">
+                        <td class="py-2 px-4 whitespace-nowrap text-xs font-bold text-accent-dark">
+                            <i class="fa-solid fa-box-open mr-2 text-primary-blue opacity-50"></i>${item.itemName}
+                        </td>
+                        <td class="py-2 px-4 whitespace-nowrap text-xs text-secondary-gray">${formatDate(item.submissionDate)}</td>
+                        <td class="py-2 px-4 whitespace-nowrap text-xs text-secondary-gray">${item.location}</td>
+                        <td class="py-2 px-4 whitespace-nowrap">
+                            <span class="${statusClass} px-2 py-0.5 rounded text-[10px] font-bold border">
+                                ${item.status === 'Pending' ? 'Available' : item.status}
+                            </span>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+    } catch (error) {
+        console.error('Fetch Found Items Error:', error);
+        tableBody.innerHTML = `<tr><td colspan="4" class="py-8 text-center text-accent-red text-xs">Failed to load items.</td></tr>`;
+    }
+}
+// Replace the inline onsubmit for the lost item form in student.html 
+// OR replace it here in student-script.js:
+async function submitLostItem() {
+    const itemName = document.getElementById('lost-item-name').value;
+    const location = document.getElementById('lost-item-location').value;
+    const studentId = localStorage.getItem('currentStudentId');
+
+    if (!itemName || !location) {
+        alert('Please provide item name and last seen location.');
+        return;
+    }
+
+    try {
+        const response = await fetch('/api/lost-found/report-lost', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ studentId, itemName, lastSeenLocation: location })
+        });
+
+        const data = await response.json();
+        if (data.success) {
+            alert(data.message);
+            document.getElementById('lost-item-name').value = '';
+            document.getElementById('lost-item-location').value = '';
+            // Note: Reported lost items don't appear in the "Found" table until found by admin
+        }
+    } catch (error) {
+        alert('Error filing report: ' + error.message);
+    }
+}
 // --- Announcement Modal Functions ---
 function openAnnouncementsModal() {
     document.getElementById('announcement-modal').classList.remove('hidden');
