@@ -356,48 +356,12 @@ async function processFeePayment() {
         processingSection.classList.add('hidden');
     }
 }
-// --- Payment UI Toggles ---
-// --- Payment UI Toggles ---
-window.showPaymentPage = function() { 
-    document.getElementById('payment-section-inner').classList.remove('hidden'); 
-};
+// --- Globals for Fees (Attached to window for dynamic HTML scope) ---
 
-window.hidePaymentPage = function() { 
-    document.getElementById('payment-section-inner').classList.add('hidden'); 
-};
-
-window.switchFeeTab = function(type) {
-    document.querySelectorAll('#fees-wrapper .tab-content').forEach(el => el.classList.remove('active'));
-    document.getElementById('tab-' + type + '-inner').classList.add('active');
-    document.getElementById('btn-upi-inner').style.borderColor = (type === 'upi') ? '#4f46e5' : '#e2e8f0';
-    document.getElementById('btn-card-inner').style.borderColor = (type === 'card') ? '#4f46e5' : '#e2e8f0';
-    document.getElementById('check-upi-inner').style.opacity = (type === 'upi') ? '1' : '0';
-    document.getElementById('check-card-inner').style.opacity = (type === 'card') ? '1' : '0';
-};
-
-// --- Receipt Download Logic ---
-window.downloadInnerReceipt = function() {
-    const element = document.getElementById('inner-receipt-template');
-    element.classList.remove('hidden');
-    document.getElementById('inner-current-date').innerText = new Date().toLocaleDateString('en-IN');
-    
-    const opt = { 
-        margin: 0.5, 
-        filename: `Fee_Receipt_${g_student.rollNumber}.pdf`, 
-        image: { type: 'jpeg', quality: 0.98 }, 
-        html2canvas: { scale: 2 }, 
-        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' } 
-    };
-    
-    // Ensure html2pdf library is loaded in student.html
-    html2pdf().set(opt).from(element).save().then(() => { 
-        element.classList.add('hidden'); 
-    });
-};
-// --- Payment UI Controls ---
 window.showPaymentPage = function() {
+    if (!g_student) return;
     const balance = (g_student.totalFee || 0) - (g_student.paidAmount || 0);
-    document.getElementById('modal-pay-amount').textContent = `₹${balance.toLocaleString()}`;
+    document.getElementById('modal-pay-amount').textContent = `₹${balance.toLocaleString('en-IN')}`;
     document.getElementById('payment-section-inner').classList.remove('hidden');
 };
 
@@ -405,26 +369,23 @@ window.hidePaymentPage = function() {
     document.getElementById('payment-section-inner').classList.add('hidden');
 };
 
-// --- NEW: Initialize Fee Logic & History ---
 window.initializeFeeLogic = function() {
     if (!g_student) return;
 
     const balance = (g_student.totalFee || 0) - (g_student.paidAmount || 0);
     
-    // Update main text
+    // Update IDs inside the injected fees.html
     document.getElementById('student-id-display').textContent = g_student.rollNumber || 'N/A';
     document.getElementById('net-payable-amount').textContent = `₹${balance.toLocaleString('en-IN')}`;
     document.getElementById('breakdown-total').textContent = `₹${(g_student.totalFee || 0).toLocaleString('en-IN')}`;
     document.getElementById('breakdown-paid').textContent = `₹${(g_student.paidAmount || 0).toLocaleString('en-IN')}`;
     document.getElementById('breakdown-balance').textContent = `₹${balance.toLocaleString('en-IN')}`;
 
-    // Handle Pay Button State
     const payBtn = document.getElementById('final-pay-button');
     if (balance <= 0) {
         payBtn.textContent = "FEES ALREADY CLEARED ✅";
         payBtn.disabled = true;
         payBtn.classList.add('bg-emerald-500', 'cursor-not-allowed', 'opacity-70');
-        payBtn.classList.remove('bg-indigo-600', 'hover:bg-indigo-700');
     }
 
     // Populate Transaction History Table
@@ -436,7 +397,7 @@ window.initializeFeeLogic = function() {
                 <td class="py-4 font-mono text-indigo-600 font-black">${pay.transactionId || 'MANUAL'}</td>
                 <td class="py-4 text-slate-500">${pay.method || 'N/A'}</td>
                 <td class="py-4 text-slate-900 font-bold">₹${pay.amount.toLocaleString()}</td>
-                <td class="py-4 text-right"><span class="bg-emerald-50 text-emerald-600 px-2 py-1 rounded-lg text-[10px] font-black uppercase">Success</span></td>
+                <td class="py-4 text-right"><span class="bg-emerald-50 text-emerald-700 px-2 py-1 rounded-lg text-[10px] font-black uppercase">Success</span></td>
             </tr>
         `).join('');
     } else {
@@ -444,15 +405,14 @@ window.initializeFeeLogic = function() {
     }
 };
 
-// --- The Actual Payment API Call ---
 window.processFeePayment = async function() {
-    const payBtn = document.querySelector('#payment-section-inner button');
+    const payBtn = document.querySelector('#payment-section-inner button[onclick="processFeePayment()"]');
     payBtn.disabled = true;
     payBtn.textContent = "Processing Securely...";
 
     const amountToPay = (g_student.totalFee || 0) - (g_student.paidAmount || 0);
     const transactionId = "TXN" + Math.floor(100000 + Math.random() * 900000);
-    const selectedMethod = document.querySelector('input[name="pay-method"]:checked').value;
+    const selectedMethod = document.querySelector('input[name="pay-method"]:checked')?.value || 'UPI';
 
     try {
         const response = await fetch(`/api/student/${g_student._id}/pay-fees`, {
@@ -467,16 +427,16 @@ window.processFeePayment = async function() {
 
         const data = await response.json();
         if (data.success) {
-            // Update local student object to prevent extra fetches
+            // Update local state
             g_student.paidAmount = g_student.totalFee;
             g_student.feeStatus = 'Paid';
             
-            // Show Success UI
+            // Show Success Overlay
             document.getElementById('payment-section-inner').classList.add('hidden');
             document.getElementById('inner-success-section').classList.remove('hidden');
             document.getElementById('success-ref-id').textContent = `#${transactionId}`;
             
-            // Set Receipt Template info
+            // Prepare Receipt Template
             document.getElementById('receipt-student-name').textContent = g_student.name;
             document.getElementById('receipt-student-roll').textContent = g_student.rollNumber;
             document.getElementById('inner-current-date').textContent = new Date().toLocaleDateString();
@@ -484,20 +444,19 @@ window.processFeePayment = async function() {
             throw new Error(data.message);
         }
     } catch (err) {
-        alert("Payment Gateway Error: " + err.message);
+        alert("Payment Error: " + err.message);
         payBtn.disabled = false;
         payBtn.textContent = "COMPLETE PAYMENT";
     }
 };
 
-// --- Receipt Generation ---
 window.downloadInnerReceipt = function() {
     const element = document.getElementById('inner-receipt-template');
     element.classList.remove('hidden');
     
     const opt = {
         margin: 0.5,
-        filename: `IIT_Hostel_Receipt_${g_student.rollNumber}.pdf`,
+        filename: `IIT_Receipt_${g_student.rollNumber}.pdf`,
         image: { type: 'jpeg', quality: 0.98 },
         html2canvas: { scale: 3 },
         jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
@@ -507,6 +466,7 @@ window.downloadInnerReceipt = function() {
         element.classList.add('hidden');
     });
 };
+
 async function submitLeave() {
     const start = document.getElementById('leave-start').value;
     const end = document.getElementById('leave-end').value;

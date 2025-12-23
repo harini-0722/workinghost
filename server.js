@@ -718,7 +718,32 @@ app.delete('/api/students/:id', async (req, res) => {
         res.status(500).json({ success: false, message: 'Error removing student' });
     }
 });
+app.post('/api/student/:id/pay-fees', async (req, res) => {
+    try {
+        const { amount, transactionId, method } = req.body;
+        const student = await Student.findById(req.params.id);
 
+        if (!student) return res.status(404).json({ success: false, message: 'Student not found' });
+
+        // Update main record
+        student.paidAmount = student.totalFee; 
+        student.feeStatus = 'Paid';
+        
+        // Push to History
+        student.paymentHistory.push({
+            amount: amount,
+            transactionId: transactionId,
+            method: method,
+            status: 'Success',
+            date: new Date()
+        });
+
+        await student.save();
+        res.json({ success: true, message: 'Payment recorded successfully' });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
 // ------------------------------------------
 // --- HOSTEL: CLUB ACTIVITY API ROUTES ---
 // ------------------------------------------
@@ -879,33 +904,7 @@ app.post('/api/attendance/toggle', async (req, res) => {
         res.status(500).json({ success: false, message: 'Server error' });
     }
 });
-app.post('/api/student/:id/pay-fees', async (req, res) => {
-    try {
-        const { amount, transactionId, method } = req.body;
-        const student = await Student.findById(req.params.id);
 
-        if (!student) return res.status(404).json({ success: false, message: 'Student not found' });
-
-        // Update fee fields
-        student.paidAmount = student.totalFee; // Full payment logic
-        student.feeStatus = 'Paid';
-        student.transactionId = transactionId;
-        student.paymentMethod = method;
-        
-        // Add to history
-        student.paymentHistory.push({
-            amount,
-            transactionId,
-            method,
-            status: 'Success'
-        });
-
-        await student.save();
-        res.json({ success: true, message: 'Payment recorded successfully' });
-    } catch (err) {
-        res.status(500).json({ success: false, message: err.message });
-    }
-});
 // --- Server Start ---
 
 app.get("/", (req, res) => {
