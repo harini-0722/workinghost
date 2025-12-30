@@ -2982,11 +2982,7 @@ function prepareRoomModalForAdd() {
         complaintsView.classList.remove('hidden');
         loadComplaintsData();
     });
-    showLostfoundViewBtn.addEventListener('click', () => {
-    hideAllViews();
-    lostfoundView.classList.remove('hidden');
-    loadLostFoundData(); // Fetches data from /api/lost-found/all-items
-});
+    
     backToDashboardFromComplaintsBtn.addEventListener('click', () => {
         hideAllViews();
         dashboardView.classList.remove('hidden');
