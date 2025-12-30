@@ -63,6 +63,11 @@ const showFeedbackViewBtn = document.getElementById('show-feedback-view-btn');
 const backToDashboardFromFeedbackBtn = document.getElementById('back-to-dashboard-from-feedback-btn');
 const feedbackListContainer = document.getElementById('feedback-list-container');
 //lost and found 
+const lostfoundView = document.getElementById('lostfound-view');
+const showLostfoundViewBtn = document.getElementById('show-lostfound-view-btn');
+const backToDashboardFromLostfoundBtn = document.getElementById('back-to-dashboard-from-lostfound-btn');
+const lostfoundListContainer = document.getElementById('lostfound-list-container');
+const addFoundForm = document.getElementById('add-found-form');
     // NEW: Leave Request Elements
     const leaveView = document.getElementById('leave-view');
     const showLeaveViewBtn = document.getElementById('show-leave-view-btn');
@@ -249,7 +254,57 @@ function getAvailableRoomOptionsHTML(allRooms, roomToExcludeId) {
 
     return optionsHTML;
 }
-    // --- NEW: LEAVE MANAGEMENT FUNCTIONS ---
+   async function loadLostFoundData() {
+    try {
+        console.log('🔄 Loading Lost & Found data...');
+        const res = await fetch('/api/lost-found/all-items'); // Fetch all items for admin
+        const data = await res.json();
+        
+        if (data.success) {
+            renderLostFoundTable(data.items);
+        } else {
+            throw new Error(data.message);
+        }
+    } catch (error) {
+        console.error('❌ Failed to load Lost & Found data:', error);
+        lostfoundListContainer.innerHTML = `<tr><td colspan="6" class="text-center text-red-500 py-4">Error loading items.</td></tr>`;
+    }
+}
+
+function renderLostFoundTable(items) {
+    lostfoundListContainer.innerHTML = '';
+    
+    if (!items || items.length === 0) {
+        lostfoundListContainer.innerHTML = `<tr><td colspan="6" class="text-center text-gray-500 py-6">No registry entries found.</td></tr>`;
+        return;
+    }
+
+    items.forEach(item => {
+        const typeClass = item.type === 'Lost' ? 'bg-red-100 text-red-700' : 'bg-emerald-100 text-emerald-700';
+        const reporter = item.studentId ? `${item.studentId.name}` : 'Staff/Admin'; //
+
+        const rowHTML = `
+            <tr class="hover:bg-gray-50 border-b">
+                <td class="px-6 py-4 whitespace-nowrap font-bold text-gray-900">${item.itemName}</td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="px-2 py-1 rounded text-xs font-bold ${typeClass}">${item.type}</span>
+                    <div class="text-[10px] text-gray-400 mt-1">By: ${reporter}</div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">${item.location}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-xs text-gray-500">${new Date(item.submissionDate).toLocaleDateString()}</td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase ${item.status === 'Pending' ? 'bg-yellow-100 text-yellow-700' : 'bg-blue-100 text-blue-700'}">
+                        ${item.status}
+                    </span>
+                </td>
+                <td class="px-6 py-4 text-center">
+                    <button onclick="updateLostItemStatus('${item._id}', 'Retrieved')" class="text-indigo-600 hover:underline text-xs font-bold">MARK CLAIMED</button>
+                </td>
+            </tr>
+        `;
+        lostfoundListContainer.innerHTML += rowHTML;
+    });
+} // --- NEW: LEAVE MANAGEMENT FUNCTIONS ---
 
     // Function to load all leave requests from the backend API
     async function loadLeaveRequests() {
@@ -1968,6 +2023,7 @@ function hideModal(modalId) {
     leaveView.classList.add('hidden');
     // ADD THIS LINE
     lostfoundView.classList.add('hidden'); 
+    
 }
 
     document.addEventListener('click', (e) => {
@@ -2897,7 +2953,18 @@ function prepareRoomModalForAdd() {
         hideAllViews();
         dashboardView.classList.remove('hidden');
     });
+// Open Lost & Found View from Navbar
+showLostfoundViewBtn.addEventListener('click', () => {
+    hideAllViews();
+    lostfoundView.classList.remove('hidden');
+    loadLostFoundData(); // You need to create this function to fetch data
+});
 
+// Back to Dashboard button logic
+document.getElementById('back-to-dashboard-from-lostfound-btn').addEventListener('click', () => {
+    hideAllViews();
+    dashboardView.classList.remove('hidden');
+});
     // NEW: Leave View Listeners
     showLeaveViewBtn.addEventListener('click', () => {
         hideAllViews();
