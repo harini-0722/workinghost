@@ -304,6 +304,29 @@ function renderLostFoundTable(items) {
         `;
         lostfoundListContainer.innerHTML += rowHTML;
     });
+    // Add this inside your script.js logic
+window.updateLostItemStatus = async (id, status) => {
+    if(!confirm(`Are you sure you want to mark this item as ${status}?`)) return;
+
+    try {
+        const res = await fetch(`/api/lost-found/${id}/status`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ status })
+        });
+        
+        const data = await res.json();
+        if (data.success) {
+            alert('Status updated successfully');
+            loadLostFoundData(); // Refresh the table
+        } else {
+            throw new Error(data.message);
+        }
+    } catch (err) {
+        console.error("Update Status Error:", err);
+        alert('Failed to update status.');
+    }
+};
 } // --- NEW: LEAVE MANAGEMENT FUNCTIONS ---
 
     // Function to load all leave requests from the backend API
