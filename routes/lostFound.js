@@ -46,8 +46,33 @@ router.get('/found-items', async (req, res) => {
 });
 
 // BONUS POST: (Optional) If you want to test adding a "Found" item to see it in the table
-// You can use Postman to hit this endpoint
-router.post('/add-found-item', async (req, res) => {
+// NEW: Fetch ALL items (for Admin View)
+router.get('/all-items', async (req, res) => {
+    try {
+        // Fetch all items, populate student details if available
+        const items = await LostFound.find()
+            .populate('studentId', 'name rollNumber')
+            .sort({ submissionDate: -1 });
+
+        res.status(200).json({ success: true, items });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Error fetching all items.' });
+    }
+});
+
+// NEW: Admin marks an item as "Retrieved" or "Closed"
+router.patch('/:id/status', async (req, res) => {
+    try {
+        const { status } = req.body;
+        const item = await LostFound.findByIdAndUpdate(req.params.id, { status }, { new: true });
+        res.json({ success: true, message: `Item marked as ${status}`, item });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Update failed.' });
+    }
+});
+
+// NEW: Admin adds a FOUND item manually
+router.post('/add-found', async (req, res) => {
     try {
         const { itemName, location } = req.body;
         const newItem = new LostFound({
@@ -57,8 +82,10 @@ router.post('/add-found-item', async (req, res) => {
             status: 'Pending'
         });
         await newItem.save();
-        res.json({ success: true, message: 'Found item added' });
-    } catch(err) { res.status(500).json(err); }
+        res.status(201).json({ success: true, message: 'Found item recorded!' });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Failed to record item.' });
+    }
 });
 
 module.exports = router;
