@@ -174,9 +174,14 @@ async function submitFeedback() {
     const category = document.getElementById('feedback-category').value;
     const description = document.getElementById('feedback-description').value;
     const anonymous = document.getElementById('feedback-anonymous').checked;
-    const studentId = g_student._id;
 
-    if (!description) {
+    // Check if g_student is actually loaded
+    if (!g_student || !g_student._id) {
+        alert('Error: Student session not found. Please log in again.');
+        return;
+    }
+
+    if (!description || description.trim() === "") {
         alert('Please enter your feedback message.');
         return;
     }
@@ -185,21 +190,24 @@ async function submitFeedback() {
         const response = await fetch('/api/feedback', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ studentId, category, description, anonymous })
+            body: JSON.stringify({ 
+                studentId: g_student._id, // This matches what the backend expects
+                category, 
+                description, 
+                anonymous 
+            })
         });
 
         const data = await response.json();
         if (data.success) {
             alert('Feedback submitted successfully!');
             document.getElementById('feedback-form').reset();
-            populateFeedbackHistory(); // Refresh the table automatically
+            populateFeedbackHistory(); // Refresh the table
         }
     } catch (error) {
         console.error('Feedback Submission Error:', error);
-        alert('Failed to submit feedback.');
     }
 }
-
 // Function to fetch and display feedback history in the table
 async function populateFeedbackHistory() {
     const tableBody = document.getElementById('student-feedback-history');

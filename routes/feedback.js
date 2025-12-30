@@ -24,12 +24,12 @@ router.post('/', async (req, res) => {
         res.status(500).json({ success: false, message: 'Error saving feedback.', error: error.message });
     }
 });
-
 router.get('/student/:studentId', async (req, res) => {
     try {
         const { studentId } = req.params;
-        // Find feedback submitted by this student, sorted by newest first
-        const feedback = await Feedback.find({ studentId }).sort({ createdAt: -1 });
+        
+        // FIX: Change 'studentId' to 'student' to match how you saved it in the POST route
+        const feedback = await Feedback.find({ student: studentId }).sort({ createdAt: -1 });
         
         res.json({ 
             success: true, 
