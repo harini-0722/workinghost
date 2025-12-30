@@ -25,15 +25,12 @@ router.post('/', async (req, res) => {
     }
 });
 
-// GET: Fetch feedback for a specific student
-router.get('/student/:studentId', async (req, res) => {
+router.get('/', async (req, res) => {
     try {
-        const feedback = await Feedback.find({ student: req.params.studentId })
-            .sort({ createdAt: -1 });
+        const feedback = await Feedback.find().sort({ createdAt: -1 });
         res.json({ success: true, feedback });
-    } catch (error) {
-        console.error("❌ Feedback Fetch Error:", error);
-        res.status(500).json({ success: false, message: 'Error fetching feedback.' });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
     }
 });
 

@@ -18,6 +18,7 @@ const staffRoutes = require('./routes/staffRoutes');
 const leaveRoutes = require('./routes/leaveRoutes');
 const feedbackRoutes = require('./routes/feedback');
 const lostFoundRoutes = require('./routes/lostFound');
+const feedbackRoutes = require('./routes/feedback');
 
 // --- IMPORT MODELS ---
 const Room = require('./models/Room');
@@ -29,6 +30,9 @@ const Asset = require('./models/Asset');
 const User = require('./models/user'); 
 const Complaint = require('./models/Complaint');
 const Feedback = require('./models/Feedback');
+
+
+module.exports = router;
 const Staff = require('./models/Staff');
 const LeaveRequest = require('./models/LeaveRequest');
 const app = express();
@@ -65,6 +69,7 @@ app.use('/api', gymkhanaRoutes); // <-- THE CRITICAL FIX IS HERE
 app.use('/api', complaintRoutes);
 app.use('/api/visitor-request', visitorRoutes);
 app.use('/api/staff', staffRoutes);
+app.use('/api/feedback', feedbackRoutes);
 app.use('/api/feedback', feedbackRoutes);
 app.use('/api/lost-found', lostFoundRoutes);
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
@@ -906,18 +911,7 @@ app.post('/api/attendance/toggle', async (req, res) => {
         res.status(500).json({ success: false, message: 'Server error' });
     }
 });
-//
-// This handles GET /api/feedback because of the prefix in server.js
-router.get('/', async (req, res) => {
-    try {
-        const feedback = await Feedback.find().sort({ createdAt: -1 });
-        res.json({ success: true, feedback });
-    } catch (err) {
-        res.status(500).json({ success: false, message: err.message });
-    }
-});
 
-module.exports = router;
 // --- Server Start ---
 
 app.get("/", (req, res) => {
