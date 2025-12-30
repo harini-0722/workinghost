@@ -31,8 +31,6 @@ const User = require('./models/user');
 const Complaint = require('./models/Complaint');
 const Feedback = require('./models/Feedback');
 
-
-module.exports = router;
 const Staff = require('./models/Staff');
 const LeaveRequest = require('./models/LeaveRequest');
 const app = express();
