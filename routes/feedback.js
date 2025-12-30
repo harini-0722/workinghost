@@ -25,12 +25,19 @@ router.post('/', async (req, res) => {
     }
 });
 
-router.get('/', async (req, res) => {
+router.get('/student/:studentId', async (req, res) => {
     try {
-        const feedback = await Feedback.find().sort({ createdAt: -1 });
-        res.json({ success: true, feedback });
+        const { studentId } = req.params;
+        // Find feedback submitted by this student, sorted by newest first
+        const feedback = await Feedback.find({ studentId }).sort({ createdAt: -1 });
+        
+        res.json({ 
+            success: true, 
+            feedback 
+        });
     } catch (err) {
-        res.status(500).json({ success: false, message: err.message });
+        console.error("Error fetching student feedback:", err);
+        res.status(500).json({ success: false, message: 'Server error fetching history.' });
     }
 });
 
