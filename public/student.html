@@ -672,23 +672,23 @@
                         <i class="fa-solid fa-circle-exclamation mr-2"></i> Report Lost Item
                     </h3>
                 </div>
-                <form id="lost-found-form" onsubmit="event.preventDefault(); submitLostReport();" class="p-4 space-y-3"></form>
-                    <div>
-                        <label class="block text-xs font-bold text-secondary-gray mb-1">Item Name</label>
-                        <input type="text" id="lost-item-name" placeholder="e.g., Blue Umbrella" class="w-full p-2 text-sm border border-gray-200 rounded-lg focus:ring-1 focus:ring-accent-red bg-gray-50" required>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-secondary-gray mb-1">Last Seen Location</label>
-                        <input type="text" id="lost-item-location" placeholder="e.g., Common Room" class="w-full p-2 text-sm border border-gray-200 rounded-lg focus:ring-1 focus:ring-accent-red bg-gray-50">
-                    </div>
-                     <div>
-                        <label class="block text-xs font-bold text-secondary-gray mb-1">Date Lost</label>
-                        <input type="date" class="w-full p-2 text-sm border border-gray-200 rounded-lg focus:ring-1 focus:ring-accent-red bg-gray-50">
-                    </div>
-                    <button type="submit" class="w-full py-2 rounded-lg bg-accent-red text-white text-xs font-bold shadow-sm hover:bg-red-700 transition flex justify-center items-center mt-2">
-                        <i class="fa-solid fa-bullhorn mr-2"></i> Report Lost
-                    </button>
-                </form>
+               <form id="lost-found-form" onsubmit="event.preventDefault(); submitLostReport();" class="p-4 space-y-3">
+    <div>
+        <label class="block text-xs font-bold text-secondary-gray mb-1">Item Name</label>
+        <input type="text" id="lost-item-name" placeholder="e.g., Blue Umbrella" class="w-full p-2 text-sm border border-gray-200 rounded-lg focus:ring-1 focus:ring-accent-red bg-gray-50" required>
+    </div>
+    <div>
+        <label class="block text-xs font-bold text-secondary-gray mb-1">Last Seen Location</label>
+        <input type="text" id="lost-item-location" placeholder="e.g., Common Room" class="w-full p-2 text-sm border border-gray-200 rounded-lg focus:ring-1 focus:ring-accent-red bg-gray-50" required>
+    </div>
+     <div>
+        <label class="block text-xs font-bold text-secondary-gray mb-1">Date Lost</label>
+        <input type="date" id="lost-item-date" class="w-full p-2 text-sm border border-gray-200 rounded-lg focus:ring-1 focus:ring-accent-red bg-gray-50" required>
+    </div>
+    <button type="submit" class="w-full py-2 rounded-lg bg-accent-red text-white text-xs font-bold shadow-sm hover:bg-red-700 transition flex justify-center items-center mt-2">
+        <i class="fa-solid fa-bullhorn mr-2"></i> Report Lost
+    </button>
+</form>
             </div>
 
             <div class="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-100 flex flex-col overflow-hidden">

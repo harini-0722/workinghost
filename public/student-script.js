@@ -1434,9 +1434,15 @@ function populateVisitorRequestHistory() {
 // Function to submit a LOST item report to the DB
 // Function to submit a LOST item report to the DB
 async function submitLostReport() {
-    const itemName = document.getElementById('lost-item-name').value;
-    const lastSeenLocation = document.getElementById('lost-item-location').value;
-    const studentId = g_student._id;
+    const nameInput = document.getElementById('lost-item-name');
+    const locationInput = document.getElementById('lost-item-location');
+    const itemName = nameInput.value;
+    const lastSeenLocation = locationInput.value;
+    
+    if (!g_student || !g_student._id) {
+        alert('User session not found. Please log in again.');
+        return;
+    }
 
     if (!itemName || !lastSeenLocation) {
         alert('Please fill in all fields.');
@@ -1447,15 +1453,24 @@ async function submitLostReport() {
         const response = await fetch('/api/lost-found/report-lost', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ studentId, itemName, lastSeenLocation })
+            body: JSON.stringify({ 
+                studentId: g_student._id, 
+                itemName, 
+                lastSeenLocation 
+            })
         });
 
         const data = await response.json();
         if (data.success) {
             alert('Lost report filed successfully! Admin has been notified.');
-            document.getElementById('lost-item-name').value = '';
-            document.getElementById('lost-item-location').value = '';
-            // Refresh the "Recently Found Items" table
+            
+            // FIX: Correctly reset the form inputs
+            nameInput.value = '';
+            locationInput.value = '';
+            const dateInput = document.getElementById('lost-item-date');
+            if(dateInput) dateInput.value = '';
+
+            // Refresh the Registry table automatically
             populateLostAndFound();
         }
     } catch (err) {
