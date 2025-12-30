@@ -59,7 +59,29 @@ router.get('/all-items', async (req, res) => {
         res.status(500).json({ success: false, message: 'Error fetching all items.' });
     }
 });
+// GET: Fetch unified registry for a specific student portal
+router.get('/student-registry/:studentId', async (req, res) => {
+    try {
+        const { studentId } = req.params;
+        // Find items that were either:
+        // 1. Reported LOST by this specific student OR
+        // 2. Reported as FOUND by the admin/staff
+        const items = await LostFound.find({
+            $or: [
+                { studentId: studentId, type: 'Lost' },
+                { type: 'Found' }
+            ]
+        }).sort({ submissionDate: -1 });
 
+        res.status(200).json({ 
+            success: true, 
+            items 
+        });
+    } catch (error) {
+        console.error('Fetch Registry Error:', error);
+        res.status(500).json({ success: false, message: 'Server error fetching registry.' });
+    }
+});
 // NEW: Admin marks an item as "Retrieved" or "Closed"
 router.patch('/:id/status', async (req, res) => {
     try {

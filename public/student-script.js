@@ -1482,30 +1482,38 @@ async function submitLostReport() {
 // Function to fetch FOUND items from DB and display in the table
 async function populateLostAndFound() {
     const tableBody = document.getElementById('lost-found-body');
-    if (!tableBody) return;
+    if (!tableBody || !g_student) return;
 
-    tableBody.innerHTML = `<tr><td colspan="4" class="py-4 text-center text-xs text-gray-400">Loading found items...</td></tr>`;
+    tableBody.innerHTML = `<tr><td colspan="4" class="py-4 text-center text-xs text-gray-400">Loading registry...</td></tr>`;
     
     try {
-        // Fetch items from the DB
-        const response = await fetch('/api/lost-found/found-items');
+        // Call the new unified registry route
+        const response = await fetch(`/api/lost-found/student-registry/${g_student._id}`);
         const data = await response.json();
 
-        if (data.success && data.foundItems && data.foundItems.length > 0) {
+        if (data.success && data.items && data.items.length > 0) {
             tableBody.innerHTML = ''; 
-            data.foundItems.forEach(item => {
-                // If admin marked it as 'Retrieved' in script.js, we show 'Claimed' here
+            data.items.forEach(item => {
+                // UI LOGIC: Map backend statuses to student-friendly labels
                 const isClaimed = item.status === 'Retrieved' || item.status === 'Closed';
-                const statusText = isClaimed ? 'Claimed' : 'Available';
+                let statusText = isClaimed ? 'Claimed' : (item.type === 'Lost' ? 'Searching' : 'Available');
                 
+                // STYLING: Define colors based on status
                 const statusClass = isClaimed 
                     ? 'text-secondary-gray bg-gray-50 border-gray-200 opacity-60' 
-                    : 'text-accent-green bg-green-50 border-green-100';
+                    : (item.type === 'Lost' ? 'text-accent-red bg-red-50 border-red-100' : 'text-accent-green bg-green-50 border-green-100');
                 
+                // Identify items reported by the current student
+                const isMyReport = item.studentId === g_student._id;
+
                 tableBody.innerHTML += `
                     <tr class="hover:bg-gray-50 transition duration-150">
                         <td class="py-2 px-4 whitespace-nowrap text-xs font-bold text-accent-dark">
-                            <i class="fa-solid fa-box-open mr-2 text-primary-blue opacity-50"></i>${item.itemName}
+                            <div class="flex items-center">
+                                <i class="fa-solid ${item.type === 'Lost' ? 'fa-magnifying-glass' : 'fa-box-open'} mr-2 text-primary-blue opacity-50"></i>
+                                ${item.itemName}
+                                ${isMyReport ? '<span class="ml-2 text-[8px] bg-blue-100 text-blue-600 px-1 rounded">MY REPORT</span>' : ''}
+                            </div>
                         </td>
                         <td class="py-2 px-4 whitespace-nowrap text-xs text-secondary-gray">${formatDate(item.submissionDate)}</td>
                         <td class="py-2 px-4 whitespace-nowrap text-xs text-secondary-gray">${item.location}</td>
@@ -1518,7 +1526,7 @@ async function populateLostAndFound() {
                 `;
             });
         } else {
-            tableBody.innerHTML = `<tr><td colspan="4" class="py-8 text-center text-secondary-gray text-xs">No items reported found.</td></tr>`;
+            tableBody.innerHTML = `<tr><td colspan="4" class="py-8 text-center text-secondary-gray text-xs">No items in registry.</td></tr>`;
         }
     } catch (error) {
         console.error('Fetch Lost & Found Error:', error);
