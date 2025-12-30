@@ -2056,7 +2056,8 @@ function hideModal(modalId) {
         complaintsView.classList.add('hidden');
         feedbackView.classList.add('hidden');
         leaveView.classList.add('hidden'); // NEW: Hide leave view
-        reassignStudentsModal.classList.add('hidden'); // NEW: Hide reassign modal
+        reassignStudentsModal.classList.add('hidden'); 
+        lostfoundView.classList.add('hidden');// NEW: Hide reassign modal
     }
 
     document.addEventListener('click', (e) => {
@@ -2981,7 +2982,11 @@ function prepareRoomModalForAdd() {
         complaintsView.classList.remove('hidden');
         loadComplaintsData();
     });
-    
+    showLostfoundViewBtn.addEventListener('click', () => {
+    hideAllViews();
+    lostfoundView.classList.remove('hidden');
+    loadLostFoundData(); // Fetches data from /api/lost-found/all-items
+});
     backToDashboardFromComplaintsBtn.addEventListener('click', () => {
         hideAllViews();
         dashboardView.classList.remove('hidden');
