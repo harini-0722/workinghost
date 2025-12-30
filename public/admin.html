@@ -222,40 +222,7 @@
         <i class="fa-solid fa-magnifying-glass text-gray-400 group-hover:text-amber-600"></i>
         Lost & Found
     </button>
-<div id="lostfound-view" class="hidden">
-    <div class="relative mb-6 pb-4">
-        <button id="back-to-dashboard-from-lostfound-btn" class="flex items-center text-sm font-medium text-gray-600 hover:text-gray-900">
-            <i class="fa-solid fa-arrow-left mr-2"></i> Back to Dashboard
-        </button>
-        <div class="flex items-center justify-center absolute inset-x-0 top-0 -z-10">
-            <h1 class="text-xl sm:text-3xl font-bold text-amber-700">Lost & Found Registry</h1>
-        </div>
-        <div class="absolute right-0 top-0">
-             <button id="show-add-found-modal-btn" class="px-4 py-2 bg-amber-600 text-white text-xs font-bold rounded-lg shadow hover:bg-amber-700 transition">
-                <i class="fa-solid fa-plus mr-2"></i> Record Found Item
-            </button>
-        </div>
-    </div>
 
-    <div class="bg-white rounded-lg shadow-lg overflow-hidden">
-        <div class="overflow-x-auto">
-            <table class="w-full min-w-max">
-                <thead class="bg-gray-100 border-b">
-                    <tr>
-                        <th class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Item Details</th>
-                        <th class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Reporter / Type</th>
-                        <th class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Location</th>
-                        <th class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Date</th>
-                        <th class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Status</th>
-                        <th class="px-6 py-3 text-center text-xs font-bold text-gray-600 uppercase">Action</th>
-                    </tr>
-                </thead>
-                <tbody id="lostfound-list-container" class="divide-y divide-gray-200">
-                    </tbody>
-            </table>
-        </div>
-    </div>
-</div>
                     <a href="adminhandlegymkhana.html" target="_top" class="flex items-center gap-2 px-3 py-3 text-sm font-medium text-gray-600 hover:text-orange-600 hover:bg-gray-100 rounded-t-md transition-all group">
                         <i class="fa-solid fa-medal text-gray-400 group-hover:text-orange-600"></i>
                         Gymkhana
@@ -326,7 +293,40 @@
                         </div>
                     </div>
                 </div>
+<div id="lostfound-view" class="hidden">
+    <div class="relative mb-6 pb-4">
+        <button id="back-to-dashboard-from-lostfound-btn" class="flex items-center text-sm font-medium text-gray-600 hover:text-gray-900">
+            <i class="fa-solid fa-arrow-left mr-2"></i> Back to Dashboard
+        </button>
+        <div class="flex items-center justify-center absolute inset-x-0 top-0 -z-10">
+            <h1 class="text-xl sm:text-3xl font-bold text-amber-700">Lost & Found Registry</h1>
+        </div>
+        <div class="absolute right-0 top-0">
+             <button id="show-add-found-modal-btn" class="px-4 py-2 bg-amber-600 text-white text-xs font-bold rounded-lg shadow hover:bg-amber-700 transition">
+                <i class="fa-solid fa-plus mr-2"></i> Record Found Item
+            </button>
+        </div>
+    </div>
 
+    <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full min-w-max">
+                <thead class="bg-gray-100 border-b">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Item Details</th>
+                        <th class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Reporter / Type</th>
+                        <th class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Location</th>
+                        <th class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Date</th>
+                        <th class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Status</th>
+                        <th class="px-6 py-3 text-center text-xs font-bold text-gray-600 uppercase">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="lostfound-list-container" class="divide-y divide-gray-200">
+                    </tbody>
+            </table>
+        </div>
+    </div>
+</div>
                 <div id="show-fees-view-btn" class="bg-white rounded-lg shadow-sm border border-gray-100 p-4 flex items-center justify-between cursor-pointer group hover:border-teal-400 transition-all">
                     <div>
                         <span class="text-xs font-bold text-gray-400 uppercase tracking-wider group-hover:text-teal-600 transition-colors">Fees Status</span>

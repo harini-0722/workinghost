@@ -63,11 +63,6 @@ const showFeedbackViewBtn = document.getElementById('show-feedback-view-btn');
 const backToDashboardFromFeedbackBtn = document.getElementById('back-to-dashboard-from-feedback-btn');
 const feedbackListContainer = document.getElementById('feedback-list-container');
 //lost and found 
-const lostfoundView = document.getElementById('lostfound-view');
-const showLostfoundViewBtn = document.getElementById('show-lostfound-view-btn');
-const backToDashboardFromLostfoundBtn = document.getElementById('back-to-dashboard-from-lostfound-btn');
-const lostfoundListContainer = document.getElementById('lostfound-list-container');
-const addFoundForm = document.getElementById('add-found-form');
     // NEW: Leave Request Elements
     const leaveView = document.getElementById('leave-view');
     const showLeaveViewBtn = document.getElementById('show-leave-view-btn');
@@ -1950,92 +1945,7 @@ modalOccupantContainer.addEventListener('click', async (e) => {
     }
 });
 }
-// Open Lost & Found View
-showLostfoundViewBtn.addEventListener('click', () => {
-    hideAllViews();
-    lostfoundView.classList.remove('hidden');
-    loadLostFoundData();
-});
 
-backToDashboardFromLostfoundBtn.addEventListener('click', () => {
-    hideAllViews();
-    dashboardView.classList.remove('hidden');
-});
-
-// Show Add Found Item Modal
-document.getElementById('show-add-found-modal-btn').addEventListener('click', () => {
-    showModal('add-found-modal');
-});
-
-// Load and Render Logic
-async function loadLostFoundData() {
-    try {
-        const res = await fetch('/api/lost-found/all-items');
-        const data = await res.json();
-        if (data.success) {
-            renderLostFoundTable(data.items);
-        }
-    } catch (err) { console.error(err); }
-}
-
-function renderLostFoundTable(items) {
-    lostfoundListContainer.innerHTML = '';
-    items.forEach(item => {
-        const typeClass = item.type === 'Lost' ? 'text-red-700 bg-red-50' : 'text-emerald-700 bg-emerald-50';
-        const reporterName = item.studentId ? item.studentId.name : 'Staff/Admin';
-        
-        lostfoundListContainer.innerHTML += `
-            <tr class="hover:bg-gray-50">
-                <td class="px-6 py-4 font-bold text-gray-900">${item.itemName}</td>
-                <td class="px-6 py-4">
-                    <span class="px-2 py-1 rounded text-xs font-bold ${typeClass}">${item.type}</span>
-                    <div class="text-[10px] text-gray-400 mt-1">By: ${reporterName}</div>
-                </td>
-                <td class="px-6 py-4 text-sm text-gray-600">${item.location}</td>
-                <td class="px-6 py-4 text-xs text-gray-500">${new Date(item.submissionDate).toLocaleDateString()}</td>
-                <td class="px-6 py-4">
-                    <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase ${item.status === 'Pending' ? 'bg-yellow-100 text-yellow-700' : 'bg-blue-100 text-blue-700'}">
-                        ${item.status}
-                    </span>
-                </td>
-                <td class="px-6 py-4 text-center">
-                    ${item.status === 'Pending' ? `
-                        <button onclick="updateLostItemStatus('${item._id}', 'Retrieved')" class="text-[10px] font-bold text-indigo-600 hover:underline">MARK AS CLAIMED</button>
-                    ` : '<span class="text-gray-400 text-[10px]">CLOSED</span>'}
-                </td>
-            </tr>
-        `;
-    });
-}
-
-// Global scope helper for action button
-window.updateLostItemStatus = async (id, status) => {
-    const res = await fetch(`/api/lost-found/${id}/status`, {
-        method: 'PATCH',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ status })
-    });
-    if((await res.json()).success) loadLostFoundData();
-}
-
-// Submit Handlers
-addFoundForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const itemName = document.getElementById('found-item-name').value;
-    const location = document.getElementById('found-item-location').value;
-    
-    const res = await fetch('/api/lost-found/add-found', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ itemName, location })
-    });
-    
-    if((await res.json()).success) {
-        hideModal('add-found-modal');
-        addFoundForm.reset();
-        loadLostFoundData();
-    }
-});
 function hideModal(modalId) {
     const modal = document.getElementById(modalId);
     if (!modal) return;
@@ -2048,16 +1958,17 @@ function hideModal(modalId) {
     }, 300); 
 }
     
-    function hideAllViews() {
-        dashboardView.classList.add('hidden');
-        detailView.classList.add('hidden');
-        feesView.classList.add('hidden');
-        visitorsView.classList.add('hidden');
-        complaintsView.classList.add('hidden');
-        feedbackView.classList.add('hidden');
-        leaveView.classList.add('hidden'); // NEW: Hide leave view
-        reassignStudentsModal.classList.add('hidden'); // NEW: Hide reassign modal
-    }
+   function hideAllViews() {
+    dashboardView.classList.add('hidden');
+    detailView.classList.add('hidden');
+    feesView.classList.add('hidden');
+    visitorsView.classList.add('hidden');
+    complaintsView.classList.add('hidden');
+    feedbackView.classList.add('hidden');
+    leaveView.classList.add('hidden');
+    // ADD THIS LINE
+    lostfoundView.classList.add('hidden'); 
+}
 
     document.addEventListener('click', (e) => {
         // Use .closest() to find the button even if the icon <i> was clicked
