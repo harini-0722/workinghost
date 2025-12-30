@@ -672,7 +672,7 @@
                         <i class="fa-solid fa-circle-exclamation mr-2"></i> Report Lost Item
                     </h3>
                 </div>
-                <form onsubmit="event.preventDefault(); alert('Lost item report submitted.');" class="p-4 space-y-3">
+                <form id="lost-found-form" onsubmit="event.preventDefault(); submitLostReport();" class="p-4 space-y-3"></form>
                     <div>
                         <label class="block text-xs font-bold text-secondary-gray mb-1">Item Name</label>
                         <input type="text" id="lost-item-name" placeholder="e.g., Blue Umbrella" class="w-full p-2 text-sm border border-gray-200 rounded-lg focus:ring-1 focus:ring-accent-red bg-gray-50" required>

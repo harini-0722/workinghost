@@ -1469,20 +1469,23 @@ async function populateLostAndFound() {
     const tableBody = document.getElementById('lost-found-body');
     if (!tableBody) return;
 
-    // Show loading indicator
     tableBody.innerHTML = `<tr><td colspan="4" class="py-4 text-center text-xs text-gray-400">Loading found items...</td></tr>`;
     
     try {
-        // Fetch from the route defined in lostFound.js: router.get('/found-items', ...)
+        // Fetch items from the DB
         const response = await fetch('/api/lost-found/found-items');
         const data = await response.json();
 
         if (data.success && data.foundItems && data.foundItems.length > 0) {
-            tableBody.innerHTML = ''; // Clear loader
+            tableBody.innerHTML = ''; 
             data.foundItems.forEach(item => {
-                const statusClass = item.status === 'Pending' 
-                    ? 'text-accent-green bg-green-50 border-green-100' 
-                    : 'text-secondary-gray bg-gray-50 border-gray-200';
+                // If admin marked it as 'Retrieved' in script.js, we show 'Claimed' here
+                const isClaimed = item.status === 'Retrieved' || item.status === 'Closed';
+                const statusText = isClaimed ? 'Claimed' : 'Available';
+                
+                const statusClass = isClaimed 
+                    ? 'text-secondary-gray bg-gray-50 border-gray-200 opacity-60' 
+                    : 'text-accent-green bg-green-50 border-green-100';
                 
                 tableBody.innerHTML += `
                     <tr class="hover:bg-gray-50 transition duration-150">
@@ -1493,7 +1496,7 @@ async function populateLostAndFound() {
                         <td class="py-2 px-4 whitespace-nowrap text-xs text-secondary-gray">${item.location}</td>
                         <td class="py-2 px-4 whitespace-nowrap">
                             <span class="${statusClass} px-2 py-0.5 rounded text-[10px] font-bold border">
-                                ${item.status}
+                                ${statusText}
                             </span>
                         </td>
                     </tr>
@@ -1507,7 +1510,6 @@ async function populateLostAndFound() {
         tableBody.innerHTML = `<tr><td colspan="4" class="py-4 text-center text-red-500 text-xs">Error loading data.</td></tr>`;
     }
 }
-
 // --- Announcement Modal Functions ---
 function openAnnouncementsModal() {
     document.getElementById('announcement-modal').classList.remove('hidden');
