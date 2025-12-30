@@ -213,6 +213,15 @@
                         <i class="fa-solid fa-triangle-exclamation text-gray-400 group-hover:text-red-600"></i>
                         Complaints
                     </button>
+                    <button id="show-feedback-view-btn" class="flex items-center gap-2 px-3 py-3 text-sm font-medium text-gray-600 hover:text-purple-600 hover:bg-gray-100 rounded-t-md transition-all group">
+        <i class="fa-solid fa-comment-dots text-gray-400 group-hover:text-purple-600"></i>
+        Feedback Management
+    </button>
+
+    <button id="show-lostfound-view-btn" class="flex items-center gap-2 px-3 py-3 text-sm font-medium text-gray-600 hover:text-amber-600 hover:bg-gray-100 rounded-t-md transition-all group">
+        <i class="fa-solid fa-magnifying-glass text-gray-400 group-hover:text-amber-600"></i>
+        Lost & Found
+    </button>
 
                     <a href="adminhandlegymkhana.html" target="_top" class="flex items-center gap-2 px-3 py-3 text-sm font-medium text-gray-600 hover:text-orange-600 hover:bg-gray-100 rounded-t-md transition-all group">
                         <i class="fa-solid fa-medal text-gray-400 group-hover:text-orange-600"></i>
@@ -588,7 +597,33 @@
                 </div>
             </div>
         </div>
+ <div id="feedback-view" class="hidden">
+    <div class="relative mb-6 pb-4">
+        <button id="back-to-dashboard-from-feedback-btn" class="flex items-center text-sm font-medium text-gray-600 hover:text-gray-900">
+            <i class="fa-solid fa-arrow-left mr-2"></i> Back to Dashboard
+        </button>
+        <div class="flex items-center justify-center absolute inset-x-0 top-0 -z-10">
+            <h1 class="text-xl sm:text-3xl font-bold text-purple-700">Student Feedback</h1>
+        </div>
+    </div>
 
+    <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full min-w-max">
+                <thead class="bg-gray-100 border-b border-gray-200">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Student Info</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Category</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Message</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Date Submitted</th>
+                    </tr>
+                </thead>
+                <tbody id="feedback-list-container" class="divide-y divide-gray-200">
+                    </tbody>
+            </table>
+        </div>
+    </div>
+</div>
         <div id="leave-view" class="hidden">
             <div class="relative mb-6 pb-4">
                 <button id="back-to-dashboard-from-leave-btn" class="flex items-center text-sm font-medium text-gray-600 hover:text-gray-900">

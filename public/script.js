@@ -56,7 +56,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const statOpenComplaints = document.getElementById('stat-open-complaints');
     const complaintDetailsModal = document.getElementById('complaint-details-modal');
     const complaintDetailsContent = document.getElementById('complaint-details-content');
-    
+    //feedback
+   
+const feedbackView = document.getElementById('feedback-view');
+const showFeedbackViewBtn = document.getElementById('show-feedback-view-btn');
+const backToDashboardFromFeedbackBtn = document.getElementById('back-to-dashboard-from-feedback-btn');
+const feedbackListContainer = document.getElementById('feedback-list-container');
     // NEW: Leave Request Elements
     const leaveView = document.getElementById('leave-view');
     const showLeaveViewBtn = document.getElementById('show-leave-view-btn');
@@ -457,7 +462,64 @@ function renderLeaveView() {
         showModal('leave-details-modal');
     }
     // --- END LEAVE MANAGEMENT FUNCTIONS ---
+//feedback 
+// script.js - Feedback Functions
 
+async function loadFeedbackData() {
+    try {
+        console.log('🔄 Loading student feedback...');
+        const res = await fetch('/api/feedback'); // Fetches all feedback from the server
+        const data = await res.json();
+        
+        if (data.success) {
+            renderFeedbackView(data.feedback);
+        } else {
+            throw new Error(data.message);
+        }
+    } catch (error) {
+        console.error('❌ Failed to load feedback:', error);
+        feedbackListContainer.innerHTML = `<tr><td colspan="4" class="text-center text-red-500 py-4">Error loading feedback.</td></tr>`;
+    }
+}
+
+function renderFeedbackView(feedbackArray) {
+    feedbackListContainer.innerHTML = '';
+    
+    if (!feedbackArray || feedbackArray.length === 0) {
+        feedbackListContainer.innerHTML = `<tr><td colspan="4" class="text-center text-gray-500 py-6">No feedback received yet.</td></tr>`;
+        return;
+    }
+
+    // Sort newest first
+    feedbackArray.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+    feedbackArray.forEach(f => {
+        // Handle anonymous submissions
+        const displayName = f.anonymous ? "Anonymous Student" : (f.studentName || "Unknown Student");
+        const displaySub = f.anonymous ? "Privacy Protected" : (f.studentId || "");
+
+        const rowHTML = `
+            <tr class="hover:bg-gray-50 border-b">
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm font-medium text-gray-900">${displayName}</div>
+                    <div class="text-xs text-gray-500">${displaySub}</div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="px-2 py-1 text-xs font-bold rounded bg-purple-50 text-purple-700 border border-purple-100">
+                        ${f.category}
+                    </span>
+                </td>
+                <td class="px-6 py-4 text-sm text-gray-700 max-w-md">
+                    <div class="italic text-gray-600 leading-relaxed">"${f.description}"</div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-xs text-gray-500">
+                    ${new Date(f.createdAt).toLocaleString()}
+                </td>
+            </tr>
+        `;
+        feedbackListContainer.innerHTML += rowHTML;
+    });
+}
 
     // --- VISITOR MANAGEMENT FUNCTIONS (Unchanged, retained for context) ---
 
@@ -1901,6 +1963,7 @@ function hideModal(modalId) {
         feesView.classList.add('hidden');
         visitorsView.classList.add('hidden');
         complaintsView.classList.add('hidden');
+        feedbackView.classList.add('hidden');
         leaveView.classList.add('hidden'); // NEW: Hide leave view
         reassignStudentsModal.classList.add('hidden'); // NEW: Hide reassign modal
     }
@@ -1919,7 +1982,16 @@ function hideModal(modalId) {
         currentRoomData = null;
         loadHostelData();
     });
+showFeedbackViewBtn.addEventListener('click', () => {
+    hideAllViews();
+    feedbackView.classList.remove('hidden');
+    loadFeedbackData();
+});
 
+backToDashboardFromFeedbackBtn.addEventListener('click', () => {
+    hideAllViews();
+    dashboardView.classList.remove('hidden');
+});
     hostelBlockContainer.addEventListener('click', (e) => {
         const link = e.target.closest('.block-link');
         if (link) {
