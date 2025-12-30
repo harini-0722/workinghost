@@ -2056,8 +2056,7 @@ function hideModal(modalId) {
         complaintsView.classList.add('hidden');
         feedbackView.classList.add('hidden');
         leaveView.classList.add('hidden'); // NEW: Hide leave view
-        reassignStudentsModal.classList.add('hidden'); 
-        lostfoundView.classList.add('hidden');// NEW: Hide reassign modal
+        reassignStudentsModal.classList.add('hidden'); // NEW: Hide reassign modal
     }
 
     document.addEventListener('click', (e) => {
