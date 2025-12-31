@@ -574,8 +574,9 @@ function renderFeedbackView(feedbackArray) {
 
     feedbackArray.forEach(f => {
         // Handle anonymous submissions
-        const displayName = f.anonymous ? "Anonymous Student" : (f.studentName || "Unknown Student");
-        const displaySub = f.anonymous ? "Privacy Protected" : (f.studentId || "");
+        const studentObj = f.student || {};
+        const displayName = f.anonymous ? "Anonymous Student" : (studentObj.name || "Unknown Student");
+const displaySub = f.anonymous ? "Privacy Protected" : (studentObj.rollNumber || "");
 
         const rowHTML = `
             <tr class="hover:bg-gray-50 border-b">

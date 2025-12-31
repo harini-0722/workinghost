@@ -24,21 +24,18 @@ router.post('/', async (req, res) => {
         res.status(500).json({ success: false, message: 'Error saving feedback.', error: error.message });
     }
 });
-router.get('/student/:studentId', async (req, res) => {
+
+router.get('/', async (req, res) => {
     try {
-        const { studentId } = req.params;
+        // Fetch all feedback, populate student details, and sort by newest first
+        const feedback = await Feedback.find()
+            .populate('student', 'name rollNumber') // If your model supports population
+            .sort({ createdAt: -1 });
         
-        // FIX: Change 'studentId' to 'student' to match how you saved it in the POST route
-        const feedback = await Feedback.find({ student: studentId }).sort({ createdAt: -1 });
-        
-        res.json({ 
-            success: true, 
-            feedback 
-        });
+        res.json({ success: true, feedback });
     } catch (err) {
-        console.error("Error fetching student feedback:", err);
-        res.status(500).json({ success: false, message: 'Server error fetching history.' });
+        console.error("❌ Admin Feedback Fetch Error:", err);
+        res.status(500).json({ success: false, message: 'Server error fetching feedback registry.' });
     }
 });
-
 module.exports = router;
